@@ -13,6 +13,7 @@ RUN crudini --set /etc/ironic/ironic.conf DEFAULT auth_strategy noauth && \
     crudini --set /etc/ironic/ironic.conf DEFAULT default_network_interface noop && \
     crudini --set /etc/ironic/ironic.conf DEFAULT enabled_boot_interfaces pxe,ipxe && \
     crudini --set /etc/ironic/ironic.conf DEFAULT default_boot_interface ipxe && \
+    crudini --set /etc/ironic/ironic.conf DEFAULT default_deploy_interface direct && \
     crudini --set /etc/ironic/ironic.conf database connection sqlite:///ironic.db && \
     crudini --set /etc/ironic/ironic.conf dhcp dhcp_provider none && \
     crudini --set /etc/ironic/ironic.conf conductor automated_clean false && \
