@@ -2,7 +2,7 @@ FROM docker.io/centos:centos7
 
 RUN yum install -y python-requests && \
     curl https://raw.githubusercontent.com/openstack/tripleo-repos/master/tripleo_repos/main.py | python - current-tripleo && \
-    yum install -y openstack-ironic-api openstack-ironic-conductor rabbitmq-server crudini iproute dnsmasq httpd qemu-img iscsi-initiator-utils parted gdisk ipxe-bootimgs && \
+    yum install -y openstack-ironic-api openstack-ironic-conductor rabbitmq-server crudini iproute dnsmasq httpd qemu-img-ev iscsi-initiator-utils parted gdisk ipxe-bootimgs && \
     yum clean all
 RUN mkdir -p /var/www/html/images
 RUN curl https://images.rdoproject.org/master/rdo_trunk/current-tripleo/ironic-python-agent.tar | tar -C /var/www/html/images/ -xf -
