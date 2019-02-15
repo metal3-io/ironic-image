@@ -16,6 +16,8 @@ RUN cp /etc/ironic/ironic.conf /etc/ironic/ironic.conf_orig && \
     crudini --set /etc/ironic/ironic.conf DEFAULT enabled_boot_interfaces pxe,ipxe && \
     crudini --set /etc/ironic/ironic.conf DEFAULT default_boot_interface ipxe && \
     crudini --set /etc/ironic/ironic.conf DEFAULT default_deploy_interface direct && \
+    crudini --set /etc/ironic/ironic.conf DEFAULT enabled_inspect_interfaces inspector && \
+    crudini --set /etc/ironic/ironic.conf DEFAULT default_inspect_interface inspector && \
     crudini --set /etc/ironic/ironic.conf database connection sqlite:///ironic.db && \
     crudini --set /etc/ironic/ironic.conf dhcp dhcp_provider none && \
     crudini --set /etc/ironic/ironic.conf conductor automated_clean false && \
@@ -23,6 +25,7 @@ RUN cp /etc/ironic/ironic.conf /etc/ironic/ironic.conf_orig && \
     crudini --set /etc/ironic/ironic.conf deploy http_url http://172.22.0.1 && \
     crudini --set /etc/ironic/ironic.conf deploy http_root /var/www/html/ && \
     crudini --set /etc/ironic/ironic.conf deploy default_boot_option local && \
+    crudini --set /etc/ironic/ironic.conf inspector endpoint_override http://172.22.0.1:5050 && \
     crudini --set /etc/ironic/ironic.conf pxe ipxe_enabled true && \
     crudini --set /etc/ironic/ironic.conf pxe pxe_config_template \$pybasedir/drivers/modules/ipxe_config.template && \
     ironic-dbsync --config-file /etc/ironic/ironic.conf create_schema
