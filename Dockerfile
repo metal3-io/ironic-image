@@ -1,8 +1,8 @@
 FROM docker.io/centos:centos7
 
 RUN yum install -y python-requests && \
-    curl https://raw.githubusercontent.com/openstack/tripleo-repos/master/tripleo_repos/main.py | python - current-tripleo && \
-    yum install -y openstack-ironic-api openstack-ironic-conductor rabbitmq-server crudini iproute dnsmasq httpd qemu-img-ev iscsi-initiator-utils parted gdisk ipxe-bootimgs && \
+    curl https://raw.githubusercontent.com/openstack/tripleo-repos/master/tripleo_repos/main.py | python - current && \
+    yum install -y openstack-ironic-api openstack-ironic-conductor crudini iproute dnsmasq httpd qemu-img-ev iscsi-initiator-utils parted gdisk ipxe-bootimgs && \
     yum clean all
 
 RUN mkdir /tftpboot && \
@@ -18,6 +18,7 @@ RUN cp /etc/ironic/ironic.conf /etc/ironic/ironic.conf_orig && \
     crudini --set /etc/ironic/ironic.conf DEFAULT default_deploy_interface direct && \
     crudini --set /etc/ironic/ironic.conf DEFAULT enabled_inspect_interfaces inspector && \
     crudini --set /etc/ironic/ironic.conf DEFAULT default_inspect_interface inspector && \
+    crudini --set /etc/ironic/ironic.conf DEFAULT rpc_transport json-rpc && \
     crudini --set /etc/ironic/ironic.conf database connection sqlite:///ironic.db && \
     crudini --set /etc/ironic/ironic.conf dhcp dhcp_provider none && \
     crudini --set /etc/ironic/ironic.conf conductor automated_clean false && \
