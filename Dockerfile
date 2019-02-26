@@ -2,7 +2,7 @@ FROM docker.io/centos:centos7
 
 RUN yum install -y python-requests && \
     curl https://raw.githubusercontent.com/openstack/tripleo-repos/master/tripleo_repos/main.py | python - current && \
-    yum install -y openstack-ironic-api openstack-ironic-conductor crudini iproute dnsmasq httpd qemu-img-ev iscsi-initiator-utils parted gdisk ipxe-bootimgs && \
+    yum install -y openstack-ironic-api openstack-ironic-conductor crudini iproute dnsmasq httpd qemu-img-ev iscsi-initiator-utils parted gdisk ipxe-bootimgs psmisc sysvinit-tools && \
     yum clean all
 
 RUN mkdir /tftpboot && \
@@ -32,6 +32,8 @@ RUN cp /etc/ironic/ironic.conf /etc/ironic/ironic.conf_orig && \
     ironic-dbsync --config-file /etc/ironic/ironic.conf create_schema
 
 COPY ./runironic.sh /bin/runironic
+COPY ./runhealthcheck.sh /bin/runhealthcheck
+
 RUN chmod +x /bin/runironic
 
 ENTRYPOINT ["/bin/runironic"]
