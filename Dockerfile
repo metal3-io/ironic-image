@@ -8,6 +8,9 @@ RUN yum install -y python-requests && \
 RUN mkdir /tftpboot && \
     cp /usr/share/ipxe/undionly.kpxe /usr/share/ipxe/ipxe.efi /tftpboot/
 
+RUN mkdir -p /var/lib/ironic && \
+    sqlite3 /var/lib/ironic/ironic.db "pragma journal_mode=wal"
+
 RUN cp /etc/ironic/ironic.conf /etc/ironic/ironic.conf_orig && \
     crudini --set /etc/ironic/ironic.conf DEFAULT auth_strategy noauth && \
     crudini --set /etc/ironic/ironic.conf DEFAULT my_ip 172.22.0.1 && \
@@ -19,7 +22,7 @@ RUN cp /etc/ironic/ironic.conf /etc/ironic/ironic.conf_orig && \
     crudini --set /etc/ironic/ironic.conf DEFAULT enabled_inspect_interfaces inspector && \
     crudini --set /etc/ironic/ironic.conf DEFAULT default_inspect_interface inspector && \
     crudini --set /etc/ironic/ironic.conf DEFAULT rpc_transport json-rpc && \
-    crudini --set /etc/ironic/ironic.conf database connection sqlite:///ironic.db && \
+    crudini --set /etc/ironic/ironic.conf database connection sqlite:///var/lib/ironic/ironic.db && \
     crudini --set /etc/ironic/ironic.conf dhcp dhcp_provider none && \
     crudini --set /etc/ironic/ironic.conf conductor automated_clean false && \
     crudini --set /etc/ironic/ironic.conf conductor api_url http://172.22.0.1:6385 && \
