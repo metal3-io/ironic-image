@@ -38,6 +38,7 @@ RUN cp /etc/ironic/ironic.conf /etc/ironic/ironic.conf_orig && \
     crudini --set /etc/ironic/ironic.conf pxe pxe_config_template \$pybasedir/drivers/modules/ipxe_config.template && \
     ironic-dbsync --config-file /etc/ironic/ironic.conf create_schema
 
+COPY ./config /config
 COPY ./runironic.sh /bin/runironic
 COPY ./runhealthcheck.sh /bin/runhealthcheck
 
