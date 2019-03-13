@@ -17,9 +17,13 @@ RUN cp /etc/ironic/ironic.conf /etc/ironic/ironic.conf_orig && \
     crudini --set /etc/ironic/ironic.conf DEFAULT debug true && \
     crudini --set /etc/ironic/ironic.conf DEFAULT default_network_interface noop && \
     crudini --set /etc/ironic/ironic.conf DEFAULT enabled_boot_interfaces pxe,ipxe && \
+    crudini --set /etc/ironic/ironic.conf DEFAULT enabled_power_interfaces ipmitool,idrac && \
+    crudini --set /etc/ironic/ironic.conf DEFAULT enabled_management_interfaces ipmitool,idrac && \
+    crudini --set /etc/ironic/ironic.conf DEFAULT enabled_hardware_types ipmi,idrac && \
+    crudini --set /etc/ironic/ironic.conf DEFAULT enabled_vendor_interfaces ipmitool,no-vendor,idrac && \
     crudini --set /etc/ironic/ironic.conf DEFAULT default_boot_interface ipxe && \
     crudini --set /etc/ironic/ironic.conf DEFAULT default_deploy_interface direct && \
-    crudini --set /etc/ironic/ironic.conf DEFAULT enabled_inspect_interfaces inspector && \
+    crudini --set /etc/ironic/ironic.conf DEFAULT enabled_inspect_interfaces inspector,idrac && \
     crudini --set /etc/ironic/ironic.conf DEFAULT default_inspect_interface inspector && \
     crudini --set /etc/ironic/ironic.conf DEFAULT rpc_transport json-rpc && \
     crudini --set /etc/ironic/ironic.conf database connection sqlite:///var/lib/ironic/ironic.db && \
