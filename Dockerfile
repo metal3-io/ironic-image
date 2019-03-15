@@ -30,12 +30,13 @@ RUN cp /etc/ironic/ironic.conf /etc/ironic/ironic.conf_orig && \
     crudini --set /etc/ironic/ironic.conf dhcp dhcp_provider none && \
     crudini --set /etc/ironic/ironic.conf conductor automated_clean false && \
     crudini --set /etc/ironic/ironic.conf conductor api_url http://172.22.0.1:6385 && \
-    crudini --set /etc/ironic/ironic.conf deploy http_url http://172.22.0.1 && \
+    crudini --set /etc/ironic/ironic.conf deploy http_url http://172.22.0.1:5280 && \
     crudini --set /etc/ironic/ironic.conf deploy http_root /var/www/html/ && \
     crudini --set /etc/ironic/ironic.conf deploy default_boot_option local && \
     crudini --set /etc/ironic/ironic.conf inspector endpoint_override http://172.22.0.1:5050 && \
     crudini --set /etc/ironic/ironic.conf pxe ipxe_enabled true && \
     crudini --set /etc/ironic/ironic.conf pxe pxe_config_template \$pybasedir/drivers/modules/ipxe_config.template && \
+    sed -i /etc/httpd/conf/httpd.conf -e 's/Listen 80/Listen 5280/' \
     ironic-dbsync --config-file /etc/ironic/ironic.conf create_schema
 
 COPY ./runironic.sh /bin/runironic
