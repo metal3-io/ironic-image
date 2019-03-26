@@ -2,14 +2,11 @@ FROM docker.io/centos:centos7
 
 RUN yum install -y python-requests && \
     curl https://raw.githubusercontent.com/openstack/tripleo-repos/5609d2e3aee35578e914bcbfac92a46c759c0a31/tripleo_repos/main.py | python - current && \
-    yum install -y openstack-ironic-api openstack-ironic-conductor crudini iproute dnsmasq httpd qemu-img-ev iscsi-initiator-utils parted gdisk ipxe-bootimgs psmisc sysvinit-tools && \
+    yum install -y openstack-ironic-api openstack-ironic-conductor crudini iproute dnsmasq httpd qemu-img-ev iscsi-initiator-utils parted gdisk ipxe-bootimgs psmisc sysvinit-tools mariadb-server python-PyMySQL python2-chardet && \
     yum clean all
 
 RUN mkdir /tftpboot && \
     cp /usr/share/ipxe/undionly.kpxe /usr/share/ipxe/ipxe.efi /tftpboot/
-
-RUN mkdir -p /var/lib/ironic && \
-    sqlite3 /var/lib/ironic/ironic.db "pragma journal_mode=wal"
 
 RUN cp /etc/ironic/ironic.conf /etc/ironic/ironic.conf_orig && \
     crudini --set /etc/ironic/ironic.conf DEFAULT auth_strategy noauth && \
@@ -26,7 +23,6 @@ RUN cp /etc/ironic/ironic.conf /etc/ironic/ironic.conf_orig && \
     crudini --set /etc/ironic/ironic.conf DEFAULT enabled_inspect_interfaces inspector,idrac && \
     crudini --set /etc/ironic/ironic.conf DEFAULT default_inspect_interface inspector && \
     crudini --set /etc/ironic/ironic.conf DEFAULT rpc_transport json-rpc && \
-    crudini --set /etc/ironic/ironic.conf database connection sqlite:///var/lib/ironic/ironic.db && \
     crudini --set /etc/ironic/ironic.conf dhcp dhcp_provider none && \
     crudini --set /etc/ironic/ironic.conf conductor automated_clean false && \
     crudini --set /etc/ironic/ironic.conf conductor api_url http://172.22.0.1:6385 && \
@@ -39,8 +35,7 @@ RUN cp /etc/ironic/ironic.conf /etc/ironic/ironic.conf_orig && \
     crudini --set /etc/ironic/ironic.conf pxe tftp_master_path /shared/tftpboot && \
     crudini --set /etc/ironic/ironic.conf pxe instance_master_path /shared/html/master_images && \
     crudini --set /etc/ironic/ironic.conf pxe images_path /shared/html/tmp && \
-    crudini --set /etc/ironic/ironic.conf pxe pxe_config_template \$pybasedir/drivers/modules/ipxe_config.template && \
-    ironic-dbsync --config-file /etc/ironic/ironic.conf create_schema
+    crudini --set /etc/ironic/ironic.conf pxe pxe_config_template \$pybasedir/drivers/modules/ipxe_config.template
 
 COPY ./runironic.sh /bin/runironic
 COPY ./rundnsmasq.sh /bin/rundnsmasq
