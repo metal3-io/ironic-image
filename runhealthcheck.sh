@@ -7,14 +7,18 @@ function killcontainer(){
 }
 
 while true ; do
-    sleep 10
+    sleep 30
 
-    HTTPDPID=$(pidof -s httpd)
-    fuser 80/tcp |& grep -w "$HTTPDPID"
+    if [ $1 = "httpd" ] ; then
+       HTTPDPID=$(pidof -s httpd)
+       fuser 80/tcp |& grep -w "$HTTPDPID"
 
-    DNSMASQPID=$(pidof dnsmasq)
-    fuser 69/udp |& grep -w "$DNSMASQPID"
+    elif [ $1 = "dnsmasq" ] ; then
+       DNSMASQPID=$(pidof dnsmasq)
+       fuser 67/udp |& grep -w "$DNSMASQPID"
 
-    curl -s http://172.22.0.1:6385 > /dev/null || ( echo "Can't contact ironic-api" && exit 1 )
+    elif [ $1 = "ironic" ] ; then
+       curl -s http://localhost:6385 > /dev/null || ( echo "Can't contact ironic-api" && exit 1 )
+    fi
 
 done
