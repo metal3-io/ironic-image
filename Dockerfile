@@ -33,6 +33,7 @@ RUN cp /etc/ironic/ironic.conf /etc/ironic/ironic.conf_orig && \
     crudini --set /etc/ironic/ironic.conf deploy http_url http://172.22.0.1 && \
     crudini --set /etc/ironic/ironic.conf deploy http_root /shared/html/ && \
     crudini --set /etc/ironic/ironic.conf deploy default_boot_option local && \
+    crudini --set /etc/ironic/ironic.conf deploy fast_track true && \
     crudini --set /etc/ironic/ironic.conf inspector endpoint_override http://172.22.0.1:5050 && \
     crudini --set /etc/ironic/ironic.conf pxe ipxe_enabled true && \
     crudini --set /etc/ironic/ironic.conf pxe tftp_root /shared/tftpboot && \
