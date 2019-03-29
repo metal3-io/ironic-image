@@ -11,7 +11,7 @@ while true ; do
 
     if [ $1 = "httpd" ] ; then
        HTTPDPID=$(pidof -s httpd)
-       fuser 80/tcp |& grep -w "$HTTPDPID"
+       fuser $2/tcp |& grep -w "$HTTPDPID"
 
     elif [ $1 = "dnsmasq" ] ; then
        DNSMASQPID=$(pidof dnsmasq)
