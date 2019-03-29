@@ -5,6 +5,9 @@ HTTP_PORT=${HTTP_PORT:-"80"}
 DHCP_RANGE=${DHCP_RANGE:-"172.22.0.10,172.22.0.100"}
 INTERFACE=${INTERFACE:-"provisioning"}
 
+mkdir -p /shared/html
+mkdir -p /shared/tftpboot
+
 # Copy files to shared mount
 cp /tmp/inspector.ipxe /shared/html/inspector.ipxe
 cp /tmp/dualboot.ipxe /shared/html/dualboot.ipxe
