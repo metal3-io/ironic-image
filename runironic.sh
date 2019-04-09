@@ -17,11 +17,12 @@ crudini --set /etc/ironic/ironic.conf DEFAULT auth_strategy noauth
 crudini --set /etc/ironic/ironic.conf DEFAULT my_ip ${IP}
 crudini --set /etc/ironic/ironic.conf DEFAULT debug true
 crudini --set /etc/ironic/ironic.conf DEFAULT default_network_interface noop
-crudini --set /etc/ironic/ironic.conf DEFAULT enabled_boot_interfaces pxe,ipxe
-crudini --set /etc/ironic/ironic.conf DEFAULT enabled_power_interfaces ipmitool,idrac
-crudini --set /etc/ironic/ironic.conf DEFAULT enabled_management_interfaces ipmitool,idrac
-crudini --set /etc/ironic/ironic.conf DEFAULT enabled_hardware_types ipmi,idrac
-crudini --set /etc/ironic/ironic.conf DEFAULT enabled_vendor_interfaces ipmitool,no-vendor,idrac
+crudini --set /etc/ironic/ironic.conf DEFAULT enabled_boot_interfaces pxe,ipxe,fake
+crudini --set /etc/ironic/ironic.conf DEFAULT enabled_power_interfaces ipmitool,idrac,fake
+crudini --set /etc/ironic/ironic.conf DEFAULT enabled_management_interfaces ipmitool,idrac,fake
+crudini --set /etc/ironic/ironic.conf DEFAULT enabled_hardware_types ipmi,idrac,fake-hardware
+crudini --set /etc/ironic/ironic.conf DEFAULT enabled_vendor_interfaces ipmitool,no-vendor,idrac,fake
+crudini --set /etc/ironic/ironic.conf DEFAULT enabled_deploy_interfaces direct,fake
 crudini --set /etc/ironic/ironic.conf DEFAULT default_boot_interface ipxe
 crudini --set /etc/ironic/ironic.conf DEFAULT default_deploy_interface direct
 crudini --set /etc/ironic/ironic.conf DEFAULT enabled_inspect_interfaces inspector,idrac
@@ -44,6 +45,7 @@ crudini --set /etc/ironic/ironic.conf pxe pxe_config_template \$pybasedir/driver
 
 ironic-dbsync --config-file /etc/ironic/ironic.conf upgrade
 
+mkdir -p /shared/html
 /usr/bin/python2 /usr/bin/ironic-conductor > /var/log/ironic-conductor.out 2>&1 &
 /usr/bin/python2 /usr/bin/ironic-api > /var/log/ironic-api.out 2>&1 &
 
