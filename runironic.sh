@@ -29,12 +29,14 @@ crudini --set /etc/ironic/ironic.conf DEFAULT enabled_inspect_interfaces inspect
 crudini --set /etc/ironic/ironic.conf DEFAULT default_inspect_interface inspector
 crudini --set /etc/ironic/ironic.conf DEFAULT rpc_transport json-rpc
 crudini --set /etc/ironic/ironic.conf dhcp dhcp_provider none
-crudini --set /etc/ironic/ironic.conf conductor automated_clean false
+crudini --set /etc/ironic/ironic.conf conductor automated_clean true
 crudini --set /etc/ironic/ironic.conf conductor api_url http://${IP}:6385
 crudini --set /etc/ironic/ironic.conf database connection mysql+pymysql://ironic:${MARIADB_PASSWORD}@localhost/ironic?charset=utf8
 crudini --set /etc/ironic/ironic.conf deploy http_url http://${IP}:${HTTP_PORT}
 crudini --set /etc/ironic/ironic.conf deploy http_root /shared/html/
 crudini --set /etc/ironic/ironic.conf deploy default_boot_option local
+crudini --set /etc/ironic/ironic.conf deploy erase_devices_priority 0
+crudini --set /etc/ironic/ironic.conf deploy erase_devices_metadata_priority 10
 crudini --set /etc/ironic/ironic.conf inspector endpoint_override http://${IP}:5050
 crudini --set /etc/ironic/ironic.conf pxe ipxe_enabled true
 crudini --set /etc/ironic/ironic.conf pxe tftp_root /shared/tftpboot
