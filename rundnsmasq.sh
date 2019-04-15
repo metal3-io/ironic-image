@@ -7,6 +7,7 @@ INTERFACE=${INTERFACE:-"provisioning"}
 EXCEPT_INTERFACE=${EXCEPT_INTERFACE:-"lo"}
 
 mkdir -p /shared/tftpboot
+mkdir -p /shared/log/dnsmasq
 
 # Copy files to shared mount
 cp /usr/share/ipxe/undionly.kpxe /usr/share/ipxe/ipxe.efi /shared/tftpboot
@@ -18,7 +19,7 @@ for iface in $( echo $EXCEPT_INTERFACE | tr ',' ' '); do
     sed -i -e "/^interface=.*/ a\except-interface=$iface" /etc/dnsmasq.conf
 done
 
-/usr/sbin/dnsmasq -d -q -C /etc/dnsmasq.conf &
+/usr/sbin/dnsmasq -d -q -C /etc/dnsmasq.conf 2>&1 | tee /shared/log/dnsmasq/dnsmasq.log &
 /bin/runhealthcheck "dnsmasq" &>/dev/null &
 sleep infinity
 
