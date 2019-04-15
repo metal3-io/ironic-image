@@ -25,7 +25,7 @@ crudini --set /etc/ironic/ironic.conf DEFAULT enabled_vendor_interfaces ipmitool
 crudini --set /etc/ironic/ironic.conf DEFAULT enabled_deploy_interfaces direct,fake
 crudini --set /etc/ironic/ironic.conf DEFAULT default_boot_interface ipxe
 crudini --set /etc/ironic/ironic.conf DEFAULT default_deploy_interface direct
-crudini --set /etc/ironic/ironic.conf DEFAULT enabled_inspect_interfaces inspector,idrac
+crudini --set /etc/ironic/ironic.conf DEFAULT enabled_inspect_interfaces inspector,idrac,fake
 crudini --set /etc/ironic/ironic.conf DEFAULT default_inspect_interface inspector
 crudini --set /etc/ironic/ironic.conf DEFAULT rpc_transport json-rpc
 crudini --set /etc/ironic/ironic.conf dhcp dhcp_provider none
