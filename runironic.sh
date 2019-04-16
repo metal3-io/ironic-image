@@ -31,6 +31,10 @@ crudini --set /etc/ironic/ironic.conf DEFAULT default_deploy_interface direct
 crudini --set /etc/ironic/ironic.conf DEFAULT enabled_inspect_interfaces inspector,idrac,fake
 crudini --set /etc/ironic/ironic.conf DEFAULT default_inspect_interface inspector
 crudini --set /etc/ironic/ironic.conf DEFAULT rpc_transport json-rpc
+crudini --set /etc/ironic/ironic.conf conductor send_sensor_data true
+crudini --set /etc/ironic/ironic.conf oslo_messaging_notifications driver prometheus_exporter
+crudini --set /etc/ironic/ironic.conf oslo_messaging_notifications transport_url fake://
+crudini --set /etc/ironic/ironic.conf oslo_messaging_notifications location /tmp/ironic_prometheus_exporter
 crudini --set /etc/ironic/ironic.conf dhcp dhcp_provider none
 crudini --set /etc/ironic/ironic.conf conductor automated_clean true
 crudini --set /etc/ironic/ironic.conf conductor api_url http://${IP}:6385
@@ -65,6 +69,7 @@ mkdir -p /shared/log/ironic
 /usr/bin/python2 /usr/bin/ironic-api --log-file  /shared/log/ironic/ironic-api.log & 
 
 /bin/runhealthcheck "ironic" &>/dev/null &
+/bin/runexporterapp &
 
 sleep infinity
 
