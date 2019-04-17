@@ -1,0 +1,14 @@
+language: go
+
+sudo: false
+
+services:
+  - docker
+
+go:
+  - "1.11.5"
+
+env:
+  - TARGET=docker
+
+script: make $TARGET
