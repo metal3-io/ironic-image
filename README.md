@@ -8,10 +8,10 @@ When updated, builds are automatically triggered on https://quay.io/repository/m
 This repo supports the creation of multiple containers needed when provisioning baremetal nodes with Ironic. Eventually there will be separate images for each container, but currently separate containers can share this same image with specific entry points.
 
 The following entry points are provided:
-- runironic - Starts the ironic-conductor and ironic-api processes to manage the provisioning of baremetal nodes.  Details on Ironic can be found at https://github.com/openstack/ironic.  This is the default entry point used by the Dockerfile.
+- runironic - Starts the ironic-conductor and ironic-api processes to manage the provisioning of baremetal nodes.  Details on Ironic can be found at https://docs.openstack.org/ironic/latest/.  This is the default entry point used by the Dockerfile.
 - rundnsmasq - Runs the dnmasq dhcp server to provide addresses and initiate PXE boot of baremetal nodes.  This includes a lightweight TFTP server.  Details on dnsmasq can be found at http://www.thekelleys.org.uk/dnsmasq/doc.html.
 - runhttpd - Starts the Apache web server to provide images via http for PXE boot and for deployment of the final images.
-- runmariad - Provides a database to store information associated with baremetal nodes.
+- runmariadb - Provides a database to store information associated with baremetal nodes.
 
 All of the containers must share a common mount point or data store.  Ironic requires files for both the TFTP server and HTTP server to be stored in the same partition.  This common store must include, in <shared store>/html/images, the following images:
 - ironic-python-agent.kernel
