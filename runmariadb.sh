@@ -5,7 +5,7 @@ MARIADB_PASSWORD=${MARIADB_PASSWORD:-"change_me"}
 MARIADB_CONF_FILE="/etc/my.cnf.d/mariadb-server.cnf"
 
 if [ ! -d "${DATADIR}/mysql" ]; then
-    crudini --set "$MARIADB_CONF_FILE" mysqld max_connects 64
+    crudini --set "$MARIADB_CONF_FILE" mysqld max_connections 64
     crudini --set "$MARIADB_CONF_FILE" mysqld max_heap_table_size 1M
     crudini --set "$MARIADB_CONF_FILE" mysqld innodb_buffer_pool_size 5M
     crudini --set "$MARIADB_CONF_FILE" mysqld innodb_log_buffer_size 512K
