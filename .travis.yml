@@ -1,3 +1,4 @@
+dist: xenial
 language: go
 
 sudo: false
@@ -11,4 +12,5 @@ go:
 env:
   - TARGET=docker
 
-script: make $TARGET
+script:
+  - make $TARGET $TARGET-run $TARGET-test
