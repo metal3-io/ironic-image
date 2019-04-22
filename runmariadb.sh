@@ -9,10 +9,18 @@ if [ ! -d "${DATADIR}/mysql" ]; then
     crudini --set "$MARIADB_CONF_FILE" mysqld max_heap_table_size 1M
     crudini --set "$MARIADB_CONF_FILE" mysqld innodb_buffer_pool_size 5M
     crudini --set "$MARIADB_CONF_FILE" mysqld innodb_log_buffer_size 512K
+    crudini --set "$MARIADB_CONF_FILE" mysqld general_log_file /shared/log/mariadb/mariadb.log
 
     mysql_install_db --datadir="$DATADIR"
 
-    chown -R mysql /var/log/mariadb
+    mkdir -p /shared/log/mariadb
+    touch /shared/log/mariadb/mariadb.log
+    chmod 664 /shared/log/mariadb/mariadb.log
+    chown -R mysql /shared/log/mariadb
+
+    sed -i 's/var\/log\/mariadb\/mariadb\.log/shared\/log\/mariadb\/mariadb\.log/g' \
+          /etc/my.cnf.d/mariadb-server.cnf 
+
     chown -R mysql "$DATADIR"
 
     cat > /tmp/configure-mysql.sql <<-EOSQL

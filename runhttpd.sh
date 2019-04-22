@@ -18,6 +18,17 @@ sed -i -e 's|\(^[[:space:]]*\)\(DocumentRoot\)\(.*\)|\1\2 "/shared/html"|' \
     -e 's|<Directory "/var/www/html">|<Directory "/shared/html">|' \
     -e 's|<Directory "/var/www">|<Directory "/shared">|' /etc/httpd/conf/httpd.conf
 
+# Remove log files from last deployment
+rm -rf /shared/log/httpd
+   
+mkdir -p /shared/log/httpd
+
+# Make logs available in shared mount
+touch /shared/log/httpd/access_log
+ln -s /shared/log/httpd/access_log /var/log/httpd/access_log
+touch /shared/log/httpd/error_log
+ln -s /shared/log/httpd/error_log /var/log/httpd/error_log
+
 # Allow external access
 if ! iptables -C INPUT -p tcp --dport $HTTP_PORT -j ACCEPT 2>/dev/null ; then
     iptables -I INPUT -p tcp --dport $HTTP_PORT -j ACCEPT
