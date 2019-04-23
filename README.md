@@ -1,9 +1,9 @@
-MetalKube Ironic Container
+Metal3 Ironic Container
 ==========================
 
-This repo contains the files needed to build the Ironic images used by metalkube.
+This repo contains the files needed to build the Ironic images used by Metal3.
 
-When updated, builds are automatically triggered on https://quay.io/repository/metalkube/metalkube-ironic/
+When updated, builds are automatically triggered on https://quay.io/repository/metal3-io/ironic/
 
 This repo supports the creation of multiple containers needed when provisioning baremetal nodes with Ironic. Eventually there will be separate images for each container, but currently separate containers can share this same image with specific entry points.
 
@@ -22,7 +22,7 @@ All of the containers also store log files to <shared store>/log/.
 
 The following environment variables can be passed in to customize run-time functionality:
 - IP - provisioning interface IP address (default 172.22.0.1)
-- INTERFACE - interface to use for provisioning (default provisioning) 
+- INTERFACE - interface to use for provisioning (default provisioning)
 - EXCEPT_INTERFACE - interfaces to exclude when providing DHCP address (default "lo")
 - HTTP_PORT - port used by http server (default 80)
 - DHCP_RANGE - dhcp range to use for provisioning (default 172.22.0.10-172.22.0.100)
