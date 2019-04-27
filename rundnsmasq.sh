@@ -5,6 +5,8 @@ HTTP_PORT=${HTTP_PORT:-"80"}
 DHCP_RANGE=${DHCP_RANGE:-"172.22.0.10,172.22.0.100"}
 INTERFACE=${INTERFACE:-"provisioning"}
 EXCEPT_INTERFACE=${EXCEPT_INTERFACE:-"lo"}
+DNSERVERS=${DNSERVERS:-}
+DOMAIN=${DOMAIN:-}
 
 mkdir -p /shared/tftpboot
 mkdir -p /shared/log/dnsmasq
@@ -18,6 +20,15 @@ sed -i -e s/IRONIC_IP/$IP/g -e s/HTTP_PORT/$HTTP_PORT/g \
 for iface in $( echo $EXCEPT_INTERFACE | tr ',' ' '); do
     sed -i -e "/^interface=.*/ a\except-interface=$iface" /etc/dnsmasq.conf
 done
+
+# Offer dns server and domain, if present
+if [ ! -z "$DNSSERVERS" ] && [ ! -z "$DOMAIN" ]  ; then
+    sed -i "s/dhcp-option=6/#dhcp-option=6/" /etc/dnsmasq.conf
+    echo dhcp-option=option:domain-name,$DOMAIN >> /etc/dnsmasq.conf
+    for DNSSERVER in $(echo $DNSSERVERS | sed 's/,/ /') ; do 
+      echo dhcp-option=option:dns-server,$DNSSERVER >> /etc/dnsmasq.conf
+    done
+fi
 
 # Allow access to dhcp and tftp server for pxeboot
 for port in 67 69 ; do
