@@ -47,6 +47,7 @@ crudini --set /etc/ironic/ironic.conf pxe tftp_master_path /shared/tftpboot
 crudini --set /etc/ironic/ironic.conf pxe instance_master_path /shared/html/master_images
 crudini --set /etc/ironic/ironic.conf pxe images_path /shared/html/tmp
 crudini --set /etc/ironic/ironic.conf pxe pxe_config_template \$pybasedir/drivers/modules/ipxe_config.template
+crudini --set /etc/ironic/ironic.conf pxe uefi_pxe_config_template \$pybasedir/drivers/modules/ipxe_config.template
 crudini --set /etc/ironic/ironic.conf agent deploy_logs_collect always
 crudini --set /etc/ironic/ironic.conf agent deploy_logs_local_path /shared/log/ironic/deploy
 crudini --set /etc/ironic/ironic.conf api api_workers ${NUMWORKERS}
