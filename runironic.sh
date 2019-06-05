@@ -14,6 +14,11 @@ if ! iptables -C INPUT -i "$PROVISIONING_INTERFACE" -p tcp -m tcp --dport 6385 -
     iptables -I INPUT -i "$PROVISIONING_INTERFACE" -p tcp -m tcp --dport 6385 -j ACCEPT
 fi
 
+# Allow access to mDNS
+if ! iptables -i $INTERFACE -p udp --dport 5353 -j ACCEPT > /dev/null 2>&1; then
+    iptables -i $INTERFACE -p udp --dport 5353 -j ACCEPT
+fi
+
 cp /etc/ironic/ironic.conf /etc/ironic/ironic.conf_orig
 
 crudini --set /etc/ironic/ironic.conf DEFAULT auth_strategy noauth
@@ -31,6 +36,7 @@ crudini --set /etc/ironic/ironic.conf DEFAULT default_deploy_interface direct
 crudini --set /etc/ironic/ironic.conf DEFAULT enabled_inspect_interfaces inspector,idrac,fake
 crudini --set /etc/ironic/ironic.conf DEFAULT default_inspect_interface inspector
 crudini --set /etc/ironic/ironic.conf DEFAULT rpc_transport json-rpc
+crudini --set /etc/ironic/ironic.conf conductor enable_mdns True
 crudini --set /etc/ironic/ironic.conf conductor send_sensor_data true
 crudini --set /etc/ironic/ironic.conf oslo_messaging_notifications driver prometheus_exporter
 crudini --set /etc/ironic/ironic.conf oslo_messaging_notifications transport_url fake://
