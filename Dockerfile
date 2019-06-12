@@ -3,6 +3,7 @@ FROM docker.io/centos:centos7
 # TODO(iurygregory): remove epel-release and  other packages necessary for the ironic_prometheus_exporter when we have a package for it
 RUN yum install -y python-requests && \
     curl https://raw.githubusercontent.com/openstack/tripleo-repos/master/tripleo_repos/main.py | python - current-tripleo && \
+    yum update -y && \
     yum install -y epel-release python-pip python-devel gcc openstack-ironic-api openstack-ironic-conductor crudini \
         iproute iptables dnsmasq httpd qemu-img-ev iscsi-initiator-utils parted gdisk ipxe-bootimgs psmisc sysvinit-tools \
         mariadb-server python-PyMySQL python2-chardet && \
