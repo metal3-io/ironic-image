@@ -64,6 +64,7 @@ crudini --set /etc/ironic/ironic.conf pxe uefi_pxe_config_template \$pybasedir/d
 crudini --set /etc/ironic/ironic.conf agent deploy_logs_collect always
 crudini --set /etc/ironic/ironic.conf agent deploy_logs_local_path /shared/log/ironic/deploy
 crudini --set /etc/ironic/ironic.conf api api_workers "$NUMWORKERS"
+crudini --set /etc/ironic/ironic.conf api host_ip ${IRONIC_IP}
 
 ironic-dbsync --config-file /etc/ironic/ironic.conf upgrade
 
