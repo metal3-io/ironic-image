@@ -1,6 +1,5 @@
 #!/usr/bin/bash
 
-cd /ironic-prometheus-exporter
 export IRONIC_CONFIG=/etc/ironic/ironic.conf
 export FLASK_RUN_HOST=0.0.0.0
 export FLASK_RUN_PORT=5001
