@@ -26,3 +26,6 @@ The following environment variables can be passed in to customize run-time funct
 - HTTP_PORT - port used by http server (default 80)
 - DHCP_RANGE - dhcp range to use for provisioning (default 172.22.0.10-172.22.0.100)
 - MARIADB_PASSWORD - The database password
+- ENABLED_HARDWARE_TYPES - hardware types to enable in ironic
+- ENABLED_\<HWIF\>_INTERFACES - hardware interfaces to enable in ironic, with \<HWIF\> is the name of the hardware interface
+- DEFAULT_\<HWIF\>_INTERFACE - default value for a hardware interface, with \<HWIF\> is the name of the hardware interface
