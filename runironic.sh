@@ -8,6 +8,17 @@ MARIADB_PASSWORD=${MARIADB_PASSWORD:-"change_me"}
 NUMPROC=$(cat /proc/cpuinfo  | grep "^processor" | wc -l)
 NUMWORKERS=$(( NUMPROC < 12 ? NUMPROC : 12 ))
 
+# Configuration for hardware types and interfaces
+ENABLED_HARDWARE_TYPES=${ENABLED_HARDWARE_TYPES:-"ipmi,idrac,fake-hardware"}
+ENABLED_BOOT_INTERFACES=${ENABLED_BOOT_INTERFACES:-"pxe,ipxe,fake"}
+DEFAULT_BOOT_INTERFACE=${DEFAULT_BOOT_INTERFACE:-"ipxe"}
+ENABLED_DEPLOY_INTERFACES=${ENABLED_DEPLOY_INTERFACES:-"direct,fake"}
+DEFAULT_DEPLOY_INTERFACE=${DEFAULT_DEPLOY_INTERFACE:-"direct"}
+ENABLED_INSPECT_INTERFACES=${ENABLED_INSPECT_INTERFACES:-"inspector,idrac,fake"}
+DEFAULT_INSPECT_INTERFACE=${DEFAULT_INSPECT_INTERFACE:-"inspector"}
+ENABLED_MANAGEMENT_INTERFACES=${ENABLED_MANAGEMENT_INTERFACES:-"ipmitool,idrac,fake"}
+ENABLED_POWER_INTERFACES=${ENABLED_POWER_INTERFACES:-"ipmitool,idrac,fake"}
+ENABLED_VENDOR_INTERFACES=${ENABLED_VENDOR_INTERFACES:-"ipmitool,no-vendor,idrac,fake"}
 
 # Allow access to Ironic
 if ! iptables -C INPUT -i $INTERFACE -p tcp -m tcp --dport 6385 -j ACCEPT > /dev/null 2>&1; then
@@ -19,17 +30,17 @@ cp /etc/ironic/ironic.conf /etc/ironic/ironic.conf_orig
 crudini --set /etc/ironic/ironic.conf DEFAULT auth_strategy noauth
 crudini --set /etc/ironic/ironic.conf DEFAULT my_ip ${IP}
 crudini --set /etc/ironic/ironic.conf DEFAULT debug true 
+crudini --set /etc/ironic/ironic.conf DEFAULT enabled_hardware_types ${ENABLED_HARDWARE_TYPES}
+crudini --set /etc/ironic/ironic.conf DEFAULT enabled_boot_interfaces ${ENABLED_BOOT_INTERFACES}
+crudini --set /etc/ironic/ironic.conf DEFAULT default_boot_interface ${DEFAULT_BOOT_INTERFACE}
+crudini --set /etc/ironic/ironic.conf DEFAULT enabled_deploy_interfaces ${ENABLED_DEPLOY_INTERFACES}
+crudini --set /etc/ironic/ironic.conf DEFAULT default_deploy_interface ${DEFAULT_DEPLOY_INTERFACE}
+crudini --set /etc/ironic/ironic.conf DEFAULT enabled_inspect_interfaces ${ENABLED_INSPECT_INTERFACES}
+crudini --set /etc/ironic/ironic.conf DEFAULT default_inspect_interface ${DEFAULT_INSPECT_INTERFACE}
+crudini --set /etc/ironic/ironic.conf DEFAULT enabled_power_interfaces ${ENABLED_POWER_INTERFACES}
+crudini --set /etc/ironic/ironic.conf DEFAULT enabled_management_interfaces ${ENABLED_MANAGEMENT_INTERFACES}
 crudini --set /etc/ironic/ironic.conf DEFAULT default_network_interface noop
-crudini --set /etc/ironic/ironic.conf DEFAULT enabled_boot_interfaces pxe,ipxe,fake
-crudini --set /etc/ironic/ironic.conf DEFAULT enabled_power_interfaces ipmitool,idrac,fake
-crudini --set /etc/ironic/ironic.conf DEFAULT enabled_management_interfaces ipmitool,idrac,fake
-crudini --set /etc/ironic/ironic.conf DEFAULT enabled_hardware_types ipmi,idrac,fake-hardware
-crudini --set /etc/ironic/ironic.conf DEFAULT enabled_vendor_interfaces ipmitool,no-vendor,idrac,fake
-crudini --set /etc/ironic/ironic.conf DEFAULT enabled_deploy_interfaces direct,fake
-crudini --set /etc/ironic/ironic.conf DEFAULT default_boot_interface ipxe
-crudini --set /etc/ironic/ironic.conf DEFAULT default_deploy_interface direct
-crudini --set /etc/ironic/ironic.conf DEFAULT enabled_inspect_interfaces inspector,idrac,fake
-crudini --set /etc/ironic/ironic.conf DEFAULT default_inspect_interface inspector
+crudini --set /etc/ironic/ironic.conf DEFAULT enabled_vendor_interfaces ${ENABLED_VENDOR_INTERFACES}
 crudini --set /etc/ironic/ironic.conf DEFAULT rpc_transport json-rpc
 crudini --set /etc/ironic/ironic.conf conductor send_sensor_data true
 crudini --set /etc/ironic/ironic.conf oslo_messaging_notifications driver prometheus_exporter

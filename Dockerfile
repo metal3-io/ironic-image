@@ -10,6 +10,9 @@ RUN yum install -y python-requests && \
 RUN mkdir /tftpboot && \
     cp /usr/share/ipxe/undionly.kpxe /usr/share/ipxe/ipxe.efi /tftpboot/
 
+# Required by vendor driver Fujitsu iRMC
+RUN pip install python-scciclient
+
 COPY ./installexporter.sh /bin/installexporter
 RUN /bin/installexporter
 COPY ./runironic.sh /bin/runironic
