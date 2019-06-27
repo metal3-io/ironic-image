@@ -15,12 +15,18 @@ RUN mkdir /tftpboot && \
 
 COPY ./installexporter.sh /bin/installexporter
 RUN /bin/installexporter
-COPY ./runironic.sh /bin/runironic
+COPY ./runironic-api.sh /bin/runironic-api
+COPY ./runironic-conductor.sh /bin/runironic-conductor
+COPY ./runironic-exporter.sh /bin/runironic-exporter
 COPY ./rundnsmasq.sh /bin/rundnsmasq
 COPY ./runhttpd.sh /bin/runhttpd
 COPY ./runmariadb.sh /bin/runmariadb
-COPY ./runhealthcheck.sh /bin/runhealthcheck
+COPY ./configure-ironic.sh /bin/configure-ironic.sh
+
+# TODO(dtantsur): remove this if/when we stop supporting all-in-one container
 COPY ./runexporterapp.sh /bin/runexporterapp
+COPY ./runhealthcheck.sh /bin/runhealthcheck
+COPY ./runironic.sh /bin/runironic
 
 COPY ./dnsmasq.conf /etc/dnsmasq.conf
 COPY ./inspector.ipxe /tmp/inspector.ipxe
