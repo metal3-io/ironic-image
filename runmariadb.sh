@@ -19,7 +19,7 @@ if [ ! -d "${DATADIR}/mysql" ]; then
     chown -R mysql /shared/log/mariadb
 
     sed -i 's/var\/log\/mariadb\/mariadb\.log/shared\/log\/mariadb\/mariadb\.log/g' \
-          /etc/my.cnf.d/mariadb-server.cnf 
+          /etc/my.cnf.d/mariadb-server.cnf
 
     chown -R mysql "$DATADIR"
 
