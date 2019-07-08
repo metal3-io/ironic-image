@@ -15,12 +15,20 @@ RUN mkdir /tftpboot && \
 
 COPY ./installexporter.sh /bin/installexporter
 RUN /bin/installexporter
-COPY ./runironic.sh /bin/runironic
+COPY ./runironic-api.sh /bin/runironic-api
+COPY ./runironic-conductor.sh /bin/runironic-conductor
+COPY ./runironic-exporter.sh /bin/runironic-exporter
 COPY ./rundnsmasq.sh /bin/rundnsmasq
 COPY ./runhttpd.sh /bin/runhttpd
 COPY ./runmariadb.sh /bin/runmariadb
-COPY ./runhealthcheck.sh /bin/runhealthcheck
+COPY ./configure-ironic.sh /bin/configure-ironic.sh
+
+# TODO(dtantsur): remove these 3 scripts and squash runexporterapp into
+# runironic-exporter if we decide to stop supporting running all 3 processes
+# via one entry point.
 COPY ./runexporterapp.sh /bin/runexporterapp
+COPY ./runhealthcheck.sh /bin/runhealthcheck
+COPY ./runironic.sh /bin/runironic
 
 COPY ./dnsmasq.conf /etc/dnsmasq.conf
 COPY ./inspector.ipxe /tmp/inspector.ipxe
