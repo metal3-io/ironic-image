@@ -13,6 +13,7 @@ cp /etc/ironic/ironic.conf /etc/ironic/ironic.conf_orig
 crudini --set /etc/ironic/ironic.conf DEFAULT auth_strategy noauth
 crudini --set /etc/ironic/ironic.conf DEFAULT my_ip "$IRONIC_IP"
 crudini --set /etc/ironic/ironic.conf DEFAULT debug true
+crudini --set /etc/ironic/ironic.conf DEFAULT use_stderr true
 crudini --set /etc/ironic/ironic.conf DEFAULT default_network_interface noop
 crudini --set /etc/ironic/ironic.conf DEFAULT enabled_boot_interfaces pxe,ipxe,fake
 crudini --set /etc/ironic/ironic.conf DEFAULT enabled_power_interfaces ipmitool,idrac,fake
