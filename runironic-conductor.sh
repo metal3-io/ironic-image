@@ -15,4 +15,5 @@ mkdir -p /shared/log/ironic/deploy
 
 ironic-dbsync --config-file /etc/ironic/ironic.conf upgrade
 
-exec /usr/bin/ironic-conductor --config-file /etc/ironic/ironic.conf
+exec /usr/bin/ironic-conductor --config-file /etc/ironic/ironic.conf \
+    --log-file /shared/log/ironic/ironic-conductor.log

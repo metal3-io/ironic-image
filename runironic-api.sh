@@ -9,4 +9,5 @@ fi
 
 ironic-dbsync --config-file /etc/ironic/ironic.conf upgrade
 
-exec /usr/bin/ironic-api --config-file /etc/ironic/ironic.conf
+exec /usr/bin/ironic-api --config-file /etc/ironic/ironic.conf \
+    --log-file /shared/log/ironic/ironic-api.log
