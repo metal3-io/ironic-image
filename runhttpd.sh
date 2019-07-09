@@ -31,8 +31,8 @@ touch /shared/log/httpd/error_log
 ln -s /shared/log/httpd/error_log /var/log/httpd/error_log
 
 # Allow external access
-if ! iptables -C INPUT -i "$PROVISIONING_INTERFACE" -p tcp --dport "$HTTP_PORT" -j ACCEPT 2>/dev/null ; then
-    iptables -I INPUT -i "$PROVISIONING_INTERFACE" -p tcp --dport "$HTTP_PORT" -j ACCEPT
+if ! iptables -C INPUT -p tcp --dport "$HTTP_PORT" -j ACCEPT 2>/dev/null ; then
+    iptables -I INPUT -p tcp --dport "$HTTP_PORT" -j ACCEPT
 fi
 
 /usr/sbin/httpd &
