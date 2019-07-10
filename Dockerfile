@@ -12,6 +12,10 @@ RUN yum install -y python-requests && \
 RUN mkdir /tftpboot && \
     cp /usr/share/ipxe/undionly.kpxe /usr/share/ipxe/ipxe.efi /tftpboot/
 
+COPY ./ironic.conf /tmp/ironic.conf
+RUN crudini --merge /etc/ironic/ironic.conf < /tmp/ironic.conf && \
+    rm /tmp/ironic.conf
+
 COPY ./runironic-api.sh /bin/runironic-api
 COPY ./runironic-conductor.sh /bin/runironic-conductor
 COPY ./runironic-exporter.sh /bin/runironic-exporter
