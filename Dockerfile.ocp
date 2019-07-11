@@ -1,4 +1,4 @@
-FROM docker.io/centos:centos7
+FROM rhel7:latest
 
 RUN yum install -y python-requests && \
     curl https://raw.githubusercontent.com/openstack/tripleo-repos/master/tripleo_repos/main.py | python - current-tripleo && \
