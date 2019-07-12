@@ -28,6 +28,9 @@ http_url = http://${IRONIC_IP}:${HTTP_PORT}
 
 [inspector]
 endpoint_override = http://${IRONIC_IP}:5050
+
+[mdns]
+interfaces = $IRONIC_IP
 EOF
 
 mkdir -p /shared/html
