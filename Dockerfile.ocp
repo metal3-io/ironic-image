@@ -1,13 +1,11 @@
-FROM rhel7:latest
+FROM ubi8
 
-RUN yum install -y python-requests && \
-    curl https://raw.githubusercontent.com/openstack/tripleo-repos/master/tripleo_repos/main.py | python - current-tripleo && \
-    yum update -y && \
-    yum install -y uwsgi uwsgi-plugin-python openstack-ironic-api openstack-ironic-conductor crudini \
-        iproute iptables dnsmasq httpd qemu-img-ev iscsi-initiator-utils parted gdisk ipxe-bootimgs psmisc sysvinit-tools \
-        mariadb-server python-PyMySQL python2-chardet && \
-    yum install -y python-ironic-prometheus-exporter && \
-    yum clean all
+RUN yum update -y && \
+    yum install -y python3-gunicorn openstack-ironic-api openstack-ironic-conductor crudini \
+        iproute iptables dnsmasq httpd qemu-img iscsi-initiator-utils parted gdisk ipxe-bootimgs psmisc \
+        mariadb-server python3-PyMySQL python2-chardet && \
+     yum install -y python-ironic-prometheus-exporter && \
+     yum clean all
 
 RUN mkdir /tftpboot && \
     cp /usr/share/ipxe/undionly.kpxe /usr/share/ipxe/ipxe.efi /tftpboot/
