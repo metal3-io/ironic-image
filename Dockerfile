@@ -3,7 +3,7 @@ FROM docker.io/centos:centos7
 RUN yum install -y python-requests && \
     curl https://raw.githubusercontent.com/openstack/tripleo-repos/master/tripleo_repos/main.py | python - current-tripleo && \
     yum update -y && \
-    yum install -y uwsgi uwsgi-plugin-python openstack-ironic-api openstack-ironic-conductor crudini \
+    yum install -y python-gunicorn openstack-ironic-api openstack-ironic-conductor crudini \
         iproute iptables dnsmasq httpd qemu-img-ev iscsi-initiator-utils parted gdisk ipxe-bootimgs psmisc sysvinit-tools \
         mariadb-server python-PyMySQL python2-chardet && \
     yum install -y python-ironic-prometheus-exporter && \
