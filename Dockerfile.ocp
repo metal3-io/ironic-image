@@ -4,7 +4,7 @@ RUN yum update -y && \
     yum install -y python3-gunicorn openstack-ironic-api openstack-ironic-conductor crudini \
         iproute iptables dnsmasq httpd qemu-img iscsi-initiator-utils parted gdisk ipxe-bootimgs psmisc \
         mariadb-server python3-PyMySQL python2-chardet && \
-     yum install -y python-ironic-prometheus-exporter && \
+     yum install -y python3-ironic-prometheus-exporter && \
      yum clean all
 
 RUN mkdir /tftpboot && \
