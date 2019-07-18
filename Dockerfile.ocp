@@ -2,13 +2,18 @@ FROM ubi8
 
 RUN yum update -y && \
     yum install -y python3-gunicorn openstack-ironic-api openstack-ironic-conductor crudini \
-        iproute iptables dnsmasq httpd qemu-img iscsi-initiator-utils parted gdisk ipxe-bootimgs psmisc \
-        mariadb-server python3-PyMySQL python2-chardet && \
-     yum install -y python3-ironic-prometheus-exporter && \
-     yum clean all
+        iproute iptables dnsmasq httpd qemu-img parted gdisk ipxe-bootimgs psmisc procps-ng \
+        mariadb-server python3-PyMySQL python2-chardet ipxe-roms-qemu && \
+    yum install -y python3-ironic-prometheus-exporter && \
+    yum clean all
 
 RUN mkdir /tftpboot && \
-    cp /usr/share/ipxe/undionly.kpxe /usr/share/ipxe/ipxe.efi /tftpboot/
+    cp /usr/share/ipxe/undionly.kpxe /tftpboot/ && \
+    cp /usr/share/ipxe/ipxe-x86_64.efi /tftpboot/ipxe.efi
+
+COPY ./ironic.conf /tmp/ironic.conf
+RUN crudini --merge /etc/ironic/ironic.conf < /tmp/ironic.conf && \
+    rm /tmp/ironic.conf
 
 COPY ./runironic-api.sh /bin/runironic-api
 COPY ./runironic-conductor.sh /bin/runironic-conductor
