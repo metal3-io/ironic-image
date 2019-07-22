@@ -26,7 +26,6 @@ mkdir -p /shared/log/ironic
 /usr/bin/ironic-api --log-file  /shared/log/ironic/ironic-api.log &
 
 /bin/runhealthcheck "ironic" &>/dev/null &
-/bin/runexporterapp &
 
 sleep infinity
 
