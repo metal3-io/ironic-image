@@ -1,5 +1,7 @@
 #!/usr/bin/bash
 
+set -e
+
 PROVISIONING_INTERFACE=${PROVISIONING_INTERFACE:-"provisioning"}
 HTTP_PORT=${HTTP_PORT:-"80"}
 HTTP_IP=$(ip -4 address show dev "$PROVISIONING_INTERFACE" | grep -oP '(?<=inet\s)\d+(\.\d+){3}' | head -n 1)
