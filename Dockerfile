@@ -1,13 +1,44 @@
-FROM docker.io/centos:centos7
-
+FROM docker.io/centos:centos7 as builder
+WORKDIR /root
 RUN yum install -y python-requests && \
     curl https://raw.githubusercontent.com/openstack/tripleo-repos/master/tripleo_repos/main.py | python - -b stein current-tripleo && \
     yum update -y && \
-    yum install -y openstack-ironic-api openstack-ironic-conductor crudini \
-        iproute iptables dnsmasq httpd qemu-img-ev iscsi-initiator-utils parted gdisk ipxe-bootimgs psmisc sysvinit-tools \
-        mariadb-server python-PyMySQL python2-chardet && \
-    yum clean all
+    yum install -y openstack-ironic-api openstack-ironic-conductor \
+        python-PyMySQL python2-chardet
 
+RUN yum install -y python-pip git
+
+COPY clone_repos.sh /bin/clone_repos.sh
+
+RUN chmod +x /bin/clone_repos.sh && /bin/clone_repos.sh
+
+COPY build_binaries.sh /bin/build_binaries.sh
+
+RUN chmod +x /bin/build_binaries.sh && /bin/build_binaries.sh
+
+RUN yum clean all
+
+
+FROM docker.io/centos:centos7
+
+# Install some deps, including crudini
+RUN yum install -y python-requests && \
+    curl https://raw.githubusercontent.com/openstack/tripleo-repos/master/tripleo_repos/main.py | python - -b stein current-tripleo && \
+    yum update -y && \
+    yum install -y crudini iproute iptables dnsmasq httpd qemu-img-ev iscsi-initiator-utils \
+    parted gdisk ipxe-bootimgs psmisc sysvinit-tools mariadb-server ipmitool
+
+run yum clean all
+
+# Copy the binaries!
+COPY --from=builder /root/build/ironic-api /usr/bin/ironic-api
+COPY --from=builder /root/build/ironic-conductor /usr/bin/ironic-conductor
+COPY --from=builder /root/build/ironic-dbsync /usr/bin/ironic-dbsync
+# copy stock config
+RUN mkdir /etc/ironic
+COPY --from=builder /etc/ironic/ironic.conf /etc/ironic/ironic.conf
+
+# Set the stage in the final container!
 RUN mkdir /tftpboot && \
     cp /usr/share/ipxe/undionly.kpxe /usr/share/ipxe/ipxe.efi /tftpboot/
 
