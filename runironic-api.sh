@@ -1,5 +1,7 @@
 #!/usr/bin/bash
 
+set -e
+
 . /bin/configure-ironic.sh
 
 # Allow access to Ironic
