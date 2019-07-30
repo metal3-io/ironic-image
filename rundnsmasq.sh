@@ -1,7 +1,5 @@
 #!/usr/bin/bash
 
-set -e
-
 PROVISIONING_INTERFACE=${PROVISIONING_INTERFACE:-"provisioning"}
 
 HTTP_PORT=${HTTP_PORT:-"80"}
