@@ -8,7 +8,7 @@ RUN yum update -y && \
 
 RUN mkdir /tftpboot && \
     cp /usr/share/ipxe/undionly.kpxe /tftpboot/ && \
-    cp /usr/share/ipxe/ipxe-x86_64.efi /tftpboot/ipxe.efi
+    cp /usr/share/ipxe/ipxe.efi /tftpboot/ipxe.efi
 
 COPY ./ironic.conf /tmp/ironic.conf
 RUN crudini --merge /etc/ironic/ironic.conf < /tmp/ironic.conf && \
