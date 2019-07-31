@@ -6,9 +6,8 @@ RUN yum update -y && \
         mariadb-server python3-PyMySQL python2-chardet ipxe-roms-qemu && \
     yum clean all
 
-RUN mkdir /tftpboot && \
-    cp /usr/share/ipxe/undionly.kpxe /tftpboot/ && \
-    cp /usr/share/ipxe/ipxe-x86_64.efi /tftpboot/ipxe.efi
+copy ./prepare-ipxe.sh /tmp
+RUN chmod +x /tmp/prepare-ipxe.sh && /tmp/prepare-ipxe.sh && rm /tmp/prepare-ipxe.sh
 
 COPY ./ironic.conf /tmp/ironic.conf
 RUN crudini --merge /etc/ironic/ironic.conf < /tmp/ironic.conf && \
