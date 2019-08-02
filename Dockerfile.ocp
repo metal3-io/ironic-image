@@ -9,6 +9,7 @@ RUN yum update -y && \
 copy ./prepare-ipxe.sh /tmp
 RUN chmod +x /tmp/prepare-ipxe.sh && /tmp/prepare-ipxe.sh && rm /tmp/prepare-ipxe.sh
 
+
 COPY ./ironic.conf /tmp/ironic.conf
 RUN crudini --merge /etc/ironic/ironic.conf < /tmp/ironic.conf && \
     rm /tmp/ironic.conf
@@ -30,3 +31,4 @@ COPY ./inspector.ipxe /tmp/inspector.ipxe
 COPY ./dualboot.ipxe /tmp/dualboot.ipxe
 
 ENTRYPOINT ["/bin/runironic"]
+
