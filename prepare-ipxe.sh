@@ -8,5 +8,5 @@ elif [ -f "/usr/share/ipxe/ipxe-x86_64.efi" ]; then
 else
     echo "Fatal Error - Failed to find ipxe binary"
     exit 1
-fi /usr/share/ipxe/ipxe.efi /tftpboot/
+fi
 
