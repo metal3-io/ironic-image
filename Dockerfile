@@ -1,15 +1,15 @@
-FROM docker.io/centos:centos7 as builder
+FROM docker.io/centos:centos7
 WORKDIR /root
-#RUN yum install -y python-requests && \
-#    curl https://raw.githubusercontent.com/openstack/tripleo-repos/master/tripleo_repos/main.py | python - -b stein current-tripleo && \
-#    yum update
+RUN yum install -y python-requests && \
+    curl https://raw.githubusercontent.com/openstack/tripleo-repos/master/tripleo_repos/main.py | python - -b stein current-tripleo && \
+    yum update
 #    #yum install -y openstack-ironic-api openstack-ironic-conductor \
 #        python-PyMySQL python2-chardet
 
-RUN yum install -y epel-release && \
-    yum update
+#RUN yum install -y epel-release && \
+#    yum update
 
-#RUN yum install -y python-pip git
+RUN yum install -y git
 
 COPY clone_repos.sh /bin/clone_repos.sh
 
@@ -34,12 +34,15 @@ RUN yum install -y python-requests && \
 run yum clean all
 
 # Copy the binaries!
-COPY --from=builder /root/build/ironic-api /usr/bin/ironic-api
-COPY --from=builder /root/build/ironic-conductor /usr/bin/ironic-conductor
-COPY --from=builder /root/build/ironic-dbsync /usr/bin/ironic-dbsync
+#COPY --from=builder /root/build/ironic-api /usr/bin/ironic-api
+#COPY --from=builder /root/build/ironic-conductor /usr/bin/ironic-conductor
+#COPY --from=builder /root/build/ironic-dbsync /usr/bin/ironic-dbsync
 # copy stock config
 RUN mkdir /etc/ironic
-COPY --from=builder /etc/ironic/ironic.conf /etc/ironic/ironic.conf
+
+
+# need a starting point...
+#COPY ironic/exam/ironic.conf /etc/ironic/ironic.conf
 
 # Set the stage in the final container!
 RUN mkdir /tftpboot && \
