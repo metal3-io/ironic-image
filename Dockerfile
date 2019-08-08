@@ -1,25 +1,28 @@
 FROM docker.io/centos:centos7 as builder
 WORKDIR /root
-RUN yum install -y python-requests && \
-    curl https://raw.githubusercontent.com/openstack/tripleo-repos/master/tripleo_repos/main.py | python - -b stein current-tripleo && \
-    yum update -y && \
-    yum install -y openstack-ironic-api openstack-ironic-conductor \
-        python-PyMySQL python2-chardet
+#RUN yum install -y python-requests && \
+#    curl https://raw.githubusercontent.com/openstack/tripleo-repos/master/tripleo_repos/main.py | python - -b stein current-tripleo && \
+#    yum update
+#    #yum install -y openstack-ironic-api openstack-ironic-conductor \
+#        python-PyMySQL python2-chardet
 
-RUN yum install -y python-pip git
+RUN yum install -y epel-release && \
+    yum update
+
+#RUN yum install -y python-pip git
 
 COPY clone_repos.sh /bin/clone_repos.sh
 
 RUN chmod +x /bin/clone_repos.sh && /bin/clone_repos.sh
 
-COPY build_binaries.sh /bin/build_binaries.sh
+# COPY build_binaries.sh /bin/build_binaries.sh
 
-RUN chmod +x /bin/build_binaries.sh && /bin/build_binaries.sh
+# RUN chmod +x /bin/build_binaries.sh && /bin/build_binaries.sh
 
-RUN yum clean all
+# RUN yum clean all
 
 
-FROM docker.io/centos:centos7
+# FROM docker.io/centos:centos7
 
 # Install some deps, including crudini
 RUN yum install -y python-requests && \
