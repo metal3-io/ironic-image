@@ -38,7 +38,8 @@ run yum clean all
 #COPY --from=builder /root/build/ironic-conductor /usr/bin/ironic-conductor
 #COPY --from=builder /root/build/ironic-dbsync /usr/bin/ironic-dbsync
 # copy stock config
-RUN mkdir /etc/ironic
+# already present
+# RUN mkdir /etc/ironic
 
 
 # need a starting point...
