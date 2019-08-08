@@ -43,7 +43,7 @@ run yum clean all
 # already present
 # RUN mkdir /etc/ironic
 
-
+RUN touch /etc/ironic/ironic.conf
 # need a starting point...
 #COPY ironic/exam/ironic.conf /etc/ironic/ironic.conf
 
