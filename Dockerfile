@@ -4,7 +4,7 @@ RUN yum install -y python-requests
 
 RUN curl https://raw.githubusercontent.com/openstack/tripleo-repos/master/tripleo_repos/main.py | python - -b stein current-tripleo
 
-RUN yum update
+RUN yum update -y
 #    #yum install -y openstack-ironic-api openstack-ironic-conductor \
 #        python-PyMySQL python2-chardet
 
