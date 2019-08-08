@@ -41,7 +41,7 @@ run yum clean all
 #COPY --from=builder /root/build/ironic-dbsync /usr/bin/ironic-dbsync
 # copy stock config
 # already present
-# RUN mkdir /etc/ironic
+RUN mkdir -p /etc/ironic
 
 RUN touch /etc/ironic/ironic.conf
 # need a starting point...
