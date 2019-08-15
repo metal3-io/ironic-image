@@ -52,5 +52,5 @@ update_dep_from_pypi tooz 1.66.1
 update_dep_from_pypi WebOb 1.8.5
 update_dep_from_pypi WSME 0.9.3
 
-update_dep_from_git ironic https://opendev.org/openstack/ironic master
+update_dep_from_git ironic https://opendev.org/openstack/ironic 33acfa2d1b6b73e45b457e2664b8d808427bcb49
 update_dep_from_git ironic-inspector https://opendev.org/openstack/ironic-inspector master
