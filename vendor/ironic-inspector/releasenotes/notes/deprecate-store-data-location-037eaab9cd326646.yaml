@@ -1,0 +1,6 @@
+---
+deprecations:
+  - |
+    Deprecates the configuration option ``[processing]store_data_location``.
+    The introspection data can be retrieved from the ironic-inspector API,
+    there is no need to keep an extra link in ironic.

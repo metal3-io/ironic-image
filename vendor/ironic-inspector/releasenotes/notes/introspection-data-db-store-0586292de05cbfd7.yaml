@@ -1,0 +1,6 @@
+---
+features:
+  - |
+    Adds the support to store introspection data in ironic-inspector database.
+    Set the option ``[processing]store_data`` to ``database`` to use this
+    feature.

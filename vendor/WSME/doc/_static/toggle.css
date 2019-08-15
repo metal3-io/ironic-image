@@ -1,0 +1,10 @@
+dl.toggle dt {
+    background-color: #eeffcc;
+    border: 1px solid #ac9;
+    display: inline;
+}
+
+dl.toggle dd {
+    display: none;
+}
+

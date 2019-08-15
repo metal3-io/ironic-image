@@ -1,0 +1,8 @@
+[oslo.config.opts]
+oslo.db = oslo_db.options:list_opts
+oslo.db.concurrency = oslo_db.concurrency:list_opts
+
+[oslo.db.migration]
+alembic = oslo_db.sqlalchemy.migration_cli.ext_alembic:AlembicExtension
+migrate = oslo_db.sqlalchemy.migration_cli.ext_migrate:MigrateExtension
+

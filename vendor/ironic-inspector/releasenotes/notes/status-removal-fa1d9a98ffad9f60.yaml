@@ -1,0 +1,11 @@
+---
+upgrade:
+  - |
+    Old status records are no longer removed by default. They are still
+    removed if a node is removed from Ironic.
+deprecations:
+  - |
+    The ``node_status_keep_time`` configuration option is deprecated.
+    Now that we can remove status information about nodes removed from
+    **ironic**, this option does not make much sense,
+    and `may be confusing <https://bugs.launchpad.net/ironic-inspector/+bug/1695858>`_

@@ -1,0 +1,9 @@
+[console_scripts]
+osprofiler = osprofiler.cmd.shell:main
+
+[oslo.config.opts]
+osprofiler = osprofiler.opts:list_opts
+
+[paste.filter_factory]
+osprofiler = osprofiler.web:WsgiMiddleware.factory
+

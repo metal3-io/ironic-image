@@ -1,0 +1,17 @@
+---
+prelude: >
+    Allow adding client and application name and version to the session and
+    adapter that will generate a userful user agent string.
+features:
+  - You can specify a ``app_name`` and ``app_version`` when creating a
+    session. This information will be encoded into the user agent.
+  - You can specify a ``client_name`` and ``client_version`` when creating an
+    adapter. This will be handled by client libraries and incluced into the user
+    agent.
+  - Libraries like shade that modify the way requests are made can add
+    themselves to additional_user_agent and have their version reflected in the
+    user agent string.
+deprecations:
+  - We suggest you fill the name and version for the application and client
+    instead of specifying a custom ``user_agent``. This will then generate a
+    standard user agent string.

@@ -1,0 +1,4 @@
+---
+fixes:
+  - Fixed confusing error message shown to user when something bad happens
+    during preprocessing (https://launchpad.net/bugs/1523907).

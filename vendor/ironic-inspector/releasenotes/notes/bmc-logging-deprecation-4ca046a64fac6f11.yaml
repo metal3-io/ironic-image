@@ -1,0 +1,4 @@
+---
+deprecations:
+  - |
+    The configuration option "log_bmc_address" is deprecated.

@@ -1,0 +1,5 @@
+---
+features:
+  - |
+    Adds support to use ``latest`` as the microversion value in the request
+    to the ironic-inspector API.

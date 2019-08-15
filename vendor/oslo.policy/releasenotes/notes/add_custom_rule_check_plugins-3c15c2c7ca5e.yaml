@@ -1,0 +1,6 @@
+---
+features:
+  - |
+    Add support for custom rule check plugins. ``http`` and ``https``
+    external rule checks have been converted into stevedore plugins and
+    serve as examples.

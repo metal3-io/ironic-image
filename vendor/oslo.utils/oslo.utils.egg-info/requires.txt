@@ -1,0 +1,15 @@
+pbr!=2.1.0,>=2.0.0
+six>=1.10.0
+iso8601>=0.1.11
+oslo.i18n>=3.15.3
+pytz>=2013.6
+netaddr>=0.7.18
+netifaces>=0.10.4
+debtcollector>=1.2.0
+pyparsing>=2.1.0
+
+[:(python_version<'3.3')]
+monotonic>=0.6
+
+[:(python_version=='2.7' or python_version=='2.6')]
+funcsigs>=1.0.0

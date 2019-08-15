@@ -1,0 +1,378 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Commands &#8212; Alembic 1.0.11 documentation</title>
+    <link rel="stylesheet" href="../_static/nature_override.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/changelog.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx_paramlinks.css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Operation Directives" href="operations.html" />
+    <link rel="prev" title="Configuration" href="config.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="operations.html" title="Operation Directives"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="config.html" title="Configuration"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Alembic 1.0.11 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">API Details</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="commands">
+<span id="alembic-command-toplevel"></span><h1>Commands<a class="headerlink" href="#commands" title="Permalink to this headline">¶</a></h1>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>this section discusses the <strong>internal API of Alembic</strong>
+as regards its command invocation system.
+This section is only useful for developers who wish to extend the
+capabilities of Alembic.  For documentation on using Alembic commands,
+please see <a class="reference internal" href="../tutorial.html"><span class="doc">Tutorial</span></a>.</p>
+</div>
+<p>Alembic commands are all represented by functions in the <a class="reference internal" href="#alembic-command-toplevel"><span class="std std-ref">Commands</span></a>
+package.  They all accept the same style of usage, being sent
+the <a class="reference internal" href="config.html#alembic.config.Config" title="alembic.config.Config"><code class="xref py py-class docutils literal notranslate"><span class="pre">Config</span></code></a> object as the first argument.</p>
+<p>Commands can be run programmatically, by first constructing a <a class="reference internal" href="config.html#alembic.config.Config" title="alembic.config.Config"><code class="xref py py-class docutils literal notranslate"><span class="pre">Config</span></code></a>
+object, as in:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">alembic.config</span> <span class="k">import</span> <span class="n">Config</span>
+<span class="kn">from</span> <span class="nn">alembic</span> <span class="k">import</span> <span class="n">command</span>
+<span class="n">alembic_cfg</span> <span class="o">=</span> <span class="n">Config</span><span class="p">(</span><span class="s2">&quot;/path/to/yourapp/alembic.ini&quot;</span><span class="p">)</span>
+<span class="n">command</span><span class="o">.</span><span class="n">upgrade</span><span class="p">(</span><span class="n">alembic_cfg</span><span class="p">,</span> <span class="s2">&quot;head&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>In many cases, and perhaps more often than not, an application will wish
+to call upon a series of Alembic commands and/or other features.  It is
+usually a good idea to link multiple commands along a single connection
+and transaction, if feasible.  This can be achieved using the
+<a class="reference internal" href="config.html#alembic.config.Config.attributes" title="alembic.config.Config.attributes"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Config.attributes</span></code></a> dictionary in order to share a connection:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">engine</span><span class="o">.</span><span class="n">begin</span><span class="p">()</span> <span class="k">as</span> <span class="n">connection</span><span class="p">:</span>
+    <span class="n">alembic_cfg</span><span class="o">.</span><span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;connection&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">connection</span>
+    <span class="n">command</span><span class="o">.</span><span class="n">upgrade</span><span class="p">(</span><span class="n">alembic_cfg</span><span class="p">,</span> <span class="s2">&quot;head&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This recipe requires that <code class="docutils literal notranslate"><span class="pre">env.py</span></code> consumes this connection argument;
+see the example in <a class="reference internal" href="../cookbook.html#connection-sharing"><span class="std std-ref">Sharing a Connection with a Series of Migration Commands and Environments</span></a> for details.</p>
+<p>To write small API functions that make direct use of database and script directory
+information, rather than just running one of the built-in commands,
+use the <a class="reference internal" href="script.html#alembic.script.ScriptDirectory" title="alembic.script.ScriptDirectory"><code class="xref py py-class docutils literal notranslate"><span class="pre">ScriptDirectory</span></code></a> and <a class="reference internal" href="runtime.html#alembic.runtime.migration.MigrationContext" title="alembic.runtime.migration.MigrationContext"><code class="xref py py-class docutils literal notranslate"><span class="pre">MigrationContext</span></code></a>
+classes directly.</p>
+<span class="target" id="module-alembic.command"></span><dl class="function">
+<dt id="alembic.command.branches">
+<code class="sig-prename descclassname">alembic.command.</code><code class="sig-name descname">branches</code><span class="sig-paren">(</span><em class="sig-param">config</em>, <em class="sig-param">verbose=False</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.command.branches" title="Permalink to this definition">¶</a></dt>
+<dd><p>Show current branch points.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span class="target" id="alembic.command.branches.params.config"></span><strong>config</strong><a class="paramlink headerlink reference internal" href="#alembic.command.branches.params.config">¶</a> – a <a class="reference internal" href="config.html#alembic.config.Config" title="alembic.config.Config"><code class="xref py py-class docutils literal notranslate"><span class="pre">Config</span></code></a> instance.</p></li>
+<li><p><span class="target" id="alembic.command.branches.params.verbose"></span><strong>verbose</strong><a class="paramlink headerlink reference internal" href="#alembic.command.branches.params.verbose">¶</a> – output in verbose mode.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="alembic.command.current">
+<code class="sig-prename descclassname">alembic.command.</code><code class="sig-name descname">current</code><span class="sig-paren">(</span><em class="sig-param">config</em>, <em class="sig-param">verbose=False</em>, <em class="sig-param">head_only=False</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.command.current" title="Permalink to this definition">¶</a></dt>
+<dd><p>Display the current revision for a database.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span class="target" id="alembic.command.current.params.config"></span><strong>config</strong><a class="paramlink headerlink reference internal" href="#alembic.command.current.params.config">¶</a> – a <a class="reference internal" href="config.html#alembic.config.Config" title="alembic.config.Config"><code class="xref py py-class docutils literal notranslate"><span class="pre">Config</span></code></a> instance.</p></li>
+<li><p><span class="target" id="alembic.command.current.params.verbose"></span><strong>verbose</strong><a class="paramlink headerlink reference internal" href="#alembic.command.current.params.verbose">¶</a> – output in verbose mode.</p></li>
+<li><p><span class="target" id="alembic.command.current.params.head_only"></span><strong>head_only</strong><a class="paramlink headerlink reference internal" href="#alembic.command.current.params.head_only">¶</a> – deprecated; use <code class="docutils literal notranslate"><span class="pre">verbose</span></code> for additional output.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="alembic.command.downgrade">
+<code class="sig-prename descclassname">alembic.command.</code><code class="sig-name descname">downgrade</code><span class="sig-paren">(</span><em class="sig-param">config</em>, <em class="sig-param">revision</em>, <em class="sig-param">sql=False</em>, <em class="sig-param">tag=None</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.command.downgrade" title="Permalink to this definition">¶</a></dt>
+<dd><p>Revert to a previous version.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span class="target" id="alembic.command.downgrade.params.config"></span><strong>config</strong><a class="paramlink headerlink reference internal" href="#alembic.command.downgrade.params.config">¶</a> – a <a class="reference internal" href="config.html#alembic.config.Config" title="alembic.config.Config"><code class="xref py py-class docutils literal notranslate"><span class="pre">Config</span></code></a> instance.</p></li>
+<li><p><span class="target" id="alembic.command.downgrade.params.revision"></span><strong>revision</strong><a class="paramlink headerlink reference internal" href="#alembic.command.downgrade.params.revision">¶</a> – string revision target or range for –sql mode</p></li>
+<li><p><span class="target" id="alembic.command.downgrade.params.sql"></span><strong>sql</strong><a class="paramlink headerlink reference internal" href="#alembic.command.downgrade.params.sql">¶</a> – if True, use <code class="docutils literal notranslate"><span class="pre">--sql</span></code> mode</p></li>
+<li><p><span class="target" id="alembic.command.downgrade.params.tag"></span><strong>tag</strong><a class="paramlink headerlink reference internal" href="#alembic.command.downgrade.params.tag">¶</a> – an arbitrary “tag” that can be intercepted by custom
+<code class="docutils literal notranslate"><span class="pre">env.py</span></code> scripts via the <a class="reference internal" href="runtime.html#alembic.runtime.environment.EnvironmentContext.get_tag_argument" title="alembic.runtime.environment.EnvironmentContext.get_tag_argument"><code class="xref py py-meth docutils literal notranslate"><span class="pre">EnvironmentContext.get_tag_argument()</span></code></a>
+method.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="alembic.command.edit">
+<code class="sig-prename descclassname">alembic.command.</code><code class="sig-name descname">edit</code><span class="sig-paren">(</span><em class="sig-param">config</em>, <em class="sig-param">rev</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.command.edit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Edit revision script(s) using $EDITOR.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span class="target" id="alembic.command.edit.params.config"></span><strong>config</strong><a class="paramlink headerlink reference internal" href="#alembic.command.edit.params.config">¶</a> – a <a class="reference internal" href="config.html#alembic.config.Config" title="alembic.config.Config"><code class="xref py py-class docutils literal notranslate"><span class="pre">Config</span></code></a> instance.</p></li>
+<li><p><span class="target" id="alembic.command.edit.params.rev"></span><strong>rev</strong><a class="paramlink headerlink reference internal" href="#alembic.command.edit.params.rev">¶</a> – target revision.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="alembic.command.heads">
+<code class="sig-prename descclassname">alembic.command.</code><code class="sig-name descname">heads</code><span class="sig-paren">(</span><em class="sig-param">config</em>, <em class="sig-param">verbose=False</em>, <em class="sig-param">resolve_dependencies=False</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.command.heads" title="Permalink to this definition">¶</a></dt>
+<dd><p>Show current available heads in the script directory.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span class="target" id="alembic.command.heads.params.config"></span><strong>config</strong><a class="paramlink headerlink reference internal" href="#alembic.command.heads.params.config">¶</a> – a <a class="reference internal" href="config.html#alembic.config.Config" title="alembic.config.Config"><code class="xref py py-class docutils literal notranslate"><span class="pre">Config</span></code></a> instance.</p></li>
+<li><p><span class="target" id="alembic.command.heads.params.verbose"></span><strong>verbose</strong><a class="paramlink headerlink reference internal" href="#alembic.command.heads.params.verbose">¶</a> – output in verbose mode.</p></li>
+<li><p><span class="target" id="alembic.command.heads.params.resolve_dependencies"></span><strong>resolve_dependencies</strong><a class="paramlink headerlink reference internal" href="#alembic.command.heads.params.resolve_dependencies">¶</a> – treat dependency version as down revisions.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="alembic.command.history">
+<code class="sig-prename descclassname">alembic.command.</code><code class="sig-name descname">history</code><span class="sig-paren">(</span><em class="sig-param">config</em>, <em class="sig-param">rev_range=None</em>, <em class="sig-param">verbose=False</em>, <em class="sig-param">indicate_current=False</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.command.history" title="Permalink to this definition">¶</a></dt>
+<dd><p>List changeset scripts in chronological order.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span class="target" id="alembic.command.history.params.config"></span><strong>config</strong><a class="paramlink headerlink reference internal" href="#alembic.command.history.params.config">¶</a> – a <a class="reference internal" href="config.html#alembic.config.Config" title="alembic.config.Config"><code class="xref py py-class docutils literal notranslate"><span class="pre">Config</span></code></a> instance.</p></li>
+<li><p><span class="target" id="alembic.command.history.params.rev_range"></span><strong>rev_range</strong><a class="paramlink headerlink reference internal" href="#alembic.command.history.params.rev_range">¶</a> – string revision range</p></li>
+<li><p><span class="target" id="alembic.command.history.params.verbose"></span><strong>verbose</strong><a class="paramlink headerlink reference internal" href="#alembic.command.history.params.verbose">¶</a> – output in verbose mode.</p></li>
+<li><p><span class="target" id="alembic.command.history.params.indicate_current"></span><strong>indicate_current</strong><a class="paramlink headerlink reference internal" href="#alembic.command.history.params.indicate_current">¶</a> – <p>indicate current revision.</p>
+<p>..versionadded:: 0.9.9</p>
+</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="alembic.command.init">
+<code class="sig-prename descclassname">alembic.command.</code><code class="sig-name descname">init</code><span class="sig-paren">(</span><em class="sig-param">config</em>, <em class="sig-param">directory</em>, <em class="sig-param">template='generic'</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.command.init" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize a new scripts directory.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span class="target" id="alembic.command.init.params.config"></span><strong>config</strong><a class="paramlink headerlink reference internal" href="#alembic.command.init.params.config">¶</a> – a <a class="reference internal" href="config.html#alembic.config.Config" title="alembic.config.Config"><code class="xref py py-class docutils literal notranslate"><span class="pre">Config</span></code></a> object.</p></li>
+<li><p><span class="target" id="alembic.command.init.params.directory"></span><strong>directory</strong><a class="paramlink headerlink reference internal" href="#alembic.command.init.params.directory">¶</a> – string path of the target directory</p></li>
+<li><p><span class="target" id="alembic.command.init.params.template"></span><strong>template</strong><a class="paramlink headerlink reference internal" href="#alembic.command.init.params.template">¶</a> – string name of the migration environment template to
+use.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="alembic.command.list_templates">
+<code class="sig-prename descclassname">alembic.command.</code><code class="sig-name descname">list_templates</code><span class="sig-paren">(</span><em class="sig-param">config</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.command.list_templates" title="Permalink to this definition">¶</a></dt>
+<dd><p>List available templates.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><span class="target" id="alembic.command.list_templates.params.config"></span><strong>config</strong><a class="paramlink headerlink reference internal" href="#alembic.command.list_templates.params.config">¶</a> – a <a class="reference internal" href="config.html#alembic.config.Config" title="alembic.config.Config"><code class="xref py py-class docutils literal notranslate"><span class="pre">Config</span></code></a> object.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="alembic.command.merge">
+<code class="sig-prename descclassname">alembic.command.</code><code class="sig-name descname">merge</code><span class="sig-paren">(</span><em class="sig-param">config</em>, <em class="sig-param">revisions</em>, <em class="sig-param">message=None</em>, <em class="sig-param">branch_label=None</em>, <em class="sig-param">rev_id=None</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.command.merge" title="Permalink to this definition">¶</a></dt>
+<dd><p>Merge two revisions together.  Creates a new migration file.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 0.7.0.</span></p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span class="target" id="alembic.command.merge.params.config"></span><strong>config</strong><a class="paramlink headerlink reference internal" href="#alembic.command.merge.params.config">¶</a> – a <a class="reference internal" href="config.html#alembic.config.Config" title="alembic.config.Config"><code class="xref py py-class docutils literal notranslate"><span class="pre">Config</span></code></a> instance</p></li>
+<li><p><span class="target" id="alembic.command.merge.params.message"></span><strong>message</strong><a class="paramlink headerlink reference internal" href="#alembic.command.merge.params.message">¶</a> – string message to apply to the revision</p></li>
+<li><p><span class="target" id="alembic.command.merge.params.branch_label"></span><strong>branch_label</strong><a class="paramlink headerlink reference internal" href="#alembic.command.merge.params.branch_label">¶</a> – string label name to apply to the new revision</p></li>
+<li><p><span class="target" id="alembic.command.merge.params.rev_id"></span><strong>rev_id</strong><a class="paramlink headerlink reference internal" href="#alembic.command.merge.params.rev_id">¶</a> – hardcoded revision identifier instead of generating a new
+one.</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="../branches.html#branches"><span class="std std-ref">Working with Branches</span></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="alembic.command.revision">
+<code class="sig-prename descclassname">alembic.command.</code><code class="sig-name descname">revision</code><span class="sig-paren">(</span><em class="sig-param">config</em>, <em class="sig-param">message=None</em>, <em class="sig-param">autogenerate=False</em>, <em class="sig-param">sql=False</em>, <em class="sig-param">head='head'</em>, <em class="sig-param">splice=False</em>, <em class="sig-param">branch_label=None</em>, <em class="sig-param">version_path=None</em>, <em class="sig-param">rev_id=None</em>, <em class="sig-param">depends_on=None</em>, <em class="sig-param">process_revision_directives=None</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.command.revision" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a new revision file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span class="target" id="alembic.command.revision.params.config"></span><strong>config</strong><a class="paramlink headerlink reference internal" href="#alembic.command.revision.params.config">¶</a> – a <a class="reference internal" href="config.html#alembic.config.Config" title="alembic.config.Config"><code class="xref py py-class docutils literal notranslate"><span class="pre">Config</span></code></a> object.</p></li>
+<li><p><span class="target" id="alembic.command.revision.params.message"></span><strong>message</strong><a class="paramlink headerlink reference internal" href="#alembic.command.revision.params.message">¶</a> – string message to apply to the revision; this is the
+<code class="docutils literal notranslate"><span class="pre">-m</span></code> option to <code class="docutils literal notranslate"><span class="pre">alembic</span> <span class="pre">revision</span></code>.</p></li>
+<li><p><span class="target" id="alembic.command.revision.params.autogenerate"></span><strong>autogenerate</strong><a class="paramlink headerlink reference internal" href="#alembic.command.revision.params.autogenerate">¶</a> – whether or not to autogenerate the script from
+the database; this is the <code class="docutils literal notranslate"><span class="pre">--autogenerate</span></code> option to
+<code class="docutils literal notranslate"><span class="pre">alembic</span> <span class="pre">revision</span></code>.</p></li>
+<li><p><span class="target" id="alembic.command.revision.params.sql"></span><strong>sql</strong><a class="paramlink headerlink reference internal" href="#alembic.command.revision.params.sql">¶</a> – whether to dump the script out as a SQL string; when specified,
+the script is dumped to stdout.  This is the <code class="docutils literal notranslate"><span class="pre">--sql</span></code> option to
+<code class="docutils literal notranslate"><span class="pre">alembic</span> <span class="pre">revision</span></code>.</p></li>
+<li><p><span class="target" id="alembic.command.revision.params.head"></span><strong>head</strong><a class="paramlink headerlink reference internal" href="#alembic.command.revision.params.head">¶</a> – head revision to build the new revision upon as a parent;
+this is the <code class="docutils literal notranslate"><span class="pre">--head</span></code> option to <code class="docutils literal notranslate"><span class="pre">alembic</span> <span class="pre">revision</span></code>.</p></li>
+<li><p><span class="target" id="alembic.command.revision.params.splice"></span><strong>splice</strong><a class="paramlink headerlink reference internal" href="#alembic.command.revision.params.splice">¶</a> – whether or not the new revision should be made into a
+new head of its own; is required when the given <code class="docutils literal notranslate"><span class="pre">head</span></code> is not itself
+a head.  This is the <code class="docutils literal notranslate"><span class="pre">--splice</span></code> option to <code class="docutils literal notranslate"><span class="pre">alembic</span> <span class="pre">revision</span></code>.</p></li>
+<li><p><span class="target" id="alembic.command.revision.params.branch_label"></span><strong>branch_label</strong><a class="paramlink headerlink reference internal" href="#alembic.command.revision.params.branch_label">¶</a> – string label to apply to the branch; this is the
+<code class="docutils literal notranslate"><span class="pre">--branch-label</span></code> option to <code class="docutils literal notranslate"><span class="pre">alembic</span> <span class="pre">revision</span></code>.</p></li>
+<li><p><span class="target" id="alembic.command.revision.params.version_path"></span><strong>version_path</strong><a class="paramlink headerlink reference internal" href="#alembic.command.revision.params.version_path">¶</a> – string symbol identifying a specific version path
+from the configuration; this is the <code class="docutils literal notranslate"><span class="pre">--version-path</span></code> option to
+<code class="docutils literal notranslate"><span class="pre">alembic</span> <span class="pre">revision</span></code>.</p></li>
+<li><p><span class="target" id="alembic.command.revision.params.rev_id"></span><strong>rev_id</strong><a class="paramlink headerlink reference internal" href="#alembic.command.revision.params.rev_id">¶</a> – optional revision identifier to use instead of having
+one generated; this is the <code class="docutils literal notranslate"><span class="pre">--rev-id</span></code> option to <code class="docutils literal notranslate"><span class="pre">alembic</span> <span class="pre">revision</span></code>.</p></li>
+<li><p><span class="target" id="alembic.command.revision.params.depends_on"></span><strong>depends_on</strong><a class="paramlink headerlink reference internal" href="#alembic.command.revision.params.depends_on">¶</a> – optional list of “depends on” identifiers; this is the
+<code class="docutils literal notranslate"><span class="pre">--depends-on</span></code> option to <code class="docutils literal notranslate"><span class="pre">alembic</span> <span class="pre">revision</span></code>.</p></li>
+<li><p><span class="target" id="alembic.command.revision.params.process_revision_directives"></span><strong>process_revision_directives</strong><a class="paramlink headerlink reference internal" href="#alembic.command.revision.params.process_revision_directives">¶</a> – <p>this is a callable that takes the
+same form as the callable described at
+<a class="reference internal" href="runtime.html#alembic.runtime.environment.EnvironmentContext.configure.params.process_revision_directives" title="alembic.runtime.environment.EnvironmentContext.configure"><code class="xref py py-paramref docutils literal notranslate"><span class="pre">EnvironmentContext.configure.process_revision_directives</span></code></a>;
+will be applied to the structure generated by the revision process
+where it can be altered programmatically.   Note that unlike all
+the other parameters, this option is only available via programmatic
+use of <a class="reference internal" href="#alembic.command.revision" title="alembic.command.revision"><code class="xref py py-func docutils literal notranslate"><span class="pre">command.revision()</span></code></a></p>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 0.9.0.</span></p>
+</div>
+</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="alembic.command.show">
+<code class="sig-prename descclassname">alembic.command.</code><code class="sig-name descname">show</code><span class="sig-paren">(</span><em class="sig-param">config</em>, <em class="sig-param">rev</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.command.show" title="Permalink to this definition">¶</a></dt>
+<dd><p>Show the revision(s) denoted by the given symbol.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span class="target" id="alembic.command.show.params.config"></span><strong>config</strong><a class="paramlink headerlink reference internal" href="#alembic.command.show.params.config">¶</a> – a <a class="reference internal" href="config.html#alembic.config.Config" title="alembic.config.Config"><code class="xref py py-class docutils literal notranslate"><span class="pre">Config</span></code></a> instance.</p></li>
+<li><p><span class="target" id="alembic.command.show.params.revision"></span><strong>revision</strong><a class="paramlink headerlink reference internal" href="#alembic.command.show.params.revision">¶</a> – string revision target</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="alembic.command.stamp">
+<code class="sig-prename descclassname">alembic.command.</code><code class="sig-name descname">stamp</code><span class="sig-paren">(</span><em class="sig-param">config</em>, <em class="sig-param">revision</em>, <em class="sig-param">sql=False</em>, <em class="sig-param">tag=None</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.command.stamp" title="Permalink to this definition">¶</a></dt>
+<dd><p>‘stamp’ the revision table with the given revision; don’t
+run any migrations.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span class="target" id="alembic.command.stamp.params.config"></span><strong>config</strong><a class="paramlink headerlink reference internal" href="#alembic.command.stamp.params.config">¶</a> – a <a class="reference internal" href="config.html#alembic.config.Config" title="alembic.config.Config"><code class="xref py py-class docutils literal notranslate"><span class="pre">Config</span></code></a> instance.</p></li>
+<li><p><span class="target" id="alembic.command.stamp.params.revision"></span><strong>revision</strong><a class="paramlink headerlink reference internal" href="#alembic.command.stamp.params.revision">¶</a> – target revision.</p></li>
+<li><p><span class="target" id="alembic.command.stamp.params.sql"></span><strong>sql</strong><a class="paramlink headerlink reference internal" href="#alembic.command.stamp.params.sql">¶</a> – use <code class="docutils literal notranslate"><span class="pre">--sql</span></code> mode</p></li>
+<li><p><span class="target" id="alembic.command.stamp.params.tag"></span><strong>tag</strong><a class="paramlink headerlink reference internal" href="#alembic.command.stamp.params.tag">¶</a> – an arbitrary “tag” that can be intercepted by custom
+<code class="docutils literal notranslate"><span class="pre">env.py</span></code> scripts via the <code class="xref py py-class docutils literal notranslate"><span class="pre">EnvironmentContext.get_tag_argument</span></code>
+method.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="alembic.command.upgrade">
+<code class="sig-prename descclassname">alembic.command.</code><code class="sig-name descname">upgrade</code><span class="sig-paren">(</span><em class="sig-param">config</em>, <em class="sig-param">revision</em>, <em class="sig-param">sql=False</em>, <em class="sig-param">tag=None</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.command.upgrade" title="Permalink to this definition">¶</a></dt>
+<dd><p>Upgrade to a later version.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span class="target" id="alembic.command.upgrade.params.config"></span><strong>config</strong><a class="paramlink headerlink reference internal" href="#alembic.command.upgrade.params.config">¶</a> – a <a class="reference internal" href="config.html#alembic.config.Config" title="alembic.config.Config"><code class="xref py py-class docutils literal notranslate"><span class="pre">Config</span></code></a> instance.</p></li>
+<li><p><span class="target" id="alembic.command.upgrade.params.revision"></span><strong>revision</strong><a class="paramlink headerlink reference internal" href="#alembic.command.upgrade.params.revision">¶</a> – string revision target or range for –sql mode</p></li>
+<li><p><span class="target" id="alembic.command.upgrade.params.sql"></span><strong>sql</strong><a class="paramlink headerlink reference internal" href="#alembic.command.upgrade.params.sql">¶</a> – if True, use <code class="docutils literal notranslate"><span class="pre">--sql</span></code> mode</p></li>
+<li><p><span class="target" id="alembic.command.upgrade.params.tag"></span><strong>tag</strong><a class="paramlink headerlink reference internal" href="#alembic.command.upgrade.params.tag">¶</a> – an arbitrary “tag” that can be intercepted by custom
+<code class="docutils literal notranslate"><span class="pre">env.py</span></code> scripts via the <a class="reference internal" href="runtime.html#alembic.runtime.environment.EnvironmentContext.get_tag_argument" title="alembic.runtime.environment.EnvironmentContext.get_tag_argument"><code class="xref py py-meth docutils literal notranslate"><span class="pre">EnvironmentContext.get_tag_argument()</span></code></a>
+method.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="config.html"
+                        title="previous chapter">Configuration</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="operations.html"
+                        title="next chapter">Operation Directives</a></p>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="operations.html" title="Operation Directives"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="config.html" title="Configuration"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Alembic 1.0.11 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >API Details</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2010-2019, Mike Bayer.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.1.2.
+    </div>
+  </body>
+</html>

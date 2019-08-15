@@ -1,0 +1,3 @@
+---
+upgrade:
+  - Removed the deprecated "root_device_hint" alias for the "raid_device" hook.

@@ -1,0 +1,11 @@
+debtcollector>=1.2.0
+netaddr>=0.7.18
+six>=1.10.0
+stevedore>=1.20.0
+oslo.i18n>=3.15.3
+rfc3986>=1.2.0
+PyYAML>=3.12
+requests>=2.18.0
+
+[:(python_version=='2.7' or python_version=='2.6' or python_version=='3.3')]
+enum34>=1.0.4

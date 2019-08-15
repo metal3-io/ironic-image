@@ -1,0 +1,6 @@
+---
+features:
+  - |
+    Addes support for retrying certain HTTP status codes when doing requests
+    via the new ``status_code_retries`` and ``retriable_status_codes``
+    parameters for ``Session`` and ``Adapter``.

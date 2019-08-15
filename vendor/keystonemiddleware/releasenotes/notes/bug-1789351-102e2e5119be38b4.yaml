@@ -1,0 +1,7 @@
+---
+fixes:
+  - >
+    [`bug 1789351 <https://bugs.launchpad.net/keystonemiddleware/+bug/1789351>`_]
+    Fixed the bug that when initialize `AuthProtocol`, it'll raise "dictionary
+    changed size during iteration" error if the input `CONF` object contains
+    deprecated options.

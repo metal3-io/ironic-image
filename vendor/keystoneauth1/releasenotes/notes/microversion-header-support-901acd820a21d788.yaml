@@ -1,0 +1,6 @@
+---
+features:
+  - Added support for specifying a microversion to use on
+    a given REST request. The microversion can be specified
+    on session request calls and a default can be set on
+    Adapter construction.

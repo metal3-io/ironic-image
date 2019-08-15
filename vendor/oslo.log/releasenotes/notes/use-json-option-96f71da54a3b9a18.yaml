@@ -1,0 +1,6 @@
+---
+features:
+  - |
+    The use_json configuration option was added. It enables JSON formatting in
+    the logs when set to True. The option is also available through the command
+    line via the ``--use-json`` flag.

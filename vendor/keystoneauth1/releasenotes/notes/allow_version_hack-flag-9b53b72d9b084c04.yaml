@@ -1,0 +1,9 @@
+---
+features:
+  - A new flag `allow_version_hack` was added to identity plugins and the
+    adapter which will allow a client to opt out of making guesses at the
+    version url page of a service. This means that if a deployment is
+    misconfigured and the service catalog contains a versioned endpoint that
+    does not match the requested version the request will fail. This will be
+    useful in beginning to require correctly deployed catalogs rather than
+    continue to hide the problem.

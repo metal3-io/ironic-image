@@ -1,0 +1,24 @@
+{
+  "rules": [
+    {
+      "description": "Set deploy info if not already set on node",
+      "links": [
+        {
+          "href": "/v1/rules/7459bf7c-9ff9-43a8-ba9f-48542ecda66c",
+          "rel": "self"
+        }
+      ],
+      "uuid": "7459bf7c-9ff9-43a8-ba9f-48542ecda66c"
+    },
+    {
+      "description": "Set IPMI driver_info if no credentials",
+      "links": [
+        {
+          "href": "/v1/rules/b0ea6361-03cd-467c-859c-7230547dcb9a",
+          "rel": "self"
+        }
+      ],
+      "uuid": "b0ea6361-03cd-467c-859c-7230547dcb9a"
+    }
+  ]
+}

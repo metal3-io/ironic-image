@@ -1,0 +1,20 @@
+---
+features:
+  - |
+    The PXE filter drivers mechanism is now enabled. The firewall-based
+    filtering was re-implemented as the ``iptables`` PXE filter driver.
+deprecations:
+  - |
+    The firewall-specific configuration options were moved from the
+    ``firewall`` to the ``iptables`` group. All options in the ``iptables``
+    group are now deprecated.
+  - |
+    The generic firewall options ``firewall_update_period`` and
+    ``manage_firewall`` were moved under the ``pxe_filter`` group as
+    ``sync_period`` and ``driver=iptables/noop`` respectively.
+fixes:
+  - |
+    Should the ``iptables`` PXE filter encounter an unexpected exception in the
+    periodic ``sync`` call, the exception will be logged and the filter driver
+    will be reset in order to make subsequent ``sync`` calls fail (and
+    propagate the failure, exiting the **ironic-inspector** process eventually).

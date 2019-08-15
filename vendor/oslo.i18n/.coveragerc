@@ -1,0 +1,8 @@
+[run]
+branch = True
+source = oslo_i18n
+omit = oslo_i18n/tests/*
+
+[report]
+ignore_errors = True
+precision = 2

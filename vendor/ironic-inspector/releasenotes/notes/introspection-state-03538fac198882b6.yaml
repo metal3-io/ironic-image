@@ -1,0 +1,16 @@
+---
+features:
+  - Node introspection state is now kept in a dedicated database column. The
+    introspection is now using a finite state machine. The state isn't exposed
+    to the user yet.
+issues:
+  - Due to the nature of the NodeInfo.state attribute (being updated
+    independently from the rest of the node_info attributes) if a (DB)
+    connection was lost before the Node.state column was updated,
+    Node.finished_at and Node.error columns may not be in sync with the
+    Node.state column.
+upgrade:
+  - Node.state and Node.version_id database columns are introduced.
+  - The introspection state column defaults to the state ``finished`` unless
+    the introspection error column value on a node row isn't null, then node
+    state is set to ``error``.

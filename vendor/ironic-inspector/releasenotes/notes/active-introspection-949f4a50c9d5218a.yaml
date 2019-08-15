@@ -1,0 +1,11 @@
+---
+features:
+  - |
+    Adds the capability for introspection data to be posted to the API
+    when a baremetal node is in ``active`` or ``rescue`` states. This
+    feature may be useful for data center operators who wish to update
+    introspection data periodically.
+
+    To enable this feature, set ``[processing]permit_active_introspection``
+    to ``True``. When this is set, the value of ``[processing]power_off`` is
+    overridden for nodes in ``active`` or ``rescue`` states.

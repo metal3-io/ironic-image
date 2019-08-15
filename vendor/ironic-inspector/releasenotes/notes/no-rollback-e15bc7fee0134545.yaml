@@ -1,0 +1,10 @@
+---
+upgrade:
+  - Introspection rules actions 'set-attribute', 'set-capability' and
+    'extend-attribute' no longer have the opposite effect on nodes that do not
+    match a rule.
+fixes:
+  - Dropped rollback actions from 'set-attribute', 'set-capability' and
+    'extend-attribute' introspection rules actions, as they were confusing,
+    completely undocumented and broke some real world use cases
+    (e.g. setting driver field).

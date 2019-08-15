@@ -1,0 +1,10 @@
+- project:
+    templates:
+      - publish-openstack-docs-pti
+      - openstack-python-jobs
+      - openstack-python37-jobs
+      - check-requirements
+      - release-notes-jobs-python3
+      - periodic-stable-jobs
+      - openstack-python36-jobs
+      - openstack-lower-constraints-jobs

@@ -1,0 +1,32 @@
+- project:
+    check:
+      jobs:
+        - oslo.versionedobjects-src-grenade-devstack-multinode
+    templates:
+      - check-requirements
+      - lib-forward-testing
+      - lib-forward-testing-python3
+      - openstack-lower-constraints-jobs
+      - openstack-python-jobs
+      - openstack-python35-jobs
+      - openstack-python36-jobs
+      - openstack-python37-jobs
+      - periodic-stable-jobs
+      - publish-openstack-docs-pti
+      - release-notes-jobs-python3
+
+- job:
+    name: oslo.versionedobjects-src-grenade-devstack-multinode
+    parent: legacy-dsvm-base-multinode
+    voting: false
+    irrelevant-files:
+      - ^(test-|)requirements.txt$
+      - ^setup.cfg$
+    run: playbooks/legacy/oslo.versionedobjects-src-grenade-devstack-multinode/run.yaml
+    post-run: playbooks/legacy/oslo.versionedobjects-src-grenade-devstack-multinode/post.yaml
+    timeout: 10800
+    required-projects:
+      - openstack/grenade
+      - openstack/devstack-gate
+      - openstack/oslo.versionedobjects
+    nodeset: legacy-ubuntu-xenial-2-node

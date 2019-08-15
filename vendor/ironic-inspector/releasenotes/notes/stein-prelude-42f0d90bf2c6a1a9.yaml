@@ -1,0 +1,5 @@
+---
+prelude: >
+    The Stein release of ironic-inspector features support of storing
+    introspection data in the database instead of the Object Store service,
+    as well as fixes for IPv6.

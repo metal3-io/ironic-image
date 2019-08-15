@@ -1,0 +1,6 @@
+[console_scripts]
+lockutils-wrapper = oslo_concurrency.lockutils:main
+
+[oslo.config.opts]
+oslo.concurrency = oslo_concurrency.opts:list_opts
+

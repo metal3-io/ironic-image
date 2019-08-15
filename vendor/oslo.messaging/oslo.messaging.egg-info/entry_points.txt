@@ -1,0 +1,26 @@
+[console_scripts]
+oslo-messaging-send-notification = oslo_messaging.notify.notifier:_send_notification
+
+[oslo.config.opts]
+oslo.messaging = oslo_messaging.opts:list_opts
+
+[oslo.messaging.drivers]
+amqp = oslo_messaging._drivers.impl_amqp1:ProtonDriver
+fake = oslo_messaging._drivers.impl_fake:FakeDriver
+kafka = oslo_messaging._drivers.impl_kafka:KafkaDriver
+kombu = oslo_messaging._drivers.impl_rabbit:RabbitDriver
+rabbit = oslo_messaging._drivers.impl_rabbit:RabbitDriver
+
+[oslo.messaging.executors]
+blocking = futurist:SynchronousExecutor
+eventlet = futurist:GreenThreadPoolExecutor
+threading = futurist:ThreadPoolExecutor
+
+[oslo.messaging.notify.drivers]
+log = oslo_messaging.notify._impl_log:LogDriver
+messaging = oslo_messaging.notify.messaging:MessagingDriver
+messagingv2 = oslo_messaging.notify.messaging:MessagingV2Driver
+noop = oslo_messaging.notify._impl_noop:NoOpDriver
+routing = oslo_messaging.notify._impl_routing:RoutingDriver
+test = oslo_messaging.notify._impl_test:TestDriver
+

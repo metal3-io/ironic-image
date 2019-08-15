@@ -1,0 +1,3 @@
+---
+deprecations:
+  - Using the root_device_hint alias for the raid_device plugin is deprecated.

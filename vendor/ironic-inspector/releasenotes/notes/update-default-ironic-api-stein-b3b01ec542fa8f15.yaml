@@ -1,0 +1,6 @@
+---
+upgrade:
+  - |
+    Updates the default Ironic API version to 1.56, which is the most
+    recent version in the Stein series Bare Metal release (12.1.0).
+

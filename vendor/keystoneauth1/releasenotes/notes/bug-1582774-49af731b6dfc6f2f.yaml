@@ -1,0 +1,4 @@
+---
+fixes:
+  - Fix passing scope parameters in Oidc* auth plugins.
+    [Bug `1582774 <https://bugs.launchpad.net/bugs/1582774>`_]

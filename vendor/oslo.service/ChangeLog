@@ -1,0 +1,703 @@
+CHANGES
+=======
+
+1.40.0
+------
+
+* Stop using pbr to build docs
+* Make PID availabe as formatstring in backdoor path
+
+1.39.0
+------
+
+* Cap Bandit below 1.6.0 and update Sphinx requirement
+* Add workers' type check before launching the services
+* Replace git.openstack.org URLs with opendev.org URLs
+* OpenDev Migration Patch
+* Dropping the py35 testing
+* Update master for stable/stein
+
+1.38.0
+------
+
+* Update oslo.service to require yappi 1.0 or newer
+* add python 3.7 unit test job
+* Update hacking version
+
+1.37.0
+------
+
+* Bump oslo.utils lower constraint to 3.40.2
+
+1.36.0
+------
+
+* Profile Oslo Service processes
+* Use eventletutils Event class
+* Avoid eventlet\_backdoor listing on same port
+
+1.35.0
+------
+
+* Use template for lower-constraints
+* Deprecate the ThreadGroup.cancel() API
+* Document the threadgroup module
+* Actually test child SIGHUP signal
+* Restore correct signal handling in Python3
+* Add stop\_on\_exception to TG timers
+* Add better timer APIs to ThreadGroup
+* Update mailinglist from dev to discuss
+* Use SleepFixture in looping call test suite
+
+1.33.0
+------
+
+* Fixture to mock loopingcall wait()
+* Limit monotonic to py2
+
+1.32.1
+------
+
+* Fix stop of loopingcall
+* Use eventlet Event for loopingcall events
+* Clean up .gitignore references to personal tools
+* Always build universal wheels
+
+1.32.0
+------
+
+* Ensure connection is active in graceful shutdown tests
+* Stop asserting on Eventlet internals
+* Skips signal handling on Windows
+* add lib-forward-testing-python3 test job
+* add python 3.6 unit test job
+* import zuul job settings from project-config
+* Update reno for stable/rocky
+
+1.31.3
+------
+
+* Remove unnecessary pyNN testenv
+* Convert oslo.service to using stestr
+* Add release notes link to README
+* Fix oslo.service ProcessLauncher fails to call stop
+* fix tox python3 overrides
+* Add test dependency on requests
+* Remove moxstubout
+
+1.31.2
+------
+
+* [ThreadGroup] Don't remove timer when stop timers
+* Make lower-constraints job voting
+* tox.ini: Use python3.5 in py35 environment
+* Python 3: Fix eventlet wakeup after signal
+* Python 3: Fix non-deterministic test
+* Remove stale pip-missing-reqs tox test
+* Trivial: Update pypi url to new url
+* add lower-constraints job
+* move doc8 test to pep8 job
+* set default python to python3
+
+1.31.1
+------
+
+* Revert "Revert "Permit aborting loopingcall while sleeping""
+
+1.31.0
+------
+
+* Remove eventlet cap
+* Fixup certificates and skip failing test
+
+1.30.0
+------
+
+* Imported Translations from Zanata
+* Imported Translations from Zanata
+* Update links in README
+* Imported Translations from Zanata
+* Updated from global requirements
+* Update reno for stable/queens
+* Updated from global requirements
+* Updated from global requirements
+* Updated from global requirements
+
+1.29.0
+------
+
+* Maintain shared memory after fork in Python >=3.7
+* Updated from global requirements
+* Revert "Permit aborting loopingcall while sleeping"
+
+1.28.1
+------
+
+
+1.28.0
+------
+
+* Remove -U from pip install
+* Avoid tox\_install.sh for constraints support
+* Updated from global requirements
+* Remove setting of version/release from releasenotes
+* Updated from global requirements
+
+1.27.0
+------
+
+* Updated from global requirements
+* change periodic\_task to catch all exceptions including BaseException
+* Fix bandit scan and make it voting
+* Imported Translations from Zanata
+
+1.26.0
+------
+
+* Updated from global requirements
+* Updated from global requirements
+* Updated from global requirements
+* Updated from global requirements
+* Imported Translations from Zanata
+* Updated from global requirements
+* Updated from global requirements
+* Update reno for stable/pike
+* Updated from global requirements
+
+1.25.0
+------
+
+* Update URLs in documents according to document migration
+
+1.24.1
+------
+
+* rearrange existing documentation to fit the new standard layout
+* switch from oslosphinx to openstackdocstheme
+
+1.24.0
+------
+
+* Updated from global requirements
+* Updated from global requirements
+* Updated from global requirements
+* Updated from global requirements
+* Permit aborting loopingcall while sleeping
+* Updated from global requirements
+* Updated from global requirements
+* Updated from global requirements
+* Updated from global requirements
+
+1.23.0
+------
+
+* Add min\_interval to BackOffLoopingCall
+
+1.22.0
+------
+
+* Updated from global requirements
+* Updated from global requirements
+
+1.21.0
+------
+
+* Remove log translations
+* Use Sphinx 1.5 warning-is-error
+* Fix some reST field lists in docstrings
+* Updated from global requirements
+
+1.20.0
+------
+
+* Updated from global requirements
+* [Fix gate]Update test requirement
+* Updated from global requirements
+* Updated from global requirements
+* Fix race condition with fast threads
+* pbr.version.VersionInfo needs package name (oslo.xyz and not oslo\_xyz)
+* Remove duplicated register\_opts call
+* Update reno for stable/ocata
+* Remove references to Python 3.4
+
+1.19.0
+------
+
+* Add FixedIntervalWithTimeoutLoopingCall
+* Add Constraints support
+* Show team and repo badges on README
+
+1.18.0
+------
+
+* Updated from global requirements
+* Updated from global requirements
+* Updated from global requirements
+* Imported Translations from Zanata
+* Update .coveragerc after the removal of respective directory
+* Delete python bytecode file
+
+1.17.0
+------
+
+* Changed the home-page link
+* Updated from global requirements
+* Replace 'MagicMock' with 'Mock'
+* Enable release notes translation
+* Updated from global requirements
+* Updated from global requirements
+* Updated from global requirements
+
+1.16.0
+------
+
+* Updated from global requirements
+* Stay alive on double SIGHUP
+
+1.15.0
+------
+
+* Updated from global requirements
+
+1.14.0
+------
+
+* Updated from global requirements
+* Fix parameters of assertEqual are misplaced
+
+1.13.0
+------
+
+* Updated from global requirements
+* Updated from global requirements
+* Updated from global requirements
+* Add reno for release notes management
+* Updated from global requirements
+
+1.12.0
+------
+
+* Imported Translations from Zanata
+* Updated from global requirements
+* Updated from global requirements
+* Updated from global requirements
+* Updated from global requirements
+* Updated from global requirements
+* Updated from global requirements
+
+1.11.0
+------
+
+* Trivial: ignore openstack/common in flake8 exclude list
+
+1.10.0
+------
+
+* [Trivial] Remove executable privilege of doc/source/conf.py
+
+1.9.0
+-----
+
+* Updated from global requirements
+* Offer mutate\_config\_files
+* Make \_spawn\_service more flexible
+* Remove direct dependency on babel
+* Updated from global requirements
+* Updated from global requirements
+* Updated from global requirements
+* Updated from global requirements
+* Fix argument type for \_sd\_notify() on python3
+* Use a timeutils.StopWatch for cancel timing
+* Add ability to cancel Threads and ThreadGroups
+* Exception: message need '\_' function
+* Fix Heartbeats stop when time is changed
+* Updated from global requirements
+
+1.7.0
+-----
+
+* Updated from global requirements
+* Correct some help text
+* Fix typo in help text
+* wsgi: decrease the default number of greenthreads in pool
+* Updated from global requirements
+
+1.6.0
+-----
+
+* Updated from global requirements
+* Allow the backdoor to serve from a local unix domain socket
+* Updated from global requirements
+
+1.5.0
+-----
+
+* Use requests in TestWSGIServerWithSSL instead of raw socket client
+
+1.4.0
+-----
+
+* Updated from global requirements
+* Updated from global requirements
+* Fix misspelling and rewrite sentence
+* Add a more useful/detailed frame dumping function
+* Updated from global requirements
+* Update translation setup
+* Fix race condition on handling signals
+* Updated from global requirements
+* Updated from global requirements
+* Updated from global requirements
+* Updated from global requirements
+* Fix artificial service.wait()
+
+1.3.0
+-----
+
+* Graceful shutdown added to ServiceLauncher
+* Fix test execution on CentOS 7
+* Updated from global requirements
+* Fix some inconsistency in docstrings
+* Refactoring of tests/eventlet\_service.py
+* Updated from global requirements
+* Remove argument ServiceLauncher.wait() method
+* fix a couple of assert issues
+* Run sslutils and wsgi tests for python3
+* Updated from global requirements
+
+1.2.0
+-----
+
+* Updated from global requirements
+* Fix a race condition in signal handlers
+* Enable py3 mock.patch of RuntimeError
+* Delete python bytecode before every test run
+* Trival: Remove 'MANIFEST.in'
+
+1.1.0
+-----
+
+* Avoid warning when time taken is close to zero
+* Update the \_i18n.py file and fix the domain value
+* Add Bandit to tox for security static analysis
+* Code refactoring of ThreadGroup::stop\_timers()
+
+1.0.0
+-----
+
+* Updated from global requirements
+* Updated from global requirements
+* Add functionality for creating Unix domain WSGI servers
+* Use reflection.get\_class\_name() from oslo.utils
+* Remove Python 2.6 classifier
+* Remove openstack-common.conf
+* cleanup tox.ini
+* Change "started child" messages to DEBUG
+* Support for SSL protocol and cipher controls
+
+0.13.0
+------
+
+* Default value of graceful\_shutdown\_timeout is set to 60sec
+* Updated from global requirements
+* Logger name argument was added into wsgi.Server constructor
+* Avoid the dual-naming confusion
+* Forbid launching services with 0 or negative number of workers
+
+0.12.0
+------
+
+* Document graceful\_shutdown\_timeout config option
+* Remove py26 env from test list
+* Added config option graceful\_shutdown\_timeout
+* Updated from global requirements
+* Add docstring for LoopingCallBase.\_start()
+* Updated from global requirements
+
+0.11.0
+------
+
+* Updated from global requirements
+* Add doc8 to py27 tox env and fix raised issues
+* Document termination of children on SIGHUP
+* Updated from global requirements
+* Updated from global requirements
+
+0.10.0
+------
+
+* RetryDecorator should not log warnings/errors for expected exceptions
+* Termination children on SIGHUP added
+* Fix coverage configuration and execution
+* Add register\_opts function to sslutils
+* Move the common thread manipulating routine to a shared routine
+* Update log string to correctly denote what it waits on
+* Avoid removing entries for timers that didn't stop
+* Cleanup thread on thread done callback
+* Move 'history' -> release notes section
+* Add unit tests for sslutils
+* Expand README and clean up intro to sphinx docs
+* Add shields.io version/downloads links/badges into README.rst
+* add auto-generated docs for config options
+* Move backoff looping call from IPA to oslo.service
+* Change ignore-errors to ignore\_errors
+* Fix the home-page value in setup.cfg
+* WSGI module was corrected
+* Updated from global requirements
+* ThreadGroup's stop didn't recognise the current thread correctly
+* doing monkey\_patch for unittest
+
+0.9.0
+-----
+
+* Handling corner cases in dynamic looping call
+* Change DEBUG log in loopingcall to TRACE level log
+* Updated from global requirements
+
+0.8.0
+-----
+
+* Added wsgi functionality
+
+0.7.0
+-----
+
+* Updated from global requirements
+* Update "Signal handling" section of usage docs
+* Use oslo\_utils reflection to get 'f' callable name
+* Updated from global requirements
+* Prefix the 'safe\_wrapper' function to be '\_safe\_wrapper'
+* Setup translations
+* Check that sighup is supported before accessing signal.SIGHUP
+* Use contextlib.closing instead of try ... finally: sock.close
+* Avoid using the global lockutils semaphore collection
+* Updated from global requirements
+
+0.6.0
+-----
+
+* Added newline at end of file
+* Added class SignalHandler
+* Updated from global requirements
+* Activate pep8 check that \_ is imported
+* Denote what happens when no exceptions are passed in
+* Allow LoopingCall to continue on exception in callee
+
+0.5.0
+-----
+
+* Updated from global requirements
+* Updated from global requirements
+* Updated from global requirements
+* Add oslo\_debug\_helper to tox.ini
+* Add usage documentation for oslo\_service.service module
+
+0.4.0
+-----
+
+* Updated from global requirements
+* save docstring, name etc using six.wraps
+* Move backdoor-related tests from test\_service
+* Add mock to test\_requirements
+* Remove usage of mox in test\_eventlet\_backdoor
+
+0.3.0
+-----
+
+* Copy RetryDecorator from oslo.vmware
+* Increase test coverage of systemd
+* Ensure we set the event and wait on the timer in the test
+* Make it easier to use the eventlet backdoor locally
+* Track created thread and disallow more than one start being active
+
+0.2.0
+-----
+
+* Documentation on the use of the oslo-config-generator
+* Add greenlet to requirements
+* Add tox target to find missing requirements
+* Enforce H405 check
+* Enforce H301 check
+* Return timer after adding it to internal list
+* Updated from global requirements
+* Have all the looping calls share a common run loop
+* Move service abstract base class check to launch\_service methods
+* Fix a typo in a comment
+* Updated from global requirements
+* Use a signal name->sigval and sigval->signal name mapping
+
+0.1.0
+-----
+
+* Test for instantaneous shutdown fixed
+* Graceful shutdown WSGI/RPC server
+* Use monotonic.monotonic and stopwatches instead of time.time
+* Updated from global requirements
+* Eventlet service fixed
+* Add documentation for the service module
+* Improve test coverage for loopingcall module
+* Add oslo.service documentation
+* Remove usage of global CONF
+* Make logging option values configurable
+* Introduce abstract base class for services
+* Add entrypoints for option discovery
+* Updated from global requirements
+* Move the option definitions into a private file
+* Fix unit tests
+* Fix pep8
+* exported from oslo-incubator by graduate.sh
+* Clean up logging to conform to guidelines
+* Port service to Python 3
+* Test for shutting down eventlet server on signal
+* service child process normal SIGTERM exit
+* Revert "Revert "Revert "Optimization of waiting subprocesses in ProcessLauncher"""
+* Revert "Revert "Optimization of waiting subprocesses in ProcessLauncher""
+* Revert "Optimization of waiting subprocesses in ProcessLauncher"
+* ProcessLauncher: reload config file in parent process on SIGHUP
+* Add check to test\_\_signal\_handlers\_set
+* Store ProcessLauncher signal handlers on class level
+* Remove unused validate\_ssl\_version
+* Update tests for optional sslv3
+* Fixed ssl.PROTOCOL\_SSLv3 not supported by Python 2.7.9
+* Optimization of waiting subprocesses in ProcessLauncher
+* Switch from oslo.config to oslo\_config
+* Change oslo.config to oslo\_config
+* Remove oslo.log code and clean up versionutils API
+* Replace mox by mox3
+* Allow overriding name for periodic tasks
+* Separate add\_periodic\_task from the metaclass \_\_init\_\_
+* Upgrade to hacking 0.10
+* Remove unnecessary import of eventlet
+* Added graceful argument on Service.stop method
+* Remove extra white space in log message
+* Prefer delayed %r formatting over explicit repr use
+* ServiceRestartTest: make it more resilient
+* threadgroup: don't log GreenletExit
+* add list\_opts to all modules with configuration options
+* Remove code that moved to oslo.i18n
+* Remove graduated test and fixtures libraries
+* rpc, notifier: remove deprecated modules
+* Let oslotest manage the six.move setting for mox
+* Remove usage of readlines()
+* Allow test\_service to run in isolation
+* Changes calcuation of variable delay
+* Use timestamp in loopingcall
+* Remove unnecessary setUp function
+* Log the function name of looping call
+* pep8: fixed multiple violations
+* Make periodic tasks run on regular spacing interval
+* Use moxstubout and mockpatch from oslotest
+* Implement stop method in ProcessLauncher
+* Fix parenthesis typo misunderstanding in periodic\_task
+* Fix docstring indentation in systemd
+* Remove redundant default=None for config options
+* Make unspecified periodic spaced tasks run on default interval
+* Make stop\_timers() method public
+* Remove deprecated LoopingCall
+* Fixed several typos
+* Add graceful stop function to ThreadGroup.stop
+* Use oslotest instead of common test module
+* Remove duplicated "caught" message
+* Move notification point to a better place
+* Remove rendundant parentheses of cfg help strings
+* Adds test condition in test\_periodic
+* Fixed spelling error - occured to occurred
+* Add missing \_LI for LOG.info in service module
+* notify calling process we are ready to serve
+* Reap child processes gracefully if greenlet thread gets killed
+* Improve help strings for sslutils module
+* Remove unnecessary usage of noqa
+* Removes use of timeutils.set\_time\_override
+* Update oslo log messages with translation domains
+* Refactor unnecessary arithmetic ops in periodic\_task
+* Refactor if logic in periodic\_task
+* Use timestamp in periodic tasks
+* Add basic Python 3 tests
+* Clear time override in test\_periodic
+* Don't share periodic\_task instance data in a class attr
+* Revert "service: replace eventlet event by threading"
+* Simplify launch method
+* Simple typo correction
+* Cleanup unused log related code
+* Utilizes assertIsNone and assertIsNotNone
+* Fix filter() usage due to python 3 compability
+* Use hacking import\_exceptions for gettextutils.\_
+* threadgroup: use threading rather than greenthread
+* disable SIGHUP restart behavior in foreground
+* service: replace eventlet event by threading
+* Allow configurable ProcessLauncher liveness check
+* Make wait & stop methods work on all threads
+* Typos fix in db and periodic\_task module
+* Remove vim header
+* os.\_exit in \_start\_child may cause unexpected exception
+* Adjust import order according to PEP8 imports rule
+* Add a link method to Thread
+* Use multiprocessing.Event to ensure services have started
+* Apply six for metaclass
+* Removed calls to locals()
+* Move comment in service.py to correct location
+* Fixes issue with SUGHUP in services on Windows
+* Replace using tests.utils part2
+* Bump hacking to 0.7.0
+* Replace using tests.utils with openstack.common.test
+* Refactors boolean returns
+* Add service restart function in oslo-incubator
+* Fix stylistic problems with help text
+* Enable H302 hacking check
+* Convert kombu SSL version string into integer
+* Allow launchers to be stopped multiple times
+* Ignore any exceptions from rpc.cleanup()
+* Add graceful service shutdown support to Launcher
+* Improve usability when backdoor\_port is nonzero
+* Enable hacking H404 test
+* Enable hacking H402 test
+* Enable hacking H401 test
+* Fixes import order nits
+* Add DynamicLoopCall timers to ThreadGroups
+* Pass backdoor\_port to services being launched
+* Improve python3 compatibility
+* Use print\_function \_\_future\_\_ import
+* Improve Python 3.x compatibility
+* Import nova's looping call
+* Copy recent changes in periodic tasks from nova
+* Fix IBM copyright strings
+* Removes unused imports in the tests module
+* update OpenStack, LLC to OpenStack Foundation
+* Add function for listing native threads to eventlet backdoor
+* Use oslo-config-2013.1b3
+* Support for SSL in wsgi.Service
+* Replace direct use of testtools BaseTestCase
+* Use testtools as test base class
+* ThreadGroup remove unused name parameters
+* Implement importutils.try\_import
+* Fix test cases in tests.unit.test\_service
+* Don't rely on os.wait() blocking
+* Use Service thread group for WSGI request handling
+* Make project pyflakes clean
+* Replace try: import with extras.try\_import
+* raise\_on\_error parameter shouldn't be passed to task function
+* Account for tasks duration in LoopingCall delay
+* updating sphinx documentation
+* Enable eventlet\_backdoor to return port
+* Use the ThreadGroup for the Launcher
+* Change RPC cleanup ordering
+* threadgroup : greethread.cancel() should be kill()
+* Use spawn\_n when not capturing return value
+* Make ThreadGroup derived from object to make mocking possible
+* Don't log exceptions for GreenletExit and thread\_done
+* Log CONF from ProcessLauncher.wait, like ServiceLauncher
+* Import order clean-up
+* Added a missing \`cfg\` import in service.py
+* Log config on startup
+* Integrate eventlet backdoor
+* Add the rpc service and delete manager
+* Use pep8 v1.3.3
+* Add threadgroup to manage timers and greenthreads
+* Add basic periodic task infrastructure
+* Add multiprocess service launcher
+* Add signal handling to service launcher
+* Basic service launching infrastructure
+* Move manager.py and service.py into common
+* Copy eventlet\_backdoor into common from nova
+* Copy LoopingCall from nova for service.py
+* initial commit
+* Initial skeleton project

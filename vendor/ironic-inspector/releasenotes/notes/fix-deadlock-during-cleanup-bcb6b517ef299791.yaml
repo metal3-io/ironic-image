@@ -1,0 +1,5 @@
+---
+fixes:
+  - |
+    Fix bug where periodic clean up failed with DBDeadlock if introspection
+    timed out.

@@ -1,0 +1,7 @@
+---
+security:
+  - |
+    Fixes insufficient input filtering when looking up a node by information
+    from the introspection data. It could potentially allow SQL injections
+    via the ``/v1/continue`` API endpoint. See `story 2005678
+    <https://storyboard.openstack.org/#!/story/2005678>`_ for details.

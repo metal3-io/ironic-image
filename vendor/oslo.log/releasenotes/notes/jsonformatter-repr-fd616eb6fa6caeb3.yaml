@@ -1,0 +1,6 @@
+---
+fixes:
+  - |
+    The JSONFormatter formatter now converts unserializable objects with
+    repr() to prevent JSON serialization errors on logging. The fix requires
+    oslo.serialization 2.21.1 or newer. (Bug #1593641)

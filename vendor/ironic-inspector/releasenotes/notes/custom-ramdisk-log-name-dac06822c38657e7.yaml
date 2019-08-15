@@ -1,0 +1,8 @@
+---
+features:
+  - File name for stored ramdisk logs can now be customized via
+    "ramdisk_logs_filename_format" option.
+upgrade:
+  - The default file name for stored ramdisk logs was change to contain only
+    node UUID (if known) and the current date time. A proper ".tar.gz"
+    extension is now appended.

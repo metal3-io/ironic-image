@@ -1,0 +1,7 @@
+---
+deprecations:
+  - |
+    Configuration options ``[DEFAULT]ssl_cert_path`` and
+    ``[DEFAULT]ssl_key_path`` are deprecated for ironic-inspector now uses
+    oslo.service as underlying HTTP service instead of Werkzeug. Please use
+    ``[ssl]cert_file`` and ``[ssl]key_file``.

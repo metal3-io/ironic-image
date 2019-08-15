@@ -1,0 +1,9 @@
+---
+fixes:
+  - >
+    [`bug 1583699 <https://bugs.launchpad.net/keystonemiddleware/+bug/1583699>`_]
+    Some service APIs (such as Swift list public containers) do not require
+    a token. Therefore, there will be no identity or service catalog
+    information available. In these cases, audit now fills in the default
+    (i.e. taxonomy.UNKNOWN) for both initiator and target instead of raising
+    an exception.

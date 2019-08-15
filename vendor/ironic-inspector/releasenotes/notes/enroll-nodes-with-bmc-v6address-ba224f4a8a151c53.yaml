@@ -1,0 +1,6 @@
+---
+features:
+  - |
+    Adds support to enroll node with IPv6 BMC address. Introduces
+    a configuration option ``[discovery]enabled_bmc_address_version``
+    to specify the order of preferred IP version of the BMC address.

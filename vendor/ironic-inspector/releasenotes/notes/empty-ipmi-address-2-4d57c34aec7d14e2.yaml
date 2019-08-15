@@ -1,0 +1,8 @@
+---
+fixes:
+  - |
+    The older ``ipmi_address`` field in the introspection data no longer has
+    priority over the newer ``bmc_address`` inventory field during lookup.
+    This fixes lookup based on MAC addresses, when the BMC address is reported
+    as ``0.0.0.0`` for any reason (see `bug 1714944
+    <https://bugs.launchpad.net/ironic-python-agent/+bug/1714944>`_).

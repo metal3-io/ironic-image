@@ -1,0 +1,2782 @@
+#!/bin/bash
+#
+# lib/ironic
+# Functions to control the configuration and operation of the **Ironic** service
+
+# Dependencies:
+#
+# - ``functions`` file
+# - ``DEST``, ``DATA_DIR``, ``STACK_USER`` must be defined
+# - ``SERVICE_{TENANT_NAME|PASSWORD}`` must be defined
+# - ``SERVICE_HOST``
+# - ``KEYSTONE_TOKEN_FORMAT`` must be defined
+
+# ``stack.sh`` calls the entry points in this order:
+#
+# - install_ironic
+# - install_ironicclient
+# - init_ironic
+# - start_ironic
+# - stop_ironic
+# - cleanup_ironic
+
+# ensure we don't re-source this in the same environment
+[[ -z "$_IRONIC_DEVSTACK_LIB" ]] || return 0
+declare -r -g _IRONIC_DEVSTACK_LIB=1
+
+# Save xtrace and pipefail settings
+_XTRACE_IRONIC=$(set +o | grep xtrace)
+_PIPEFAIL_IRONIC=$(set +o | grep pipefail)
+set -o xtrace
+set +o pipefail
+
+# Defaults
+# --------
+
+# Set up default directories
+GITDIR["python-ironicclient"]=$DEST/python-ironicclient
+GITDIR["ironic-lib"]=$DEST/ironic-lib
+
+GITREPO["pyghmi"]=${PYGHMI_REPO:-${GIT_BASE}/x/pyghmi}
+GITBRANCH["pyghmi"]=${PYGHMI_BRANCH:-master}
+GITDIR["pyghmi"]=$DEST/pyghmi
+
+GITREPO["virtualbmc"]=${VIRTUALBMC_REPO:-${GIT_BASE}/openstack/virtualbmc.git}
+GITBRANCH["virtualbmc"]=${VIRTUALBMC_BRANCH:-master}
+GITDIR["virtualbmc"]=$DEST/virtualbmc
+
+GITREPO["virtualpdu"]=${VIRTUALPDU_REPO:-${GIT_BASE}/openstack/virtualpdu.git}
+GITBRANCH["virtualpdu"]=${VIRTUALPDU_BRANCH:-master}
+GITDIR["virtualpdu"]=$DEST/virtualpdu
+
+GITREPO["sushy"]=${SUSHY_REPO:-${GIT_BASE}/openstack/sushy.git}
+GITBRANCH["sushy"]=${SUSHY_BRANCH:-master}
+GITDIR["sushy"]=$DEST/sushy
+
+GITREPO["sushy-tools"]=${SUSHY_TOOLS_REPO:-${GIT_BASE}/openstack/sushy-tools.git}
+GITBRANCH["sushy-tools"]=${SUSHY_TOOLS_BRANCH:-master}
+GITDIR["sushy-tools"]=$DEST/sushy-tools
+
+IRONIC_DIR=$DEST/ironic
+IRONIC_DEVSTACK_DIR=$IRONIC_DIR/devstack
+IRONIC_DEVSTACK_FILES_DIR=$IRONIC_DEVSTACK_DIR/files
+# TODO(dtantsur): delete these three when we migrate image building to
+# ironic-python-agent-builder completely
+IRONIC_PYTHON_AGENT_REPO=${IRONIC_PYTHON_AGENT_REPO:-${GIT_BASE}/openstack/ironic-python-agent.git}
+IRONIC_PYTHON_AGENT_BRANCH=${IRONIC_PYTHON_AGENT_BRANCH:-$TARGET_BRANCH}
+IRONIC_PYTHON_AGENT_DIR=$DEST/ironic-python-agent
+IRONIC_PYTHON_AGENT_BUILDER_REPO=${IRONIC_PYTHON_AGENT_BUILDER_REPO:-${GIT_BASE}/openstack/ironic-python-agent-builder.git}
+IRONIC_PYTHON_AGENT_BUILDER_BRANCH=${IRONIC_PYTHON_AGENT_BUILDER_BRANCH:-$TARGET_BRANCH}
+IRONIC_PYTHON_AGENT_BUILDER_DIR=$DEST/ironic-python-agent-builder
+IRONIC_DATA_DIR=$DATA_DIR/ironic
+IRONIC_STATE_PATH=/var/lib/ironic
+IRONIC_AUTH_CACHE_DIR=${IRONIC_AUTH_CACHE_DIR:-/var/cache/ironic}
+IRONIC_CONF_DIR=${IRONIC_CONF_DIR:-/etc/ironic}
+IRONIC_CONF_FILE=$IRONIC_CONF_DIR/ironic.conf
+IRONIC_ROOTWRAP_CONF=$IRONIC_CONF_DIR/rootwrap.conf
+# Deploy Ironic API under uwsgi (NOT mod_wsgi) server.
+# Devstack aims to remove mod_wsgi support, so ironic shouldn't use it too.
+# If set to False that will fall back to use the eventlet server that
+# can happen on grenade runs.
+# The (confusing) name IRONIC_USE_MOD_WSGI is left for backward compatibility,
+# for example during grenade runs
+# TODO(pas-ha) remove IRONIC_USE_MOD_WSGI var after oldest supported
+# stable branch is stable/rocky
+IRONIC_USE_MOD_WSGI=$(trueorfalse $ENABLE_HTTPD_MOD_WSGI_SERVICES IRONIC_USE_MOD_WSGI)
+# If True, will deploy Ironic API under WSGI server, currently supported one
+# is uwsgi.
+# Defaults to the (now confusingly named) IRONIC_USE_MOD_WSGI for backward compat
+IRONIC_USE_WSGI=$(trueorfalse $IRONIC_USE_MOD_WSGI IRONIC_USE_WSGI)
+
+# Deploy callback timeout can be changed from its default (1800), if required.
+IRONIC_CALLBACK_TIMEOUT=${IRONIC_CALLBACK_TIMEOUT:-}
+
+# Ping timeout after the node becomes active
+IRONIC_PING_TIMEOUT=${IRONIC_PING_TIMEOUT:-}
+
+# Deploy to hardware platform
+IRONIC_HW_NODE_CPU=${IRONIC_HW_NODE_CPU:-1}
+IRONIC_HW_NODE_RAM=${IRONIC_HW_NODE_RAM:-512}
+IRONIC_HW_NODE_DISK=${IRONIC_HW_NODE_DISK:-10}
+IRONIC_HW_EPHEMERAL_DISK=${IRONIC_HW_EPHEMERAL_DISK:-0}
+IRONIC_HW_ARCH=${IRONIC_HW_ARCH:-x86_64}
+
+# The file is composed of multiple lines, each line includes fields
+# separated by white space, in the format:
+#
+# <BMC address> <MAC address> <BMC username> <BMC password> [<driver specific fields>]
+#
+# For example:
+#
+# 192.168.110.107 00:1e:67:57:50:4c root otc123
+#
+# Supported IRONIC_DEPLOY_DRIVERs:
+# ipmi:
+#   <BMC address> <MAC address> <BMC username> <BMC password>
+#
+# cisco-ucs-standalone:
+#   <BMC address> <MAC address> <BMC username> <BMC password>
+#
+# cisco-ucs-managed:
+#   <BMC address> <MAC address> <BMC username> <BMC password> <UCS service profile>
+#
+# idrac:
+#   <BMC address> <MAC address> <BMC username> <BMC password>
+#
+# irmc:
+#   <BMC address> <MAC address> <BMC username> <BMC password>
+#
+IRONIC_HWINFO_FILE=${IRONIC_HWINFO_FILE:-$IRONIC_DATA_DIR/hardware_info}
+
+# Set up defaults for functional / integration testing
+IRONIC_NODE_UUID=${IRONIC_NODE_UUID:-`uuidgen`}
+IRONIC_SCRIPTS_DIR=${IRONIC_SCRIPTS_DIR:-$IRONIC_DEVSTACK_DIR/tools/ironic/scripts}
+IRONIC_TEMPLATES_DIR=${IRONIC_TEMPLATES_DIR:-$IRONIC_DEVSTACK_DIR/tools/ironic/templates}
+IRONIC_BAREMETAL_BASIC_OPS=$(trueorfalse False IRONIC_BAREMETAL_BASIC_OPS)
+IRONIC_TFTPBOOT_DIR=${IRONIC_TFTPBOOT_DIR:-$IRONIC_DATA_DIR/tftpboot}
+IRONIC_TFTPSERVER_IP=${IRONIC_TFTPSERVER_IP:-$HOST_IP}
+IRONIC_TFTP_BLOCKSIZE=${IRONIC_TFTP_BLOCKSIZE:-$((PUBLIC_BRIDGE_MTU-50))}
+IRONIC_VM_COUNT=${IRONIC_VM_COUNT:-1}
+IRONIC_VM_SPECS_CPU=${IRONIC_VM_SPECS_CPU:-1}
+IRONIC_VM_SPECS_RAM=${IRONIC_VM_SPECS_RAM:-1280}
+IRONIC_VM_SPECS_CPU_ARCH=${IRONIC_VM_SPECS_CPU_ARCH:-'x86_64'}
+IRONIC_VM_SPECS_DISK=${IRONIC_VM_SPECS_DISK:-10}
+IRONIC_VM_SPECS_DISK_FORMAT=${IRONIC_VM_SPECS_DISK_FORMAT:-qcow2}
+IRONIC_VM_EPHEMERAL_DISK=${IRONIC_VM_EPHEMERAL_DISK:-0}
+IRONIC_VM_EMULATOR=${IRONIC_VM_EMULATOR:-'/usr/bin/qemu-system-x86_64'}
+IRONIC_VM_ENGINE=${IRONIC_VM_ENGINE:-qemu}
+IRONIC_VM_NETWORK_BRIDGE=${IRONIC_VM_NETWORK_BRIDGE:-brbm}
+IRONIC_VM_INTERFACE_COUNT=${IRONIC_VM_INTERFACE_COUNT:-2}
+IRONIC_VM_VOLUME_COUNT=${IRONIC_VM_VOLUME_COUNT:-1}
+IRONIC_VM_MACS_CSV_FILE=${IRONIC_VM_MACS_CSV_FILE:-$IRONIC_DATA_DIR/ironic_macs.csv}
+IRONIC_CLEAN_NET_NAME=${IRONIC_CLEAN_NET_NAME:-${IRONIC_PROVISION_NETWORK_NAME:-${PRIVATE_NETWORK_NAME}}}
+IRONIC_RESCUE_NET_NAME=${IRONIC_RESCUE_NET_NAME:-${IRONIC_CLEAN_NET_NAME}}
+IRONIC_EXTRA_PXE_PARAMS=${IRONIC_EXTRA_PXE_PARAMS:-}
+IRONIC_TTY_DEV=${IRONIC_TTY_DEV:-ttyS0}
+
+IRONIC_TEMPEST_BUILD_TIMEOUT=${IRONIC_TEMPEST_BUILD_TIMEOUT:-${BUILD_TIMEOUT:-}}
+if [[ -n "$BUILD_TIMEOUT" ]]; then
+    echo "WARNING: BUILD_TIMEOUT variable is renamed to IRONIC_TEMPEST_BUILD_TIMEOUT and will be deprecated in Pike."
+fi
+
+IRONIC_DEFAULT_API_VERSION=${IRONIC_DEFAULT_API_VERSION:-}
+IRONIC_CMD="openstack baremetal"
+if [[ -n "$IRONIC_DEFAULT_API_VERSION" ]]; then
+    IRONIC_CMD="$IRONIC_CMD --os-baremetal-api-version $IRONIC_DEFAULT_API_VERSION"
+fi
+
+IRONIC_ENABLED_HARDWARE_TYPES=${IRONIC_ENABLED_HARDWARE_TYPES:-"ipmi,fake-hardware"}
+# list of all available driver interfaces types
+IRONIC_DRIVER_INTERFACE_TYPES="bios boot power management deploy console inspect raid rescue storage network vendor"
+IRONIC_ENABLED_BIOS_INTERFACES=${IRONIC_ENABLED_BIOS_INTERFACES:-"fake,no-bios"}
+IRONIC_ENABLED_BOOT_INTERFACES=${IRONIC_ENABLED_BOOT_INTERFACES:-"fake,pxe"}
+IRONIC_ENABLED_CONSOLE_INTERFACES=${IRONIC_ENABLED_CONSOLE_INTERFACES:-"fake,no-console"}
+IRONIC_ENABLED_DEPLOY_INTERFACES=${IRONIC_ENABLED_DEPLOY_INTERFACES:-"fake,iscsi,direct"}
+IRONIC_ENABLED_INSPECT_INTERFACES=${IRONIC_ENABLED_INSPECT_INTERFACES:-"fake,no-inspect"}
+IRONIC_ENABLED_MANAGEMENT_INTERFACES=${IRONIC_ENABLED_MANAGEMENT_INTERFACES:-"fake,ipmitool,noop"}
+IRONIC_ENABLED_NETWORK_INTERFACES=${IRONIC_ENABLED_NETWORK_INTERFACES:-"flat,noop"}
+IRONIC_ENABLED_POWER_INTERFACES=${IRONIC_ENABLED_POWER_INTERFACES:-"fake,ipmitool"}
+IRONIC_ENABLED_RAID_INTERFACES=${IRONIC_ENABLED_RAID_INTERFACES:-"fake,agent,no-raid"}
+IRONIC_ENABLED_RESCUE_INTERFACES=${IRONIC_ENABLED_RESCUE_INTERFACES:-"fake,agent,no-rescue"}
+IRONIC_ENABLED_STORAGE_INTERFACES=${IRONIC_ENABLED_STORAGE_INTERFACES:-"fake,cinder,noop"}
+IRONIC_ENABLED_VENDOR_INTERFACES=${IRONIC_ENABLED_VENDOR_INTERFACES:-"fake,ipmitool,no-vendor"}
+# for usage with hardware types
+IRONIC_DEFAULT_BIOS_INTERFACE=${IRONIC_DEFAULT_BIOS_INTERFACE:-}
+IRONIC_DEFAULT_BOOT_INTERFACE=${IRONIC_DEFAULT_BOOT_INTERFACE:-}
+IRONIC_DEFAULT_CONSOLE_INTERFACE=${IRONIC_DEFAULT_CONSOLE_INTERFACE:-}
+IRONIC_DEFAULT_DEPLOY_INTERFACE=${IRONIC_DEFAULT_DEPLOY_INTERFACE:-}
+IRONIC_DEFAULT_INSPECT_INTERFACE=${IRONIC_DEFAULT_INSPECT_INTERFACE:-}
+IRONIC_DEFAULT_MANAGEMENT_INTERFACE=${IRONIC_DEFAULT_MANAGEMENT_INTERFACE:-}
+IRONIC_DEFAULT_NETWORK_INTERFACE=${IRONIC_DEFAULT_NETWORK_INTERFACE:-}
+IRONIC_DEFAULT_POWER_INTERFACE=${IRONIC_DEFAULT_POWER_INTERFACE:-}
+IRONIC_DEFAULT_RAID_INTERFACE=${IRONIC_DEFAULT_RAID_INTERFACE:-}
+IRONIC_DEFAULT_RESCUE_INTERFACE=${IRONIC_DEFAULT_RESCUE_INTERFACE:-}
+IRONIC_DEFAULT_STORAGE_INTERFACE=${IRONIC_DEFAULT_STORAGE_INTERFACE:-}
+IRONIC_DEFAULT_VENDOR_INTERFACE=${IRONIC_DEFAULT_VENDOR_INTERFACE:-}
+# If IRONIC_VM_ENGINE is explicitly set to "auto" or "kvm",
+# devstack will attempt to use hardware virtualization
+# (aka nested kvm). We do not enable it in the infra gates
+# because it is not consistently supported/working across
+# all gate infrastructure providers.
+if [[ "$IRONIC_VM_ENGINE" == "auto" ]]; then
+    sudo modprobe kvm || true
+    if [ ! -e /dev/kvm ]; then
+        echo "WARNING: Switching to QEMU"
+        IRONIC_VM_ENGINE=qemu
+        if [[ -z "$IRONIC_VM_EMULATOR" ]]; then
+            IRONIC_VM_EMULATOR='/usr/bin/qemu-system-x86_64'
+        fi
+    else
+        IRONIC_VM_ENGINE=kvm
+    fi
+fi
+
+if [[ "$IRONIC_VM_ENGINE" == "kvm" ]]; then
+    # Set this to empty, so configure-vm.py can autodetect location
+    # of KVM binary
+    IRONIC_VM_EMULATOR=""
+fi
+
+# By default, baremetal VMs will console output to file.
+IRONIC_VM_LOG_CONSOLE=$(trueorfalse True IRONIC_VM_LOG_CONSOLE)
+IRONIC_VM_LOG_DIR=${IRONIC_VM_LOG_DIR:-$IRONIC_DATA_DIR/logs/}
+IRONIC_VM_LOG_ROTATE=$(trueorfalse True IRONIC_VM_LOG_ROTATE)
+
+# Set resource_classes for nodes to use Nova's placement engine
+IRONIC_DEFAULT_RESOURCE_CLASS=${IRONIC_DEFAULT_RESOURCE_CLASS:-baremetal}
+
+# Set traits for nodes. Traits should be separated by whitespace.
+IRONIC_DEFAULT_TRAITS=${IRONIC_DEFAULT_TRAITS-CUSTOM_GOLD}
+
+# Whether to build the ramdisk or download a prebuilt one.
+IRONIC_BUILD_DEPLOY_RAMDISK=$(trueorfalse True IRONIC_BUILD_DEPLOY_RAMDISK)
+
+# Ironic IPA ramdisk type, supported types are:
+IRONIC_SUPPORTED_RAMDISK_TYPES_RE="^(coreos|tinyipa|dib)$"
+IRONIC_RAMDISK_TYPE=${IRONIC_RAMDISK_TYPE:-tinyipa}
+
+# Confirm we have a supported ramdisk type or fail early.
+if [[ ! "$IRONIC_RAMDISK_TYPE" =~ $IRONIC_SUPPORTED_RAMDISK_TYPES_RE ]]; then
+    die $LINENO "Unrecognized IRONIC_RAMDISK_TYPE: $IRONIC_RAMDISK_TYPE. Expected 'coreos', 'tinyipa' or 'dib'"
+fi
+
+# If present, these files are used as deploy ramdisk/kernel.
+# (The value must be an absolute path)
+IRONIC_DEPLOY_RAMDISK=${IRONIC_DEPLOY_RAMDISK:-$TOP_DIR/files/ir-deploy-$IRONIC_DEPLOY_DRIVER.initramfs}
+IRONIC_DEPLOY_KERNEL=${IRONIC_DEPLOY_KERNEL:-$TOP_DIR/files/ir-deploy-$IRONIC_DEPLOY_DRIVER.kernel}
+IRONIC_DEPLOY_ISO=${IRONIC_DEPLOY_ISO:-$TOP_DIR/files/ir-deploy-$IRONIC_DEPLOY_DRIVER.iso}
+
+# NOTE(jroll) this needs to be updated when stable branches are cut
+IPA_DOWNLOAD_BRANCH=${IPA_DOWNLOAD_BRANCH:-master}
+IPA_DOWNLOAD_BRANCH=$(echo $IPA_DOWNLOAD_BRANCH | tr / -)
+
+# Configure URLs required to download ramdisk if we're not building it, and
+# IRONIC_DEPLOY_RAMDISK/KERNEL or the RAMDISK/KERNEL_URLs have not been
+# preconfigured.
+if [[ "$IRONIC_BUILD_DEPLOY_RAMDISK" == "False" && \
+        ! (-e "$IRONIC_DEPLOY_RAMDISK" && -e "$IRONIC_DEPLOY_KERNEL") && \
+        (-z "$IRONIC_AGENT_KERNEL_URL" || -z "$IRONIC_AGENT_RAMDISK_URL") ]]; then
+    case $IRONIC_RAMDISK_TYPE in
+        coreos)
+            IRONIC_AGENT_KERNEL_URL=${IRONIC_AGENT_KERNEL_URL:-https://tarballs.openstack.org/ironic-python-agent/coreos/files/coreos_production_pxe-${IPA_DOWNLOAD_BRANCH}.vmlinuz}
+            IRONIC_AGENT_RAMDISK_URL=${IRONIC_AGENT_RAMDISK_URL:-https://tarballs.openstack.org/ironic-python-agent/coreos/files/coreos_production_pxe_image-oem-${IPA_DOWNLOAD_BRANCH}.cpio.gz}
+        ;;
+        tinyipa)
+            IRONIC_AGENT_KERNEL_URL=${IRONIC_AGENT_KERNEL_URL:-https://tarballs.openstack.org/ironic-python-agent/tinyipa/files/tinyipa-${IPA_DOWNLOAD_BRANCH}.vmlinuz}
+            IRONIC_AGENT_RAMDISK_URL=${IRONIC_AGENT_RAMDISK_URL:-https://tarballs.openstack.org/ironic-python-agent/tinyipa/files/tinyipa-${IPA_DOWNLOAD_BRANCH}.gz}
+        ;;
+        dib)
+            die "IRONIC_RAMDISK_TYPE 'dib' has no official pre-built "\
+                "images. To fix this select a different ramdisk type, set "\
+                "IRONIC_BUILD_DEPLOY_RAMDISK=True, or manually configure "\
+                "IRONIC_DEPLOY_RAMDISK(_URL) and IRONIC_DEPLOY_KERNEL(_URL) "\
+                "to use your own pre-built ramdisk."
+        ;;
+    esac
+fi
+
+# This refers the options for disk-image-create and the platform on which
+# to build the dib based ironic-python-agent ramdisk.
+# "ubuntu" is set as the default value.
+IRONIC_DIB_RAMDISK_OPTIONS=${IRONIC_DIB_RAMDISK_OPTIONS:-'ubuntu'}
+
+# Some drivers in Ironic require deploy ramdisk in bootable ISO format.
+# Set this variable to "true" to build an ISO for deploy ramdisk and
+# upload to Glance.
+IRONIC_DEPLOY_ISO_REQUIRED=$(trueorfalse False IRONIC_DEPLOY_ISO_REQUIRED)
+if [[ "$IRONIC_DEPLOY_ISO_REQUIRED" = "True" \
+    && "$IRONIC_BUILD_DEPLOY_RAMDISK" = "False" \
+    && -n "$IRONIC_DEPLOY_ISO" ]];  then
+    die "Prebuilt ISOs are not available, provide an ISO via IRONIC_DEPLOY_ISO \
+        or set IRONIC_BUILD_DEPLOY_RAMDISK=True to use ISOs"
+fi
+# Which deploy driver to use - valid choices right now
+# are ``ipmi``, ``snmp`` and ``redfish``.
+#
+# Additional valid choices if IRONIC_IS_HARDWARE == true are:
+# ``cisco-ucs-managed``, ``cisco-ucs-standalone``, ``idrac``,
+# and ``irmc``.
+IRONIC_DEPLOY_DRIVER=${IRONIC_DEPLOY_DRIVER:-ipmi}
+
+# If the requested driver is not yet enable, enable it, if it is not it will fail anyway
+if [[ -z "$(echo ${IRONIC_ENABLED_HARDWARE_TYPES} | grep -w ${IRONIC_DEPLOY_DRIVER})" ]]; then
+    die "The deploy driver $IRONIC_DEPLOY_DRIVER is not in the list of enabled \
+        hardware types $IRONIC_ENABLED_HARDWARE_TYPES"
+fi
+
+# Support entry points installation of console scripts
+IRONIC_BIN_DIR=$(get_python_exec_prefix)
+IRONIC_UWSGI_CONF=$IRONIC_CONF_DIR/ironic-uwsgi.ini
+IRONIC_UWSGI=$IRONIC_BIN_DIR/ironic-api-wsgi
+
+# Ironic connection info.  Note the port must be specified.
+if is_service_enabled tls-proxy; then
+    IRONIC_SERVICE_PROTOCOL=https
+fi
+IRONIC_SERVICE_PROTOCOL=${IRONIC_SERVICE_PROTOCOL:-$SERVICE_PROTOCOL}
+IRONIC_SERVICE_PORT=${IRONIC_SERVICE_PORT:-6385}
+IRONIC_SERVICE_PORT_INT=${IRONIC_SERVICE_PORT_INT:-16385}
+# If ironic api running under apache or UWSGI we use the path rather than port
+if [[ "$IRONIC_USE_WSGI" == "True" ]]; then
+    IRONIC_HOSTPORT=${IRONIC_HOSTPORT:-$SERVICE_HOST/baremetal}
+else
+    IRONIC_HOSTPORT=${IRONIC_HOSTPORT:-$SERVICE_HOST:$IRONIC_SERVICE_PORT}
+fi
+
+# Enable iPXE
+IRONIC_IPXE_ENABLED=$(trueorfalse True IRONIC_IPXE_ENABLED)
+# Options below are only applied when IRONIC_IPXE_ENABLED is True
+IRONIC_IPXE_USE_SWIFT=$(trueorfalse False IRONIC_IPXE_USE_SWIFT)
+IRONIC_HTTP_DIR=${IRONIC_HTTP_DIR:-$IRONIC_DATA_DIR/httpboot}
+IRONIC_HTTP_PORT=${IRONIC_HTTP_PORT:-3928}
+
+# Allow using JSON RPC instead of oslo.messaging
+IRONIC_RPC_TRANSPORT=${IRONIC_RPC_TRANSPORT:-oslo}
+IRONIC_JSON_RPC_PORT=${IRONIC_JSON_RPC_PORT:-8089}
+
+# Whether DevStack will be setup for bare metal or VMs
+IRONIC_IS_HARDWARE=$(trueorfalse False IRONIC_IS_HARDWARE)
+
+# The first port in the range to bind the Virtual BMCs. The number of
+# ports that will be used depends on $IRONIC_VM_COUNT variable, e.g if
+# $IRONIC_VM_COUNT=3 the ports 6230, 6231 and 6232 will be used for the
+# Virtual BMCs, one for each VM.
+IRONIC_VBMC_PORT_RANGE_START=${IRONIC_VBMC_PORT_RANGE_START:-6230}
+IRONIC_VBMC_CONFIG_FILE=${IRONIC_VBMC_CONFIG_FILE:-$IRONIC_CONF_DIR/virtualbmc/virtualbmc.conf}
+IRONIC_VBMC_LOGFILE=${IRONIC_VBMC_LOGFILE:-$IRONIC_VM_LOG_DIR/virtualbmc.log}
+IRONIC_VBMC_SYSTEMD_SERVICE=devstack@virtualbmc.service
+
+# Virtual PDU configs
+IRONIC_VPDU_CONFIG_FILE=${IRONIC_VPDU_CONFIG_FILE:-$IRONIC_CONF_DIR/virtualpdu/virtualpdu.conf}
+IRONIC_VPDU_PORT_RANGE_START=${IRONIC_VPDU_PORT_RANGE_START:-1}
+IRONIC_VPDU_LISTEN_PORT=${IRONIC_VPDU_LISTEN_PORT:-1161}
+IRONIC_VPDU_COMMUNITY=${IRONIC_VPDU_COMMUNITY:-private}
+IRONIC_VPDU_SNMPDRIVER=${IRONIC_VPDU_SNMPDRIVER:-apc_rackpdu}
+IRONIC_VPDU_SYSTEMD_SERVICE=devstack@virtualpdu.service
+
+# Redfish configs
+IRONIC_REDFISH_EMULATOR_PORT=${IRONIC_REDFISH_EMULATOR_PORT:-9132}
+IRONIC_REDFISH_EMULATOR_SYSTEMD_SERVICE="devstack@redfish-emulator.service"
+IRONIC_REDFISH_EMULATOR_CONFIG=${IRONIC_REDFISH_EMULATOR_CONFIG:-$IRONIC_CONF_DIR/redfish/emulator.conf}
+
+# To explicitly enable configuration of Glance with Swift
+# (which is required by some vendor drivers), set this
+# variable to true.
+IRONIC_CONFIGURE_GLANCE_WITH_SWIFT=$(trueorfalse False IRONIC_CONFIGURE_GLANCE_WITH_SWIFT)
+
+# The path to the libvirt hooks directory, used if IRONIC_VM_LOG_ROTATE is True
+IRONIC_LIBVIRT_HOOKS_PATH=${IRONIC_LIBVIRT_HOOKS_PATH:-/etc/libvirt/hooks/}
+
+# The authentication strategy used by ironic-api. Valid values are:
+# keystone and noauth.
+IRONIC_AUTH_STRATEGY=${IRONIC_AUTH_STRATEGY:-keystone}
+
+# By default, terminal SSL certificate is disabled.
+IRONIC_TERMINAL_SSL=$(trueorfalse False IRONIC_TERMINAL_SSL)
+IRONIC_TERMINAL_CERT_DIR=${IRONIC_TERMINAL_CERT_DIR:-$IRONIC_DATA_DIR/terminal_cert/}
+
+# This flag is used to allow adding Link-Local-Connection info
+# to ironic port-create command. LLC info is obtained from
+# IRONIC_{VM,HW}_NODES_FILE
+IRONIC_USE_LINK_LOCAL=$(trueorfalse False IRONIC_USE_LINK_LOCAL)
+
+# Allow selecting dhcp provider
+IRONIC_DHCP_PROVIDER=${IRONIC_DHCP_PROVIDER:-neutron}
+
+# This is the network interface to use for a node
+IRONIC_NETWORK_INTERFACE=${IRONIC_NETWORK_INTERFACE:-}
+
+# Ironic provision network name, if this value is set it means we are using
+# multi-tenant networking. If not set, then we are not using multi-tenant
+# networking and are therefore using a 'flat' network.
+IRONIC_PROVISION_NETWORK_NAME=${IRONIC_PROVISION_NETWORK_NAME:-}
+
+# Provision network provider type. Can be flat or vlan.
+# This is only used if IRONIC_PROVISION_NETWORK_NAME has been set.
+IRONIC_PROVISION_PROVIDER_NETWORK_TYPE=${IRONIC_PROVISION_PROVIDER_NETWORK_TYPE:-'vlan'}
+
+# If IRONIC_PROVISION_PROVIDER_NETWORK_TYPE is vlan. VLAN_ID may be specified. If it is not set,
+# vlan will be allocated dynamically.
+# This is only used if IRONIC_PROVISION_NETWORK_NAME has been set.
+IRONIC_PROVISION_SEGMENTATION_ID=${IRONIC_PROVISION_SEGMENTATION_ID:-}
+
+# Allocation network pool for provision network
+# Example: IRONIC_PROVISION_ALLOCATION_POOL=start=10.0.5.10,end=10.0.5.100
+# This is only used if IRONIC_PROVISION_NETWORK_NAME has been set.
+IRONIC_PROVISION_ALLOCATION_POOL=${IRONIC_PROVISION_ALLOCATION_POOL:-'start=10.0.5.10,end=10.0.5.100'}
+
+# Ironic provision subnet name.
+# This is only used if IRONIC_PROVISION_NETWORK_NAME has been set.
+IRONIC_PROVISION_PROVIDER_SUBNET_NAME=${IRONIC_PROVISION_PROVIDER_SUBNET_NAME:-${IRONIC_PROVISION_NETWORK_NAME}-subnet}
+
+# When enabled this will set the physical_network attribute for ironic ports
+# and subnet-to-segment association on provisioning network will be configured.
+# NOTE: The neutron segments service_plugin must be loaded for this.
+IRONIC_USE_NEUTRON_SEGMENTS=$(trueorfalse False IRONIC_USE_NEUTRON_SEGMENTS)
+
+# This is the storage interface to use for a node
+# Only 'cinder' can be set for testing boot from volume
+IRONIC_STORAGE_INTERFACE=${IRONIC_STORAGE_INTERFACE:-}
+
+
+# With multinode case all ironic-conductors should have IP from provisioning network.
+# IRONIC_PROVISION_SUBNET_GATEWAY - is configured on primary node.
+# Ironic provision subnet gateway.
+IRONIC_PROVISION_SUBNET_GATEWAY=${IRONIC_PROVISION_SUBNET_GATEWAY:-'10.0.5.1'}
+IRONIC_PROVISION_SUBNET_SUBNODE_IP=${IRONIC_PROVISION_SUBNET_SUBNODE_IP:-'10.0.5.2'}
+
+# Ironic provision subnet prefix
+# Example: IRONIC_PROVISION_SUBNET_PREFIX=10.0.5.0/24
+IRONIC_PROVISION_SUBNET_PREFIX=${IRONIC_PROVISION_SUBNET_PREFIX:-'10.0.5.0/24'}
+
+if [[ "$HOST_TOPOLOGY_ROLE" == 'primary' ]]; then
+    IRONIC_TFTPSERVER_IP=$IRONIC_PROVISION_SUBNET_GATEWAY
+    IRONIC_HTTP_SERVER=$IRONIC_PROVISION_SUBNET_GATEWAY
+fi
+if [[ "$HOST_TOPOLOGY_ROLE" == 'subnode' ]]; then
+    IRONIC_TFTPSERVER_IP=$IRONIC_PROVISION_SUBNET_SUBNODE_IP
+    IRONIC_HTTP_SERVER=$IRONIC_PROVISION_SUBNET_SUBNODE_IP
+fi
+
+IRONIC_HTTP_SERVER=${IRONIC_HTTP_SERVER:-$IRONIC_TFTPSERVER_IP}
+
+# Port that must be permitted for iSCSI connections to be
+# established from the tenant network.
+ISCSI_SERVICE_PORT=${ISCSI_SERVICE_PORT:-3260}
+
+# Retrieving logs from the deploy ramdisk
+#
+# IRONIC_DEPLOY_LOGS_COLLECT possible values are:
+# * always: Collect the ramdisk logs from the deployment on success or
+#           failure (Default in DevStack for debugging purpose).
+# * on_failure: Collect the ramdisk logs upon a deployment failure
+#               (Default in Ironic).
+# * never: Never collect the ramdisk logs.
+IRONIC_DEPLOY_LOGS_COLLECT=${IRONIC_DEPLOY_LOGS_COLLECT:-always}
+# IRONIC_DEPLOY_LOGS_STORAGE_BACKEND possible values are:
+# * local: To store the logs in the local filesystem (Default in Ironic and DevStack).
+# * swift: To store the logs in Swift.
+IRONIC_DEPLOY_LOGS_STORAGE_BACKEND=${IRONIC_DEPLOY_LOGS_STORAGE_BACKEND:-local}
+# The path to the directory where Ironic should put the logs when IRONIC_DEPLOY_LOGS_STORAGE_BACKEND is set to "local"
+IRONIC_DEPLOY_LOGS_LOCAL_PATH=${IRONIC_DEPLOY_LOGS_LOCAL_PATH:-$IRONIC_VM_LOG_DIR/deploy_logs}
+
+# Fast track option
+IRONIC_DEPLOY_FAST_TRACK=${IRONIC_DEPLOY_FAST_TRACK:-False}
+
+# Define baremetal min_microversion in tempest config. Default value None is picked from tempest.
+TEMPEST_BAREMETAL_MIN_MICROVERSION=${TEMPEST_BAREMETAL_MIN_MICROVERSION:-}
+
+# Define baremetal max_microversion in tempest config. No default value means that it is picked from tempest.
+TEMPEST_BAREMETAL_MAX_MICROVERSION=${TEMPEST_BAREMETAL_MAX_MICROVERSION:-}
+
+# get_pxe_boot_file() - Get the PXE/iPXE boot file path
+function get_pxe_boot_file {
+    local pxe_boot_file
+    if [[ "$IRONIC_IPXE_ENABLED" == "True" ]] ; then
+        if is_ubuntu; then
+            pxe_boot_file=/usr/lib/ipxe/undionly.kpxe
+        elif is_fedora || is_suse; then
+            pxe_boot_file=/usr/share/ipxe/undionly.kpxe
+        fi
+    else
+        # Standard PXE
+        if is_ubuntu; then
+            # Ubuntu Xenial (16.04) places the file under /usr/lib/PXELINUX
+            pxe_paths="/usr/lib/syslinux/pxelinux.0 /usr/lib/PXELINUX/pxelinux.0"
+            for p in $pxe_paths; do
+                if [[ -f $p ]]; then
+                    pxe_boot_file=$p
+                fi
+            done
+        elif is_fedora || is_suse; then
+            pxe_boot_file=/usr/share/syslinux/pxelinux.0
+        fi
+    fi
+    echo $pxe_boot_file
+}
+
+# PXE boot image
+IRONIC_PXE_BOOT_IMAGE=${IRONIC_PXE_BOOT_IMAGE:-$(get_pxe_boot_file)}
+
+IRONIC_AUTOMATED_CLEAN_ENABLED=$(trueorfalse True IRONIC_AUTOMATED_CLEAN_ENABLED)
+
+IRONIC_SECURE_BOOT=${IRONIC_SECURE_BOOT:-False}
+IRONIC_UEFI_BOOT_LOADER=${IRONIC_UEFI_BOOT_LOADER:-grub2}
+IRONIC_GRUB2_SHIM_FILE=${IRONIC_GRUB2_SHIM_FILE:-}
+IRONIC_GRUB2_FILE=${IRONIC_GRUB2_FILE:-}
+IRONIC_UEFI_FILES_DIR=${IRONIC_UEFI_FILES_DIR:-/var/lib/libvirt/images}
+UEFI_LOADER_PATH=$IRONIC_UEFI_FILES_DIR/OVMF_CODE.fd
+UEFI_NVRAM_PATH=$IRONIC_UEFI_FILES_DIR/OVMF_VARS.fd
+
+# Handle architecture specific package installs
+if [[ $IRONIC_HW_ARCH == "x86_64" ]]; then
+    install_package shim
+    if is_ubuntu; then
+        install_package grub-efi-amd64-signed
+    elif is_fedora; then
+        install_package grub2-efi
+    fi
+fi
+
+# Sanity checks
+if [[ "$IRONIC_BOOT_MODE" == "uefi" ]]; then
+    if [[ "$IRONIC_IPXE_ENABLED" == "False" ]] && [[ "$IRONIC_UEFI_BOOT_LOADER" != "grub2" ]]; then
+        die $LINENO "Boot mode UEFI is only supported with iPXE and grub2 bootloaders."
+    fi
+
+    if ! is_fedora && ! is_ubuntu; then
+        die $LINENO "Boot mode UEFI only works in Ubuntu or Fedora for now."
+    fi
+
+    if is_ubuntu && [[ -z $IRONIC_GRUB2_FILE ]]; then
+        IRONIC_GRUB2_SHIM_FILE=/usr/lib/shim/shimx64.efi
+        IRONIC_GRUB2_FILE=/usr/lib/grub/x86_64-efi-signed/grubx64.efi.signed
+    fi
+
+    if [[ "$IRONIC_IPXE_ENABLED" == "False" ]]; then
+        # NOTE(TheJulia): While we no longer directly copy the
+        # IRONIC_GRUB2_FILE, we still check the existence as
+        # without the bootloader package we would be unable to build
+        # the netboot core image.
+        if [[ -z $IRONIC_GRUB2_SHIM_FILE ]] || [[ -z $IRONIC_GRUB2_FILE ]] || [[ ! -f $IRONIC_GRUB2_SHIM_FILE ]] || [[ ! -f $IRONIC_GRUB2_FILE ]]; then
+            die $LINENO "Grub2 Bootloader and Shim file missing."
+        fi
+    fi
+fi
+
+# TODO(dtantsur): change this when we change the default value.
+IRONIC_DEFAULT_BOOT_OPTION=${IRONIC_DEFAULT_BOOT_OPTION:-netboot}
+if [ $IRONIC_DEFAULT_BOOT_OPTION != 'netboot' ] && [ $IRONIC_DEFAULT_BOOT_OPTION != 'local' ]; then
+    die $LINENO "Supported values for IRONIC_DEFAULT_BOOT_OPTION are 'netboot' and 'local' only."
+fi
+
+# TODO(pas-ha) find a way to (cross-)sign the custom CA bundle used by tls-proxy
+# with default iPXE cert - for reference see http://ipxe.org/crypto
+if is_service_enabled tls-proxy && [[ "$IRONIC_IPXE_USE_SWIFT" == "True" ]]; then
+    die $LINENO "Ironic in DevStack does not yet support booting iPXE from HTTPS URLs"
+fi
+
+# Timeout for "manage" action. 2 minutes is more than enough.
+IRONIC_MANAGE_TIMEOUT=${IRONIC_MANAGE_TIMEOUT:-120}
+# Timeout for "provide" action. This involves cleaning. Generally, 15 minutes
+# should be enough, but real hardware may need more.
+IRONIC_CLEANING_TIMEOUT=${IRONIC_CLEANING_TIMEOUT:-1200}
+
+IRONIC_CLEANING_DELAY=10
+IRONIC_CLEANING_ATTEMPTS=$(( $IRONIC_CLEANING_TIMEOUT / $IRONIC_CLEANING_DELAY ))
+
+# Timeout for ironic-neutron-agent to report state before providing nodes.
+# The agent reports every 60 seconds, 2 minutes should do.
+IRONIC_NEUTRON_AGENT_REPORT_STATE_DELAY=10
+IRONIC_NEUTRON_AGENT_REPORT_STATE_TIMEOUT=${IRONIC_NEUTRON_AGENT_REPORT_STATE_TIMEOUT:-120}
+IRONIC_NEUTRON_AGENT_REPORT_STATE_ATTEMPTS=$(( $IRONIC_NEUTRON_AGENT_REPORT_STATE_TIMEOUT / IRONIC_NEUTRON_AGENT_REPORT_STATE_DELAY ))
+
+# Username to use by Ansible to access ramdisk,
+# to be set as '[ansible]/default_username' option.
+# If not set here (default), will be set to 'tc' for TinyIPA ramdisk,
+# for other ramdisks it must be either provided here,
+# or set manually per-node via ironic API
+IRONIC_ANSIBLE_SSH_USER=${IRONIC_ANSIBLE_SSH_USER:-}
+# Path to the private SSH key to use by ansible deploy interface
+# that will be set as '[ansible]/default_key_file' option in config.
+# The public key path is assumed to be ${IRONIC_ANSIBLE_SSH_KEY}.pub
+# and will be used when rebuilding the image to include this public key
+# in ~/.ssh/authorized_keys of a $IRONIC_ANSIBLE_SSH_USER in the ramdisk.
+# Only the TinyIPA ramdisks are currently supported for such rebuild.
+# For TinyIPA ramdisks, if the specified file doesn't exist, it will
+# be created and will contain a new RSA passwordless key. We assume
+# that the directories in the path to this file exist and are
+# writable.
+# For other ramdisk types, make sure the corresponding public key is baked into
+# the ramdisk to be used by DevStack and provide the path to the private key here,
+# or set it manually per node via ironic API.
+# FIXME(pas-ha) auto-generated keys currently won't work for multi-node
+# DevStack deployment, as we do not distribute this generated key to subnodes yet.
+IRONIC_ANSIBLE_SSH_KEY=${IRONIC_ANSIBLE_SSH_KEY:-$IRONIC_DATA_DIR/ansible_ssh_key}
+
+IRONIC_AGENT_IMAGE_DOWNLOAD_SOURCE=${IRONIC_AGENT_IMAGE_DOWNLOAD_SOURCE:-swift}
+
+# Functions
+# ---------
+
+# UEFI related functions
+function get_uefi_ipxe_boot_file {
+    if is_ubuntu; then
+        echo /usr/lib/ipxe/ipxe.efi
+    elif is_fedora; then
+        echo /usr/share/ipxe/ipxe-x86_64.efi
+    fi
+}
+
+function get_uefi_loader {
+    if is_ubuntu; then
+        echo /usr/share/OVMF/OVMF_CODE.fd
+    elif is_fedora; then
+        echo /usr/share/edk2/ovmf/OVMF_CODE.fd
+    fi
+}
+
+function get_uefi_nvram {
+    if is_ubuntu; then
+        echo /usr/share/OVMF/OVMF_VARS.fd
+    elif is_fedora; then
+        echo /usr/share/edk2/ovmf/OVMF_VARS.fd
+    fi
+}
+
+# Misc
+
+function restart_libvirt {
+    local libvirt_service_name="libvirtd"
+    if is_ubuntu && [ ! -f /etc/init.d/libvirtd ]; then
+        libvirt_service_name="libvirt-bin"
+    fi
+    restart_service $libvirt_service_name
+}
+
+# Test if any Ironic services are enabled
+# is_ironic_enabled
+function is_ironic_enabled {
+    [[ ,${ENABLED_SERVICES} =~ ,"ir-" ]] && return 0
+    return 1
+}
+
+function is_deployed_by_agent {
+    [[ -z "${IRONIC_DEPLOY_DRIVER%%agent*}" || "$IRONIC_DEFAULT_DEPLOY_INTERFACE" == 'direct' ]] && return 0
+    return 1
+}
+
+function is_deployed_by_ipmi {
+    [[ "$IRONIC_DEPLOY_DRIVER" == ipmi ]] && return 0
+    return 1
+}
+
+function is_deployed_by_cimc {
+    [[ "${IRONIC_DEPLOY_DRIVER}" == cisco-ucs-standalone ]] && return 0
+    return 1
+}
+
+function is_deployed_by_ucs {
+    [[ "${IRONIC_DEPLOY_DRIVER}" == cisco-ucs-managed ]] && return 0
+    return 1
+}
+
+function is_deployed_by_ilo {
+    [[ "${IRONIC_DEPLOY_DRIVER}" == ilo ]] && return 0
+    return 1
+}
+
+function is_deployed_by_drac {
+    [[ "${IRONIC_DEPLOY_DRIVER}" == idrac ]] && return 0
+    return 1
+}
+
+function is_deployed_by_snmp {
+    [[ "${IRONIC_DEPLOY_DRIVER}" == snmp ]] && return 0
+    return 1
+}
+
+function is_deployed_by_redfish {
+    [[ "$IRONIC_DEPLOY_DRIVER" == redfish ]] && return 0
+    return 1
+}
+
+function is_deployed_by_irmc {
+    [[ "$IRONIC_DEPLOY_DRIVER" == irmc ]] && return 0
+    return 1
+}
+
+function is_deployed_by_xclarity {
+    [[ "$IRONIC_DEPLOY_DRIVER" == xclarity ]] && return 0
+    return 1
+}
+
+function is_drac_enabled {
+    [[ -z "${IRONIC_ENABLED_HARDWARE_TYPES%%*idrac*}" ]] && return 0
+    return 1
+}
+
+function is_ansible_deploy_enabled {
+    [[ -z "${IRONIC_ENABLED_DEPLOY_INTERFACES%%*ansible*}" ]] && return 0
+    return 1
+}
+
+function is_ansible_with_tinyipa {
+    # NOTE(pas-ha) we support rebuilding the ramdisk to include (generated) SSH keys
+    # as needed for ansible deploy interface only for TinyIPA ramdisks for now
+    is_ansible_deploy_enabled && [[ "$IRONIC_RAMDISK_TYPE" == "tinyipa" ]] && return 0
+    return 1
+}
+
+function is_glance_configuration_required {
+    is_deployed_by_agent || is_ansible_deploy_enabled || [[ "$IRONIC_CONFIGURE_GLANCE_WITH_SWIFT" == "True" ]] && return 0
+    return 1
+}
+
+function is_deploy_iso_required {
+    [[ "$IRONIC_IS_HARDWARE" == "True" && "$IRONIC_DEPLOY_ISO_REQUIRED" == "True" ]] && return 0
+    return 1
+}
+
+# Assert that the redfish hardware type is enabled in case we are using
+# the redfish driver
+if is_deployed_by_redfish && [[ "$IRONIC_ENABLED_HARDWARE_TYPES" != *"redfish"* ]]; then
+    die $LINENO "Please make sure that the redfish hardware" \
+        "type is enabled. Take a look at the " \
+        "IRONIC_ENABLED_HARDWARE_TYPES configuration option" \
+        "for DevStack"
+fi
+
+# Assert that for non-TynyIPA ramdisks and Ansible, the private SSH key file to use exists.
+if is_ansible_deploy_enabled && [[ "$IRONIC_RAMDISK_TYPE" != "tinyipa" ]]; then
+    if [[ ! -f $IRONIC_ANSIBLE_SSH_KEY ]]; then
+        die $LINENO "Using non-TinyIPA ramdisks with ansible deploy interface" \
+            "requires setting IRONIC_ANSIBLE_SSH_KEY to existing"\
+            "private SSH key file to be used by Ansible."
+    fi
+fi
+
+# Syslinux >= 5.00 pxelinux.0 binary is not "stand-alone" anymore,
+# it depends on some c32 modules to work correctly.
+# More info: http://www.syslinux.org/wiki/index.php/Library_modules
+function setup_syslinux_modules {
+    # Ignore it for iPXE, it doesn't repend on syslinux modules
+    [[ "$IRONIC_IPXE_ENABLED" == "True" ]] && return 0
+
+    # Ubuntu Xenial keeps doesn't ship pxelinux.0 as part of syslinux anymore
+    if is_ubuntu && [[ -d /usr/lib/PXELINUX/ ]]; then
+        # TODO(lucasagomes): Figure out whether its UEFI or BIOS once
+        # we have UEFI support in DevStack
+        cp -aR /usr/lib/syslinux/modules/bios/*.c32 $IRONIC_TFTPBOOT_DIR
+    else
+        cp -aR $(dirname $IRONIC_PXE_BOOT_IMAGE)/*.c32 $IRONIC_TFTPBOOT_DIR
+    fi
+}
+
+function start_virtualbmc {
+    start_service $IRONIC_VBMC_SYSTEMD_SERVICE
+}
+
+function stop_virtualbmc {
+    stop_service $IRONIC_VBMC_SYSTEMD_SERVICE
+}
+
+function cleanup_virtualbmc {
+    stop_virtualbmc
+
+    disable_service $IRONIC_VBMC_SYSTEMD_SERVICE
+
+    local unitfile="$SYSTEMD_DIR/$IRONIC_VBMC_SYSTEMD_SERVICE"
+    sudo rm -f $unitfile
+
+    $SYSTEMCTL daemon-reload
+}
+
+function install_virtualbmc {
+    # Install pyghmi from source, if requested, otherwise it will be
+    # downloaded as part of the virtualbmc installation
+    if use_library_from_git "pyghmi"; then
+        git_clone_by_name "pyghmi"
+        setup_dev_lib "pyghmi"
+    fi
+
+    if use_library_from_git "virtualbmc"; then
+        git_clone_by_name "virtualbmc"
+        setup_dev_lib "virtualbmc"
+    else
+        # pyghmi is still not compatible with python3
+        # hence we need to install virtualbmc in python2
+        # environment else IPMI calls will fail at the gate.
+        USE_PYTHON3=False pip_install_gr "virtualbmc"
+    fi
+
+    local cmd
+
+    cmd=$(which vbmcd)
+    cmd+=" --foreground"
+
+    write_user_unit_file $IRONIC_VBMC_SYSTEMD_SERVICE "$cmd" "" "$STACK_USER"
+
+    local unitfile="$SYSTEMD_DIR/$IRONIC_VBMC_SYSTEMD_SERVICE"
+
+    iniset -sudo $unitfile "Service" "Environment" "VIRTUALBMC_CONFIG=$IRONIC_VBMC_CONFIG_FILE"
+
+    enable_service $IRONIC_VBMC_SYSTEMD_SERVICE
+}
+
+function configure_virtualbmc {
+    if [[ ! -d $(dirname $IRONIC_VBMC_CONFIG_FILE) ]]; then
+        mkdir -p $(dirname $IRONIC_VBMC_CONFIG_FILE)
+    fi
+
+    iniset -sudo $IRONIC_VBMC_CONFIG_FILE log debug True
+}
+
+function start_virtualpdu {
+    start_service $IRONIC_VPDU_SYSTEMD_SERVICE
+}
+
+function stop_virtualpdu {
+    stop_service $IRONIC_VPDU_SYSTEMD_SERVICE
+}
+
+function cleanup_virtualpdu {
+    stop_virtualpdu
+
+    disable_service $IRONIC_VPDU_SYSTEMD_SERVICE
+
+    local unitfile="$SYSTEMD_DIR/$IRONIC_VPDU_SYSTEMD_SERVICE"
+    sudo rm -f $unitfile
+
+    $SYSTEMCTL daemon-reload
+}
+
+function install_virtualpdu {
+    if use_library_from_git "virtualpdu"; then
+        git_clone_by_name "virtualpdu"
+        setup_dev_lib "virtualpdu"
+    else
+        pip_install "virtualpdu"
+    fi
+
+    local cmd
+
+    cmd=$(which virtualpdu)
+    cmd+=" $IRONIC_VPDU_CONFIG_FILE"
+
+    write_user_unit_file $IRONIC_VPDU_SYSTEMD_SERVICE "$cmd" "" "$STACK_USER"
+
+    enable_service $IRONIC_VPDU_SYSTEMD_SERVICE
+}
+
+function configure_virtualpdu {
+    mkdir -p $(dirname $IRONIC_VPDU_CONFIG_FILE)
+
+    iniset -sudo $IRONIC_VPDU_CONFIG_FILE global debug True
+    iniset -sudo $IRONIC_VPDU_CONFIG_FILE global libvirt_uri "qemu:///system"
+    iniset -sudo $IRONIC_VPDU_CONFIG_FILE PDU listen_address ${HOST_IP}
+    iniset -sudo $IRONIC_VPDU_CONFIG_FILE PDU listen_port ${IRONIC_VPDU_LISTEN_PORT}
+    iniset -sudo $IRONIC_VPDU_CONFIG_FILE PDU community ${IRONIC_VPDU_COMMUNITY}
+    iniset -sudo $IRONIC_VPDU_CONFIG_FILE PDU ports $(_generate_pdu_ports)
+    iniset -sudo $IRONIC_VPDU_CONFIG_FILE PDU outlet_default_state "OFF"
+}
+
+# _generate_pdu_ports() - Generates list of port:node_name.
+function _generate_pdu_ports {
+    pdu_port_number=${IRONIC_VPDU_PORT_RANGE_START}
+    port_config=()
+    for vm_name in $(_ironic_bm_vm_names); do
+        port_config+=("${pdu_port_number}:${vm_name}")
+        pdu_port_number=$(( pdu_port_number + 1 ))
+    done
+    echo ${port_config[*]} | tr ' ' ','
+}
+
+function start_redfish {
+    start_service $IRONIC_REDFISH_EMULATOR_SYSTEMD_SERVICE
+}
+
+function stop_redfish {
+    start_service stop $IRONIC_REDFISH_EMULATOR_SYSTEMD_SERVICE
+}
+
+function cleanup_redfish {
+    stop_redfish
+
+    rm -f $IRONIC_REDFISH_EMULATOR_CONFIG
+
+    disable_service $IRONIC_REDFISH_EMULATOR_SYSTEMD_SERVICE
+
+    local unitfile="$SYSTEMD_DIR/$IRONIC_REDFISH_EMULATOR_SYSTEMD_SERVICE"
+    sudo rm -f $unitfile
+
+    $SYSTEMCTL daemon-reload
+}
+
+function install_redfish {
+    # TODO(lucasagomes): Use Apache WSGI instead of gunicorn
+    gunicorn=gunicorn
+
+    if python3_enabled; then
+        gunicorn=${gunicorn}3
+    fi
+
+    if is_ubuntu; then
+        install_package $gunicorn
+    else
+        pip_install_gr "gunicorn"
+    fi
+
+    if use_library_from_git "sushy-tools"; then
+        git_clone_by_name "sushy-tools"
+        setup_dev_lib "sushy-tools"
+    else
+        pip_install "sushy-tools"
+    fi
+
+    local cmd
+
+    cmd=$(which $gunicorn)
+    cmd+=" sushy_tools.emulator.main:app"
+    cmd+=" --bind ${HOST_IP}:${IRONIC_REDFISH_EMULATOR_PORT}"
+    cmd+=" --env FLASK_DEBUG=1"
+    cmd+=" --env SUSHY_EMULATOR_CONFIG=${IRONIC_REDFISH_EMULATOR_CONFIG}"
+
+    write_user_unit_file $IRONIC_REDFISH_EMULATOR_SYSTEMD_SERVICE "$cmd" "" "$STACK_USER"
+
+    enable_service $IRONIC_REDFISH_EMULATOR_SYSTEMD_SERVICE
+}
+
+function configure_redfish {
+    if [[ ! -d $(dirname $IRONIC_REDFISH_EMULATOR_CONFIG) ]]; then
+        mkdir -p $(dirname $IRONIC_REDFISH_EMULATOR_CONFIG)
+    fi
+
+    cat - <<EOF > $IRONIC_REDFISH_EMULATOR_CONFIG
+SUSHY_EMULATOR_BOOT_LOADER_MAP = {
+    'Uefi': {
+        'x86_64': '$UEFI_LOADER_PATH'
+    },
+    'Legacy': {
+        'x86_64': None
+    }
+}
+EOF
+}
+
+function setup_sushy {
+    if use_library_from_git "sushy"; then
+        git_clone_by_name "sushy"
+        setup_dev_lib "sushy"
+    else
+        pip_install_gr "sushy"
+    fi
+}
+
+# install_ironic() - Install the things!
+function install_ironic {
+    # NOTE(vsaienko) do not check required_services on subnode
+    if [[ "$HOST_TOPOLOGY_ROLE" != "subnode" ]]; then
+        # make sure all needed service were enabled
+        local req_services="key"
+        if is_service_enabled nova && [[ "$VIRT_DRIVER" == "ironic" ]]; then
+            req_services+=" nova glance neutron"
+        fi
+        for srv in $req_services; do
+            if ! is_service_enabled "$srv"; then
+                die $LINENO "$srv should be enabled for Ironic."
+            fi
+        done
+    fi
+
+    if use_library_from_git "ironic-lib"; then
+        git_clone_by_name "ironic-lib"
+        setup_dev_lib "ironic-lib"
+    fi
+
+    setup_develop $IRONIC_DIR
+
+    if [[ "$IRONIC_USE_WSGI" == "True" || "$IRONIC_IPXE_ENABLED" == "True" ]]; then
+        install_apache_wsgi
+    fi
+
+    if [[ "$IRONIC_BOOT_MODE" == "uefi" && "$IRONIC_IS_HARDWARE" == "False" ]]; then
+
+        # Append the nvram configuration to libvirt if it's not present already
+        if ! sudo grep -q "^nvram" /etc/libvirt/qemu.conf; then
+            echo "nvram=[\"$UEFI_LOADER_PATH:$UEFI_NVRAM_PATH\"]" | sudo tee -a /etc/libvirt/qemu.conf
+        fi
+
+        # Replace the default virtio PXE ROM in QEMU with an EFI capable
+        # one. The EFI ROM should work on with both boot modes, Legacy
+        # BIOS and UEFI.
+        if is_ubuntu; then
+            # (rpittau) in bionic the UEFI in the ovmf 0~20180205.c0d9813c-2
+            # package is broken: EFI v2.70 by EDK II
+            # As a workaround, here we download and install the old working
+            # version from the multiverse repository: EFI v2.60 by EDK II
+            # Bug reference:
+            # https://bugs.launchpad.net/ubuntu/+source/edk2/+bug/1821729
+            local temp_deb
+            temp_deb="$(mktemp)"
+            wget http://archive.ubuntu.com/ubuntu/pool/multiverse/e/edk2/ovmf_0~20160408.ffea0a2c-2_all.deb -O "$temp_deb"
+            sudo dpkg -i "$temp_deb"
+            rm -f "$temp_deb"
+
+            # NOTE(TheJulia): This no longer seems required as the ovmf images
+            # DO correctly network boot. The effect of this is making the
+            # default boot loader iPXE, which is not always desired nor
+            # realistic for hardware in the field.
+            # If it is after Train, we should likely just delete the lines
+            # below and consider the same for Fedora.
+            # sudo rm /usr/share/qemu/pxe-virtio.rom
+            # sudo ln -s /usr/lib/ipxe/qemu/efi-virtio.rom /usr/share/qemu/pxe-virtio.rom
+        elif is_fedora; then
+            sudo rm /usr/share/qemu/pxe-virtio.rom
+            sudo ln -s /usr/share/ipxe.efi/1af41000.rom /usr/share/qemu/pxe-virtio.rom
+        fi
+
+        # Restart libvirt to the changes to take effect
+        restart_libvirt
+    fi
+
+    if is_deployed_by_redfish; then
+        setup_sushy
+    fi
+
+    if [[ "$IRONIC_IS_HARDWARE" == "False" ]]; then
+        if is_deployed_by_ipmi; then
+            install_virtualbmc
+        fi
+
+        if is_deployed_by_snmp; then
+            install_virtualpdu
+        fi
+
+        if is_deployed_by_redfish; then
+            install_redfish
+        fi
+    fi
+
+    if is_drac_enabled; then
+        pip_install python-dracclient
+    fi
+
+    if is_ansible_deploy_enabled; then
+        pip_install "$(grep '^ansible' $IRONIC_DIR/driver-requirements.txt | awk '{print $1}')"
+    fi
+}
+
+# install_ironicclient() - Collect sources and prepare
+function install_ironicclient {
+    if use_library_from_git "python-ironicclient"; then
+        git_clone_by_name "python-ironicclient"
+        setup_dev_lib "python-ironicclient"
+        sudo install -D -m 0644 -o $STACK_USER {${GITDIR["python-ironicclient"]}/tools/,/etc/bash_completion.d/}ironic.bash_completion
+    else
+        # nothing actually "requires" ironicclient, so force instally from pypi
+        pip_install_gr python-ironicclient
+    fi
+}
+
+# _cleanup_ironic_apache_additions() - Remove uwsgi files, disable and remove apache vhost file
+function _cleanup_ironic_apache_additions {
+
+    if [[ "$IRONIC_IPXE_ENABLED" == "True" ]]; then
+        sudo rm -rf $IRONIC_HTTP_DIR
+        disable_apache_site ipxe-ironic
+        sudo rm -f $(apache_site_config_for ipxe-ironic)
+    fi
+    if [[ "$IRONIC_USE_WSGI" == "True" ]]; then
+        remove_uwsgi_config "$IRONIC_UWSGI_CONF" "$IRONIC_UWSGI"
+    fi
+    restart_apache_server
+}
+
+# _config_ironic_apache_ipxe() - Configure ironic IPXE site
+function _config_ironic_apache_ipxe {
+    local ipxe_apache_conf
+    ipxe_apache_conf=$(apache_site_config_for ipxe-ironic)
+    sudo cp $IRONIC_DEVSTACK_FILES_DIR/apache-ipxe-ironic.template $ipxe_apache_conf
+    sudo sed -e "
+        s|%PUBLICPORT%|$IRONIC_HTTP_PORT|g;
+        s|%HTTPROOT%|$IRONIC_HTTP_DIR|g;
+    " -i $ipxe_apache_conf
+    enable_apache_site ipxe-ironic
+}
+
+# cleanup_ironic_config_files() - Remove residual cache/config/log files,
+# left over from previous runs that would need to clean up.
+function cleanup_ironic_config_files {
+    sudo rm -rf $IRONIC_AUTH_CACHE_DIR $IRONIC_CONF_DIR
+    sudo rm -rf $IRONIC_VM_LOG_DIR/*
+}
+
+# cleanup_ironic() - Clean everything left from Ironic
+function cleanup_ironic {
+    cleanup_ironic_config_files
+
+    # Cleanup additions made to Apache
+    if [[ "$IRONIC_USE_WSGI" == "True" || "$IRONIC_IPXE_ENABLED" == "True" ]]; then
+        _cleanup_ironic_apache_additions
+    fi
+
+    cleanup_virtualbmc
+    cleanup_virtualpdu
+    cleanup_redfish
+
+    # Remove the hook to disable log rotate
+    sudo rm -rf $IRONIC_LIBVIRT_HOOKS_PATH/qemu
+}
+
+# configure_ironic_dirs() - Create all directories required by Ironic and
+# associated services.
+function configure_ironic_dirs {
+    sudo install -d -o $STACK_USER $IRONIC_CONF_DIR $STACK_USER $IRONIC_DATA_DIR \
+        $IRONIC_STATE_PATH $IRONIC_TFTPBOOT_DIR $IRONIC_TFTPBOOT_DIR/pxelinux.cfg
+    sudo chown -R $STACK_USER:$STACK_USER $IRONIC_TFTPBOOT_DIR
+
+    if [[ "$IRONIC_IPXE_ENABLED" == "True" ]]; then
+        sudo install -d -o $STACK_USER -g $STACK_USER $IRONIC_HTTP_DIR
+    fi
+
+    if [ ! -f "$IRONIC_PXE_BOOT_IMAGE" ]; then
+        die $LINENO "PXE boot file $IRONIC_PXE_BOOT_IMAGE not found."
+    fi
+
+    # Copy PXE binary
+    # NOTE(mjturek): The PXE binary is x86_64 specific. So it should only be copied when
+    #                deploying to an x86_64 node.
+    if [[ $IRONIC_HW_ARCH == "x86_64" ]]; then
+        cp $IRONIC_PXE_BOOT_IMAGE $IRONIC_TFTPBOOT_DIR
+        setup_syslinux_modules
+    fi
+
+    if [[ "$IRONIC_BOOT_MODE" == "uefi" ]]; then
+        local uefi_boot_file
+        local uefi_loader
+        local uefi_nvram
+
+        uefi_boot_file=$(get_uefi_ipxe_boot_file)
+        if [ ! -f $uefi_boot_file ]; then
+            die $LINENO "UEFI boot file $uefi_boot_file not found."
+        fi
+
+        cp $uefi_boot_file $IRONIC_TFTPBOOT_DIR
+
+        # Copy the OVMF images to libvirt's path
+        uefi_loader=$(get_uefi_loader)
+        uefi_nvram=$(get_uefi_nvram)
+        sudo cp $uefi_loader $UEFI_LOADER_PATH
+        sudo cp $uefi_nvram $UEFI_NVRAM_PATH
+    fi
+
+    # Create the logs directory when saving the deploy logs to the filesystem
+    if [[ "$IRONIC_DEPLOY_LOGS_STORAGE_BACKEND" == "local" && "$IRONIC_DEPLOY_LOGS_COLLECT" != "never" ]]; then
+        install -d -o $STACK_USER $IRONIC_DEPLOY_LOGS_LOCAL_PATH
+    fi
+}
+
+function configure_ironic_networks {
+
+    if [[ -n "${IRONIC_PROVISION_NETWORK_NAME}" ]]; then
+        echo_summary "Configuring Ironic provisioning network"
+        configure_ironic_provision_network
+    fi
+
+    echo_summary "Configuring Ironic cleaning network"
+    configure_ironic_cleaning_network
+    echo_summary "Configuring Ironic rescue network"
+    configure_ironic_rescue_network
+}
+
+function configure_ironic_cleaning_network {
+    iniset $IRONIC_CONF_FILE neutron cleaning_network $IRONIC_CLEAN_NET_NAME
+}
+
+function configure_ironic_rescue_network {
+    iniset $IRONIC_CONF_FILE neutron rescuing_network $IRONIC_RESCUE_NET_NAME
+}
+
+function configure_ironic_provision_network {
+    # This is only called if IRONIC_PROVISION_NETWORK_NAME has been set and
+    # means we are using multi-tenant networking.
+    local net_id
+    local ironic_provision_network_ip
+    # NOTE(vsaienko) For multinode case there is no need to create a new provisioning
+    # network on subnode, as it was created on primary node. Just get an existed network UUID.
+    if [[ "$HOST_TOPOLOGY_ROLE" != 'subnode' ]]; then
+        die_if_not_set $LINENO IRONIC_PROVISION_SUBNET_PREFIX "You must specify the IRONIC_PROVISION_SUBNET_PREFIX"
+        die_if_not_set $LINENO PHYSICAL_NETWORK "You must specify the PHYSICAL_NETWORK"
+        die_if_not_set $LINENO IRONIC_PROVISION_SUBNET_GATEWAY "You must specify the IRONIC_PROVISION_SUBNET_GATEWAY"
+
+        net_id=$(openstack network create --provider-network-type $IRONIC_PROVISION_PROVIDER_NETWORK_TYPE \
+            --provider-physical-network "$PHYSICAL_NETWORK" \
+            ${IRONIC_PROVISION_SEGMENTATION_ID:+--provider-segment $IRONIC_PROVISION_SEGMENTATION_ID} \
+            ${IRONIC_PROVISION_NETWORK_NAME} -f value -c id)
+
+        die_if_not_set $LINENO net_id "Failure creating net_id for $IRONIC_PROVISION_NETWORK_NAME"
+
+        if [[ "${IRONIC_USE_NEUTRON_SEGMENTS}" == "True" ]]; then
+            local net_segment_id
+            net_segment_id=$(openstack network segment list --network $net_id -f value -c ID)
+            die_if_not_set $LINENO net_segment_id "Failure getting net_segment_id for $IRONIC_PROVISION_NETWORK_NAME"
+        fi
+
+        local subnet_id
+        subnet_id="$(openstack subnet create --ip-version 4 \
+            ${IRONIC_PROVISION_ALLOCATION_POOL:+--allocation-pool $IRONIC_PROVISION_ALLOCATION_POOL} \
+            ${net_segment_id:+--network-segment $net_segment_id} \
+            $IRONIC_PROVISION_PROVIDER_SUBNET_NAME \
+            --gateway $IRONIC_PROVISION_SUBNET_GATEWAY --network $net_id \
+            --subnet-range $IRONIC_PROVISION_SUBNET_PREFIX -f value -c id)"
+
+        die_if_not_set $LINENO subnet_id "Failure creating SUBNET_ID for $IRONIC_PROVISION_NETWORK_NAME"
+
+        ironic_provision_network_ip=$IRONIC_PROVISION_SUBNET_GATEWAY
+    else
+        net_id=$(openstack network show $IRONIC_PROVISION_NETWORK_NAME -f value -c id)
+        ironic_provision_network_ip=$IRONIC_PROVISION_SUBNET_SUBNODE_IP
+    fi
+
+    IRONIC_PROVISION_SEGMENTATION_ID=${IRONIC_PROVISION_SEGMENTATION_ID:-`openstack network show ${net_id} -f value -c provider:segmentation_id`}
+    provision_net_prefix=${IRONIC_PROVISION_SUBNET_PREFIX##*/}
+
+    # Set provision network GW on physical interface
+    # Add vlan on br interface in case of IRONIC_PROVISION_PROVIDER_NETWORK_TYPE==vlan
+    # othervise assign ip to br interface directly.
+    if [[ "$IRONIC_PROVISION_PROVIDER_NETWORK_TYPE" == "vlan" ]]; then
+        sudo ip link add link $OVS_PHYSICAL_BRIDGE name $OVS_PHYSICAL_BRIDGE.$IRONIC_PROVISION_SEGMENTATION_ID type vlan id $IRONIC_PROVISION_SEGMENTATION_ID
+        sudo ip link set dev $OVS_PHYSICAL_BRIDGE up
+        sudo ip link set dev $OVS_PHYSICAL_BRIDGE.$IRONIC_PROVISION_SEGMENTATION_ID up
+        sudo ip addr add dev $OVS_PHYSICAL_BRIDGE.$IRONIC_PROVISION_SEGMENTATION_ID $ironic_provision_network_ip/$provision_net_prefix
+    else
+        sudo ip link set dev $OVS_PHYSICAL_BRIDGE up
+        sudo ip addr add dev $OVS_PHYSICAL_BRIDGE $ironic_provision_network_ip/$provision_net_prefix
+    fi
+
+    iniset $IRONIC_CONF_FILE neutron provisioning_network $IRONIC_PROVISION_NETWORK_NAME
+}
+
+function cleanup_ironic_provision_network {
+    # Cleanup OVS_PHYSICAL_BRIDGE subinterfaces
+    local bridge_subint
+    bridge_subint=$(cat /proc/net/dev | sed -n "s/^\(${OVS_PHYSICAL_BRIDGE}\.[0-9]*\).*/\1/p")
+    for sub_int in $bridge_subint; do
+        sudo ip link set dev $sub_int down
+        sudo ip link del dev $sub_int
+    done
+}
+
+# configure_ironic() - Set config files, create data dirs, etc
+function configure_ironic {
+    configure_ironic_dirs
+
+    # (re)create ironic configuration file and configure common parameters.
+    rm -f $IRONIC_CONF_FILE
+
+    iniset $IRONIC_CONF_FILE DEFAULT debug True
+    inicomment $IRONIC_CONF_FILE DEFAULT log_file
+    iniset $IRONIC_CONF_FILE database connection `database_connection_url ironic`
+    iniset $IRONIC_CONF_FILE DEFAULT state_path $IRONIC_STATE_PATH
+    iniset $IRONIC_CONF_FILE DEFAULT use_syslog $SYSLOG
+    # NOTE(vsaienko) with multinode each conductor should have its own host.
+    iniset $IRONIC_CONF_FILE DEFAULT host $LOCAL_HOSTNAME
+    # Retrieve deployment logs
+    iniset $IRONIC_CONF_FILE agent deploy_logs_collect $IRONIC_DEPLOY_LOGS_COLLECT
+    iniset $IRONIC_CONF_FILE agent deploy_logs_storage_backend $IRONIC_DEPLOY_LOGS_STORAGE_BACKEND
+    iniset $IRONIC_CONF_FILE agent deploy_logs_local_path $IRONIC_DEPLOY_LOGS_LOCAL_PATH
+    # Set image_download_source for direct interface
+    iniset $IRONIC_CONF_FILE agent image_download_source $IRONIC_AGENT_IMAGE_DOWNLOAD_SOURCE
+    # Configure JSON RPC backend
+    iniset $IRONIC_CONF_FILE DEFAULT rpc_transport $IRONIC_RPC_TRANSPORT
+    iniset $IRONIC_CONF_FILE json_rpc port $IRONIC_JSON_RPC_PORT
+
+    # Set fast track options
+    iniset $IRONIC_CONF_FILE deploy fast_track $IRONIC_DEPLOY_FAST_TRACK
+
+    # No need to check if RabbitMQ is enabled, this call does it in a smart way
+    if [[ "$IRONIC_RPC_TRANSPORT" == "oslo" ]]; then
+        iniset_rpc_backend ironic $IRONIC_CONF_FILE
+    fi
+
+    # Configure Ironic conductor, if it was enabled.
+    if is_service_enabled ir-cond; then
+        configure_ironic_conductor
+    fi
+
+    # Configure Ironic API, if it was enabled.
+    if is_service_enabled ir-api; then
+        configure_ironic_api
+    fi
+
+    # Format logging
+    setup_logging $IRONIC_CONF_FILE
+
+    # Adds ironic site for IPXE
+    if [[ "$IRONIC_IPXE_ENABLED" == "True" ]]; then
+        _config_ironic_apache_ipxe
+    fi
+
+    # Adds uWSGI for Ironic API
+    if [[ "$IRONIC_USE_WSGI" == "True" ]]; then
+        write_uwsgi_config "$IRONIC_UWSGI_CONF" "$IRONIC_UWSGI" "/baremetal"
+    fi
+
+    if [[ "$os_VENDOR" =~ (Debian|Ubuntu) ]]; then
+        # The groups change with newer libvirt. Older Ubuntu used
+        # 'libvirtd', but now uses libvirt like Debian. Do a quick check
+        # to see if libvirtd group already exists to handle grenade's case.
+        LIBVIRT_GROUP=$(cut -d ':' -f 1 /etc/group | grep 'libvirtd$' || true)
+        LIBVIRT_GROUP=${LIBVIRT_GROUP:-libvirt}
+    else
+        LIBVIRT_GROUP=libvirtd
+    fi
+    if ! getent group $LIBVIRT_GROUP >/dev/null; then
+        sudo groupadd $LIBVIRT_GROUP
+    fi
+    # NOTE(vsaienko) Add stack to libvirt group when installing without nova.
+    if ! is_service_enabled nova; then
+        add_user_to_group $STACK_USER $LIBVIRT_GROUP
+
+        # This is the basic set of devices allowed / required by all virtual machines.
+        # Add /dev/net/tun to cgroup_device_acl, needed for type=ethernet interfaces
+        if ! sudo grep -q '^cgroup_device_acl' /etc/libvirt/qemu.conf; then
+            cat <<EOF | sudo tee -a /etc/libvirt/qemu.conf
+cgroup_device_acl = [
+    "/dev/null", "/dev/full", "/dev/zero",
+    "/dev/random", "/dev/urandom",
+    "/dev/ptmx", "/dev/kvm", "/dev/kqemu",
+    "/dev/rtc", "/dev/hpet","/dev/net/tun",
+    "/dev/vfio/vfio",
+]
+EOF
+            restart_libvirt
+        fi
+    fi
+
+    if [[ "$IRONIC_IS_HARDWARE" == "False" ]]; then
+        if is_deployed_by_ipmi; then
+            configure_virtualbmc
+            start_virtualbmc
+        fi
+
+        if is_deployed_by_snmp; then
+            configure_virtualpdu
+            start_virtualpdu
+        fi
+
+        if is_deployed_by_redfish; then
+            configure_redfish
+            start_redfish
+        fi
+    fi
+}
+
+# configure_ironic_api() - Is used by configure_ironic(). Performs
+# API specific configuration.
+function configure_ironic_api {
+    iniset $IRONIC_CONF_FILE DEFAULT auth_strategy $IRONIC_AUTH_STRATEGY
+    configure_auth_token_middleware $IRONIC_CONF_FILE ironic $IRONIC_AUTH_CACHE_DIR/api
+
+    if [[ "$IRONIC_USE_WSGI" == "True" ]]; then
+        iniset $IRONIC_CONF_FILE oslo_middleware enable_proxy_headers_parsing True
+    elif is_service_enabled tls-proxy; then
+        iniset $IRONIC_CONF_FILE oslo_middleware enable_proxy_headers_parsing True
+        iniset $IRONIC_CONF_FILE api port $IRONIC_SERVICE_PORT_INT
+    else
+        iniset $IRONIC_CONF_FILE api port $IRONIC_SERVICE_PORT
+    fi
+}
+
+# configure_client_for() - is used by configure_ironic_conductor.
+# Sets options to instantiate clients for other services
+# single argument - config section to fill
+function configure_client_for {
+    local service_config_section
+    service_config_section=$1
+    # keystoneauth auth plugin options
+    iniset $IRONIC_CONF_FILE $service_config_section auth_type password
+    iniset $IRONIC_CONF_FILE $service_config_section auth_url $KEYSTONE_SERVICE_URI
+    iniset $IRONIC_CONF_FILE $service_config_section username ironic
+    iniset $IRONIC_CONF_FILE $service_config_section password $SERVICE_PASSWORD
+    iniset $IRONIC_CONF_FILE $service_config_section project_name $SERVICE_PROJECT_NAME
+    iniset $IRONIC_CONF_FILE $service_config_section user_domain_id default
+    iniset $IRONIC_CONF_FILE $service_config_section project_domain_id default
+    # keystoneauth session options
+    iniset $IRONIC_CONF_FILE $service_config_section cafile $SSL_BUNDLE_FILE
+    # keystoneauth adapter options
+    # NOTE(pas-ha) relying on defaults for valid_interfaces being "internal,public" in ironic
+    iniset $IRONIC_CONF_FILE $service_config_section region_name $REGION_NAME
+}
+
+# configure_ironic_conductor() - Is used by configure_ironic().
+# Sets conductor specific settings.
+function configure_ironic_conductor {
+
+    # NOTE(pas-ha) service_catalog section is used to discover
+    # ironic API endpoint from keystone catalog
+    local client_sections="neutron swift glance inspector cinder service_catalog json_rpc"
+    for conf_section in $client_sections; do
+        configure_client_for $conf_section
+    done
+
+    configure_rootwrap ironic
+
+    # set up drivers / hardware types
+    iniset $IRONIC_CONF_FILE DEFAULT enabled_hardware_types $IRONIC_ENABLED_HARDWARE_TYPES
+
+    iniset $IRONIC_CONF_FILE conductor automated_clean $IRONIC_AUTOMATED_CLEAN_ENABLED
+
+    # configure enabled and default interfaces
+    local iface
+    local iface_var
+    local iface_uppercase
+    local default_iface_var
+    for iface in ${IRONIC_DRIVER_INTERFACE_TYPES}; do
+        iface_uppercase="${iface^^}"
+        iface_var="IRONIC_ENABLED_${iface_uppercase}_INTERFACES"
+        iniset $IRONIC_CONF_FILE DEFAULT enabled_${iface}_interfaces ${!iface_var}
+        default_iface_var="IRONIC_DEFAULT_${iface_uppercase}_INTERFACE"
+        if [[ -n "${!default_iface_var}" ]]; then
+            if [[ ! "${!iface_var}" =~ ${!default_iface_var} ]]; then
+                die $LINENO "Default interface set for ${iface} interface is not enabled."
+            fi
+            iniset $IRONIC_CONF_FILE DEFAULT default_${iface}_interface ${!default_iface_var}
+        fi
+    done
+
+    if is_deployed_by_redfish; then
+        # TODO(lucasagomes): We need to make it easier to configure
+        # specific driver interfaces in DevStack
+        iniset $IRONIC_CONF_FILE DEFAULT enabled_power_interfaces "redfish"
+        iniset $IRONIC_CONF_FILE DEFAULT enabled_management_interfaces "redfish"
+    fi
+
+    if is_deployed_by_snmp; then
+        # TODO(lucasagomes): We need to make it easier to configure
+        # specific driver interfaces in DevStack
+        iniset $IRONIC_CONF_FILE DEFAULT enabled_power_interfaces "snmp"
+        iniset $IRONIC_CONF_FILE DEFAULT enabled_management_interfaces "noop"
+    fi
+
+    if is_ansible_deploy_enabled; then
+        if is_ansible_with_tinyipa; then
+            if [[ ! -f $IRONIC_ANSIBLE_SSH_KEY ]]; then
+                # generate ssh key if absent as we will rebuild the ramdisk
+                # TODO(pas-ha) make it work for multi-node DevStack:
+                # - generate outside of this script
+                # - pass path in as $IRONIC_ANSIBLE_SSH_KEY
+                # - distribute private key to subnodes under the same path
+                # Similar to what we do for n-g-s, may be even re-use its key.
+                ssh-keygen -t rsa -N '' -f $IRONIC_ANSIBLE_SSH_KEY
+                chmod 600 $IRONIC_ANSIBLE_SSH_KEY
+            fi
+            if [[ -z $IRONIC_ANSIBLE_SSH_USER ]]; then
+                # we definitely know the default username to use for TinyIPA image
+                IRONIC_ANSIBLE_SSH_USER='tc'
+            fi
+            # (rpittau) most recent tinyipa uses python3 natively so we need to change
+            # the default ansible python interpreter.
+            iniset $IRONIC_CONF_FILE ansible default_python_interpreter /usr/bin/python3
+        fi
+        iniset $IRONIC_CONF_FILE ansible default_key_file $IRONIC_ANSIBLE_SSH_KEY
+        if [[ -n $IRONIC_ANSIBLE_SSH_USER ]]; then
+            iniset $IRONIC_CONF_FILE ansible default_username $IRONIC_ANSIBLE_SSH_USER
+        fi
+        # TODO(pas-ha) find a way to include the CA bundle into the image during rebuild,
+        # at least for the tinyipa ramdisk
+        iniset $IRONIC_CONF_FILE ansible image_store_insecure "True"
+    fi
+
+    iniset $IRONIC_CONF_FILE DEFAULT rootwrap_config $IRONIC_ROOTWRAP_CONF
+    iniset $IRONIC_CONF_FILE conductor api_url $IRONIC_SERVICE_PROTOCOL://$IRONIC_HOSTPORT
+    if [[ -n "$IRONIC_CALLBACK_TIMEOUT" ]]; then
+        iniset $IRONIC_CONF_FILE conductor deploy_callback_timeout $IRONIC_CALLBACK_TIMEOUT
+    fi
+    iniset $IRONIC_CONF_FILE pxe tftp_server $IRONIC_TFTPSERVER_IP
+    iniset $IRONIC_CONF_FILE pxe tftp_root $IRONIC_TFTPBOOT_DIR
+    iniset $IRONIC_CONF_FILE pxe tftp_master_path $IRONIC_TFTPBOOT_DIR/master_images
+    if [[ "$IRONIC_TERMINAL_SSL" == "True" ]]; then
+        # Make sure the cert directory exist
+        sudo mkdir -p $IRONIC_TERMINAL_CERT_DIR
+        sudo chown $STACK_USER $IRONIC_TERMINAL_CERT_DIR
+        iniset $IRONIC_CONF_FILE console terminal_cert_dir $IRONIC_TERMINAL_CERT_DIR
+        # Generate the SSL certificate
+        openssl req \
+            -x509 \
+            -days 365 \
+            -newkey rsa:1024 \
+            -nodes \
+            -keyout $IRONIC_TERMINAL_CERT_DIR/certificate.pem.key \
+            -out $IRONIC_TERMINAL_CERT_DIR/certificate.pem \
+            -subj '/O=OpenStack/OU=DevStack Servers'
+    fi
+
+    local pxe_params="nofb nomodeset vga=normal console=${IRONIC_TTY_DEV}"
+    pxe_params+=" systemd.journald.forward_to_console=yes"
+    if is_service_enabled tls-proxy; then
+        pxe_params+=" ipa-insecure=1"
+    fi
+
+    pxe_params+=" $IRONIC_EXTRA_PXE_PARAMS"
+
+    if [[ -n "$pxe_params" ]]; then
+        iniset $IRONIC_CONF_FILE pxe pxe_append_params "$pxe_params"
+    fi
+
+    # Set these options for scenarios in which the agent fetches the image
+    # directly from glance, and don't set them where the image is pushed
+    # over iSCSI.
+    if is_glance_configuration_required; then
+        if [[ "$SWIFT_ENABLE_TEMPURLS" == "False" ]] ; then
+            die $LINENO "SWIFT_ENABLE_TEMPURLS must be True. This is " \
+                        "required either because IRONIC_DEPLOY_DRIVER was " \
+                        "set to some agent_* driver OR configuration of " \
+                        "Glance with Swift was explicitly requested with " \
+                        "IRONIC_CONFIGURE_GLANCE_WITH_SWIFT=True"
+        fi
+        iniset $IRONIC_CONF_FILE glance swift_temp_url_duration 3600
+    fi
+
+    if is_deployed_by_agent; then
+        iniset $IRONIC_CONF_FILE api ramdisk_heartbeat_timeout 30
+    fi
+
+    # FIXME: this really needs to be tested in the gate.  For now, any
+    # test using the agent ramdisk should skip the erase_devices clean
+    # step  because it is too slow to run in the gate.
+    iniset $IRONIC_CONF_FILE deploy erase_devices_priority 0
+
+    if [[ "$IRONIC_IPXE_ENABLED" == "True" ]] ; then
+        local pxebin
+        pxebin=`basename $IRONIC_PXE_BOOT_IMAGE`
+        uefipxebin=`basename $(get_uefi_ipxe_boot_file)`
+        iniset $IRONIC_CONF_FILE pxe ipxe_enabled True
+        iniset $IRONIC_CONF_FILE pxe pxe_config_template '$pybasedir/drivers/modules/ipxe_config.template'
+        iniset $IRONIC_CONF_FILE pxe pxe_bootfile_name $pxebin
+        iniset $IRONIC_CONF_FILE pxe uefi_pxe_config_template '$pybasedir/drivers/modules/ipxe_config.template'
+        iniset $IRONIC_CONF_FILE pxe uefi_pxe_bootfile_name $uefipxebin
+        iniset $IRONIC_CONF_FILE deploy http_root $IRONIC_HTTP_DIR
+        iniset $IRONIC_CONF_FILE deploy http_url "http://$IRONIC_HTTP_SERVER:$IRONIC_HTTP_PORT"
+        if [[ "$IRONIC_IPXE_USE_SWIFT" == "True" ]]; then
+            iniset $IRONIC_CONF_FILE pxe ipxe_use_swift True
+        fi
+    fi
+
+    if [[ "$IRONIC_IS_HARDWARE" == "False" ]]; then
+        iniset $IRONIC_CONF_FILE neutron port_setup_delay 15
+    fi
+
+    iniset $IRONIC_CONF_FILE dhcp dhcp_provider $IRONIC_DHCP_PROVIDER
+
+    iniset $IRONIC_CONF_FILE deploy default_boot_option $IRONIC_DEFAULT_BOOT_OPTION
+}
+
+# create_ironic_cache_dir() - Part of the init_ironic() process
+function create_ironic_cache_dir {
+    # Create cache dir
+    sudo mkdir -p $IRONIC_AUTH_CACHE_DIR/api
+    sudo chown $STACK_USER $IRONIC_AUTH_CACHE_DIR/api
+    rm -f $IRONIC_AUTH_CACHE_DIR/api/*
+    sudo mkdir -p $IRONIC_AUTH_CACHE_DIR/registry
+    sudo chown $STACK_USER $IRONIC_AUTH_CACHE_DIR/registry
+    rm -f $IRONIC_AUTH_CACHE_DIR/registry/*
+}
+
+# create_ironic_accounts() - Set up common required ironic accounts
+
+# Project              User       Roles
+# ------------------------------------------------------------------
+# service              ironic     admin
+# service              nova       baremetal_admin
+# demo                 demo       baremetal_observer
+function create_ironic_accounts {
+    if [[ "$ENABLED_SERVICES" =~ "ir-api" && "$ENABLED_SERVICES" =~ "key" ]]; then
+        # Define service and endpoints in Keystone
+        get_or_create_service "ironic" "baremetal" "Ironic baremetal provisioning service"
+        get_or_create_endpoint "baremetal" \
+            "$REGION_NAME" \
+            "$IRONIC_SERVICE_PROTOCOL://$IRONIC_HOSTPORT"
+
+        # Create ironic service user
+        # TODO(deva): make this work with the 'service' role
+        #             https://bugs.launchpad.net/ironic/+bug/1605398
+        create_service_user "ironic" "admin"
+
+        # Create additional bare metal tenant and roles
+        get_or_create_role baremetal_admin
+        get_or_create_role baremetal_observer
+        if is_service_enabled nova; then
+            get_or_add_user_project_role baremetal_admin nova $SERVICE_PROJECT_NAME
+        fi
+        get_or_add_user_project_role baremetal_observer demo demo
+    fi
+}
+
+
+# init_ironic() - Initialize databases, etc.
+function init_ironic {
+
+    if [[ "$HOST_TOPOLOGY_ROLE" != "subnode" ]]; then
+        # (Re)create  ironic database
+        recreate_database ironic
+
+        # Migrate ironic database
+        $IRONIC_BIN_DIR/ironic-dbsync --config-file=$IRONIC_CONF_FILE
+    fi
+    create_ironic_cache_dir
+
+    # NOTE(rloo): We're not upgrading but want to make sure this command works,
+    # even though we're not parsing the output of this command.
+    $IRONIC_BIN_DIR/ironic-status upgrade check
+}
+
+# _ironic_bm_vm_names() - Generates list of names for baremetal VMs.
+function _ironic_bm_vm_names {
+    local idx
+    local num_vms
+    num_vms=$(($IRONIC_VM_COUNT - 1))
+    for idx in $(seq 0 $num_vms); do
+        echo "$(get_ironic_node_prefix)-${idx}"
+    done
+}
+
+# start_ironic() - Start running processes, including screen
+function start_ironic {
+    # Start Ironic API server, if enabled.
+    if is_service_enabled ir-api; then
+        start_ironic_api
+    fi
+
+    # Start Ironic conductor, if enabled.
+    if is_service_enabled ir-cond; then
+        start_ironic_conductor
+    fi
+
+    # Start Apache if iPXE is enabled
+    if [[ "$IRONIC_IPXE_ENABLED" == "True" ]] ; then
+        restart_apache_server
+    fi
+}
+
+# start_ironic_api() - Used by start_ironic().
+# Starts Ironic API server.
+function start_ironic_api {
+    local service_port=$IRONIC_SERVICE_PORT
+    local service_protocol=$IRONIC_SERVICE_PROTOCOL
+    local ironic_url
+
+    # Get right service port for testing
+    if is_service_enabled tls-proxy; then
+        service_port=$IRONIC_SERVICE_PORT_INT
+        service_protocol="http"
+    fi
+
+    if [[ "$IRONIC_USE_WSGI" == "True" ]]; then
+        run_process "ir-api" "$IRONIC_BIN_DIR/uwsgi --procname-prefix ironic-api --ini $IRONIC_UWSGI_CONF"
+        ironic_url=$service_protocol://$SERVICE_HOST/baremetal
+    else
+        run_process ir-api "$IRONIC_BIN_DIR/ironic-api --config-file=$IRONIC_CONF_FILE"
+        ironic_url=$service_protocol://$SERVICE_HOST:$service_port
+    fi
+
+    echo "Waiting for ir-api ($ironic_url) to start..."
+    if ! timeout $SERVICE_TIMEOUT sh -c "while ! wget --no-proxy -q -O- $ironic_url; do sleep 1; done"; then
+        die $LINENO "ir-api did not start"
+    fi
+
+    if is_service_enabled tls-proxy; then
+        start_tls_proxy ironic '*' $IRONIC_SERVICE_PORT $SERVICE_HOST $IRONIC_SERVICE_PORT_INT
+    fi
+}
+
+# start_ironic_conductor() - Used by start_ironic().
+# Starts Ironic conductor.
+function start_ironic_conductor {
+    run_process ir-cond "$IRONIC_BIN_DIR/ironic-conductor --config-file=$IRONIC_CONF_FILE"
+    # TODO(romcheg): Find a way to check whether the conductor has started.
+}
+
+# stop_ironic() - Stop running processes
+function stop_ironic {
+    stop_process ir-api
+    stop_process ir-cond
+}
+
+# create_ovs_taps is also called by the devstack/upgrade/resources.sh script
+#
+# create_ovs_taps ironic_network_id
+# NOTE(vsaienko) Ironic supports only Flat Neutron network.
+# create_ovs_taps are needed in order to provide connectivity from ironic-conductor
+# to VM. With Neutron Flat network it will be not needed.
+function create_ovs_taps {
+    local ironic_net_id
+    ironic_net_id=$1
+    die_if_not_set $LINENO ironic_net_id "Failed to get ironic network id"
+
+    # Work around: No netns exists on host until a Neutron port is created.  We
+    # need to create one in Neutron to know what netns to tap into prior to the
+    # first node booting.
+    local port_id
+    port_id=$(openstack port create --network ${ironic_net_id} temp_port -c id -f value)
+    die_if_not_set $LINENO port_id "Failed to create neutron port"
+
+    # intentional sleep to make sure the tag has been set to port
+    sleep 10
+
+    local tapdev
+    tapdev=$(sudo ip netns exec qdhcp-${ironic_net_id} ip link list | grep " tap" | cut -d':' -f2 | cut -d'@' -f1 | cut -b2-)
+    die_if_not_set $LINENO tapdev "Failed to get tap device id"
+    local tag_id
+    tag_id=$(sudo ovs-vsctl get port ${tapdev} tag)
+    die_if_not_set $LINENO tag_id "Failed to get tag id"
+
+    local ovs_tap=ovs-tap
+    local brbm_tap=brbm-tap
+    # make sure veth pair is not existing, otherwise delete its links
+    sudo ip link show $ovs_tap && sudo ip link delete $ovs_tap
+    sudo ip link show $brbm_tap && sudo ip link delete $brbm_tap
+    # create veth pair for future interconnection between br-int and brbm
+    sudo ip link add $brbm_tap type veth peer name $ovs_tap
+    sudo ip link set dev $brbm_tap up
+    sudo ip link set dev $ovs_tap up
+
+    sudo ovs-vsctl -- --if-exists del-port $ovs_tap -- add-port br-int $ovs_tap tag=$tag_id
+    sudo ovs-vsctl -- --if-exists del-port $brbm_tap -- add-port $IRONIC_VM_NETWORK_BRIDGE $brbm_tap
+
+    # Remove the port needed only for workaround.
+    openstack port delete $port_id
+
+    # Finally, share the fixed tenant network across all tenants.  This allows the host
+    # to serve TFTP to a single network namespace via the tap device created above.
+    openstack network set $ironic_net_id --share
+}
+
+function setup_qemu_log_hook {
+    # Make sure the libvirt hooks directory exist
+    sudo mkdir -p $IRONIC_LIBVIRT_HOOKS_PATH
+
+    # Copy the qemu hook to the right directory
+    sudo cp $IRONIC_DEVSTACK_FILES_DIR/hooks/qemu.py $IRONIC_LIBVIRT_HOOKS_PATH/qemu
+    sudo chmod -v +x $IRONIC_LIBVIRT_HOOKS_PATH/qemu
+    sudo sed -e "
+        s|%LOG_DIR%|$IRONIC_VM_LOG_DIR|g;
+    " -i $IRONIC_LIBVIRT_HOOKS_PATH/qemu
+
+    restart_libvirt
+    mkdir -p $IRONIC_VM_LOG_DIR
+    cat >${IRONIC_VM_LOG_DIR}/README << EOF
+This directory contains the serial console log files from the virtual Ironic
+bare-metal nodes. The *_console_* log files are the original log files and
+include ANSI control codes which can make the output difficult to read. The
+*_no_ansi_* log files have had ANSI control codes removed from the file and are
+easier to read.
+
+On some occasions there won't be a corresponding *_no_ansi_* log file, for
+example if the job failed due to a time-out. You may see a log file without a
+date/time in the file name. In that case you can display the logfile in your
+console by doing:
+   $ curl URL_TO_LOGFILE
+
+This will have your terminal process the ANSI escape codes.
+
+Another option, if you have the 'pv' executable installed, is to simulate a
+low-speed connection.  In this example simulate a 300 Bytes/second connection.
+   $ curl URL_TO_LOGFILE | pv -q -L 300
+
+This can allow you to see some of the content before the screen is cleared by
+an ANSI escape sequence.
+
+EOF
+}
+
+function create_bridge_and_vms {
+    # Call libvirt setup scripts in a new shell to ensure any new group membership
+    sudo su $STACK_USER -c "$IRONIC_SCRIPTS_DIR/setup-network.sh $IRONIC_VM_NETWORK_BRIDGE $PUBLIC_BRIDGE_MTU"
+    if [[ "$IRONIC_VM_LOG_CONSOLE" == "True" ]] ; then
+        local log_arg="-l $IRONIC_VM_LOG_DIR"
+
+        if [[ "$IRONIC_VM_LOG_ROTATE" == "True" ]] ; then
+            setup_qemu_log_hook
+        fi
+    else
+        local log_arg=""
+    fi
+
+    local vbmc_port=$IRONIC_VBMC_PORT_RANGE_START
+    local pdu_outlet=$IRONIC_VPDU_PORT_RANGE_START
+    local vm_name
+    local vm_opts=""
+    if [[ -n "$IRONIC_VM_EMULATOR" ]]; then
+        vm_opts+=" -e $IRONIC_VM_EMULATOR"
+    fi
+    vm_opts+=" -E $IRONIC_VM_ENGINE"
+
+    if [[ "$IRONIC_BOOT_MODE" == "uefi" ]]; then
+        vm_opts+=" -L $UEFI_LOADER_PATH -N $UEFI_NVRAM_PATH"
+    fi
+
+    if [[ -n "$LIBVIRT_NIC_DRIVER" ]]; then
+        vm_opts+=" -D $LIBVIRT_NIC_DRIVER"
+    elif [[ "$IRONIC_BOOT_MODE" == "uefi" ]]; then
+        # Note(derekh) UEFI for the moment doesn't work with the e1000 net driver
+        vm_opts+=" -D virtio"
+    fi
+
+    local bridge_mac
+    bridge_mac=$(ip link show dev $IRONIC_VM_NETWORK_BRIDGE | grep -Eo "ether [A-Za-z0-9:]+"|sed "s/ether\ //")
+
+    for vm_name in $(_ironic_bm_vm_names); do
+        # pick up the $LIBVIRT_GROUP we have possibly joint
+        newgrp $LIBVIRT_GROUP <<SUBSHELL
+            $IRONIC_SCRIPTS_DIR/create-node.sh -n $vm_name \
+                -c $IRONIC_VM_SPECS_CPU -m $IRONIC_VM_SPECS_RAM -d $IRONIC_VM_SPECS_DISK \
+                -a $IRONIC_VM_SPECS_CPU_ARCH -b $IRONIC_VM_NETWORK_BRIDGE $vm_opts -p $vbmc_port -o $pdu_outlet \
+                -i $IRONIC_VM_INTERFACE_COUNT -f $IRONIC_VM_SPECS_DISK_FORMAT -M $PUBLIC_BRIDGE_MTU $log_arg \
+                -v $IRONIC_VM_VOLUME_COUNT >> $IRONIC_VM_MACS_CSV_FILE
+SUBSHELL
+
+        if is_deployed_by_ipmi; then
+            vbmc --no-daemon add $vm_name --port $vbmc_port
+            vbmc --no-daemon start $vm_name
+        fi
+
+        echo " ${bridge_mac} $IRONIC_VM_NETWORK_BRIDGE" >> $IRONIC_VM_MACS_CSV_FILE
+
+        vbmc_port=$((vbmc_port+1))
+        pdu_outlet=$((pdu_outlet+1))
+        # It is sometimes useful to dump out the VM configuration to validate it.
+        sudo virsh dumpxml $vm_name
+    done
+
+    if [[ -z "${IRONIC_PROVISION_NETWORK_NAME}" ]]; then
+        local ironic_net_id
+        ironic_net_id=$(openstack network show "$PRIVATE_NETWORK_NAME" -c id -f value)
+        create_ovs_taps $ironic_net_id
+
+        # NOTE(vsaienko) Neutron no longer setup routing to private network.
+        # https://github.com/openstack-dev/devstack/commit/1493bdeba24674f6634160d51b8081c571df4017
+        # Add route here to have connection to VMs during provisioning.
+        local pub_router_id
+        local r_net_gateway
+        pub_router_id=$(openstack router show $Q_ROUTER_NAME -f value -c id)
+        r_net_gateway=$(sudo ip netns exec qrouter-$pub_router_id ip -4 route get 8.8.8.8 |grep dev | awk '{print $7}')
+        local replace_range=${SUBNETPOOL_PREFIX_V4}
+        if [[ -z "${SUBNETPOOL_V4_ID}" ]]; then
+            replace_range=${FIXED_RANGE}
+        fi
+        sudo ip route replace $replace_range via $r_net_gateway
+    fi
+    # Here is a good place to restart tcpdump to begin capturing packets.
+    # See: https://docs.openstack.org/devstack/latest/debugging.html
+    # stop_tcpdump
+    # start_tcpdump
+}
+
+function wait_for_nova_resources {
+    # After nodes have been enrolled, we need to wait for both ironic and
+    # nova's periodic tasks to populate the resource tracker with available
+    # nodes and resources. Wait up to 2 minutes for a given resource before
+    # timing out.
+    local expected_count=$1
+    local resource_class=${IRONIC_DEFAULT_RESOURCE_CLASS^^}
+
+    # TODO(dtantsur): switch to Placement OSC plugin, once it exists
+    local token
+    token=$(openstack token issue -f value -c id)
+    local endpoint
+    endpoint=$(openstack endpoint list --service placement --interface public -f value -c URL)
+    die_if_not_set $LINENO endpoint "Cannot find Placement API endpoint"
+
+    local i
+    local count
+    echo_summary "Waiting 2 minutes for Nova resource tracker to pick up $expected_count nodes"
+    for i in $(seq 1 120); do
+        # Fetch provider UUIDs from Placement
+        local providers
+        providers=$(curl -sH "X-Auth-Token: $token" $endpoint/resource_providers \
+            | jq -r '.resource_providers[].uuid')
+
+        local p
+        # Total count of the resource class, has to be equal to nodes count
+        count=0
+        for p in $providers; do
+            local amount
+            # A resource class inventory record looks something like
+            # {"max_unit": 1, "min_unit": 1, "step_size": 1, "reserved": 0, "total": 1, "allocation_ratio": 1}
+            # Subtrack reserved from total (defaulting both to 0)
+            amount=$(curl -sH "X-Auth-Token: $token" $endpoint/resource_providers/$p/inventories \
+                | jq ".inventories.CUSTOM_$resource_class as \$cls
+                    | (\$cls.total // 0) - (\$cls.reserved // 0)")
+
+            # Check whether the resource provider has all expected traits
+            # registered against it.
+            rp_traits=$(curl -sH "X-Auth-Token: $token" \
+                -H "OpenStack-API-Version: placement 1.6" \
+                $endpoint/resource_providers/$p/traits)
+            for trait in $IRONIC_DEFAULT_TRAITS; do
+                if [[ $(echo "$rp_traits" | jq ".traits | contains([\"$trait\"])") == false ]]; then
+                    amount=0
+                fi
+            done
+
+            if [ $amount -gt 0 ]; then
+                count=$(( count + $amount ))
+            fi
+        done
+
+        if [ $count -ge $expected_count ]; then
+            return 0
+        fi
+
+        if is_service_enabled n-api; then
+            $TOP_DIR/tools/discover_hosts.sh
+        fi
+        sleep 1
+    done
+    die $LINENO "Timed out waiting for Nova to track $expected_count nodes"
+}
+
+function _clean_ncpu_failure {
+    SCREEN_NAME=${SCREEN_NAME:-stack}
+    SERVICE_DIR=${SERVICE_DIR:-${DEST}/status}
+    n_cpu_failure="$SERVICE_DIR/$SCREEN_NAME/n-cpu.failure"
+    if [ -f ${n_cpu_failure} ]; then
+        mv ${n_cpu_failure} "${n_cpu_failure}.before-restart-by-ironic"
+    fi
+}
+
+function provide_nodes {
+    local nodes=$@
+
+    for node_id in $nodes; do
+        $IRONIC_CMD node provide $node_id
+    done
+
+    local attempt
+    for attempt in $(seq 1 $IRONIC_CLEANING_ATTEMPTS); do
+        local available
+        available=$(openstack baremetal node list --provision-state available -f value -c UUID)
+
+        local nodes_not_finished=
+        for node_id in $nodes; do
+            if ! echo $available | grep -q $node_id; then
+                nodes_not_finished+=" $node_id"
+            fi
+        done
+
+        nodes=$nodes_not_finished
+        if [[ "$nodes" == "" ]]; then
+            break
+        fi
+
+        echo "Waiting for nodes to become available: $nodes"
+        echo "Currently available: $available"
+        sleep $IRONIC_CLEANING_DELAY
+    done
+
+    if [[ "$nodes" != "" ]]; then
+        die $LINENO "Some nodes did not finish cleaning: $nodes"
+    fi
+}
+
+function wait_for_ironic_neutron_agent_report_state_for_all_nodes {
+    local nodes=$@
+    echo "Waiting for ironic-neutron-agent to report state for nodes: $nodes"
+    local attempt
+    for attempt in $(seq 1 $IRONIC_NEUTRON_AGENT_REPORT_STATE_ATTEMPTS); do
+        local reported
+        reported=$(openstack network agent list -f value -c Host -c Binary | grep ironic-neutron-agent | cut -d ' ' -f 1 | paste -s -d ' ')
+        echo "Currently reported nodes: $reported"
+
+        local can_break
+        for node_id in $nodes; do
+            if echo $reported | grep -q $node_id; then
+                can_break="True"
+            else
+                can_break="False"
+                break
+            fi
+        done
+        if [[ $can_break == "True" ]]; then
+            break
+        fi
+        sleep $IRONIC_NEUTRON_AGENT_REPORT_STATE_DELAY
+    done
+
+    if [[ "$can_break" == "False" ]]; then
+        die $LINENO "ironic-neutron-agent did not report some nodes."
+    fi
+}
+
+
+function enroll_nodes {
+    local chassis_id
+    chassis_id=$($IRONIC_CMD chassis create --description "ironic test chassis" -f value -c uuid)
+    die_if_not_set $LINENO chassis_id "Failed to create chassis"
+
+    local node_prefix
+    node_prefix=$(get_ironic_node_prefix)
+
+    local interface_info
+
+    if [[ "$IRONIC_IS_HARDWARE" == "False" ]]; then
+        local ironic_node_cpu=$IRONIC_VM_SPECS_CPU
+        local ironic_node_ram=$IRONIC_VM_SPECS_RAM
+        local ironic_node_disk=$IRONIC_VM_SPECS_DISK
+        local ironic_ephemeral_disk=$IRONIC_VM_EPHEMERAL_DISK
+        local ironic_node_arch=x86_64
+        local ironic_hwinfo_file=$IRONIC_VM_MACS_CSV_FILE
+
+        if is_deployed_by_ipmi; then
+            local node_options="\
+                --driver-info ipmi_address=${HOST_IP} \
+                --driver-info ipmi_username=admin \
+                --driver-info ipmi_password=password"
+        elif is_deployed_by_snmp; then
+            local node_options="\
+                --driver-info snmp_driver=${IRONIC_VPDU_SNMPDRIVER} \
+                --driver-info snmp_address=${HOST_IP} \
+                --driver-info snmp_port=${IRONIC_VPDU_LISTEN_PORT} \
+                --driver-info snmp_protocol=2c \
+                --driver-info snmp_community=${IRONIC_VPDU_COMMUNITY}"
+        elif is_deployed_by_redfish; then
+            local node_options="\
+                --driver-info redfish_address=http://${HOST_IP}:${IRONIC_REDFISH_EMULATOR_PORT} \
+                --driver-info redfish_username=admin \
+                --driver-info redfish_password=password"
+        fi
+
+    else
+        local ironic_node_cpu=$IRONIC_HW_NODE_CPU
+        local ironic_node_ram=$IRONIC_HW_NODE_RAM
+        local ironic_node_disk=$IRONIC_HW_NODE_DISK
+        local ironic_ephemeral_disk=$IRONIC_HW_EPHEMERAL_DISK
+        local ironic_node_arch=$IRONIC_HW_ARCH
+        local ironic_hwinfo_file=$IRONIC_HWINFO_FILE
+    fi
+
+    local total_nodes=0
+    local total_cpus=0
+    local node_uuids=
+    local node_id
+
+    while read hardware_info; do
+        local node_name
+        node_name=$node_prefix-$total_nodes
+
+        local node_capabilities=""
+        if [[ "$IRONIC_BOOT_MODE" == "uefi" ]]; then
+            node_capabilities+=" --property capabilities=boot_mode:uefi"
+        fi
+        if [[ "$IRONIC_SECURE_BOOT" == "True" ]]; then
+            if [[ -n "$node_capabilities" ]]; then
+                node_capabilities+=",secure_boot:true"
+            else
+                node_capabilities+=" --property capabilities=secure_boot:true"
+            fi
+        fi
+
+        if [[ "$IRONIC_IS_HARDWARE" == "False" ]]; then
+            interface_info=$(echo $hardware_info | awk '{print $1}')
+
+            if is_deployed_by_ipmi; then
+                local vbmc_port
+                vbmc_port=$(echo $hardware_info | awk '{print $2}')
+                node_options+=" --driver-info ipmi_port=$vbmc_port"
+            elif is_deployed_by_snmp; then
+                local pdu_outlet
+                pdu_outlet=$(echo $hardware_info | awk '{print $3}')
+                node_options+=" --driver-info snmp_outlet=$pdu_outlet"
+            elif is_deployed_by_redfish; then
+                node_options+=" --driver-info redfish_system_id=/redfish/v1/Systems/$node_name"
+            fi
+            # Local-link-connection options
+            local llc_opts=""
+            if [[ "${IRONIC_USE_LINK_LOCAL}" == "True" ]]; then
+                local switch_info
+                local switch_id
+
+                switch_id=$(echo $hardware_info |awk '{print $4}')
+                switch_info=$(echo $hardware_info |awk '{print $5}')
+
+                # NOTE(vsaienko) we will add port_id later in the code.
+                llc_opts="--local-link-connection switch_id=${switch_id} \
+                    --local-link-connection switch_info=${switch_info} "
+            fi
+
+            if [[ "${IRONIC_STORAGE_INTERFACE}" == "cinder" ]]; then
+                local connector_iqn="iqn.2017-05.org.openstack.$node_prefix-$total_nodes"
+                if [[ -n "$node_capabilities" ]]; then
+                    node_capabilities+=",iscsi_boot:True"
+                else
+                    node_capabilities+=" --property capabilities=iscsi_boot:True"
+                fi
+            fi
+
+        else
+            # Currently we require all hardware platform have same CPU/RAM/DISK info
+            # in future, this can be enhanced to support different type, and then
+            # we create the bare metal flavor with minimum value
+            local bmc_address
+            bmc_address=$(echo $hardware_info |awk  '{print $1}')
+            local mac_address
+            mac_address=$(echo $hardware_info |awk '{print $2}')
+            local bmc_username
+            bmc_username=$(echo $hardware_info |awk '{print $3}')
+            local bmc_passwd
+            bmc_passwd=$(echo $hardware_info |awk '{print $4}')
+            local node_options=""
+
+            if is_deployed_by_ipmi; then
+                node_options+=" --driver-info ipmi_address=$bmc_address \
+                    --driver-info ipmi_password=$bmc_passwd \
+                    --driver-info ipmi_username=$bmc_username"
+            elif is_deployed_by_cimc; then
+                node_options+=" --driver-info cimc_address=$bmc_address \
+                    --driver-info cimc_password=$bmc_passwd \
+                    --driver-info cimc_username=$bmc_username"
+            elif is_deployed_by_ucs; then
+                local ucs_service_profile
+                ucs_service_profile=$(echo $hardware_info |awk '{print $5}')
+                node_options+=" --driver-info ucs_address=$bmc_address \
+                    --driver-info ucs_password=$bmc_passwd \
+                    --driver-info ucs_username=$bmc_username \
+                    --driver-info ucs_service_profile=$ucs_service_profile"
+            elif is_deployed_by_ilo; then
+                node_options+=" --driver-info ilo_address=$bmc_address \
+                    --driver-info ilo_password=$bmc_passwd \
+                    --driver-info ilo_username=$bmc_username"
+                if [[ $IRONIC_ENABLED_BOOT_INTERFACES == *"ilo-virtual-media"* ]]; then
+                    node_options+=" --driver-info ilo_deploy_iso=$IRONIC_DEPLOY_ISO_ID"
+                fi
+            elif is_deployed_by_drac; then
+                node_options+=" --driver-info drac_address=$bmc_address \
+                    --driver-info drac_password=$bmc_passwd \
+                    --driver-info drac_username=$bmc_username"
+            elif is_deployed_by_redfish; then
+                local bmc_redfish_system_id
+                bmc_redfish_system_id=$(echo $hardware_info |awk '{print $5}')
+                node_options+=" --driver-info redfish_address=https://$bmc_address \
+                    --driver-info redfish_system_id=$bmc_redfish_system_id \
+                    --driver-info redfish_password=$bmc_passwd \
+                    --driver-info redfish_username=$bmc_username \
+                    --driver-info redfish_verify_ca=False"
+            elif is_deployed_by_irmc; then
+                node_options+=" --driver-info irmc_address=$bmc_address \
+                    --driver-info irmc_password=$bmc_passwd \
+                    --driver-info irmc_username=$bmc_username"
+                if [[ -n "$IRONIC_DEPLOY_ISO_ID" ]]; then
+                    node_options+=" --driver-info irmc_deploy_iso=$IRONIC_DEPLOY_ISO_ID"
+                fi
+            elif is_deployed_by_xclarity; then
+                local xclarity_hardware_id
+                xclarity_hardware_id=$(echo $hardware_info |awk '{print $5}')
+                node_options+=" --driver-info xclarity_manager_ip=$bmc_address \
+                    --driver-info xclarity_password=$bmc_passwd \
+                    --driver-info xclarity_username=$bmc_username \
+                    --driver-info xclarity_hardware_id=$xclarity_hardware_id"
+            fi
+
+            interface_info="${mac_address}"
+        fi
+
+        # First node created will be used for testing in ironic w/o glance
+        # scenario, so we need to know its UUID.
+        local standalone_node_uuid=""
+        if [ $total_nodes -eq 0 ]; then
+            standalone_node_uuid="--uuid $IRONIC_NODE_UUID"
+        fi
+
+        # TODO(dtantsur): it would be cool to test with different resource
+        # classes, but for now just use the same.
+        node_id=$($IRONIC_CMD node create $standalone_node_uuid \
+            --chassis $chassis_id \
+            --driver $IRONIC_DEPLOY_DRIVER \
+            --name $node_name \
+            --resource-class $IRONIC_DEFAULT_RESOURCE_CLASS \
+            --property cpu_arch=$ironic_node_arch \
+            $node_capabilities \
+            $node_options \
+            -f value -c uuid)
+        die_if_not_set $LINENO node_id "Failed to create node"
+        node_uuids+=" $node_id"
+
+        if [[ -n $IRONIC_DEFAULT_TRAITS ]]; then
+            $IRONIC_CMD node add trait $node_id $IRONIC_DEFAULT_TRAITS
+        fi
+
+        $IRONIC_CMD node manage $node_id --wait $IRONIC_MANAGE_TIMEOUT || \
+            die $LINENO "Node did not reach manageable state in $IRONIC_MANAGE_TIMEOUT seconds"
+
+        # NOTE(vsaienko) IPA didn't automatically recognize root devices less than 4Gb.
+        # Setting root hint allows to install OS on such devices.
+        # 0x1af4 is VirtIO vendor device ID.
+        if [[ "$ironic_node_disk" -lt "4" && is_deployed_by_agent ]]; then
+            $IRONIC_CMD node set $node_id --property \
+                root_device='{"vendor": "0x1af4"}'
+        fi
+
+        # In case we using portgroups, we should API version that support them.
+        # Othervise API will return 406 ERROR
+        # NOTE(vsaienko) interface_info is in the following format here:
+        # mac1,tap-node0i1;mac2,tap-node0i2;...;macN,tap-node0iN
+        for info in ${interface_info//;/ }; do
+            local mac_address=""
+            local port_id=""
+            local llc_port_opt=""
+            local physical_network=""
+            mac_address=$(echo $info| awk -F ',' '{print $1}')
+            port_id=$(echo $info| awk -F ',' '{print $2}')
+            if [[ "${IRONIC_USE_LINK_LOCAL}" == "True" ]]; then
+                llc_port_opt+=" --local-link-connection port_id=${port_id} "
+            fi
+            if [[ "${IRONIC_USE_NEUTRON_SEGMENTS}" == "True" ]]; then
+                physical_network=" --physical-network ${PHYSICAL_NETWORK} "
+            fi
+            $IRONIC_CMD port create --node $node_id $llc_opts $llc_port_opt $mac_address $physical_network
+        done
+
+        # NOTE(vsaienko) use node-update instead of specifying network_interface
+        # during node creation. If node is added with latest version of API it
+        # will NOT go to available state automatically.
+        if [[ -n "${IRONIC_NETWORK_INTERFACE}" ]]; then
+            $IRONIC_CMD node set $node_id --network-interface $IRONIC_NETWORK_INTERFACE || \
+                die $LINENO "Failed to update network interface for node"
+        fi
+
+        if [[ -n "${IRONIC_STORAGE_INTERFACE}" ]]; then
+            $IRONIC_CMD node set $node_id --storage-interface $IRONIC_STORAGE_INTERFACE || \
+                die $LINENO "Failed to update storage interface for node $node_id"
+
+            if [[ -n "${connector_iqn}" ]]; then
+                $IRONIC_CMD volume connector create --node $node_id --type iqn \
+                    --connector-id $connector_iqn || \
+                    die $LINENO "Failed to create volume connector for node $node_id"
+            fi
+        fi
+
+        total_nodes=$((total_nodes+1))
+    done < $ironic_hwinfo_file
+
+    # NOTE(hjensas): ensure ironic-neutron-agent has done report_state for all
+    # nodes we attempt cleaning.
+    if [[ "${IRONIC_USE_NEUTRON_SEGMENTS}" == "True" ]]; then
+        wait_for_ironic_neutron_agent_report_state_for_all_nodes $node_uuids
+    fi
+
+    # NOTE(dtantsur): doing it outside of the loop, because of cleaning
+    provide_nodes $node_uuids
+
+    if is_service_enabled nova && [[ "$VIRT_DRIVER" == "ironic" ]]; then
+        if [[ "$HOST_TOPOLOGY_ROLE" != 'subnode' ]]; then
+            local adjusted_disk
+            adjusted_disk=$(($ironic_node_disk - $ironic_ephemeral_disk))
+            openstack flavor create --ephemeral $ironic_ephemeral_disk --ram $ironic_node_ram --disk $adjusted_disk --vcpus $ironic_node_cpu baremetal
+
+            local resource_class=${IRONIC_DEFAULT_RESOURCE_CLASS^^}
+            openstack flavor set baremetal --property "resources:CUSTOM_$resource_class"="1"
+            openstack flavor set baremetal --property "resources:DISK_GB"="0"
+            openstack flavor set baremetal --property "resources:MEMORY_MB"="0"
+            openstack flavor set baremetal --property "resources:VCPU"="0"
+
+            openstack flavor set baremetal --property "cpu_arch"="$ironic_node_arch"
+
+            if [[ "$IRONIC_BOOT_MODE" == "uefi" ]]; then
+                openstack flavor set baremetal --property "capabilities:boot_mode"="uefi"
+            fi
+
+            for trait in $IRONIC_DEFAULT_TRAITS; do
+                openstack flavor set baremetal --property "trait:$trait"="required"
+            done
+
+            if [[ "$IRONIC_SECURE_BOOT" == "True" ]]; then
+                openstack flavor set baremetal --property "capabilities:secure_boot"="true"
+            fi
+
+            # NOTE(dtantsur): sometimes nova compute fails to start with ironic due
+            # to keystone restarting and not being able to authenticate us.
+            # Restart it just to be sure (and avoid gate problems like bug 1537076)
+            stop_nova_compute || /bin/true
+            # NOTE(pas-ha) if nova compute failed before restart, .failure file
+            # that was created will fail the service_check in the end of the deployment
+            _clean_ncpu_failure
+            start_nova_compute
+        else
+            # NOTE(vsaienko) we enrolling IRONIC_VM_COUNT on each node. So on subnode
+            # we expect to have 2 x total_cpus
+            total_nodes=$(( total_nodes * 2 ))
+        fi
+        wait_for_nova_resources $total_nodes
+    fi
+}
+
+function die_if_module_not_loaded {
+    if ! grep -q $1 /proc/modules; then
+        die $LINENO "$1 kernel module is not loaded"
+    fi
+}
+
+function configure_iptables {
+    # enable tftp natting for allowing connections to HOST_IP's tftp server
+    if ! running_in_container; then
+        sudo modprobe nf_conntrack_tftp
+        sudo modprobe nf_nat_tftp
+    else
+        die_if_module_not_loaded nf_conntrack_tftp
+        die_if_module_not_loaded nf_nat_tftp
+    fi
+    # explicitly allow DHCP - packets are occasionally being dropped here
+    sudo iptables -I INPUT -p udp --dport 67:68 --sport 67:68 -j ACCEPT || true
+    # nodes boot from TFTP and callback to the API server listening on $HOST_IP
+    sudo iptables -I INPUT -d $IRONIC_TFTPSERVER_IP -p udp --dport 69 -j ACCEPT || true
+    # To use named /baremetal endpoint we should open default apache port
+    if [[ "$IRONIC_USE_WSGI" == "False" ]]; then
+        sudo iptables -I INPUT -d $HOST_IP -p tcp --dport $IRONIC_SERVICE_PORT -j ACCEPT || true
+        # open ironic API on baremetal network
+        sudo iptables -I INPUT -d $IRONIC_HTTP_SERVER -p tcp --dport $IRONIC_SERVICE_PORT -j ACCEPT || true
+        # allow IPA to connect to ironic API on subnode
+        sudo iptables -I FORWARD -p tcp --dport $IRONIC_SERVICE_PORT -j ACCEPT || true
+    else
+        sudo iptables -I INPUT -d $HOST_IP -p tcp --dport 80 -j ACCEPT || true
+        sudo iptables -I INPUT -d $HOST_IP -p tcp --dport 443 -j ACCEPT || true
+        # open ironic API on baremetal network
+        sudo iptables -I INPUT -d $IRONIC_HTTP_SERVER -p tcp --dport 80 -j ACCEPT || true
+        sudo iptables -I INPUT -d $IRONIC_HTTP_SERVER -p tcp --dport 443 -j ACCEPT || true
+    fi
+    if is_deployed_by_agent; then
+        # agent ramdisk gets instance image from swift
+        sudo iptables -I INPUT -d $HOST_IP -p tcp --dport ${SWIFT_DEFAULT_BIND_PORT:-8080} -j ACCEPT || true
+        sudo iptables -I INPUT -d $HOST_IP -p tcp --dport $GLANCE_SERVICE_PORT -j ACCEPT || true
+    fi
+
+    if [[ "$IRONIC_IPXE_ENABLED" == "True" ]] ; then
+        sudo iptables -I INPUT -d $IRONIC_HTTP_SERVER -p tcp --dport $IRONIC_HTTP_PORT -j ACCEPT || true
+    fi
+
+    if [[ "${IRONIC_STORAGE_INTERFACE}" == "cinder" ]]; then
+        sudo iptables -I INPUT -d $HOST_IP -p tcp --dport $ISCSI_SERVICE_PORT -s $FLOATING_RANGE -j ACCEPT || true
+    fi
+
+    # (rpittau) workaround to allow TFTP traffic on ubuntu bionic with conntrack helper disabled
+    local qrouter
+    qrouter=$(sudo ip netns list | grep qrouter | awk '{print $1;}')
+    if [[ ! -z "$qrouter" ]]; then
+        sudo ip netns exec $qrouter /sbin/iptables -A PREROUTING -t raw -p udp --dport 69 -j CT --helper tftp
+    fi
+}
+
+function configure_tftpd {
+    # stop tftpd and setup serving via xinetd
+    stop_service tftpd-hpa || true
+    [ -f /etc/init/tftpd-hpa.conf ] && echo "manual" | sudo tee /etc/init/tftpd-hpa.override
+    sudo cp $IRONIC_TEMPLATES_DIR/tftpd-xinetd.template /etc/xinetd.d/tftp
+    sudo sed -e "s|%TFTPBOOT_DIR%|$IRONIC_TFTPBOOT_DIR|g" -i /etc/xinetd.d/tftp
+    sudo sed -e "s|%MAX_BLOCKSIZE%|$IRONIC_TFTP_BLOCKSIZE|g" -i /etc/xinetd.d/tftp
+
+    # setup tftp file mapping to satisfy requests at the root (booting) and
+    # /tftpboot/ sub-dir (as per deploy-ironic elements)
+    # this section is only for ubuntu and fedora
+    if [[ "$IRONIC_IPXE_ENABLED" == "False" && \
+            ( "$IRONIC_BOOT_MODE" == "uefi" || "$IRONIC_SECURE_BOOT" == "True" ) && \
+            "$IRONIC_UEFI_BOOT_LOADER" == "grub2" ]]; then
+        local grub_dir
+
+        echo "re ^($IRONIC_TFTPBOOT_DIR/) $IRONIC_TFTPBOOT_DIR/\2"  >$IRONIC_TFTPBOOT_DIR/map-file
+        echo "re ^$IRONIC_TFTPBOOT_DIR/ $IRONIC_TFTPBOOT_DIR/"  >>$IRONIC_TFTPBOOT_DIR/map-file
+        echo "re ^(^/) $IRONIC_TFTPBOOT_DIR/\1"  >>$IRONIC_TFTPBOOT_DIR/map-file
+        echo "re ^([^/]) $IRONIC_TFTPBOOT_DIR/\1" >>$IRONIC_TFTPBOOT_DIR/map-file
+
+        sudo cp $IRONIC_GRUB2_SHIM_FILE $IRONIC_TFTPBOOT_DIR/bootx64.efi
+
+        if is_fedora; then
+            grub_subdir="EFI/fedora"
+        elif is_ubuntu; then
+            grub_subdir="boot/grub"
+        fi
+        grub_dir=$IRONIC_TFTPBOOT_DIR/$grub_subdir
+        mkdir -p $grub_dir
+        # Grub looks for numerous files when the grubnetx.efi binary is used :\
+        # specifically .lst files which define module lists which we can't seem
+        # to find on disk. That being said, the grub-mknetdir utility generates
+        # these files for us.
+        grub-mknetdir --net-directory="$IRONIC_TFTPBOOT_DIR" --subdir="$grub_subdir"
+        sudo cp $grub_dir/x86_64-efi/core.efi $IRONIC_TFTPBOOT_DIR/grubx64.efi
+        cat << EOF > $grub_dir/grub.cfg
+set default=master
+set timeout=1
+set hidden_timeout_quiet=false
+
+menuentry "master"  {
+configfile $IRONIC_TFTPBOOT_DIR/\$net_default_mac.conf
+}
+EOF
+        chmod 644 $grub_dir/grub.cfg
+        iniset $IRONIC_CONF_FILE pxe uefi_pxe_config_template '$pybasedir/drivers/modules/pxe_grub_config.template'
+        iniset $IRONIC_CONF_FILE pxe uefi_pxe_bootfile_name  "bootx64.efi"
+    else
+        echo "r ^([^/]) $IRONIC_TFTPBOOT_DIR/\1" >$IRONIC_TFTPBOOT_DIR/map-file
+        echo "r ^(/tftpboot/) $IRONIC_TFTPBOOT_DIR/\2" >>$IRONIC_TFTPBOOT_DIR/map-file
+    fi
+
+    sudo chmod -R 0755 $IRONIC_TFTPBOOT_DIR
+    restart_service xinetd
+}
+
+function build_ipa_ramdisk {
+    local kernel_path=$1
+    local ramdisk_path=$2
+    local iso_path=$3
+    case $IRONIC_RAMDISK_TYPE in
+        'coreos')
+            build_ipa_coreos_ramdisk $kernel_path $ramdisk_path $iso_path
+            ;;
+        'tinyipa')
+            build_tinyipa_ramdisk $kernel_path $ramdisk_path $iso_path
+            ;;
+        'dib')
+            build_ipa_dib_ramdisk $kernel_path $ramdisk_path $iso_path
+            ;;
+        *)
+            die $LINENO "Unrecognised IRONIC_RAMDISK_TYPE: $IRONIC_RAMDISK_TYPE. Expected either of 'dib', 'coreos', or 'tinyipa'."
+            ;;
+    esac
+}
+
+function build_ipa_coreos_ramdisk {
+    echo "Building coreos ironic-python-agent deploy ramdisk"
+    local kernel_path=$1
+    local ramdisk_path=$2
+    local iso_path=$3
+    # on fedora services do not start by default
+    restart_service docker
+    git_clone $IRONIC_PYTHON_AGENT_REPO $IRONIC_PYTHON_AGENT_DIR $IRONIC_PYTHON_AGENT_BRANCH
+    cd $IRONIC_PYTHON_AGENT_DIR
+    imagebuild/coreos/build_coreos_image.sh
+    cp imagebuild/coreos/UPLOAD/coreos_production_pxe_image-oem.cpio.gz $ramdisk_path
+    cp imagebuild/coreos/UPLOAD/coreos_production_pxe.vmlinuz $kernel_path
+    if is_deploy_iso_required; then
+        imagebuild/coreos/iso-image-create -k $kernel_path -i $ramdisk_path -o $iso_path
+    fi
+    sudo rm -rf UPLOAD
+    cd -
+}
+
+function build_tinyipa_ramdisk {
+    echo "Building ironic-python-agent deploy ramdisk"
+    local kernel_path=$1
+    local ramdisk_path=$2
+    local iso_path=$3
+    git_clone $IRONIC_PYTHON_AGENT_BUILDER_REPO $IRONIC_PYTHON_AGENT_BUILDER_DIR $IRONIC_PYTHON_AGENT_BUILDER_BRANCH
+    cd $IRONIC_PYTHON_AGENT_BUILDER_DIR/tinyipa
+    export BUILD_AND_INSTALL_TINYIPA=true
+    if is_ansible_deploy_enabled; then
+        export AUTHORIZE_SSH=true
+        export SSH_PUBLIC_KEY=$IRONIC_ANSIBLE_SSH_KEY.pub
+    fi
+    make
+    cp tinyipa.gz $ramdisk_path
+    cp tinyipa.vmlinuz $kernel_path
+    if is_deploy_iso_required; then
+        make iso
+        cp tinyipa.iso $iso_path
+    fi
+    make clean
+    cd -
+}
+
+function rebuild_tinyipa_for_ansible {
+    local ansible_tinyipa_ramdisk_name
+    pushd $IRONIC_PYTHON_AGENT_BUILDER_DIR/tinyipa
+    export TINYIPA_RAMDISK_FILE=$IRONIC_DEPLOY_RAMDISK
+    export SSH_PUBLIC_KEY=$IRONIC_ANSIBLE_SSH_KEY.pub
+    make addssh
+    ansible_tinyipa_ramdisk_name="ansible-$(basename $IRONIC_DEPLOY_RAMDISK)"
+    mv $ansible_tinyipa_ramdisk_name $TOP_DIR/files
+    make clean
+    popd
+    IRONIC_DEPLOY_RAMDISK=$TOP_DIR/files/$ansible_tinyipa_ramdisk_name
+}
+
+# install_diskimage_builder() - Collect source and prepare or install from pip
+function install_diskimage_builder {
+    if use_library_from_git "diskimage-builder"; then
+        git_clone_by_name "diskimage-builder"
+        setup_dev_lib "diskimage-builder"
+    else
+        pip_install_gr "diskimage-builder"
+    fi
+}
+
+function build_ipa_dib_ramdisk {
+    local kernel_path=$1
+    local ramdisk_path=$2
+    local iso_path=$3
+    local tempdir
+    tempdir=$(mktemp -d --tmpdir=${DEST})
+
+    # install diskimage-builder if not present
+    if ! $(type -P disk-image-create > /dev/null); then
+        install_diskimage_builder
+    fi
+
+    echo "Building IPA ramdisk with DIB options: $IRONIC_DIB_RAMDISK_OPTIONS"
+    if is_deploy_iso_required; then
+        IRONIC_DIB_RAMDISK_OPTIONS+=" iso"
+    fi
+    git_clone $IRONIC_PYTHON_AGENT_BUILDER_REPO $IRONIC_PYTHON_AGENT_BUILDER_DIR
+    ELEMENTS_PATH="$IRONIC_PYTHON_AGENT_BUILDER_DIR/dib" \
+            disk-image-create "$IRONIC_DIB_RAMDISK_OPTIONS" \
+            -o  "$tempdir/ironic-agent" \
+            ironic-python-agent-ramdisk
+    chmod -R +r $tempdir
+    mv "$tempdir/ironic-agent.kernel" "$kernel_path"
+    mv "$tempdir/ironic-agent.initramfs" "$ramdisk_path"
+    if is_deploy_iso_required; then
+        mv "$tempdir/ironic-agent.iso" "$iso_path"
+    fi
+    rm -rf $tempdir
+}
+
+# build deploy kernel+ramdisk, then upload them to glance
+# this function sets ``IRONIC_DEPLOY_KERNEL_ID``, ``IRONIC_DEPLOY_RAMDISK_ID``
+function upload_baremetal_ironic_deploy {
+    declare -g IRONIC_DEPLOY_KERNEL_ID IRONIC_DEPLOY_RAMDISK_ID
+
+    local ironic_deploy_kernel_name
+    local ironic_deploy_ramdisk_name
+    ironic_deploy_kernel_name=$(basename $IRONIC_DEPLOY_KERNEL)
+    ironic_deploy_ramdisk_name=$(basename $IRONIC_DEPLOY_RAMDISK)
+    if [[ "$HOST_TOPOLOGY_ROLE" != 'subnode' ]]; then
+        echo_summary "Creating and uploading baremetal images for ironic"
+
+        if [ ! -e "$IRONIC_DEPLOY_RAMDISK" ] || \
+                [ ! -e "$IRONIC_DEPLOY_KERNEL" ]  || \
+                ( is_deploy_iso_required && [ ! -e "$IRONIC_DEPLOY_ISO" ] ); then
+            # files don't exist, need to build them
+            if [ "$IRONIC_BUILD_DEPLOY_RAMDISK" = "True" ]; then
+                # we can build them only if we're not offline
+                if [ "$OFFLINE" != "True" ]; then
+                    build_ipa_ramdisk $IRONIC_DEPLOY_KERNEL $IRONIC_DEPLOY_RAMDISK $IRONIC_DEPLOY_ISO
+                else
+                    die $LINENO "Deploy kernel+ramdisk or iso files don't exist and cannot be built in OFFLINE mode"
+                fi
+            else
+                # download the agent image tarball
+                wget "$IRONIC_AGENT_KERNEL_URL" -O $IRONIC_DEPLOY_KERNEL
+                wget "$IRONIC_AGENT_RAMDISK_URL" -O $IRONIC_DEPLOY_RAMDISK
+                if is_ansible_with_tinyipa; then
+                    # NOTE(pas-ha) if using ansible-deploy and tinyipa,
+                    # this will rebuild ramdisk and override $IRONIC_DEPLOY_RAMDISK
+                    rebuild_tinyipa_for_ansible
+                fi
+            fi
+        fi
+
+        # load them into glance
+        if ! is_deploy_iso_required; then
+            IRONIC_DEPLOY_KERNEL_ID=$(openstack \
+                image create \
+                $ironic_deploy_kernel_name \
+                --public --disk-format=aki \
+                --container-format=aki \
+                < $IRONIC_DEPLOY_KERNEL  | grep ' id ' | get_field 2)
+            die_if_not_set $LINENO IRONIC_DEPLOY_KERNEL_ID "Failed to load kernel image into glance"
+
+            IRONIC_DEPLOY_RAMDISK_ID=$(openstack \
+                image create \
+                $ironic_deploy_ramdisk_name \
+                --public --disk-format=ari \
+                --container-format=ari \
+                < $IRONIC_DEPLOY_RAMDISK  | grep ' id ' | get_field 2)
+            die_if_not_set $LINENO IRONIC_DEPLOY_RAMDISK_ID "Failed to load ramdisk image into glance"
+
+        else
+            IRONIC_DEPLOY_ISO_ID=$(openstack \
+                image create \
+                $(basename $IRONIC_DEPLOY_ISO) \
+                --public --disk-format=iso \
+                --container-format=bare \
+                < $IRONIC_DEPLOY_ISO  -f value -c id)
+            die_if_not_set $LINENO IRONIC_DEPLOY_ISO_ID "Failed to load deploy iso into glance"
+        fi
+    else
+        if is_ansible_with_tinyipa; then
+            ironic_deploy_ramdisk_name="ansible-$ironic_deploy_ramdisk_name"
+        fi
+        IRONIC_DEPLOY_KERNEL_ID=$(openstack image show $ironic_deploy_kernel_name -f value -c id)
+        IRONIC_DEPLOY_RAMDISK_ID=$(openstack image show $ironic_deploy_ramdisk_name -f value -c id)
+    fi
+
+    iniset $IRONIC_CONF_FILE conductor deploy_kernel $IRONIC_DEPLOY_KERNEL_ID
+    iniset $IRONIC_CONF_FILE conductor deploy_ramdisk $IRONIC_DEPLOY_RAMDISK_ID
+    iniset $IRONIC_CONF_FILE conductor rescue_kernel $IRONIC_DEPLOY_KERNEL_ID
+    iniset $IRONIC_CONF_FILE conductor rescue_ramdisk $IRONIC_DEPLOY_RAMDISK_ID
+}
+
+function prepare_baremetal_basic_ops {
+    if [[ "$IRONIC_BAREMETAL_BASIC_OPS" != "True" ]]; then
+        return 0
+    fi
+
+    if ! is_service_enabled nova && [[ "$IRONIC_IPXE_ENABLED" == "True" ]] ; then
+        local image_file_path
+        if [[ ${IRONIC_WHOLEDISK_IMAGE_NAME} =~ \.img$ ]]; then
+            image_file_path=$FILES/${IRONIC_WHOLEDISK_IMAGE_NAME}
+        else
+            image_file_path=$FILES/${IRONIC_WHOLEDISK_IMAGE_NAME}.img
+        fi
+        sudo install -g $LIBVIRT_GROUP -o $STACK_USER -m 644 $image_file_path $IRONIC_HTTP_DIR
+    fi
+
+    upload_baremetal_ironic_deploy
+    configure_tftpd
+    configure_iptables
+}
+
+function cleanup_baremetal_basic_ops {
+    if [[ "$IRONIC_BAREMETAL_BASIC_OPS" != "True" ]]; then
+        return 0
+    fi
+    rm -f $IRONIC_VM_MACS_CSV_FILE
+    sudo rm -rf $IRONIC_DATA_DIR $IRONIC_STATE_PATH
+
+    local vm_name
+    for vm_name in $(_ironic_bm_vm_names); do
+        # Delete the Virtual BMCs
+        if is_deployed_by_ipmi; then
+            vbmc --no-daemon list | grep -a $NAME && vbmc --no-daemon delete $NAME || /bin/true
+        fi
+
+        # pick up the $LIBVIRT_GROUP we have possibly joint
+        newgrp $LIBVIRT_GROUP <<SUBSHELL
+            $IRONIC_SCRIPTS_DIR/cleanup-node.sh $vm_name
+SUBSHELL
+
+        # Cleanup node bridge/interfaces
+        for i in $(seq 1 $IRONIC_VM_INTERFACE_COUNT); do
+            sudo ip link del dev tap-${vm_name}i${i}
+        done
+    done
+
+    sudo ovs-vsctl --if-exists del-br $IRONIC_VM_NETWORK_BRIDGE
+
+    sudo rm -rf /etc/xinetd.d/tftp /etc/init/tftpd-hpa.override
+    restart_service xinetd
+    sudo iptables -D INPUT -d $HOST_IP -p udp --dport 69 -j ACCEPT || true
+    sudo iptables -D INPUT -d $HOST_IP -p tcp --dport $IRONIC_SERVICE_PORT -j ACCEPT || true
+    sudo iptables -D INPUT -d $HOST_IP -p tcp --dport 80 -j ACCEPT || true
+    sudo iptables -D INPUT -d $HOST_IP -p tcp --dport 443 -j ACCEPT || true
+    if is_deployed_by_agent; then
+        # agent ramdisk gets instance image from swift
+        sudo iptables -D INPUT -d $HOST_IP -p tcp --dport ${SWIFT_DEFAULT_BIND_PORT:-8080} -j ACCEPT || true
+    fi
+    sudo rmmod nf_conntrack_tftp || true
+    sudo rmmod nf_nat_tftp || true
+}
+
+function ironic_configure_tempest {
+    iniset $TEMPEST_CONFIG service_available ironic True
+
+    if [[ -n "$TEMPEST_BAREMETAL_MIN_MICROVERSION" ]]; then
+        iniset $TEMPEST_CONFIG baremetal min_microversion $TEMPEST_BAREMETAL_MIN_MICROVERSION
+    fi
+    if [[ -n "$TEMPEST_BAREMETAL_MAX_MICROVERSION" ]]; then
+        iniset $TEMPEST_CONFIG baremetal max_microversion $TEMPEST_BAREMETAL_MAX_MICROVERSION
+    fi
+    if [[ -n "$IRONIC_VM_COUNT" ]]; then
+        iniset $TEMPEST_CONFIG baremetal available_nodes $IRONIC_VM_COUNT
+    fi
+    if [[ -n "$IRONIC_PING_TIMEOUT" ]]; then
+        iniset $TEMPEST_CONFIG validation ping_timeout $IRONIC_PING_TIMEOUT
+    fi
+
+    if is_service_enabled nova; then
+        local bm_flavor_id
+        bm_flavor_id=$(openstack flavor show baremetal -f value -c id)
+        die_if_not_set $LINENO bm_flavor_id "Failed to get id of baremetal flavor"
+        iniset $TEMPEST_CONFIG compute flavor_ref $bm_flavor_id
+        iniset $TEMPEST_CONFIG compute flavor_ref_alt $bm_flavor_id
+        iniset $TEMPEST_CONFIG compute-feature-enabled disk_config False
+        if [[ "$IRONIC_NETWORK_INTERFACE" == "neutron" && $IRONIC_VM_INTERFACE_COUNT -gt 1 ]]; then
+            iniset $TEMPEST_CONFIG compute-feature-enabled interface_attach True
+        else
+            iniset $TEMPEST_CONFIG compute-feature-enabled interface_attach False
+        fi
+    fi
+    # NOTE(jlvillal): If IRONIC_PROVISION_NETWORK_NAME is set it means that
+    # nodes are using the neutron network driver / multi-tenant networking.
+    # Otherwise we are using a flat-network.
+    if [[ -n "${IRONIC_PROVISION_NETWORK_NAME}" ]]; then
+        # multi-tenant networking
+        iniset $TEMPEST_CONFIG baremetal use_provision_network True
+    else
+        # flat-network
+        iniset $TEMPEST_CONFIG compute fixed_network_name $PRIVATE_NETWORK_NAME
+        # NOTE(jroll) this disables multitenant network tests from tempest's
+        # tree, but not from our tree. This is a bit inconsistent, we should
+        # fix it.
+        iniset $TEMPEST_CONFIG auth create_isolated_networks False
+        iniset $TEMPEST_CONFIG network shared_physical_network True
+    fi
+
+    if is_service_enabled glance; then
+        local image_uuid
+        image_uuid=$(openstack image show $IRONIC_IMAGE_NAME -f value -c id)
+        iniset $TEMPEST_CONFIG compute image_ref $image_uuid
+        iniset $TEMPEST_CONFIG compute image_ref_alt $image_uuid
+
+        image_uuid=$(openstack image show $IRONIC_WHOLEDISK_IMAGE_NAME -f value -c id)
+        iniset $TEMPEST_CONFIG baremetal whole_disk_image_ref $image_uuid
+        image_uuid=$(openstack image show $IRONIC_PARTITIONED_IMAGE_NAME -f value -c id)
+        iniset $TEMPEST_CONFIG baremetal partition_image_ref $image_uuid
+    fi
+
+    iniset $TEMPEST_CONFIG baremetal whole_disk_image_url "http://$IRONIC_HTTP_SERVER:$IRONIC_HTTP_PORT/${IRONIC_WHOLEDISK_IMAGE_NAME}.img"
+    iniset $TEMPEST_CONFIG baremetal whole_disk_image_checksum $(md5sum $FILES/${IRONIC_WHOLEDISK_IMAGE_NAME}.img)
+
+    # NOTE(dtantsur): keep this option here until the defaults change in
+    # ironic-tempest-plugin to disable classic drivers testing.
+    iniset $TEMPEST_CONFIG baremetal enabled_drivers ""
+    iniset $TEMPEST_CONFIG baremetal enabled_hardware_types $IRONIC_ENABLED_HARDWARE_TYPES
+    iniset $TEMPEST_CONFIG baremetal enabled_bios_interfaces $IRONIC_ENABLED_BIOS_INTERFACES
+    iniset $TEMPEST_CONFIG baremetal enabled_deploy_interfaces $IRONIC_ENABLED_DEPLOY_INTERFACES
+    iniset $TEMPEST_CONFIG baremetal enabled_boot_interfaces $IRONIC_ENABLED_BOOT_INTERFACES
+    iniset $TEMPEST_CONFIG baremetal enabled_rescue_interfaces $IRONIC_ENABLED_RESCUE_INTERFACES
+    iniset $TEMPEST_CONFIG baremetal default_rescue_interface $IRONIC_DEFAULT_RESCUE_INTERFACE
+    # Driver for API tests
+    iniset $TEMPEST_CONFIG baremetal driver fake-hardware
+
+    local adjusted_root_disk_size_gb
+    if [[ "$IRONIC_IS_HARDWARE" == "False" ]]; then
+        adjusted_root_disk_size_gb=$(( ${IRONIC_VM_SPECS_DISK} - ${IRONIC_VM_EPHEMERAL_DISK} ))
+    else
+        adjusted_root_disk_size_gb=$(( ${IRONIC_HW_NODE_DISK} - ${IRONIC_HW_EPHEMERAL_DISK} ))
+    fi
+    iniset $TEMPEST_CONFIG baremetal adjusted_root_disk_size_gb $adjusted_root_disk_size_gb
+
+    if [[ -n "${IRONIC_TEMPEST_BUILD_TIMEOUT}" ]]; then
+        iniset $TEMPEST_CONFIG baremetal unprovision_timeout $IRONIC_TEMPEST_BUILD_TIMEOUT
+        iniset $TEMPEST_CONFIG baremetal active_timeout $IRONIC_TEMPEST_BUILD_TIMEOUT
+        iniset $TEMPEST_CONFIG baremetal deploywait_timeout $IRONIC_TEMPEST_BUILD_TIMEOUT
+        iniset $TEMPEST_CONFIG baremetal power_timeout $IRONIC_TEMPEST_BUILD_TIMEOUT
+        iniset $TEMPEST_CONFIG baremetal rescue_timeout $IRONIC_TEMPEST_BUILD_TIMEOUT
+        iniset $TEMPEST_CONFIG baremetal unrescue_timeout $IRONIC_TEMPEST_BUILD_TIMEOUT
+    fi
+
+    # Enabled features
+    iniset $TEMPEST_CONFIG baremetal_feature_enabled ipxe_enabled $IRONIC_IPXE_ENABLED
+    iniset $TEMPEST_CONFIG baremetal_feature_enabled fast_track_discovery $IRONIC_DEPLOY_FAST_TRACK
+    if [[ "$IRONIC_IS_HARDWARE" == "False" ]]; then
+        # Adoption requires reading or guessing the BMC credentials, so let's
+        # not enable it for real hardware, at least for now.
+        iniset $TEMPEST_CONFIG baremetal_feature_enabled adoption True
+    fi
+}
+
+function get_ironic_node_prefix {
+    local node_prefix="node"
+    if [[ "$HOST_TOPOLOGY_ROLE" == "subnode" ]]; then
+        node_prefix="$HOST_TOPOLOGY_ROLE"
+    fi
+    echo $node_prefix
+}
+
+function setup_vxlan_network {
+    sudo ovs-vsctl add-port $IRONIC_VM_NETWORK_BRIDGE phy-brbm-infra
+    sudo ovs-vsctl add-port $PUBLIC_BRIDGE phy-infra-brbm
+    sudo ovs-vsctl set interface phy-brbm-infra type=patch
+    sudo ovs-vsctl set interface phy-infra-brbm type=patch
+    sudo ovs-vsctl set interface phy-infra-brbm options:peer=phy-brbm-infra
+    sudo ovs-vsctl set interface phy-brbm-infra options:peer=phy-infra-brbm
+}
+
+# Restore xtrace + pipefail
+$_XTRACE_IRONIC
+$_PIPEFAIL_IRONIC
+
+# Tell emacs to use shell-script-mode
+## Local variables:
+## mode: shell-script
+## End:

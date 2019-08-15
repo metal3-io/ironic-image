@@ -1,0 +1,5 @@
+---
+features:
+  - |
+   Add a check from the ``link_local_connection`` plugin to use data stored by
+   the ``lldp_basic``; this avoids parsing the LLDP packets twice.

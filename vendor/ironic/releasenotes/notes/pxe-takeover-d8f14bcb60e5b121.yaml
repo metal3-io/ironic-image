@@ -1,0 +1,7 @@
+---
+fixes:
+  - |
+    Drivers using the ``PXEBoot`` boot interface now correctly support node
+    take-over for netboot-ed nodes in ``ACTIVE`` state.  During take-over, the
+    PXE environment is first re-created before attempting to switch it to
+    "service mode".

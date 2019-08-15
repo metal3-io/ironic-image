@@ -1,0 +1,6 @@
+---
+fixes:
+  - LLC hook now formats the chassis ID and port ID MAC addresses into Unix
+    format as expected by ironic.
+  - LLC hook ensures that correct port information is passed to the patch_port
+    function

@@ -1,0 +1,17 @@
+---
+features:
+  - |
+    Adds a migration tool ``ironic-inspector-migrate-data`` to facilitate the
+    introspection data migration between supported introspection data storage
+    backends. Currently the available introspection data storage backends are:
+    ``database`` and ``swift``. For example, to migrate existing introspection
+    data stored in the swift to database, execute following command:
+
+    .. code-block:: shell
+
+       $ ironic-inspector-migrate-data --from swift --to database --config-file /etc/ironic-inspector/inspector.conf
+
+    Storage backends involved in the migration should have been properly
+    configured in the ironic inspector configuration file. Before the
+    introspection data migration can be started. The ironic inspector database
+    should be upgraded to have the latest schema.

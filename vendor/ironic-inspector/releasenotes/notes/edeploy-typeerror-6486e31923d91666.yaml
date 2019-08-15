@@ -1,0 +1,5 @@
+---
+fixes:
+  - Fixes a problem which caused an unhandled TypeError exception to
+    bubble up when inspector was attempting to convert some eDeploy data
+    to integer.

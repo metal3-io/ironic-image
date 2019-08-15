@@ -1,0 +1,15 @@
+# The order of packages is significant, because pip processes them in the order
+# of appearance. Changing the order has an impact on the overall integration
+# process, which may cause wedges in the gate later.
+
+pbr>=3.1.1 # Apache-2.0
+six>=1.11.0 # MIT
+oslo.config>=5.2.0 # Apache-2.0
+oslo.context>=2.20.0 # Apache-2.0
+oslo.i18n>=3.20.0 # Apache-2.0
+oslo.utils>=3.36.0 # Apache-2.0
+oslo.serialization>=2.25.0 # Apache-2.0
+debtcollector>=1.19.0 # Apache-2.0
+pyinotify>=0.9.6;sys_platform!='win32' and sys_platform!='darwin' and sys_platform!='sunos5' # MIT
+python-dateutil>=2.7.0 # BSD
+monotonic>=1.4;python_version<'3.3' # Apache-2.0

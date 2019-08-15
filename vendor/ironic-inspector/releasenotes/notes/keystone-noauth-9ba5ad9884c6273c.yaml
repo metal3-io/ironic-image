@@ -1,0 +1,6 @@
+---
+fixes:
+  - |
+    Ironic introspection no longer tries to access the Identity service if the
+    ``auth_strategy`` option is set to ``noauth`` and the ``auth_type`` option
+    is not set to ``none``.

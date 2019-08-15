@@ -1,0 +1,5 @@
+---
+upgrade:
+  - |
+    The deprecated configuration option ``[DEFAULT]node_status_keep_time``
+    was removed.

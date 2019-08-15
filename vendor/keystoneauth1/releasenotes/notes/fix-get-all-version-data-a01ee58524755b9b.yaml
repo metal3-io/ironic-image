@@ -1,0 +1,6 @@
+---
+fixes:
+  - |
+    The docstring for ``keystoneauth1.session.Session.get_all_version_data``
+    correctly listed ``'public'`` as the default value, but the argument list
+    had ``None``. The default has been fixed to match the documented value.

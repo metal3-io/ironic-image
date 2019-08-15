@@ -1,0 +1,75 @@
+- job:
+    name: ironic-lib-base
+    parent: ironic-base
+    irrelevant-files:
+      - ^test-requirements.txt$
+      - ^.*\.rst$
+      - ^api-ref/.*$
+      - ^doc/.*$
+      - ^ironic_lib/tests/.*$
+      - ^releasenotes/.*$
+      - ^setup.cfg$
+      - ^tools/.*$
+      - ^tox.ini$
+    required-projects:
+      - openstack/ironic-lib
+    vars:
+      devstack_localrc:
+        IRONIC_BUILD_DEPLOY_RAMDISK: True
+        USE_PYTHON3: True
+
+- job:
+    name: ironic-lib-wholedisk-bios-ipmi-direct-tinyipa-src-python2
+    parent: ironic-lib-base
+    timeout: 7200
+    vars:
+      devstack_services:
+        s-account: True
+        s-container: True
+        s-object: True
+        s-proxy: True
+      devstack_localrc:
+        IRONIC_DEFAULT_DEPLOY_INTERFACE: direct
+        IRONIC_TEMPEST_WHOLE_DISK_IMAGE: True
+        USE_PYTHON3: False
+        IRONIC_VM_EPHEMERAL_DISK: 0
+        SWIFT_ENABLE_TEMPURLS: True
+        SWIFT_TEMPURL_KEY: secretkey
+
+- job:
+    name: ironic-lib-partition-bios-ipmi-direct-tinyipa-src-python2
+    parent: ironic-lib-base
+    timeout: 7200
+    vars:
+      devstack_services:
+        s-account: True
+        s-container: True
+        s-object: True
+        s-proxy: True
+      devstack_localrc:
+        IRONIC_DEFAULT_DEPLOY_INTERFACE: direct
+        USE_PYTHON3: False
+        SWIFT_ENABLE_TEMPURLS: True
+        SWIFT_TEMPURL_KEY: secretkey
+
+- job:
+    name: ironic-lib-partition-bios-ipmi-iscsi-tinyipa-src
+    parent: ironic-lib-base
+    timeout: 7200
+
+
+- job:
+    name: ironic-lib-partition-bios-ipmi-iscsi-tinyipa-src-python2
+    parent: ironic-lib-base
+    timeout: 7200
+    vars:
+        USE_PYTHON3: False
+
+- job:
+    name: ironic-lib-wholedisk-bios-ipmi-iscsi-tinyipa-src
+    parent: ironic-lib-base
+    timeout: 7200
+    vars:
+      devstack_localrc:
+        IRONIC_TEMPEST_WHOLE_DISK_IMAGE: True
+        IRONIC_VM_EPHEMERAL_DISK: 0

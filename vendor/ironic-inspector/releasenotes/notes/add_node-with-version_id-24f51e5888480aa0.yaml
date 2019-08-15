@@ -1,0 +1,8 @@
+---
+fixes:
+  - |
+    A ``version_id`` is now explicitly generated during the
+    ``node_cache.start_introspection/.add_node`` call to avoid race conditions
+    such as in case of the `two concurrent introspection calls bug`_.
+
+    .. _two concurrent introspection calls bug: https://bugs.launchpad.net/ironic-inspector/+bug/1719627

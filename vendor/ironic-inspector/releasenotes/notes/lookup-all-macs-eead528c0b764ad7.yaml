@@ -1,0 +1,6 @@
+---
+fixes:
+  - The lookup procedure now uses all valid MAC's, not only the MAC(s) that
+    will be used for creating port(s).
+  - The "enroll" node_not_found_hook now uses all valid MAC's to check node
+    existence, not only the MAC(s) that will be used for creating port(s).

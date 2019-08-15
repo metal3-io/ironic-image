@@ -1,0 +1,5 @@
+---
+features:
+  - |
+    Add support for profiling (capture function calltrace) service's worker
+    processes.

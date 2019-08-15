@@ -1,0 +1,9 @@
+---
+upgrade:
+  - The minimum version of python-oneviewclient is now 2.5.2.
+fixes:
+  - A validation step is added to verify that the Server Profile
+    Template's MAC type is set to Physical when dynamic allocation
+    is enabled. The OneView Driver needs this verification
+    because the machine is going to use a MAC that will only be
+    specified at the profile application.

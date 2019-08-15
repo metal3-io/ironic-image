@@ -1,0 +1,6 @@
+---
+fixes:
+  - |
+    No longer fails introspection if memory or CPU information is not provided
+    in the inventory. These are no longer required for scheduling,
+    introspection should not require them either.

@@ -1,0 +1,6 @@
+---
+fixes:
+  - |
+    For postgreSQL, the database migration command ``ironic-inspector-dbsync upgrade`` always
+    failed (with `enum NODE_STATE does not exist <https://bugs.launchpad.net/ironic-inspector/+bug/1696950>`_).
+    This is fixed and the migration now works.

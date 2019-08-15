@@ -1,0 +1,7 @@
+---
+features:
+  - |
+    [`spec <http://specs.openstack.org/openstack/keystone-specs/specs/keystone/train/capabilities-app-creds.html>`_]
+    The auth_token middleware now has support for accepting or denying incoming
+    requests based on access rules provided by users in their keystone
+    application credentials.

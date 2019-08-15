@@ -1,0 +1,14 @@
+[console_scripts]
+oslopolicy-checker = oslo_policy.shell:main
+oslopolicy-list-redundant = oslo_policy.generator:list_redundant
+oslopolicy-policy-generator = oslo_policy.generator:generate_policy
+oslopolicy-policy-upgrade = oslo_policy.generator:upgrade_policy
+oslopolicy-sample-generator = oslo_policy.generator:generate_sample
+
+[oslo.config.opts]
+oslo.policy = oslo_policy.opts:list_opts
+
+[oslo.policy.rule_checks]
+http = oslo_policy._external:HttpCheck
+https = oslo_policy._external:HttpsCheck
+

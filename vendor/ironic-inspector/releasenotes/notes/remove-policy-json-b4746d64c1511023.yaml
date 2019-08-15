@@ -1,0 +1,10 @@
+---
+other:
+  - |
+    The sample configuration file located at ``example.conf``
+    and the sample policy file located at ``policy.yaml.sample``
+    were removed in this release, as they are now published with documentation.
+    See `the sample configuration file
+    <https://docs.openstack.org/ironic-inspector/latest/configuration/sample-config.html>`_
+    and `the sample policy file
+    <https://docs.openstack.org/ironic-inspector/latest/configuration/sample-policy.html>`_.

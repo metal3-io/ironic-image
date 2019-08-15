@@ -1,0 +1,7 @@
+---
+upgrade:
+  - |
+    Adds rpc related configuration options for the communication between
+    ironic-inspector API and worker. It needs to be configured properly
+    during upgrade. Set ``[DEFAULT]transport_url`` to ``fake://`` if a
+    rpc backend is not available or not desired.

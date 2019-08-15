@@ -1,0 +1,6 @@
+---
+features:
+  - |
+    Added a new optional parameter ``suffix`` to function ``get_traits``. This
+    new parameter allows filtering the list of traits returned by the ending
+    of the name.

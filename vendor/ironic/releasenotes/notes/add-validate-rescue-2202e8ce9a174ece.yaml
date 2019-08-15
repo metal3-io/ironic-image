@@ -1,0 +1,6 @@
+---
+other:
+  - |
+    Adds new method ``validate_rescue()`` to ``NetworkInterface`` to validate
+    rescuing network. This method is called during validation of rescue
+    interface.

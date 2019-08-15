@@ -1,0 +1,11 @@
+---
+fixes:
+  - >
+    [`bug 1523311 <https://bugs.launchpad.net/keystonemiddleware/+bug/1523311>`_]
+    Do not list deprecated opts in sample config.
+  - >
+    [`bug 1333951 <https://bugs.launchpad.net/keystonemiddleware/+bug/1333951>`_]
+    Add support for parsing AWS v4 for ec2.
+  - >
+    [`bug 1423973 <https://bugs.launchpad.net/keystonemiddleware/+bug/1423973>`_]
+    Use oslo.config choices for config options.

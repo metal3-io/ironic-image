@@ -1,0 +1,4 @@
+---
+fixes:
+  - Fixes SSH driver validation when using a private key with a passphrase for
+    authentication.

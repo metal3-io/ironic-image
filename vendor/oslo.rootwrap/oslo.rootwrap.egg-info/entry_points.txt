@@ -1,0 +1,4 @@
+[console_scripts]
+oslo-rootwrap = oslo_rootwrap.cmd:main
+oslo-rootwrap-daemon = oslo_rootwrap.cmd:daemon
+

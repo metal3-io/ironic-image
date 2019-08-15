@@ -1,0 +1,6 @@
+---
+features:
+  - |
+    Adds the ability to set keystoneauth settings for automatic service
+    discovery in the following configuration sections: ``[glance]``,
+    ``[cinder]``, ``[inspector]``, ``[swift]`` and ``[neutron]``.

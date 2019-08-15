@@ -1,0 +1,10 @@
+---
+features:
+  - >
+    [`bug 1540022 <https://bugs.launchpad.net/keystonemiddleware/+bug/1540022>`_]
+    The auth_token middleware will now accept a conf setting named
+    ``oslo_config_config``. If this is set its value must be an existing
+    oslo_config `ConfigOpts`. ``oslo_config_config`` takes precedence over
+    ``oslo_config_project``. This feature is useful to applications that
+    are instantiating the auth_token middleware themselves and wish to
+    use an existing configuration.

@@ -1,0 +1,18 @@
+---
+deprecations:
+  - >
+    With the release of 4.2.0 of keystonemiddleware we no longer recommend
+    using the in-process token cache. In-process caching may result in
+    inconsistent validation, poor UX and race conditions.
+
+    It is recommended that the `memcached_servers` option is set in the
+    `keystone_authtoken` configuration section of the various services (e.g.
+    nova, glance, ...) with the endpoint of running memcached server(s).
+
+    When the feature is removed, not setting the `memcached_servers`
+    option will cause keystone to validate tokens more frequently, increasing
+    load. In production, use of caching is highly recommended.
+
+    This feature is deprecated as of 4.2.0 and is targeted for removal in
+    keystonemiddleware 5.0.0 or in the `O` development cycle, whichever is
+    later.

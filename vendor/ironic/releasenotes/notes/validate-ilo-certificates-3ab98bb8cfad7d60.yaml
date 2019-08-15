@@ -1,0 +1,7 @@
+---
+features:
+  - Added support to validate iLO SSL certificate in iLO
+    drivers. A new configuration option ``[ilo]/ca_file`` is added to
+    specify the iLO CA certificate file.
+    If ``[ilo]/ca_file`` is specified, the iLO drivers will validate
+    iLO SSL certificates.

@@ -1,0 +1,5 @@
+---
+features:
+  - >
+    [`bug 1803940 <https://bugs.launchpad.net/keystonemiddleware/+bug/1803940>`_]
+    Request ID and global request ID have been added to CADF notifications.

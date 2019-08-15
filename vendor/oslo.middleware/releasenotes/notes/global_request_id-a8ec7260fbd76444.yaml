@@ -1,0 +1,8 @@
+---
+features:
+  - |
+    This adds support for ``global_request_id`` to the ``RequestId``
+    middleware. An inbound header of ``X-OpenStack-Request-ID`` is
+    accepted as long as it is of the format ``req-$uuid``, and made
+    available to oslo.context. This will allow for cross project
+    request id tracking.

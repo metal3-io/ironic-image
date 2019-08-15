@@ -1,0 +1,6 @@
+---
+fixes:
+  - Fixes issue that can result in introspection failure when a network switch
+    sends incomplete information for LLDP switch_id or port_id.  The validation
+    expects these fields when a port is updated, this fix now handles the
+    validation exception.

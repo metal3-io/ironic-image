@@ -1,0 +1,6 @@
+---
+fixes:
+  - |
+    Fixes an issue with the ``ipmi`` hardware type where
+    ``node['driver_info']['ipmi_force_boot_device']`` could be interpreted
+    as ``True`` when set to values such as "False".

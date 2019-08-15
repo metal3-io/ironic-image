@@ -1,0 +1,4 @@
+---
+fixes:
+  - Log a warning when add_ports is set to pxe, but no PXE MAC is returned from
+    the ramdisk.

@@ -1,0 +1,6 @@
+---
+fixes:
+  - |
+    Fixes an issues when parsing GPT partitions with names or multiple flags.
+    See `story 2005322 <https://storyboard.openstack.org/#!/story/2005322>`_
+    for details.

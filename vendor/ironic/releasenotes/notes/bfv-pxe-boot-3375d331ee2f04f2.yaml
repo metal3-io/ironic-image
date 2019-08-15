@@ -1,0 +1,5 @@
+---
+fixes:
+  - Fixes a problem when using boot from volume with the ``pxe`` boot interface
+    (`bug 1724275 <https://bugs.launchpad.net/ironic/+bug/1724275>`_).
+    Now the correct iSCSI initiator is used.

@@ -1,0 +1,43 @@
+Metadata-Version: 1.1
+Name: automaton
+Version: 1.16.0
+Summary: Friendly state machines for python.
+Home-page: https://docs.openstack.org/automaton/latest/
+Author: OpenStack
+Author-email: openstack-discuss@lists.openstack.org
+License: UNKNOWN
+Description: =========
+        Automaton
+        =========
+        
+        .. image:: https://img.shields.io/pypi/v/automaton.svg
+            :target: https://pypi.org/project/automaton/
+            :alt: Latest Version
+        
+        .. image:: https://img.shields.io/pypi/dm/automaton.svg
+            :target: https://pypi.org/project/automaton/
+            :alt: Downloads
+        
+        Friendly state machines for python. The goal of this library is to provide
+        well documented state machine classes and associated utilities. The state
+        machine pattern (or the implemented variation there-of) is a commonly
+        used pattern and has a multitude of various usages. Some of the usages
+        for this library include providing state & transition validation and
+        running/scheduling/analyzing the execution of tasks.
+        
+        * Free software: Apache license
+        * Documentation: https://docs.openstack.org/automaton/latest/
+        * Source: https://git.openstack.org/cgit/openstack/automaton
+        * Bugs: https://bugs.launchpad.net/automaton
+        
+        
+Platform: UNKNOWN
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: Apache Software License
+Classifier: Operating System :: POSIX
+Classifier: Programming Language :: Python :: 2
+Classifier: Programming Language :: Python :: 2.7
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.5
+Classifier: Topic :: Software Development :: Libraries

@@ -1,0 +1,38 @@
+---
+features:
+  - |
+    Adds an API access policy enforcment based on **oslo.policy** rules.
+    Similar to other OpenStack services, operators now can configure
+    fine-grained access policies using ``policy.yaml`` file. See
+    `policy.yaml.sample`_ in the code tree for the list of available policies
+    and their default rules. This file can also be generated from the code tree
+    with the following command::
+
+        tox -egenpolicy
+
+    See the `oslo.policy package documentation`_ for more information
+    on using and configuring API access policies.
+
+    .. _policy.yaml.sample: https://git.openstack.org/cgit/openstack/ironic-inspector/plain/policy.yaml.sample
+    .. _oslo.policy package documentation: https://docs.openstack.org/oslo.policy/latest/
+upgrade:
+  - |
+    Due to the choice of default values for API access policies rules,
+    some API parts of the **ironic-inspector** service will become available
+    to wider range of users after upgrade:
+
+    - general access to the whole API is by default granted to a user
+      with either ``admin``, ``administrator`` or ``baremetal_admin`` role
+      (previously it allowed access only to a user with ``admin`` role)
+    - listing of current introspection statuses and showing a given
+      introspection is by default also allowed to a user with the
+      ``baremetal_observer`` role
+
+    If these access policies are not appropriate for your deployment, override
+    them in a ``policy.json`` file in the **ironic-inspector** configuration
+    directory (usually ``/etc/ironic-inspector``).
+
+    See the `oslo.policy package documentation`_ for more information
+    on using and configuring API access policies.
+
+    .. _oslo.policy package documentation: https://docs.openstack.org/oslo.policy/latest/

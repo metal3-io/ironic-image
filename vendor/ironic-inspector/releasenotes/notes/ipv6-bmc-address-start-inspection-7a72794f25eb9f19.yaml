@@ -1,0 +1,6 @@
+---
+fixes:
+  - |
+    Fixes inspection of nodes with IPv6 BMC address. Inspection could not be
+    initiated because an IPv6 address was treated as a hostname, which could
+    not be resolved.

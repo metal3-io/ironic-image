@@ -1,0 +1,27 @@
+# An ironic-lib.filters to be used with rootwrap command.
+# The following commands should be used in filters for disk manipulation.
+# This file should be owned by (and only-writeable by) the root user.
+
+# NOTE:
+# if you update this file, you will also need to adjust the
+# ironic-lib.filters from the ironic module.
+
+[Filters]
+# ironic_lib/disk_utils.py
+blkid: CommandFilter, blkid, root
+blockdev: CommandFilter, blockdev, root
+hexdump: CommandFilter, hexdump, root
+lsblk: CommandFilter, lsblk, root
+qemu-img: CommandFilter, qemu-img, root
+wipefs: CommandFilter, wipefs, root
+sgdisk: CommandFilter, sgdisk, root
+partprobe: CommandFilter, partprobe, root
+
+# ironic_lib/utils.py
+mkswap: CommandFilter, mkswap, root
+mkfs: CommandFilter, mkfs, root
+dd: CommandFilter, dd, root
+
+# ironic_lib/disk_partitioner.py
+fuser: CommandFilter, fuser, root
+parted: CommandFilter, parted, root

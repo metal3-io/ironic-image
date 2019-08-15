@@ -1,0 +1,32 @@
+{
+  "introspection": [
+    {
+      "error": null,
+      "finished": true,
+      "finished_at": "2017-08-17T11:36:16",
+      "links": [
+        {
+          "href": "http://127.0.0.1:5050/v1/introspection/05ccda19-581b-49bf-8f5a-6ded99701d87",
+          "rel": "self"
+        }
+      ],
+      "started_at": "2017-08-17T11:33:43",
+      "state": "finished",
+      "uuid": "05ccda19-581b-49bf-8f5a-6ded99701d87"
+    },
+    {
+      "error": null,
+      "finished": true,
+      "finished_at": "2017-08-16T12:24:30",
+      "links": [
+        {
+          "href": "http://127.0.0.1:5050/v1/introspection/c244557e-899f-46fa-a1ff-5b2c6718616b",
+          "rel": "self"
+        }
+      ],
+      "started_at": "2017-08-16T12:22:01",
+      "state": "finished",
+      "uuid": "c244557e-899f-46fa-a1ff-5b2c6718616b"
+    }
+  ]
+}

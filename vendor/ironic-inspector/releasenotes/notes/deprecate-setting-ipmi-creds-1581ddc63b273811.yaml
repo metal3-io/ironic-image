@@ -1,0 +1,12 @@
+---
+deprecations:
+  - |
+    Support for setting IPMI credentials via ironic-inspector is deprecated
+    and will be removed completely in Pike. A new API version 1.9 was
+    introduced with this feature de-activated. For reasoning see
+    https://bugs.launchpad.net/ironic-python-agent/+bug/1654318.
+other:
+  - |
+    Default API version is temporary pinned to 1.8 (before deprecating setting
+    IPMI credentials). It will be reset to the latest version again when
+    support for setting IPMI credentials is removed.

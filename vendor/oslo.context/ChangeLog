@@ -1,0 +1,337 @@
+CHANGES
+=======
+
+2.22.1
+------
+
+* add python 3.7 unit test job
+* Update hacking version
+* Use template for lower-constraints
+* Update mailinglist from dev to discuss
+
+2.22.0
+------
+
+* Implement domain-scope for context objects
+* Clean up .gitignore references to personal tools
+* Always build universal wheels
+* add lib-forward-testing-python3 test job
+* add python 3.6 unit test job
+* import zuul job settings from project-config
+* import zuul job settings from project-config
+* Update reno for stable/rocky
+* Switch to stestr
+* Add release notes link to README
+* fix tox python3 overrides
+
+2.21.0
+------
+
+* Implement system-scope
+* Remove stale pip-missing-reqs tox test
+* Trivial: Update pypi url to new url
+* Switch pep8 job to python 3
+* add lower-constraints job
+* pypy not checked at gate
+* Updated from global requirements
+* Update links in README
+* Add -W for document build
+* Update reno for stable/queens
+* Updated from global requirements
+* Updated from global requirements
+* Updated from global requirements
+* Updated from global requirements
+
+2.20.0
+------
+
+* Updated from global requirements
+* Follow the new PTI for document build
+* Remove -U from pip install
+* Avoid tox\_install.sh for constraints support
+* add bandit to pep8 job
+* Remove setting of version/release from releasenotes
+
+2.19.3
+------
+
+* Ouput a placeholder instead of the auth\_token
+
+2.19.2
+------
+
+* Make from\_dict extensible
+
+2.19.1
+------
+
+* Output 'project' key in context's to\_dict function
+* Rename deprecated context params
+
+2.19.0
+------
+
+* Updated from global requirements
+
+2.18.1
+------
+
+* Update the documentation link for doc migration
+* Revert "Postpone deprecation warnings to Pike"
+
+2.18.0
+------
+
+* Updated from global requirements
+* Remove use of positional decorator
+* Update reno for stable/pike
+* Updated from global requirements
+
+2.17.0
+------
+
+* Fix URLs according to document migration
+* Cleanup document formatting
+* rearrange the documentation to fit into the new standard layout
+
+2.16.0
+------
+
+* Switch from oslosphinx to openstackdocstheme
+* Updated from global requirements
+
+2.15.0
+------
+
+* Optimize the link address
+* Remove pbr warnerrors in favor of sphinx check
+* Updated from global requirements
+
+2.14.0
+------
+
+* Provide unified calling interface for global\_id
+* Add global\_request\_id to context
+* Updated from global requirements
+* Updated from global requirements
+* Updated from global requirements
+
+2.13.0
+------
+
+* Updated from global requirements
+* [Fix gate]Update test requirement
+* Updated from global requirements
+* pbr.version.VersionInfo needs package name (oslo.xyz and not oslo\_xyz)
+* Postpone deprecation warnings to Pike
+* Update reno for stable/ocata
+
+2.12.0
+------
+
+* Updated from global requirements
+* Remove references to Python 3.4
+* Add Constraints support
+* Show team and repo badges on README
+* Add the service token details to context
+* Reformat the Context.\_\_init\_\_ arguments
+* Move existing attributes to \_id suffixed attributes
+
+2.11.0
+------
+
+* Updated from global requirements
+* Revert "Fix X-User and X-Tenant deprecated headers in from\_environ"
+* Updated from global requirements
+* Updated from global requirements
+* Changed the home-page link
+
+2.10.0
+------
+
+* Enable release notes translation
+* Updated from global requirements
+* Provide a way to deprecate policy values
+* Update reno for stable/newton
+* Fix typos
+* Fix X-User and X-Tenant deprecated headers in from\_environ
+
+2.9.0
+-----
+
+* Updated from global requirements
+
+2.8.0
+-----
+
+* Delete H803 in flake8 ignore list
+* Fix parameters of assertEqual are misplaced
+* Manually specify from\_dict parameters
+
+2.7.0
+-----
+
+* Add Python 3.5 classifier and venv
+* Emit deprecation warnings when positional args passed
+
+2.6.0
+-----
+
+* Allow deprecated X-Tenant-Name in from\_environ
+* Handle openstack.request\_id in from\_environ
+* Add is\_admin\_project to context
+* Updated from global requirements
+
+2.5.0
+-----
+
+* Add reno for releasenotes management
+* Add oslo.context name attributes matching ids
+
+2.4.0
+-----
+
+* Trivial: ignore openstack/common in flake8 exclude list
+* Strip roles in from\_environ
+* Allow deprecated headers in from\_environ
+
+2.3.0
+-----
+
+* Drop babel as requirement since its not used
+* Updated from global requirements
+* Ensure to\_dict() supports unicode
+
+2.2.0
+-----
+
+* Standardize an oslo.policy credentials dictionary
+* Revert "Add common oslo.log format parameters"
+* Add roles to context
+
+2.1.0
+-----
+
+* Agnostic approach to construct context from\_dict
+* Add common oslo.log format parameters
+
+2.0.0
+-----
+
+* Improve Context docs with example syntax
+* Define method for oslo.log context parameters
+* Add additional unit tests
+* Fix request\_id type on Python 3: use text (Unicode)
+* Updated from global requirements
+* Provide a helper to load a context from environment
+
+1.0.1
+-----
+
+* Revert "Add properties for id attributes"
+* Add properties for id attributes
+* Trival: Remove 'MANIFEST.in'
+
+1.0.0
+-----
+
+* Updated from global requirements
+* Remove python 2.6 classifier
+* Remove python 2.6 and cleanup tox.ini
+
+0.9.0
+-----
+
+* Remove reference to undefined attributes
+
+0.8.0
+-----
+
+* Fix coverage configuration and execution
+
+0.7.0
+-----
+
+* Add shields.io version/downloads links/badges into README.rst
+* Change ignore-errors to ignore\_errors
+* Updated from global requirements
+
+0.6.0
+-----
+
+* Updated from global requirements
+* Updated from global requirements
+* Updated from global requirements
+
+0.5.0
+-----
+
+* Updated from global requirements
+* Updated from global requirements
+* Add tox target to find missing requirements
+* Updated from global requirements
+* Updated from global requirements
+
+0.4.0
+-----
+
+* Remove support for Python 3.3
+* Do not sync run\_cross\_tests.sh
+* Updated from global requirements
+
+0.3.0
+-----
+
+* Uncap library requirements for liberty
+* Standardize setup.cfg summary for oslo libs
+* Update to latest hacking
+* Updated from global requirements
+* fix bug tracker link
+
+0.2.0
+-----
+
+* ensure we reset contexts when fixture is used
+* Activate pep8 check that \_ is imported
+
+0.1.0
+-----
+
+* Workflow documentation is now in infra-manual
+* Documentation cleanup
+* Add ClearRequestContext fixture
+* Cache the current context for the thread
+* Add docstring to get\_admin\_context()
+* Change instance\_uuid to resource\_uuid
+* Better information in the README
+* Generate better documentation for the module
+* Move out of the oslo namespace package
+* get test to actually run
+* fix links and requirements to latest versions
+* Make the unit test run properly - fix import
+* exported from oslo-incubator by graduate.sh
+* Add a RequestContext.from\_dict method
+* Use oslotest instead of common test module
+* Python 3: enable tests/unit/middleware/test\_request\_id.py
+* Add model\_query() to db.sqlalchemy.utils module
+* Adding domain to context and log
+* Remove vim header
+* Remove uuidutils imports in oslo modules
+* Revert "Removes generate\_uuid from uuidutils"
+* Removes generate\_uuid from uuidutils
+* Adding instance\_uuid to context and log
+* Replace using tests.utils with openstack.common.test
+* Fix bad default for show\_deleted
+* Enable hacking H404 test
+* Replaces the standard uuid with common in the context module
+* Fix Copyright Headers - Rename LLC to Foundation
+* Fix inconsistency with auth\_tok/auth\_token
+* Replace direct use of testtools BaseTestCase
+* Use testtools as test base class
+* Move get\_context\_from\_function\_and\_args() to context.py
+* Added dictify() and uuids to the common request context
+* add context 'tests'
+* make the skeleton project a template
+* reog from import merge
+* Add some more generic middleware, request context, utils, and versioning. Add basic template for server binary
+* Initial skeleton project

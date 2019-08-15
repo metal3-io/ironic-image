@@ -1,0 +1,5 @@
+---
+fixes:
+  - The data processing API endpoint now validates that data received from
+    the ramdisk is actually a JSON object instead of failing the internal error
+    later (issue https://bugs.launchpad.net/bugs/1525876).

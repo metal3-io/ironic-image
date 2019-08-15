@@ -1,0 +1,100 @@
+# Translations template for oslo.concurrency.
+# Copyright (C) 2015 ORGANIZATION
+# This file is distributed under the same license as the oslo.concurrency
+# project.
+#
+# Translators:
+# Maxime COQUEREL <max.coquerel@gmail.com>, 2015
+# Andreas Jaeger <jaegerandi@gmail.com>, 2016. #zanata
+msgid ""
+msgstr ""
+"Project-Id-Version: oslo.concurrency 3.6.1.dev10\n"
+"Report-Msgid-Bugs-To: https://bugs.launchpad.net/openstack-i18n/\n"
+"POT-Creation-Date: 2016-04-19 12:20+0000\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2015-06-10 11:06+0000\n"
+"Last-Translator: openstackjenkins <jenkins@openstack.org>\n"
+"Language: fr\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Generated-By: Babel 2.0\n"
+"X-Generator: Zanata 3.7.3\n"
+"Language-Team: French\n"
+
+#, python-format
+msgid ""
+"%(desc)r\n"
+"command: %(cmd)r\n"
+"exit code: %(code)r\n"
+"stdout: %(stdout)r\n"
+"stderr: %(stderr)r"
+msgstr ""
+"%(desc)r\n"
+"commande: %(cmd)r\n"
+"Code de sortie: %(code)r\n"
+"stdout: %(stdout)r\n"
+"stderr: %(stderr)r"
+
+#, python-format
+msgid ""
+"%(description)s\n"
+"Command: %(cmd)s\n"
+"Exit code: %(exit_code)s\n"
+"Stdout: %(stdout)r\n"
+"Stderr: %(stderr)r"
+msgstr ""
+"%(description)s\n"
+"Commande: %(cmd)s\n"
+"Code de sortie: %(exit_code)s\n"
+"Stdout: %(stdout)r\n"
+"Stderr: %(stderr)r"
+
+#, python-format
+msgid "%r failed. Not Retrying."
+msgstr "Echec de %r. Nouvelle tentative."
+
+#, python-format
+msgid "%r failed. Retrying."
+msgstr "Echec de %r. Nouvelle tentative."
+
+msgid ""
+"Calling lockutils directly is no longer supported.  Please use the lockutils-"
+"wrapper console script instead."
+msgstr ""
+"Lockutils appelant directement n'est plus pris en charge. Merci d'utiliser "
+"le script de la console lockutils -wrapper à la place."
+
+msgid "Command requested root, but did not specify a root helper."
+msgstr "La commande exigeait root, mais n'indiquait pas comment obtenir root."
+
+msgid "Environment not supported over SSH"
+msgstr "Environnement non prise en charge sur SSH"
+
+#, python-format
+msgid ""
+"Got an OSError\n"
+"command: %(cmd)r\n"
+"errno: %(errno)r"
+msgstr ""
+"Erreur du Système\n"
+"commande: %(cmd)r\n"
+"errno: %(errno)r"
+
+#, python-format
+msgid "Got invalid arg log_errors: %r"
+msgstr "Argument reçu non valide log_errors: %r"
+
+#, python-format
+msgid "Got unknown keyword args: %r"
+msgstr "Ags, mot clé inconnu: %r"
+
+#, python-format
+msgid "Running cmd (subprocess): %s"
+msgstr "Exécution de la commande (sous-processus): %s"
+
+msgid "Unexpected error while running command."
+msgstr "Erreur inattendue lors de l’exécution de la commande."
+
+msgid "process_input not supported over SSH"
+msgstr "process_input non pris en charge sur SSH"

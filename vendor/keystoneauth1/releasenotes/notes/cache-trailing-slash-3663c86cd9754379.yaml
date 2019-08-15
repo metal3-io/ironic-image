@@ -1,0 +1,8 @@
+---
+fixes:
+  - |
+    Fixed an issue where https://example.com and https://example.com/ were
+    being treated as different urls in the discovery cache resulting in a
+    second unneeded discovery call when someone sets an ``endpoint_override``
+    that didn't match the trailing-slash form given by that service's
+    discovery document.

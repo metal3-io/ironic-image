@@ -1,0 +1,5 @@
+---
+features:
+  - |
+    Exposed ``keystoneauth1.discover.version_between`` as a public function
+    that can be used to determine if a given version is within a range.

@@ -1,0 +1,5 @@
+---
+features:
+  - Conditions now support comparing fields from node info;
+  - Actions support formatting to fetch values from introspection data.
+    See https://docs.openstack.org/developer/ironic-inspector/usage.html#introspection-rules

@@ -1,0 +1,3 @@
+---
+upgrade:
+- The deprecated log_format configuration option has been removed.

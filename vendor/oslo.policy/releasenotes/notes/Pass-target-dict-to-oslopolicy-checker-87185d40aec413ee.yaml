@@ -1,0 +1,6 @@
+---
+features:
+  - |
+    oslopolicy-checker was added the ability to accept a file containing a hash
+    that represents the target. This makes it possible to check policies that
+    have non-conventional targets such as barbican.

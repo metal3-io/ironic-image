@@ -1,0 +1,3 @@
+[oslo.config.opts]
+oslo.versionedobjects = oslo_versionedobjects._options:list_opts
+

@@ -1,0 +1,6 @@
+---
+other:
+  - Logging during processing is now more consistent in terms of how it
+    identifies the node. Now we try to prefix the log message with node UUID,
+    BMC address and PXE MAC address (if available). Logging BMC addresses can
+    be disabled via new "log_bmc_address" option in the "processing" section.

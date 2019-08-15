@@ -1,0 +1,15 @@
+---
+prelude: >
+    This release includes optional support for fair locks.  When fair locks
+    are specified, blocking waiters will acquire the lock in the order that
+    they blocked.
+features:
+  - |
+    We now have optional support for ``fair`` locks.  When fair locks are
+    specified, blocking waiters will acquire the lock in the order that they
+    blocked.  This can be useful to ensure that existing blocked waiters do
+    not wait indefinitely in the face of large numbers of new attempts to
+    acquire the lock.  When specifying locks as both ``external`` and ``fair``,
+    the ordering *within* a given process will be fair, but the ordering
+    *between* processes will be determined by the behaviour of the underlying
+    OS.

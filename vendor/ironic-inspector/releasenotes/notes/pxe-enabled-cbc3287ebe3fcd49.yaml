@@ -1,0 +1,9 @@
+---
+features:
+  - |
+    Update ``pxe_enabled`` field on ports. It is set to ``True`` for the
+    PXE-booting port and ``False`` for the remaining ports. Both newly
+    discovered and existing ports are affected.
+upgrade:
+  - |
+    Bare metal API version `1.19` is now required.

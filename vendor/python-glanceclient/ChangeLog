@@ -1,0 +1,1020 @@
+CHANGES
+=======
+
+2.16.0
+------
+
+* Release notes for 2.16.0
+* Remove redundant information from error message
+* Update min tox version to 2.0
+* Update irrelevant-files for dsvm-functional tests
+* add python 3.7 unit test job
+* Add image-list filter for multihash
+* Change openstack-dev to openstack-discuss
+* Add Python 3.6 classifier to setup.cfg
+
+2.15.0
+------
+
+* Show the backend store info
+* Don't quote colon in HTTP headers
+* Embed validation data when adding location
+
+2.14.0
+------
+
+* Refactor periodic "tips" jobs
+* Cleanup .zuul.yaml
+* Use "multihash" for data download validation
+* add lib-forward-testing-python3 test job
+* add python 3.6 unit test job
+* switch documentation job to new PTI
+* import zuul job settings from project-config
+* Remove team diversity tags note in README
+* Update reno for stable/rocky
+* Skip quote '=' for token header
+
+2.12.0
+------
+
+* Correct typo in releasenote
+* Releasenotes for bugfixes in 2.12.0
+* Add support for hide old images
+* Do not quote '+' for token header
+* Add release note for hidden images support
+* Add release note for multi-store support
+* Add multihash release note
+* Unit tests for multi-store support
+* Add multi-store support
+* image-list: add checksum algorithm description
+* Add support for multihash
+* Replace 'raise StopIteration' with 'return'
+* Add release note link in README
+* Add experimental python3 functional test gate
+* fix tox python3 overrides
+* update shell tests to not rely on the serialization order of a dict
+* Remove PyPI downloads
+
+2.11.1
+------
+
+* Add release note for HTTP headers fix
+* Remove functional-identity-v3-only job
+* Switch to using stestr
+* Image show: print human readable string when the virtual size is unknown
+* Add periodic tips jobs
+* Handle HTTP headers per RFC 8187
+* Update property keys document
+* Trivial: Update pypi url to new url
+* Follow the new PTI for document build
+
+2.11.0
+------
+
+* Add releasenotes for 2.11.0
+* add lower-constraints job
+* Update local copy of image schema for 2.6
+* Make image-import fail faster
+* Make image-create-via-import fail faster
+* Fix intermittent v2 shell unit test failures
+* Split glanceclient functional tests
+* Updated from global requirements
+* Check for container,disk\_format on web-download
+* Update properties URL
+* Add support for web-download import method
+* Fix docs cli authorize environment variables
+* Remove usage of ordereddict
+* Updated from global requirements
+* Updated from global requirements
+* Update 'doc/source/reference/apiv2.rst'
+* Remove usage of ordereddict
+* Updated from global requirements
+* Removes unicode 'u' response from "glance image-tag-update"
+* Zuul: Remove project name
+* Update reno for stable/queens
+* Updated from global requirements
+* Revert "Remove team:diverse-affiliation from tags"
+
+2.9.1
+-----
+
+* Updated from global requirements
+* Remove deprecated ssl options
+* Avoid tox\_install.sh for constraints support
+
+2.9.0
+-----
+
+* Compare against 'RequestIdProxy.wrapped'
+* Update Image service property keys doc
+* Update Image service property keys docs
+* Updated from global requirements
+* Revise functional testing README file
+* Restore functional testing under ssl
+* Migrate dsvm functional test jobs to project repo
+* Add domain info to functional test clients
+* Remove setting of version/release from releasenotes
+* Updated from global requirements
+* Updated from global requirements
+* Enable Python hash seed randomization in tests
+* Updated from global requirements
+* Remove Babel as a runtime requirement
+* image-create-via-import fails with ValueError
+* Fix image-import call
+* Updated from global requirements
+* stage call fails with TypeError
+* Fix python 3.6 escape char warning
+* Update reno for stable/pike
+* Updated from global requirements
+
+2.8.0
+-----
+
+* Add missing docstring
+* Add image import features to client
+* Add documentation for image import commands
+* Add release note for Pike
+* Update glanceclient version ref
+* Removed the --no-ssl-compression parameter which is deprecated
+* Validate input args before trying image download
+* Make --profile load from environment variables
+* Updated from global requirements
+* Remove team:diverse-affiliation from tags
+* Updated from global requirements
+* Update and optimize documentation links
+* Updated from global requirements
+* help text for container\_format, disk\_format
+* Updated from global requirements
+* Fix man page build
+* turn on warning-is-error in sphinx build
+* use openstackdocstheme html context
+* update the doc URLs in the readme
+* switch to openstackdocstheme
+* import content from cli-reference in openstack-manuals
+* move existing content into the new standard structure
+* add explicit dependency on pyopenssl
+* Updated from global requirements
+* allow unhandled exceptions to cause test errors
+* move old release notes into the releasenotes doc tree
+* Enable code coverage report in console output
+* Replace assertTrue(isinstance()) with assertIsInstance()
+* Updated from global requirements
+* Updated from global requirements
+
+2.7.0
+-----
+
+* Allow global\_request\_id in Client constructor
+* Downloading image with --progress fails
+* Updated from global requirements
+* v2: Content-Type: application/octet-stream header always added
+* Convert IOError from requests
+* Downloading image with --progress fails for python3
+* Updated from global requirements
+* Updated from global requirements
+* gitignore: Ignore auto-generated docs
+* doc: Remove cruft from conf.py
+* Use Sphinx 1.5 warning-is-error
+* Explicitly set 'builders' option
+* Updated from global requirements
+* Updated from global requirements
+* Remove references to Python 3.4
+* Remove log translations
+* Updated from global requirements
+* Updated from global requirements
+* Update test requirement
+* Updated from global requirements
+* x-openstack-request-id logged twice in logs
+* Updated from global requirements
+* Updated from global requirements
+* Replace six.iteritems() with .items()
+* Replace functions 'dict.get' and 'del' with 'dict.pop'
+* Update reno for stable/ocata
+* Fix 'UnicodeEncodeError' for unicode values in url
+
+2.6.0
+-----
+
+* Updated from global requirements
+* Add request id to returned objects
+* Add ploop in disk\_format
+* Updated from global requirements
+* Handle formatting of subcommand name in error output
+* Add vhdx in disk\_format
+* Replace dict.iteritems() with dict.items()
+* Updated from global requirements
+* Use import\_versioned\_module from oslo.utils
+* Updated from global requirements
+* Add alt text for badges
+* Show team and repo badges on README
+* Add support for community images
+* Updated from global requirements
+* Move old oslo-incubator code out of openstack/common
+* Updated from global requirements
+* Enable release notes translation
+* Add Apache 2.0 license to source file
+* Updated from global requirements
+* Remove unused \_i18n.py shim
+* Updated from global requirements
+* Replace 'assertTrue(a not in b)' with 'assertNotIn(a, b)'
+* Updated from global requirements
+* Updated from global requirements
+* standardize release note page ordering
+* Updated from global requirements
+* switch from keystoneclient to keystoneauth
+* Improve tools/tox\_install.sh
+* Use constraints everywhere
+* Update reno for stable/newton
+
+2.5.0
+-----
+
+* Updated from global requirements
+* Revert "Don't update tags every time"
+* Update doc URL
+
+2.4.0
+-----
+
+* Updated from global requirements
+* Updated from global requirements
+
+2.3.0
+-----
+
+* Updated from global requirements
+* Remove unused openstack/common/apiclient/client
+* Replace OpenStack LLC with OpenStack Foundation
+* py3: Fix encoding and use sys.stdin.buffer
+* Remove discover from test-requirements
+* Updated from global requirements
+* Log request-id before exceptions raised
+* Fix string interpolation to delayed to be handled by the logging code
+
+2.2.0
+-----
+
+* Add comment about workaround for py3
+* Properly build releasenotes
+* Update docs URL
+* Add Python 3.5 classifier and venv
+* Fix warlock model creation
+* Updated from global requirements
+* image-download: tests to catch stray output
+* Use correct order of arguments to assertEqual
+* Updated from global requirements
+* Update outdated image shema
+* Replace tempest\_lib with tempest.lib
+* Log request-id for each api call
+* Updated from global requirements
+* Updated from global requirements
+
+2.1.0
+-----
+
+* Updated from global requirements
+* Remove deprecated construct method from session init
+* Add upper constraints to glanceclient
+* Remove unused skip\_authentication decorator
+* Don't update tags every time
+* Updated from global requirements
+* Fixed grammar in image-download command description
+* Updated from global requirements
+* Updated from global requirements
+* Updated from global requirements
+* Revert "Add last\_request\_id member to HTTPClient and SessionClient"
+* [Trivial] Remove unnecessary executable privilege
+* Fix "Codec can't encode characters"
+* Updated from global requirements
+* Update the home-page with developer documentation
+* Get endpoint if os\_image\_url is not set
+* Updated from global requirements
+* Corrected wrong parameter in docstring
+* Updated from global requirements
+* Enable hacking checks
+* Fix typos in docstrings and comments
+* Updated from global requirements
+* Re-enable stacktracing when --debug is used
+* Add last\_request\_id member to HTTPClient and SessionClient
+* Fix v2 so that you can see the default help info
+* Update auth\_token before sending request
+* Fix missing of debug info after we use session
+* Ship the default metadata schema in the client
+* Docs are generated incorrectly
+* Fix location update
+* Catch InUseByStore case in do\_image\_delete
+* Update reno for stable/mitaka
+
+2.0.0
+-----
+
+* Handle 403 forbidden on download
+* Test: use assert\_has\_calls() instead
+* Updated from global requirements
+* trival: fix a typo in comment
+* Auto-generated squash commit
+* Add reno to glanceclient
+* Updated from global requirements
+* v2 - "readOnly" key should be used in schemas
+* Fix client initialization in shell tests
+* Remove code needed for python2.5
+* Fix warnings in glanceclient README
+* Updated from global requirements
+* Remove argparse from requirements
+* Change metavar for location commands in V2
+* Updated from global requirements
+* Updated from global requirements
+* Enhance description of instance-uuid option for image-create
+* Updated from global requirements
+* Remove monkey-patching for getsockopt
+* Fixed TestHTTPSVerifyCert failure messages
+* Remove location check from V2 client
+* Use session when not specified token or endpoint
+* Updated from global requirements
+* Skip schema validation on GET /v2/images/%s
+* Trival: Remove 'MANIFEST.in'
+* Remove openstack-common.conf
+* Updated from global requirements
+* Drop py33 support
+* Change assertTrue(isinstance()) by optimal assert
+* Add help the ability to sort images with multiple keys
+* use keystoneclient exceptions instead of oslo-incubator code
+* Add docker to image\_schema on glance v2 cli
+* remove python 2.6 trove classifier
+* Fix image-download to stdout on Python 3.x
+* Updated from global requirements
+* replace the deprecated keystoneclient...apiclient
+* Replace assertEqual(None, \*) with assertIsNone in tests
+* Removes MANIFEST.in as it is not needed explicitely by PBR
+* Updated from global requirements
+* Remove broken try/except workaround for old requests
+* Remove py26 support
+* Deprecated tox -downloadcache option removed
+* Updated from global requirements
+* Disable suggestion of v1 help for v2 commands
+* Remove pypy env from tox
+* Fix the download error when the image locations are blank
+* Updated from global requirements
+* Run py34 env first when launching tests
+* Updated from global requirements
+* Fix help for image-create
+* Fix tests for image-create
+* Fix Resource.\_\_eq\_\_ mismatch semantics of object equal
+* Update set of wanted commands in read-only test
+* Fix typo in 'help' in python-glanceclient
+* Add ordereddict requirement for py26 tests
+* Updated from global requirements
+* Ensure that identity token in header is not an unicode string
+* Change man page examples to correlate default v2
+
+1.2.0
+-----
+
+* Release Notes for version 1.2.0
+* Fix 'test\_help' for shell client
+* Add versions list function
+* Added reactivate/deactivate image using CLI
+* Fix the missing help descripiton of "image-create"
+* Add documentation for running the functional tests
+* Updated from global requirements
+* Remove unused sphinx Makefile
+* Update docs to recommend KSA instead of KSC
+* Use clouds.yaml from devstack for functional tests
+* Add translation to v2 shell
+* Import i18n functions directly
+* Updated from global requirements
+* improve readme contents
+* Add support for setting Accept-Language header
+* Updated from global requirements
+* Use the subcomand parsed args instead of the base
+* Stop trying to send image\_size to the server
+* Support image deletion in batches in v2
+* print usage when no argument is specified for python3
+* Updated from global requirements
+* Remove self from image-create/image-update
+* Updated from global requirements
+* Do not use openstack.common.i18n in glance client
+* Added unit tests for 'Unicode support shell client'
+* Use common identity parameters fro keystone client
+* No auth when token and endpoint are passed
+* Use dictionary literal for dictionary creation
+* Replace exception\_to\_str with oslo.utils function
+* Change ignore-errors to ignore\_errors
+* Add period in help message
+* Don't get the image before deleting it
+* Fix human readable when size is None
+
+1.1.0
+-----
+
+* Change next version in docs
+* 1.0.1 Release notes
+* Fixes CLI client called without subcommands
+* Print the reverting back to v1 to stderr
+* Updates default --sort behaviour
+* Invalid output running the command 'glance image-show <image\_id>'
+* Don't make \`help\` require auth parameters
+* Add parsing the endpoint URL
+* check for None value in utils.safe\_header
+* Updated from global requirements
+* Consider \`--os-token\` when using v2
+* Check if v2 is available and fallback
+* Update path to subunit2html in post\_test\_hook
+* Fix the remove property logic in V2
+* Password should be prompted once
+
+1.0.0
+-----
+
+* 1.0.0 release notes
+* Fix Typos in comments
+* Remove custom SSL compression handling
+* Add more information show in v2
+* Require disk and container format on image-create
+* Ship the default image schema in the client
+* Use API v2 as default
+* V2: Do not validate image schema when listing
+* Updated from global requirements
+* Add unicode support for properties values in v2 shell
+* Fix failure to create glance https connection pool
+* Add check Identity validate when get schemas
+* Enable flake8 checks
+* Extend unittests coverage for v2 tasks module
+* Support for Metadata Definition Catalog for Tags
+* Fix exception message in Http.py
+* Fix an issue with broken test on ci
+* Remove usage of assert\_called\_once on Mock objects
+* Add .eggs/\* to .gitignore
+* Updated from global requirements
+* Account for dictionary order in test\_shell.py
+* Do not fall back to namespaced oslo.i18n
+* Updated from global requirements
+* Add v2 support for the marker attribute
+* Import only modules and update tox.ini
+* Updated from global requirements
+* Close iterables at the end of iteration
+* Make glanceclient accept a session object
+* cleanup openstack-common.conf and sync updated files
+
+0.19.0
+------
+
+* Add release notes for 0.19.0
+* Updated from global requirements
+* Include owner and status option in v2 image list
+* Fix Metadef Object update issue with python-glanceclient
+* Fix functional tests in gate
+* Do not crash on homedir mkdir
+* Improve import related error handling
+* Add parameter 'changes-since' for image-list of v1
+* Check image-download for redirection
+* Add some basic CLI functional tests
+* Use assertIn instead of assertTrue in tests
+* Unorder compare in tests
+* Add release notes for 0.18.0
+* Update README to work with release tools
+* Create functional test base
+* Move unit tests to standard directory
+
+0.18.0
+------
+
+* Uncap library requirements for liberty
+* Add unit tests for log\_curl\_request
+* Fix https stack trace on python 3.4 client
+* Fix client when using no ssl compression
+* Add SSL cert verification regression tests
+* Omit 'locations' as image-create parameter
+* Creating task with invalid property crashes in py3
+* Don't accept \*args for client
+* Stub authentication requests rather than plugins
+* Remove keystoneclient mocks
+* Replace mox in tests with requests-mock
+* Expose 'is\_base' schema property attribute
+* Validate tag name when filtering for images
+* Remove redundant FakeSchemaAPI \_\_init\_\_ method
+* glance image-show now have --human-readable option
+* Test unit for checking update active images
+* Correct help messages for image-update command
+
+0.17.0
+------
+
+* Add release notes for 0.17.0
+* Updated help for v2 member-update api
+* Extend images CLI v2 with new sorting syntax
+* Add the ability to specify the sort dir for each key
+* Import sys module
+* Adds the ability to sort images with multiple keys
+* add examples for properties and doc build script
+* Apply expected patch format when updating tags in v2.images
+* v2: read limit for list from --limit in shell
+* Fix leaking sockets after v2 list operation
+* Fix leaking sockets after v1 list operation
+
+0.16.1
+------
+
+* Add release notes for 0.16.1
+* removed excessive call to os.path.exists
+* Fix tests failing if keystone is running locally
+* Unify using six.moves.range rename everywhere
+
+0.16.0
+------
+
+* Add release notes for 0.16.0
+* Show error on trying to upload to non-queued image
+* https: Prevent leaking sockets for some operations
+* Glance image delete output
+* Strip json and html from error messages
+* Generate API documentation
+* Unit tests covering missing username or password
+* Register our own ConnectionPool without globals
+* Updated from global requirements
+* Change oslo.utils to oslo\_utils
+* Return 130 for keyboard interrupt
+* Ignore NoneType when encoding headers
+* Remove graduated gettextutils from openstack/common
+* Use utils.exit rather than print+sys.exit
+* Remove uuidutils from openstack-common
+* Add a \`--limit\` parameter to list operations
+* Fixed CLI help for bash-completion
+* Remove openstack.common.importutils
+* Remove openstack.common.strutils
+* Adds basic examples of v2 API usage
+* Sync latest apiclient from oslo-inc
+* Remove duplicate 'a' in the help string of --os-image-url
+* Close streamed requests explicitly
+* Handle HTTP byte returns in python 3
+* Updated from global requirements
+* Add validation to --property-filter in v1 shell
+* v2: Allow upload from stdin on image-create
+* Fix v2 image create --file documentation
+* Make non-boolean check strict
+* Disable progress bar if image is piped into client
+* Fix Requests breaking download progress bar
+* Fix broken-pipe seen in glance-api
+* Update HTTPS certificate handling for pep-0476
+
+0.15.0
+------
+
+* Add release notes for 0.15.0
+* Support Pagination for namespace list
+* Output clear error message on invalid api version
+* Support schema types with non-str value
+* Don't require version to create Client instance
+* Add os\_ prefix to project\_domain\_name/id
+* Workflow documentation is now in infra-manual
+* Use any instead of False in generator
+* Allow --file in image-create with v2 Image API
+* Add useful error on invalid --os-image-api-version
+* Add release notes for 0.14.0 - 0.14.2
+* Fix minor typo in version error message
+* Send \`identity\_headers\` through the wire
+* Curl statements to include globoff for IPv6 URLs
+* Remove readonly options from v2 shell commands
+* Add --property-filter option to v2 image-list
+* Fix py34 failure for glance client
+
+0.14.2
+------
+
+* Don't set X-Auth-Token key in http session header if no token provided
+* Don't replace the https handler in the poolmanager
+* Refactor method of constructing dicts in some tests
+* Adds tty password entry for glanceclient
+* Fixed doc example
+* '--public' ignored on image create
+* Remove network\_utils
+* Skip non-base properties in patch method
+* Adds support for Glance Tasks calls
+* Reduce the set of supported client SSL ciphers
+* Fix the ordering of assertEqual arguments
+
+0.14.1
+------
+
+* Update how tokens are redacted
+* Handle UnicodeDecodeError in log\_http\_response
+* Print traceback to stderr if --debug is set
+* Stop using intersphinx
+* Updated from global requirements
+* Fix v2 requests to non-bleeding edge servers
+* Fix to ensure endpoint\_type is used by \_get\_endpoint()
+* Work toward Python 3.4 support and testing
+
+0.14.0
+------
+
+* Support for Metadata Definitions Catalog API
+* Catch new urllib3 exception: ProtocolError
+* Default to system CA bundle if no CA certificate is provided
+* Import missing gettextutils.\_ in shell.py
+* Fix error when logging http response with python 3
+* Fix indentation in tox.ini
+* Add bash completion to glance client
+* Ensure server's SSL cert is validated
+* Enable osprofiler interface in glanceclient shell
+* Hide stderr noise in test output
+* Remove deprecated commands from shell
+* Normalize glanceclient requested service url
+* Fix glance-client to work with IPv6 controllers
+* Add support for Keystone v3
+* Downgrade log message for http request failures
+* Update theme for docs
+* Add a tox job for generating docs
+* Don't stream non-binary requests
+* Use a correctly formatted example location in help
+* Replace old httpclient with requests
+* CLI image-update gives a wrong help on '--tags' param
+* Enable F841
+* Resolving the performance issue for image listing of v2 API
+* Add profiling support to glanceclinet
+* Use immutable arg rather mutable arg
+* Add CONTRIBUTING.rst
+
+0.13.1
+------
+
+* Added release notes for 0.13.0
+* Add wheels section to the setup.cfg
+* Add missing classifiers
+* Add license to setup.cfg
+* Fix CA certificate handling
+* Add the six module dependency
+* Prepend '/' to the delete url for the v2 client
+* Set purge-props header correctly in image update
+* Updated from global requirements
+* Change a debug line to prevent UnicodeDecodeError issue
+* Add support for location parameters in v2 commands
+* Convert passed integer values into int in v1 shell
+* Reuse class Manager from common code
+* Fix help text in image-create
+* Python 3: use next(foo) instead of foo.next()
+* Remove auth token from http logging
+* Finalize Python3 support
+* fixed typos found by RETF rules
+* Updated from global requirements
+* Remove py3k module
+* Return request ID to callers
+* progress flag not supported in v2 API
+* Fix for invalid literal ValueError parsing ipv6 url(s)
+* Adding network\_utils module from oslo-incubator
+* Sync with oslo-incubator
+* Fix the parameter order of assertEqual in glanceclient v1 test
+* Sync with Oslo
+* Python 3: do not use \_\_builtin\_\_
+* Change assertTrue(isinstance()) by optimal assert
+* Updated from global requirements
+* Python3: do not use the 'file' type
+* Python 3: do not use the unicode() function
+* Fix the parameter order of assertEqual in glanceclient v2 test
+* Improve help strings
+* Fix the parameter order of assertEqual in glanceclient test
+* Python3: define a \_\_next\_\_() method for VerboseIteratorWrapper
+* test\_shell: remove a deprecated keyword argument
+* Python 3: Fix JsonPatch-related issues
+* Pass bytes to tempfile.NamedTemporaryFile().write()
+* Replace file with open, which is Python 3 compatible
+* Remove tox locale overrides
+* Fix misspellings in python-glanceclient
+* Update my mailmap
+* Add support for image size in v2 api upload
+* Only show progress bar for local image files
+* Using common method 'bool\_from\_string' from oslo strutils
+* Handle endpoints with versions consistently
+* Allow updating empty created v2 images from v1
+* server 500 should not be a client error
+* It was removed urllib, urllib2 & urlparse modules
+* python3: Switch to mox3 instead of mox
+* Remove vim header
+* Python 3: use six.iteritems and six.string\_types
+* Python3: use six.StringIO rather than StringIO.StringIO
+* Python3: use six.StringIO rather than StringIO.StringIO
+* Replace file.write and os.path.exists by mock
+* Python 3: use six.iteritems() instead of iteritems()
+* Python 3: use six.iteritems() instead of iteritems()
+* Fix glanceclient http.py string formatting error
+* Reuse Resource from oslo
+* Get better format for long lines with PrettyTable
+* Remove unused imports
+* Sync apiclient and py3kcompat from oslo
+* Fix and enable gating on H306
+* SSL: Handle wildcards in Subject Alternative Names
+* Updated from global requirements
+* Replace inheritance hierarchy with composition
+* Updates tox.ini to use new features
+* Updates .gitignore
+* Readd missing Babel dependency after merge from Oslo(master/bdda833)
+* Fix extra new line that break from progress bar
+
+0.12.0
+------
+
+* Add release notes for 0.12.0
+* Make HACKING.rst DRYer
+* change assertEquals to assertEqual
+* Fix Pep8 errors found by Pep8 1.4.6
+* python3: use six.moves for httplib imports
+* Sync from oslo-incubator
+* python3: xrange no longer exists
+* Fix misused assertTrue in unit tests
+* Add CLI for V2 image create, update, and upload
+* Fix regression bug after removing posixpath in http.py
+* Fix getting header in redirect processing
+* Fix default value for a header
+* Replace OpenStack LLC with OpenStack Foundation
+* Support glance client can get ipv6 image url correctly
+* Added support for running the tests under PyPy with tox
+* Enable query image by tag
+* Fix python 3.x related Hacking warnings
+* Fix glanceclient usage inconsistences for options
+* Add 0.11.0 doc notes
+* Use openstack-images-v2.1-json-patch for update method
+* Allow single-wildcard SSL common name matching
+* Revert "removed deprecated parameter --public"
+* \Allow removal of properties using glance v2 api
+* Updated from global requirements
+
+0.10.0
+------
+
+* Revert 02116565d358a4fa254217779fef82b14b38d8ca
+* Add 0.10.0 docs update
+* Show a pretty progressbar when uploading and downloading an image
+* Raise warlock requirement
+* Cast image\_id to string before calling urllib.quote
+* Don't use posixpath for URLs
+* Changes to allow image upload with V2 api
+* removed deprecated parameter --public
+* Encode error messages before sending them to stdout
+* Allow v1 client to list all users' images
+* Add v1 client side owner based filtering
+* Enable client library V2 to create an image
+* Provide glance CLI man page
+* Fix test assertions & test cases for V2 Shell Unit test
+* HTTPS response issues
+* Increase default page\_size value
+* Pass all identity headers received to glance
+* Fix SSL certificate CNAME checking
+* uncap python-keystoneclient version requirement
+* Expose checksum index image property in client
+* Flake8 should ignore build folder
+* Enable client V2 to update/delete tags for a given image
+* Rename invalid domain name to be RFC compliant
+* Start using Pyflakes and Hacking
+* Removes extra slash on endpoints without a path
+* Remove explicit distribute depend
+* Replace utils.ensure\_(str|unicode) with strutils.safe(decode|encode)
+* Do not decode headers in v1/images.py
+* Fix problem where image data is not read from a pipe
+* Add tests for encodings
+* python3: Introduce py33 to tox.ini
+* Rename requires files to standard names
+* Don't attempt to read stdin if it is empty
+* Update importutils and openstack-common.conf format
+* Convert non-ascii characters within image property to unicode
+* Migrate to pbr
+* Migrate to flake8
+* Add test for glanceclient shells
+* Improve unit tests for python-glanceclient.glanceclient.common.base
+* Image Members for glance v2 api
+* Fix inconsistent --debug messages on image-update
+* Expand HACKING with commit message guidelines
+* Prevent WantReadError when using https
+* Improve Python 3.x compatibility
+* Sync with oslo-incubator copy of setup.py and version.py
+* bug 1166263 image-update handling for closed stdin
+* Test that copy\_from is used properly in old API
+* Fix "glance add" parsing of "copy\_from" option
+* Fix problem running glance --version
+* Improve unit tests for python-glanceclient.glanceclient.common.http
+
+0.9.0
+-----
+
+* Add docs for 0.9.0
+* Filter images list by public=True|False
+* Trapping KeyboardInterrupt sooner
+* Allow for prettytable 0.7.x as well
+* Implements filters: visibility, owner, member\_status. Includes tests
+* Add missing spaces in help msg
+* Control C does not cancel the CLI cleanly
+* Replace SchemaNotFound with HTTPNotFound
+* Use getattr properly in legacy shell
+
+0.8.0
+-----
+
+* Add docs for v0.8.0
+* Report name resolution errors properly
+* Decode input and encode output
+* Add library support for v2 image update
+* Expect minumum warlock version of 0.7.0
+* Update to latest oslo-version
+* Update .coveragerc
+* Make effective ssl callback behaviour more obvious
+* Quote image ids before passing them to glance
+* Fix typo in image-update help page
+* Adds image-delete functionality
+* Change https port to be an optional parameter
+* Migrate to testr
+* Add image names to glance command arguments
+* Use testtools instead of unittest
+* Add details to stdout error message
+
+0.7.0
+-----
+
+* Document v0.7.0 release
+* Support --os-cacert
+* Update --location help to reference swift store
+* Change default image sort to use name
+* Add --sort-key and --sort-dir to image-list
+* Pin pep8 to 1.3.3
+* Allow setting x-image-meta-store through shell on image creation
+* Verify that host matches certificate
+
+0.6.0
+-----
+
+* Document bugs/features for v0.6.0
+* Hook up region\_name argument
+* Simplify human-readable size output
+* Make image sizes more readable for humans
+* Set useful boolean flag metavars
+* Unpin keystoneclient dependency
+* Fixes bug on Windows related to a wrong API url
+* Enhance --checksum help with algorithm
+* added --version as new parameter
+* Fixes setup compatibility issue on Windows
+* Allow deletion of multiple images through CLI
+* Fixes shell command for member-delete
+* Add OpenStack trove classifier for PyPI
+* Implement blueprint ssl-connect-rework
+* Handle create/update of images with unknown size
+* Display acceptable disk/container formats in help text
+* Simplify http(s) connection instantiation
+* Add happy path tests for ResponseBodyIterator
+* Use full URI path from Glance endpoint in HTTP requests
+* Typo in image-create help page
+* Fixes glance add / update / image-create / image-update on Windows
+* Fix weird "None" displayed on some errors
+* Make ConnectionRefused error more informative
+
+0.5.1
+-----
+
+* Document remaining bug for v0.5.1
+* Update docs for v0.5.1 release
+* Corrects URI to display hostname, port properly
+* Catches HTTP 300 while printing responses
+* get\_connection should raise httplib.InvalidURL
+* Fix PEP8 issues
+* Specified Content-Length in update request header
+* Sync importutils changes from openstack-common
+
+0.5.0
+-----
+
+* Update release notes for v0.5.0
+* Add nosehtmloutput as a test dependency
+* Update command descriptions
+* Update pip-requires with warlock<2
+* Enable client V1 to download images
+* Simplify docs and provide 'News' on index.rst
+
+0.4.2
+-----
+
+* Ensure v1 'limit' query parameter works correctly
+
+0.4.1
+-----
+
+* Allow 'deleted' to be passed through image update
+* Cast is\_public, protected, deleted to bool
+* Return known int values as int, not str
+* Use system CA certificate file
+
+0.4.0
+-----
+
+* socket errors and timeouts should be CommunicationErrors
+* Handle communication failures cleanly
+* Enable client V2 to download images
+* Refactor HTTP-related exceptions
+* Simplify v2 schema lookup
+* legacy\_shell.py shouldn't be executable
+* Client-side SSL Connection
+* SSL Certificate Validation
+
+0.3.0
+-----
+
+* Add missing copyright headers
+* Add legacy compat layer to v1 shell
+* Allow CLI opts to override auth token and endpoint
+* Update python-keystoneclient version dependency
+* Stop looking for v2 image in container
+
+0.2.0
+-----
+
+* Add exceptions for 500 and 503 HTTP status codes
+* Refactor http request/response logging
+* Fix --debug CLI option
+* Fix coverage reporting test
+* Honor '--insecure' commandline flag also for keystone authentication
+* Replace httplib2 with httplib as http driver
+* Clarify usage of --insecure flag
+* Add pagination to v1 image-list
+* Update README usage examples
+* Relax prettytable dependency to v0.6.X from v0.6
+* Add pagination to v2 image-list
+* Prevent links from being printed in v2 CLI
+* Align print\_dict to the left
+* Convert v2 images list method to generator
+* Replace static v2 Image model with warlock model
+* Add support for viewing a single image through v2
+* Rewrite link parsing for finding v2 schemas
+* Establish the supported importable interface
+* Add --is-public to image-create
+* Wrap image data in iterator
+* Translate is\_protected to protected
+* Change --protected to --is-protected in create
+* Properly map boolean-like arguments to True/False
+* Add ability to get version information in python
+* Latest setup goodness
+* Remove AuthorizationFailure exception
+* Preserve image properties on update
+* Add --file to image-update and correct bad name
+* Allow image filtering by custom properties
+* Expand v1 image-list filters
+* Add --timeout option to cli
+* Add size filtering to image-list action
+* Allow image upload from local file to v1 API
+* Use PyPI for keystoneclient
+* Switch CLI to support underscores and dashes
+
+0.1.1
+-----
+
+* Split reading of versioninfo out into a method
+* Add support for tag-based version numbers
+* Support --os-endpoint-type in glanceclient
+* Hook up GET /v1/images/<id>
+
+0.1.0
+-----
+
+* Add initial docs
+* Edit build\_sphinx options
+* Minimize tox.ini
+* Add 'explain' command to v2 that describes schemas
+* Stick prettytable at v0.6
+* Add tests dir to pep8 command
+* Set pep8 dependency at v1.2
+* Add minimal support for the v2 API
+* Auto generate AUTHORS file for glanceclient component
+* Include ChangeLog in tarball
+* Properly install from zipball
+* Adds support for --insecure
+* Fix the zipball change
+* Replace git url with github zipball
+* Refactor HTTPClient to use two request methods
+* Add missing files to MANIFEST.in
+* Add importutils from openstack-common
+* Adding service type as configurable shell option
+* Remove printt
+* Added condition requirement to simplejson
+* Use tox for running tests locally
+* Adds filter support to images.list()
+* Add '.tox' to .gitignore
+* Add fields to image-list
+* Strip version from service catalog endpoint
+* Fix image-create using pipelines
+* Allow tenant name to be used in authentication
+* Make tox cover output coverage.xml
+* Add Sphinx to test-requires
+* Updated depend processing to norms
+* Fixing pep8 errors
+* Add AUTHORS test case
+* Added gitreview file
+* Adding id for image members
+* image membership management works
+* Adding support for passing image data through cli
+* Image update works
+* More complete image creation
+* Correct keystoneclient egg name in pip-requires
+* Adding image-create action
+* Adding shared-images support
+* Image members bones
+* Basic testing
+* Update version to 2012.2
+* Further cleanup
+* Basic get/list operations work
+* All the latest OpenStack hotness
+* Initial checkin for new CLI and client package

@@ -1,0 +1,27 @@
+- project:
+    templates:
+      - check-requirements
+      - openstack-cover-jobs
+      - openstack-lower-constraints-jobs
+      - openstack-python-jobs
+      - openstack-python3-train-jobs
+      - publish-openstack-docs-pti
+    check:
+      jobs:
+        - ironic-lib-wholedisk-bios-ipmi-direct-tinyipa-src-python2
+        - ironic-lib-partition-bios-ipmi-direct-tinyipa-src-python2
+        - ironic-lib-partition-bios-ipmi-iscsi-tinyipa-src-python2
+        - ironic-lib-partition-bios-ipmi-iscsi-tinyipa-src
+        - ironic-lib-wholedisk-bios-ipmi-iscsi-tinyipa-src
+    gate:
+      queue: ironic
+      jobs:
+        - ironic-lib-wholedisk-bios-ipmi-direct-tinyipa-src-python2
+        - ironic-lib-partition-bios-ipmi-direct-tinyipa-src-python2
+        - ironic-lib-partition-bios-ipmi-iscsi-tinyipa-src-python2
+        - ironic-lib-partition-bios-ipmi-iscsi-tinyipa-src
+        - ironic-lib-wholedisk-bios-ipmi-iscsi-tinyipa-src
+    post:
+      jobs:
+        - ironic-python-agent-buildimage-coreos
+        - ironic-python-agent-buildimage-tinyipa

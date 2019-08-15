@@ -1,0 +1,6 @@
+---
+fixes:
+  - |
+    [`bug 1737115 <https://bugs.launchpad.net/keystonemiddleware/+bug/1737115>`_]
+    Last release have accidentaly make python-memcached a hard dependency, this
+    have changed back to an optional one.

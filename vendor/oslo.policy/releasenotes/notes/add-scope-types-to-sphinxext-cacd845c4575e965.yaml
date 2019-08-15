@@ -1,0 +1,6 @@
+---
+fixes:
+  - |
+    [`bug 1773473 <https://bugs.launchpad.net/oslo.policy/+bug/1773473>`_]
+    The ``sphinxext`` extension for rendering policy documentation now supports
+    ``scope_types`` attributes.

@@ -1,0 +1,6 @@
+---
+features:
+  - |
+    The ``X-Openstack-Request-Id`` header can now be set per-request via a
+    ``global_request_id`` kwarg to ``Adapter`` and ``Session`` request methods
+    (``request()``, ``get()``, ``put()``, etc.)

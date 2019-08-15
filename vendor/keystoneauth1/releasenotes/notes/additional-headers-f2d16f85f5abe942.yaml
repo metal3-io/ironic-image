@@ -1,0 +1,10 @@
+---
+prelude: >
+    Allow specifying additional_headers to the session and the adapter to add
+    headers to all requests that pass through these objects.
+features:
+  - Add the ability to provide additional_headers to the session and adapter
+    object. This will allow clients particularly to provide additional ways to
+    identify their requests. It will also hopefully provide an intermediate way
+    to handle setting microversions until we support them directly with
+    keystoneauth.

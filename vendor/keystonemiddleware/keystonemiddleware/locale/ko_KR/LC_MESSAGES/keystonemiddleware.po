@@ -1,0 +1,66 @@
+# Ian Y. Choi <ianyrchoi@gmail.com>, 2017. #zanata
+msgid ""
+msgstr ""
+"Project-Id-Version: keystonemiddleware VERSION\n"
+"Report-Msgid-Bugs-To: https://bugs.launchpad.net/openstack-i18n/\n"
+"POT-Creation-Date: 2018-02-20 19:27+0000\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2017-01-23 03:52+0000\n"
+"Last-Translator: Ian Y. Choi <ianyrchoi@gmail.com>\n"
+"Language-Team: Korean (South Korea)\n"
+"Language: ko_KR\n"
+"X-Generator: Zanata 4.3.3\n"
+"Plural-Forms: nplurals=1; plural=0\n"
+
+msgid "Access key not provided"
+msgstr "Access key가 없습니다"
+
+msgid "Encrypted data appears to be corrupted."
+msgstr "암호화된 데이터가 손상된 것으로 보입니다."
+
+#, python-format
+msgid "Error response from keystone: %s"
+msgstr "keystone 오류 응답: %s"
+
+msgid "Failed to fetch token data from identity server"
+msgstr "인증 서버로부터 토큰 데이터를 가져올 수 없습니다"
+
+#, python-format
+msgid "Failed to fetch token revocation list: %d"
+msgstr "토큰 revocation 목록을 가져올 수 없습니다: %d"
+
+msgid "Failure parsing response from keystone"
+msgstr "keystone 응답 파싱 실패"
+
+msgid "Identity server rejected authorization necessary to fetch token data"
+msgstr "토큰 데이터를 가져오기 위해 필수인 인증을 인증 서버에서 거절"
+
+msgid "Invalid MAC; data appears to be corrupted."
+msgstr "잘못된 MAC; 데이터가 손상된 것으로 보입니다."
+
+msgid "Invalid version asked for in auth_token plugin"
+msgstr "auth_token 플러그인에서 잘못된 버전 요청"
+
+msgid "No compatible apis supported by server"
+msgstr "서버에서 지원하는 호환 api가 없습니다"
+
+msgid "Signature not provided"
+msgstr "Signature가 없습니다"
+
+msgid "The request you have made requires authentication."
+msgstr "제공한 요청은 인증을 필요로 합니다."
+
+msgid "Token authorization failed"
+msgstr "Token 인증 실패"
+
+msgid "Unable to determine service tenancy."
+msgstr "서비스 tenancy를 결정할 수 없습니다."
+
+msgid ""
+"memcache_secret_key must be defined when a memcache_security_strategy is "
+"defined"
+msgstr ""
+"memcache_security_strategy 가 정의되어 있을 때 memcache_secret_key 를 정의해"
+"야 합니다"

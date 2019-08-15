@@ -1,0 +1,5 @@
+---
+features:
+  - |
+    A new ``oslo_log.log.is_debug_enabled`` helper function is added that
+    allows to determine whether debug mode is enabled for logging.

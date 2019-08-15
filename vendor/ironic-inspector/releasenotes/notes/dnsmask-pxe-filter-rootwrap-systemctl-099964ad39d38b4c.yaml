@@ -1,0 +1,11 @@
+---
+fixes:
+  - |
+    A new rootwrap filter is now included to allow control of the systemd
+    dnsmasq service used by ironic-inspector. This fixes a permission issue
+    when systemctl commands are used as ``dnsmasq_start_command`` and
+    ``dnsmasq_stop_command`` in the configuration for the dnsmasq pxe filter.
+    See bug `2002818 <https://storyboard.openstack.org/#!/story/2002818>`_.
+
+    .. Note:: The filter uses the systemd service name used by the RDO
+              distribution (``openstack-ironic-inspector-dnsmasq.service``).

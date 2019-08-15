@@ -1,0 +1,11 @@
+---
+features:
+  - >
+    [`bug 1583690 <https://bugs.launchpad.net/keystonemiddleware/+bug/1583690>`_]
+    For services such as Swift, which may not be utilizing oslo_config, we need
+    to be able to determine the project name from local config. If project
+    name is specified in both local config and oslo_config, the one in local
+    config will be used instead.
+
+    In case project is undetermined (i.e. not set), we use taxonomy.UNKNOWN as
+    an indicator so operators can take corrective actions.

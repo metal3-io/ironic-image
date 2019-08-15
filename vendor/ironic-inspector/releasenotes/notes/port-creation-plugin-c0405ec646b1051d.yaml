@@ -1,0 +1,7 @@
+---
+upgrade:
+  - |
+    Ports creating logic was moved from core processing code to the
+    ``validate_interfaces`` processing hook. This may affect deployments
+    that disable this hook or replace it with something else. Also make
+    sure to place this hook before any hooks expecting ports to be created.

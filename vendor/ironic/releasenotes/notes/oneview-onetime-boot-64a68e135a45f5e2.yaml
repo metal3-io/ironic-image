@@ -1,0 +1,4 @@
+---
+fixes:
+  - Fixes the OneView driver to make the ``set_boot_device`` method work as
+    expected with the ``persistent`` option set to ``False``.

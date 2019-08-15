@@ -1,0 +1,6 @@
+---
+features:
+  - Add the field `standalone_ports_supported` to the
+    port group object. This field indicates whether
+    ports that are members of this port group can be
+    used as stand-alone ports. The default is ``True``.

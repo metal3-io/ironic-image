@@ -1,0 +1,7 @@
+---
+fixes:
+  - |
+    [`bug 1766731 <https://bugs.launchpad.net/keystonemiddleware/+bug/1766731>`_]
+    Keystonemiddleware now supports system scoped tokens. When a system-scoped
+    token is parsed by auth_token middleware, it will set the
+    ``OpenStack-System-Scope`` header accordingly.

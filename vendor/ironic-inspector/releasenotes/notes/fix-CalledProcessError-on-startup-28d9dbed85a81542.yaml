@@ -1,0 +1,9 @@
+---
+fixes:
+  - |
+    Exception CalledProcessError is raised when running `iptables` cmd on start up.
+    The issue is caused by eventlet bug, see:
+    https://github.com/eventlet/eventlet/issues/357
+    The issue affects *ironic-inspector* only if it manages firewall - configured
+    with ``manage_firewall = True`` configuration option.
+

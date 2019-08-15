@@ -1,0 +1,4 @@
+features:
+  - |
+    Added Windows EventLog functionality to oslo.log. Set use_eventlog to true
+    in the service's configuration file to use it.

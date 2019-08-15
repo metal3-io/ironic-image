@@ -1,0 +1,6 @@
+---
+fixes:
+  - |
+    Fixes an issue where node ramdisk heartbeat operations would collide
+    with conductor locks and erroniously record an error in node's
+    ``last_error`` field.

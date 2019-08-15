@@ -1,0 +1,6 @@
+---
+features:
+  - |
+    Adds new configuration option ``[console]/socat_address`` to set the
+    binding address for socat-based console. The default is the value of the
+    ``[DEFAULT]my_ip`` option of the conductor responsible for the node.

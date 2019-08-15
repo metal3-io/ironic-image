@@ -1,0 +1,61 @@
+Metadata-Version: 2.1
+Name: keystonemiddleware
+Version: 7.0.0
+Summary: Middleware for OpenStack Identity
+Home-page: https://docs.openstack.org/keystonemiddleware/latest/
+Author: OpenStack
+Author-email: openstack-discuss@lists.openstack.org
+License: UNKNOWN
+Description: ========================
+        Team and repository tags
+        ========================
+        
+        .. image:: https://governance.openstack.org/tc/badges/keystonemiddleware.svg
+            :target: https://governance.openstack.org/tc/reference/tags/index.html
+        
+        .. Change things from this point on
+        
+        Middleware for the OpenStack Identity API (Keystone)
+        ====================================================
+        
+        .. image:: https://img.shields.io/pypi/v/keystonemiddleware.svg
+            :target: https://pypi.org/project/keystonemiddleware/
+            :alt: Latest Version
+        
+        .. image:: https://img.shields.io/pypi/dm/keystonemiddleware.svg
+            :target: https://pypi.org/project/keystonemiddleware/
+            :alt: Downloads
+        
+        This package contains middleware modules designed to provide authentication and
+        authorization features to web services other than `Keystone
+        <https://github.com/openstack/keystone>`. The most prominent module is
+        ``keystonemiddleware.auth_token``. This package does not expose any CLI or
+        Python API features.
+        
+        For information on contributing, see ``CONTRIBUTING.rst``.
+        
+        * License: Apache License, Version 2.0
+        * Documentation: https://docs.openstack.org/keystonemiddleware/latest/
+        * Source: https://git.openstack.org/cgit/openstack/keystonemiddleware
+        * Bugs: https://bugs.launchpad.net/keystonemiddleware
+        * Release notes: https://docs.openstack.org/releasenotes/keystonemiddleware/
+        
+        For any other information, refer to the parent project, Keystone:
+        
+            https://github.com/openstack/keystone
+        
+        
+Platform: UNKNOWN
+Classifier: Environment :: OpenStack
+Classifier: Intended Audience :: Information Technology
+Classifier: Intended Audience :: System Administrators
+Classifier: License :: OSI Approved :: Apache Software License
+Classifier: Operating System :: POSIX :: Linux
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 2
+Classifier: Programming Language :: Python :: 2.7
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Programming Language :: Python :: 3.7
+Provides-Extra: audit_notifications
+Provides-Extra: test

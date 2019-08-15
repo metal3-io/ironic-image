@@ -1,0 +1,22 @@
+---
+fixes:
+  - >
+    [`bug 1649735 <https://bugs.launchpad.net/keystone/+bug/1649735>`_]
+    The auth_token middleware no longer attempts to retrieve the revocation
+    list from the Keystone server. The deprecated options
+    `revocations_cache_time` and `check_revocations_for_cached` have been
+    removed.
+
+    Keystone no longer issues PKI/PKIZ tokens and now keystonemiddleware's
+    Support for PKI/PKIZ and associated offline validation has been removed.
+    This includes the deprecated config options `signing_dir`, and
+    `hash_algorithms`.
+
+upgrade:
+  - >
+    [`bug 1649735 <https://bugs.launchpad.net/keystone/+bug/1649735>`_]
+    Keystonemiddleware no longer supports PKI/PKIZ tokens, all
+    associated offline validation has been removed. The configuration
+    options `signing_dir`, and `hash_algorithms` have been removed, if
+    they still exist in your configuration(s), they are now safe to remove.
+    Please consider utilizing the newer fernet or JWS token formats.

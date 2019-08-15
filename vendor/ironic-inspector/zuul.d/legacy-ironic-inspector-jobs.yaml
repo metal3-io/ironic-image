@@ -1,0 +1,29 @@
+# DSVM jobs
+- job:
+    name: legacy-ironic-inspector-dsvm-base
+    parent: legacy-dsvm-base
+    required-projects:
+      - openstack/ironic
+      - openstack/ironic-inspector
+      - openstack/ironic-tempest-plugin
+      - openstack/virtualbmc
+    irrelevant-files:
+      - ^test-requirements.txt$
+      - ^.*\.rst$
+      - ^api-ref/.*$
+      - ^doc/.*$
+      - ^ironic_inspector/test/(?!.*tempest).*$
+      - ^ironic_inspector/locale/.*$
+      - ^releasenotes/.*$
+      - ^setup.cfg$
+      - ^tools/.*$
+      - ^tox.ini$
+
+- job:
+    name: ironic-inspector-grenade-dsvm
+    parent: legacy-ironic-inspector-dsvm-base
+    run: playbooks/legacy/ironic-inspector-grenade-dsvm/run.yaml
+    post-run: playbooks/legacy/ironic-inspector-grenade-dsvm/post.yaml
+    timeout: 10800
+    required-projects:
+      - openstack/grenade

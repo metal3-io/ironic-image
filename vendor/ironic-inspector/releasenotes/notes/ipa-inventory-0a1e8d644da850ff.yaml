@@ -1,0 +1,15 @@
+---
+prelude: >
+    Starting with this release, ironic-python-agent becomes the default
+    introspection ramdisk, with the old bash-based ramdisk being deprecated.
+features:
+  - Inspector no longer requires old-style "local_gb", "memory_mb", "cpus"
+    and "cpu_arch" fields from the introspection ramdisk. They are still
+    supported, though, for compatibility with the old ramdisk.
+upgrade:
+  - The root_disk_selection processing hook will now error out if root device
+    hints are specified on ironic node, but ironic-python-agent is not used
+    as an introspection ramdisk.
+deprecations:
+  - Using old bash-based ramdisk is deprecated, please switch to
+    ironic-python-agent as soon as possible.

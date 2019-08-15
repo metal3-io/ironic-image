@@ -1,0 +1,260 @@
+CHANGES
+=======
+
+1.16.0
+------
+
+* Use template for lower-constraints
+* Change openstack-dev to openstack-discuss
+* Change openstack-dev to openstack-discuss
+* add lib-forward-testing-python3 test job
+* add python 3.6 unit test job
+* import zuul job settings from project-config
+* Update reno for stable/rocky
+
+1.15.0
+------
+
+* Switch to stestr
+* fix tox python3 overrides
+* Trivial: Update pypi url to new url
+* fix list of default virtualenvs
+* set default python to python3
+* add lower-constraints job
+* Updated from global requirements
+* Update reno for stable/queens
+* Updated from global requirements
+* Updated from global requirements
+* Updated from global requirements
+
+1.14.0
+------
+
+
+1.13.1
+------
+
+* Avoid tox\_install.sh for constraints support
+* Remove setting of version/release from releasenotes
+* Updated from global requirements
+
+1.13.0
+------
+
+* Updated from global requirements
+* Remove kwarg default\_start\_state in the machine constructor
+* Updated from global requirements
+* Update reno for stable/pike
+* Updated from global requirements
+
+1.12.0
+------
+
+* Update URLs in documents according to document migration
+* update link to docs in readme
+
+1.11.0
+------
+
+* switch from oslosphinx to openstackdocstheme
+* rearrange existing documentation according to the new standard layout
+* Updated from global requirements
+
+1.10.0
+------
+
+* Remove pbr warnerrors in favor of sphinx check
+* Remove support for py34
+* Updated from global requirements
+* Updated from global requirements
+
+1.9.0
+-----
+
+* Updated from global requirements
+* Remove unused dependecy testscenarios
+
+1.8.0
+-----
+
+* Updated from global requirements
+* Updated from global requirements
+* Update reno for stable/ocata
+
+1.7.0
+-----
+
+* Don't include openstack/common in flake8 exclude list
+* Removes unnecessary utf-8 encoding
+* Add Constraints support
+* Replace six.iteritems() with .items()
+
+1.6.0
+-----
+
+* Updated from global requirements
+* Fix release notes gate failure
+* Updated from global requirements
+* Add reno for release notes management
+
+1.5.0
+-----
+
+* Changed the home-page link
+* Updated from global requirements
+* Updated from global requirements
+
+1.4.0
+-----
+
+* Remove discover from test-requirements
+* Add Python 3.5 classifier and venv
+
+1.3.0
+-----
+
+* Updated from global requirements
+
+1.2.0
+-----
+
+* Add a state-space machine building example
+* Ensure state space can also pass on\_enter/exit callbacks
+* Updated from global requirements
+* Updated from global requirements
+* Ensure machine special method(s) include in generated docs
+* Put py34 first in the envlist order of tox ,remove py33
+
+1.1.0
+-----
+
+* Removes MANIFEST.in as it is not needed explicitely by PBR
+* Deprecated tox -downloadcache option removed
+
+1.0.0
+-----
+
+* Updated from global requirements
+* Remove python 2.6 and cleanup tox.ini
+
+0.8.0
+-----
+
+* Added code coverage section to tox
+* No need for Oslo Incubator Sync
+* Ignore generated files
+* docs - Set pbr 'warnerrors' option for doc build
+* Remove dummy/placeholder 'ChangeLog' as its not needed
+* Enhance the README
+* Fix the build path in .gitignore file
+* Updated from global requirements
+* Provide a finite machine build() method
+* Allow for raising on duplicate transition registration
+
+0.7.0
+-----
+
+* Updated from global requirements
+* Updated from global requirements
+* Updated from global requirements
+
+0.6.0
+-----
+
+* Activate pep8 check that \_ is imported
+* Updated from global requirements
+
+0.5.0
+-----
+
+* Ensure doctesting and doc8 testing done in py27 env
+* Updated from global requirements
+* Remove setup.cfg 'requires-python' incorrect entry
+* Document \`process\_event\` return and expose return namedtuple type
+* Allow providing and using a 'nested\_start\_state\_fetcher'
+* Allow providing a state-name translation dict
+
+0.4.0
+-----
+
+* Add a bigger CD-player state-machine doctest(ed) example
+* Add \`is\_actionable\_event\` checking function
+* Disallow adding transitions from terminal states
+* Add and use a callback name fetching utility function
+* Add runners to features.rst & add a runner base & update docstrings
+
+0.3.0
+-----
+
+* Add badge support to README.rst
+* Add code repo, mail list, and IRC to CONTRIBUTING
+* Remove 3.3 classifier
+* Remove 2.6 classifier + 2.6 compatibility code
+* Add history.rst that uses generated 'ChangeLog' file
+* Add base exception class for this library
+* Updated from global requirements
+* Add optional machine conversion into a pydot graph
+* Updated from global requirements
+* Updated from global requirements
+* When a state has no transitions show its own \`on\_exit\` and \`on\_enter\`
+* Add a more complex doctest(ed) example
+* Add simple machine doctest(ed) example into docs
+
+0.2.0
+-----
+
+* Split the state machine runners off into own file
+* Use debtcollector removals function instead of warnings.warn
+* Revamp repo to match openstack repos
+* Allow the hierarchical machine to provide back the nested machines
+* Retain & deprecate default\_start\_state via constructor
+* Amend the unittest due to more on\_exit being triggered
+* Have the start state 'on\_exit' be called when exit occurs
+* Use a property setter instead of a method
+* Require using set\_default\_start\_state to set the default
+* Add more checks on setting a alternative start state default
+* Rename start\_state to default\_start\_state
+* Use type(self) instead of self.\_\_class\_\_
+* Correctly copy derived classes
+* Allow initialize to take an alternative start\_state
+* Update message when processing event and not initialized
+* Add pre and post event processing methods
+* Share the same not found template between machines
+* Avoid having a \_generate\_runner method when inheritance is ok
+* Allow frozen to be set/unset
+* Add testrepository to testing requirements
+* Fixup the classifiers
+* Fix the tox to install the right requirements
+* Just use \_generate\_runner to generate the different runner types
+* Use quoting in the machine code documentation
+* Adjust pformat() + add examples
+* Remove version caps
+* Split the requirements file into py2/py3 variations
+* Move process event to be a static method
+* Add a HierarchicalFiniteMachine + Runner
+* Use a helper classmethod to create machines
+* Rename \_Runner -> \_FiniteRunner
+* Move to top level machines module, seems cleaner this way
+* Fix the pformat() example
+* Move the fsm -> machines/finite.py and split off the running methods
+* Allow copies to be unfrozen (if the parent is frozen)
+* Make frozen a non-settable attribute and copy it correctly
+* Allow machines to be shallow or deep copied
+* Three is the number for alpha
+* Change beta to alpha (for now)
+
+0.1
+---
+
+* Add the travis badge
+* Add a travis testing file
+* Also install the main requirements.txt when using tox
+* Move over the fsm test
+* Add testtools testing requirement
+* Use the test-requirements.txt for tox.ini deps
+* Add needed testing requirement and tox.ini file
+* Don't forget the requirements.txt file
+* Fixup the README.rst and setup.cfg
+* Use prettytable
+* Move a bunch of files into there rightful places
+* Initial commit

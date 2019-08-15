@@ -1,0 +1,17 @@
+---
+features:
+  - |
+    Looking up nodes during introspection or discovery now supports multiple
+    attributes matching. For example, two nodes can use the same ``bmc_address``
+    and still can be distinguished by MAC addresses.
+upgrade:
+  - |
+    Uniqueness of a node ``bmc_address`` isn't enforced any more.
+  - |
+    The primary key of the ``attributes`` table is relaxed from the
+    ``attributes.name, attributes.value`` column pair to a new column
+    ``attributes.uuid``.
+fixes:
+  - |
+    Introspection fails on nodes with the same IPMI address but different IPMI
+    ports.

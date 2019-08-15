@@ -1,0 +1,12 @@
+---
+features:
+ - >
+   Add support for the `OpenID Connect Discovery Document
+   <https://openid.net/specs/openid-connect-discovery-1_0.html#ProviderMetadata>`_
+   into the OpenID Connect related plugins. Now it is possible to only pass the
+   `discovery-url` option and the plugins will try to fetch the required
+   metadata from there.
+fixes:
+  - >
+    [`bug 1583682 <https://bugs.launchpad.net/keystoneauth/+bug/1583682>`_]
+    OpenID Connect plugins should support OpenID Connect Discovery.

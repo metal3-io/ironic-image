@@ -1,0 +1,6 @@
+[run]
+branch = True
+source = swiftclient
+
+[report]
+ignore_errors = True

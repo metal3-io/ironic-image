@@ -1,0 +1,8 @@
+---
+features:
+  - |
+    The config option backdoor_socket_path now is a format string that
+    supports {pid}, which will be replaced with the PID of the current
+    process. This makes the eventlet backdoor accessible when spawning
+    multiple processes with the same backdoor_socket_path inside the
+    configuration.

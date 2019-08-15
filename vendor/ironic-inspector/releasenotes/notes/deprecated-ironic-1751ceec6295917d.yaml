@@ -1,0 +1,7 @@
+---
+upgrade:
+  - |
+    The deprecated options from the ``ironic`` section ``os_region``,
+    ``auth_strategy``, ``ironic_url``, ``os_service_type`` and
+    ``os_endpoint_type`` have been removed. Please use **keystoneauth**
+    options instead.

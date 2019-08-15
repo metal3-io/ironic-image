@@ -1,0 +1,76 @@
+# Andi Chandler <andi@gowling.com>, 2017. #zanata
+msgid ""
+msgstr ""
+"Project-Id-Version: keystonemiddleware VERSION\n"
+"Report-Msgid-Bugs-To: https://bugs.launchpad.net/openstack-i18n/\n"
+"POT-Creation-Date: 2018-04-21 04:01+0000\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2017-10-17 07:06+0000\n"
+"Last-Translator: Andi Chandler <andi@gowling.com>\n"
+"Language-Team: English (United Kingdom)\n"
+"Language: en_GB\n"
+"X-Generator: Zanata 4.3.3\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+
+msgid "Access key not provided"
+msgstr "Access key not provided"
+
+msgid "Encrypted data appears to be corrupted."
+msgstr "Encrypted data appears to be corrupted."
+
+#, python-format
+msgid "Error response from keystone: %s"
+msgstr "Error response from Keystone: %s"
+
+msgid "Failed to fetch token data from identity server"
+msgstr "Failed to fetch token data from identity server"
+
+#, python-format
+msgid "Failed to fetch token revocation list: %d"
+msgstr "Failed to fetch token revocation list: %d"
+
+msgid "Failure parsing response from keystone"
+msgstr "Failure parsing response from Keystone"
+
+msgid "Identity server rejected authorization necessary to fetch token data"
+msgstr "Identity server rejected authorisation necessary to fetch token data"
+
+msgid "Invalid MAC; data appears to be corrupted."
+msgstr "Invalid MAC; data appears to be corrupted."
+
+msgid "Invalid version asked for in auth_token plugin"
+msgstr "Invalid version asked for in auth_token plugin"
+
+msgid "No compatible apis supported by server"
+msgstr "No compatible APIs supported by server"
+
+msgid "Revocation list improperly formatted."
+msgstr "Revocation list improperly formatted."
+
+msgid "Signature not provided"
+msgstr "Signature not provided"
+
+msgid "The request you have made requires authentication."
+msgstr "The request you have made requires authentication."
+
+msgid "Token authorization failed"
+msgstr "Token authorisation failed"
+
+msgid "Token has been revoked"
+msgstr "Token has been revoked"
+
+msgid "Unable to determine service tenancy."
+msgstr "Unable to determine service tenancy."
+
+msgid ""
+"memcache_secret_key must be defined when a memcache_security_strategy is "
+"defined"
+msgstr ""
+"memcache_secret_key must be defined when a memcache_security_strategy is "
+"defined"
+
+#, python-format
+msgid "unable to access signing_dir %s"
+msgstr "unable to access signing_dir %s"

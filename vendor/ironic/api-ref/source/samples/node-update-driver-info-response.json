@@ -1,0 +1,109 @@
+{
+  "allocation_uuid": null,
+  "boot_interface": null,
+  "chassis_uuid": null,
+  "clean_step": {},
+  "conductor": "compute1.localdomain",
+  "conductor_group": "group-1",
+  "console_enabled": false,
+  "console_interface": null,
+  "created_at": "2016-08-18T22:28:48.643434+11:11",
+  "deploy_interface": null,
+  "deploy_step": {},
+  "driver": "fake",
+  "driver_info": {
+    "deploy_kernel": "http://127.0.0.1/images/kernel",
+    "deploy_ramdisk": "http://127.0.0.1/images/ramdisk",
+    "ipmi_password": "******",
+    "ipmi_username": "OPERATOR"
+  },
+  "driver_internal_info": {
+    "clean_steps": null
+  },
+  "extra": {},
+  "inspect_interface": null,
+  "inspection_finished_at": null,
+  "inspection_started_at": null,
+  "instance_info": {},
+  "instance_uuid": null,
+  "last_error": null,
+  "links": [
+    {
+      "href": "http://127.0.0.1:6385/v1/nodes/6d85703a-565d-469a-96ce-30b6de53079d",
+      "rel": "self"
+    },
+    {
+      "href": "http://127.0.0.1:6385/nodes/6d85703a-565d-469a-96ce-30b6de53079d",
+      "rel": "bookmark"
+    }
+  ],
+  "maintenance": true,
+  "maintenance_reason": "Replacing the hard drive",
+  "management_interface": null,
+  "name": "test_node_classic",
+  "network_interface": "flat",
+  "owner": null,
+  "portgroups": [
+    {
+      "href": "http://127.0.0.1:6385/v1/nodes/6d85703a-565d-469a-96ce-30b6de53079d/portgroups",
+      "rel": "self"
+    },
+    {
+      "href": "http://127.0.0.1:6385/nodes/6d85703a-565d-469a-96ce-30b6de53079d/portgroups",
+      "rel": "bookmark"
+    }
+  ],
+  "ports": [
+    {
+      "href": "http://127.0.0.1:6385/v1/nodes/6d85703a-565d-469a-96ce-30b6de53079d/ports",
+      "rel": "self"
+    },
+    {
+      "href": "http://127.0.0.1:6385/nodes/6d85703a-565d-469a-96ce-30b6de53079d/ports",
+      "rel": "bookmark"
+    }
+  ],
+  "power_interface": null,
+  "power_state": "power off",
+  "properties": {},
+  "protected": false,
+  "protected_reason": null,
+  "provision_state": "available",
+  "provision_updated_at": "2016-08-18T22:28:49.946416+00:00",
+  "raid_config": {},
+  "raid_interface": null,
+  "rescue_interface": null,
+  "reservation": null,
+  "resource_class": null,
+  "states": [
+    {
+      "href": "http://127.0.0.1:6385/v1/nodes/6d85703a-565d-469a-96ce-30b6de53079d/states",
+      "rel": "self"
+    },
+    {
+      "href": "http://127.0.0.1:6385/nodes/6d85703a-565d-469a-96ce-30b6de53079d/states",
+      "rel": "bookmark"
+    }
+  ],
+  "storage_interface": "noop",
+  "target_power_state": null,
+  "target_provision_state": null,
+  "target_raid_config": {},
+  "traits": [
+    "CUSTOM_TRAIT1",
+    "HW_CPU_X86_VMX"
+  ],
+  "updated_at": "2016-08-18T22:28:49.653974+00:00",
+  "uuid": "6d85703a-565d-469a-96ce-30b6de53079d",
+  "vendor_interface": null,
+  "volume": [
+    {
+      "href": "http://127.0.0.1:6385/v1/nodes/6d85703a-565d-469a-96ce-30b6de53079d/volume",
+      "rel": "self"
+    },
+    {
+      "href": "http://127.0.0.1:6385/nodes/6d85703a-565d-469a-96ce-30b6de53079d/volume",
+      "rel": "bookmark"
+    }
+  ]
+}

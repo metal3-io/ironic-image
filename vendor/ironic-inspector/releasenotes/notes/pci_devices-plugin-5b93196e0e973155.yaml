@@ -1,0 +1,7 @@
+---
+features:
+  - Adds new processing hook pci_devices for setting node
+    capabilities based on PCI devices present on a node
+    and rules in the [pci_devices] aliases configuration
+    option. Requires "pci-devices" collector to be enabled
+    in IPA.

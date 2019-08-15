@@ -1,0 +1,6 @@
+---
+upgrade:
+  - Switch required Ironic API version to '1.11', which supports 'enroll' state.
+features:
+  - Add a new node_not_found hook - enroll, which allows automatically discover
+    Ironic's node.

@@ -1,0 +1,8 @@
+[run]
+branch = True
+source = oslo_policy
+omit = oslo_policy/tests/*,oslo_policy/openstack/*
+
+[report]
+ignore_errors = True
+precision = 2

@@ -1,0 +1,4 @@
+fixes:
+  - |
+    Allows the ``set-attribute`` introspection rule action to accept ``None``
+    as value for a property.

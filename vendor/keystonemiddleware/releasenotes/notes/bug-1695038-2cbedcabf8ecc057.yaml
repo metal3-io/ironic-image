@@ -1,0 +1,13 @@
+---
+features:
+  - >
+    [`bug 1695038 <https://bugs.launchpad.net/keystonemiddleware/+bug/1695038>`_]
+    The use_oslo_messaging configuration option is added for services such as
+    Swift, which need the audit middleware to use the local logger instead of
+    the oslo.messaging notifier regardless of whether the oslo.messaging package
+    is present or not.
+    Leave this option set to its default True value to keep the previous behavior
+    unchanged - the audit middleware will use the oslo.messaging notifier if the
+    oslo.messaging package is present, and the local logger otherwise.
+    Services that rely on the local logger for audit notifications must set this
+    option to False.

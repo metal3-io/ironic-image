@@ -1,0 +1,19 @@
+---
+features:
+  - |
+    [`bug 1779172 <https://bugs.launchpad.net/keystone/+bug/1779172>`_]
+    The ``enforce()`` method now supports the ability to parse ``oslo.context``
+    objects if passed into ``enforce()`` as ``creds``. This provides more
+    consistent policy enforcement for service developers by ensuring the
+    attributes provided in policy enforcement are standardized. In this case
+    they are being standardized through the
+    ``oslo_context.context.RequestContext.to_policy_values()`` method.
+fixes:
+  - |
+    [`bug 1779172 <https://bugs.launchpad.net/keystone/+bug/1779172>`_]
+    The ``enforce()`` method now supports the ability to parse ``oslo.context``
+    objects if passed into ``enforce()`` as ``creds``. This provides more
+    consistent policy enforcement for service developers by ensuring the
+    attributes provided in policy enforcement are standardized. In this case
+    they are being standardized through the
+    ``oslo_context.context.RequestContext.to_policy_values()`` method.

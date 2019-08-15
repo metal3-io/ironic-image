@@ -1,0 +1,12 @@
+---
+prelude: >
+    This release includes automatic `docs` generation via Sphinx.
+other:
+  - |
+    Introduced new docs generation via `Sphinx <http://sphinx-doc.org/contents.html>`_
+    and `ReST <http://docutils.sourceforge.net/rst.html>`_.
+
+    * Separate `doc` folder includes `source` and `build`
+    * Integration with `tox <https://testrun.org/tox/latest/index.html>`_ as `docs` target
+    * `makefile` for manual building
+    * `Openstack Theme <https://github.com/openstack/oslosphinx>`_ support

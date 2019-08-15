@@ -1,0 +1,40 @@
+# common dpkg
+gettext [platform:dpkg] # For releasenotes job
+build-essential [platform:dpkg]
+libffi-dev [platform:dpkg]
+
+# common rpm
+gcc [platform:rpm]
+gcc-c++ [platform:rpm]
+make [platform:rpm]
+pkgconfig [platform:rpm]
+libffi-devel [platform:rpm]
+
+# RabbitMQ message broker
+rabbitmq-server [platform:dpkg rabbit]
+rabbitmq-server [platform:rpm rabbit]
+
+# AMQP1 dpkg
+qdrouterd [platform:dpkg amqp1]
+sasl2-bin [platform:dpkg amqp1]
+uuid-dev [platform:dpkg amqp1]
+swig [platform:dpkg amqp1]
+libsasl2-modules [platform:dpkg amqp1]
+openjdk-8-jdk [platform:dpkg amqp1]
+
+# AMQP1 rpm
+qpid-dispatch-router [platform:rpm amqp1]
+python-qpid-proton [platform:rpm amqp1]
+cyrus-sasl-lib [platform:rpm amqp1]
+cyrus-sasl-plain [platform:rpm amqp1]
+libuuid-devel [platform:rpm amqp1]
+swig [platform:rpm amqp1]
+java-1.8.0-openjdk [platform:rpm amqp1]
+
+# kafka dpkg
+openjdk-8-jdk [platform:dpkg kafka]
+librdkafka1 [platform:dpkg kafka]
+
+# kafka rpm
+java-1.8.0-openjdk [platform:rpm kafka]
+librdkafka [platform:rpm kafka]

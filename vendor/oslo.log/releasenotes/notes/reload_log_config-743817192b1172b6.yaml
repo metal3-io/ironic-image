@@ -1,0 +1,5 @@
+---
+features:
+  - The log_config_append configuration option is now mutable and the logging
+    settings it controls are reconfigured when the configuration file is reread.
+    This can be used to, for example, change logger or handler levels.

@@ -1,0 +1,6 @@
+---
+features:
+  - |
+    The JSON based formatters (namely JSONFormatter and FluentFormatter) now
+    output an extra section called 'context' that contains the context-related
+    keys and values, e.g. user, project and domain.

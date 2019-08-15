@@ -1,0 +1,5 @@
+---
+upgrade:
+  - Minimum possible value for the "max_concurrency" setting is now 2.
+other:
+  - Switched to Futurist library for asynchronous tasks.

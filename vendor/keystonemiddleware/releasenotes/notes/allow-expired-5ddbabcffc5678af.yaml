@@ -1,0 +1,30 @@
+---
+prelude: >
+    Fetching expired tokens when using a valid service token is now allowed.
+    This will help with long running operations that must continue between
+    services longer than the original expiry of the token.
+features:
+  - AuthToken middleware will now allow fetching an expired token when a valid
+    service token is present. This service token must contain any one of the
+    roles specified in ``service_token_roles``.
+  - Service tokens are compared against a list of possible roles for validity.
+    This will ensure that only services are submitting tokens as an
+    ``X-Service-Token``.
+    For backwards compatibility, if ``service_token_roles_required`` is not set,
+    a warning will be emitted. To enforce the check properly, set
+    ``service_token_roles_required`` to ``True``. It currently defaults to
+    ``False``
+upgrade:
+  - Set the ``service_token_roles`` to a list of roles that services may have.
+    The likely list is ``service`` or ``admin``. Any ``service_token_roles`` may
+    apply to accept the service token. Ensure service users have one of these
+    roles so interservice communication continues to work correctly. When verified,
+    set the ``service_token_roles_required`` flag to ``True`` to enforce this
+    behaviour. This will become the default setting in future releases.
+deprecations:
+  - For backwards compatibility the ``service_token_roles_required`` option in
+    ``[keystone_authtoken]`` was added. The option defaults to ``False`` and
+    has been immediately deprecated. This will allow the current behaviour
+    that service tokens are validated but not checked for roles to continue.
+    The option should be set to ``True`` as soon as possible. The option will
+    default to ``True`` in a future release.

@@ -1,0 +1,13 @@
+---
+features:
+  - |
+    Added CORS support middleware to Ironic Inspector, allowing a deployer
+    to optionally configure rules under which a javascript client may
+    break the single-origin policy and access the API directly.
+
+    OpenStack CrossProject Spec:
+       https://specs.openstack.org/openstack/openstack-specs/specs/cors-support.html
+    Oslo_Middleware Docs:
+       https://docs.openstack.org/developer/oslo.middleware/cors.html
+    OpenStack Cloud Admin Guide:
+       https://docs.openstack.org/admin-guide-cloud/cross_project_cors.html

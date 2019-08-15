@@ -1,0 +1,11 @@
+---
+fixes:
+  - |
+    Change database columns ``started_at`` and ``finished_at`` to type
+    DateTime from type Float so that timestamps fit into these columns
+    correctly.
+upgrade:
+  - |
+    A database migration is required to change some columns from Float to
+    DateTime type. This may take some time based on the number of introspection
+    statuses in DB.

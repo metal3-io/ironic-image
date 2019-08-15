@@ -1,0 +1,15 @@
+---
+features:
+  - |
+    The ThreadGroup class has new add_timer_args() and add_dynamic_timer_args()
+    methods to create timers passing the positional and keyword arguments to
+    the callback as a sequence and a mapping. This API provides more
+    flexibility for the addition of timer control options in the future.
+deprecations:
+  - |
+    The API of the ThreadGroup add_timer() and add_dynamic_timer() methods has
+    been identified as error-prone when passing arguments intended for the
+    callback function. Passing callback arguments in this way is now
+    deprecated. Callers should use the new add_timer_args() or
+    add_dynamic_timer_args() methods (respectively) instead when it is
+    necessary to pass arguments to the timer callback function.

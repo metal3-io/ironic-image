@@ -1,0 +1,10 @@
+---
+fixes:
+  - Fixes an issue where the socat process would exit on client disconnect,
+    which would (a) leave a zombie socat process in the process table and (b)
+    disable any subsequent serial console connections. This issue was
+    addressed by updating ironic to call socat with the
+    ``fork,max-children=1`` options, which makes socat persist and accept
+    multiple connections (but only one at a time).
+    Please see story `2005024 <https://storyboard.openstack.org/#!/story/2005024>`_
+    for additional information.

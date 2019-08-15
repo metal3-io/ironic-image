@@ -1,0 +1,6 @@
+---
+features:
+  - |
+    Added a 'status' field to the `EndpointData` object which contains a
+    canonicalized version of the information in the status field of discovery
+    documents.

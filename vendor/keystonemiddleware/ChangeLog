@@ -1,0 +1,1239 @@
+CHANGES
+=======
+
+7.0.0
+-----
+
+* Add validation of app cred access rules
+* Add Python 3 Train unit tests
+* Remove Diablo compatibility tests
+* Fix bandit warning
+* Remove PKI/PKIZ support
+
+6.1.0
+-----
+
+* Add a new option to choose the Identity endpoint
+* print auth version for request strategy in debug
+* Blacklist bandit 1.6.0 & cap sphinx for 2.7
+* OpenDev Migration Patch
+* Bump memcached minimum version
+* Fix string format error
+* Update the min version of tox
+* Run lower-constraints on Bionic and update python-keystoneclient
+* Run lower-constraints job on Xenial
+* Update master for stable/stein
+* Drop py35 jobs
+* Fix debug tox environment
+
+6.0.0
+-----
+
+* Fix service\_token\_role\_required option
+* add python 3.7 unit test job
+* trivial: fix convention in release note
+* Add auth invalidation in auth\_token for identity endpoint update
+* Remove testr.conf as it's been replaced by stestr
+* Make sure audit middleware use own context
+* Trivial: Update pypi url to new url
+* Change openstack-dev to openstack-discuss
+* Added request\_id and global\_request\_id to CADF notifications
+* Add py36 tox environment
+* Documentation Fix - auth\_url Port Number
+* Stop supporting revocation list
+* Fix audit target service selection
+* Skip the services with no endpoints when parsing service catalog
+
+5.3.0
+-----
+
+* Respect delay\_auth\_decision when Keystone is unavailable
+* Use templates for cover and lower-constraints
+* Remove tox\_install.sh
+* No need to compare CONF content
+* add lib-forward-testing-python3 test job
+* add python 3.6 unit test job
+* switch documentation job to new PTI
+* import zuul job settings from project-config
+* add releasenotes to readme.rst
+* Handle DiscoveryFailure errors
+* Update reno for stable/rocky
+* Replace port 35357 with 5000
+
+5.2.0
+-----
+
+* Fix KeystoneMiddleware memcachepool abstraction
+* Document endpoint interface and region behavior
+* fix tox python3 overrides
+* Follow the new PTI for document build
+* Switch coverage tox env to stestr
+* Fix the title in index.rst
+* Don't rely on pbr ChangeLog for docs
+
+5.1.0
+-----
+
+* Introduce new header for system-scoped tokens
+* Imported Translations from Zanata
+* Fix the doc CI failure
+* Double quote www\_authenticate\_uri
+* Only include response body if there's a response
+* Properly zero out max\_retries in test\_http\_error\_not\_cached\_token
+
+5.0.0
+-----
+
+* add lower-constraints job
+* Update links in README
+* Updated from global requirements
+* Updated from global requirements
+* Imported Translations from Zanata
+* Update home-page url
+* Remove empty files
+* Fix the AttributeError: \_\_exit\_\_ error
+* Add arguments for MemcacheClientPool init
+* Remove kwargs\_to\_fetch\_token
+* Identify the keystone service when raising 503
+* Add option to disable using oslo\_message notifier
+* Updated from global requirements
+* Imported Translations from Zanata
+* Update reno for stable/queens
+* Updated from global requirements
+* Updated from global requirements
+* Updated from global requirements
+* Imported Translations from Zanata
+
+4.21.0
+------
+
+* Imported Translations from Zanata
+
+4.20.0
+------
+
+* cfg.CONF must not be used directly
+* Fix docs builds
+* Log TokenNotFound at INFO level instead of WARNING
+* rel-note and doc for lazy loading of oslo\_cache
+* lazy loading of oslo\_cache
+* Expect paste.deploy and gnocchi/panko options
+
+4.19.0
+------
+
+* Updated from global requirements
+* Use oslo\_cache in auth\_token middleware
+* Remove setting of version/release from releasenotes
+* Updated from global requirements
+* Imported Translations from Zanata
+
+4.18.0
+------
+
+* Updated from global requirements
+* Updated from global requirements
+* Updated from global requirements
+* Fix py3 byte/string error
+* Rename auth\_uri to www\_authenticate\_uri
+* Updates for stestr
+* Issue a deprecation warning for validating PKI tokens
+* Fix gate error caused by mocked URLs
+* Correct docs usage of keystoneauth1 session
+* Update config docs to reflect non-deprecated methods
+* Add doc8 rule and check doc/source files
+* Updated from global requirements
+* Remove use of positional decorator
+* strip whitespace from token
+* Update reno for stable/pike
+* Remove notice about system time
+* Updated from global requirements
+* Updated from global requirements
+* Update comment about fetch token kwargs
+
+4.17.0
+------
+
+* Update URLs in documentation
+* Updated from global requirements
+* Enable sphinx todo extension
+* Replace six.iteritems() with .items()
+* Change locations of docs for intersphinx
+* Redundant adminURL in test\_gives\_v2\_catalog
+* Switch from oslosphinx to openstackdocstheme
+* Updated from global requirements
+* Using assertFalse(A) instead of assertEqual(False, A)
+* Removing double spaces
+* Updated from global requirements
+* Fix html\_last\_updated\_fmt for Python3
+* add a log when the option in conf can't be identitied
+* Updated from global requirements
+* Updated from global requirements
+
+4.16.0
+------
+
+* Fix oslo.messaging deprecation of get\_transport
+* Updated from global requirements
+* Replace pycrypto with cryptography
+* Updated from global requirements
+* Update driver config parameter from string to list
+* Updated from global requirements
+* Remove log translations
+* Added "warning-is-error" sphinx check for docs
+* Updated from global requirements
+* Imported Translations from Zanata
+
+4.15.0
+------
+
+* Remove deprecated oslo.messaging aliases parameter
+* Pass located tests directory in oslo debug
+* Remove old comment referencing fixed bug
+* Bump the token deferral message from info to debug
+* Remove unused logging import
+* Updated from global requirements
+* Fixed man\_pages no value warning when making docs
+* Use https for \*.openstack.org references
+* Imported Translations from Zanata
+* Updated from global requirements
+* Update reno for stable/ocata
+
+4.14.0
+------
+
+* Updated from global requirements
+* fix broken links
+* use oslo.log instead of logging
+* Removes unnecessary utf-8 coding
+* Remove references to Python 3.4
+* Switch tox unit test command to use ostestr
+
+4.13.1
+------
+
+* Add Constraints support
+* Auth token, set the correct charset
+
+4.13.0
+------
+
+* Limit deprecated token message to single warning
+* auth\_token: set correct charset when replying with 401
+* Updated from global requirements
+
+4.12.0
+------
+
+* Pass ?allow\_expired
+* Updated from global requirements
+* clean up a few doc building warnings
+* Add docutils contraint on 0.13.1 to fix building
+* Updated from global requirements
+* Updated from global requirements
+* Updated from global requirements
+
+4.11.0
+------
+
+* Drop MANIFEST.in - it's not needed by pbr
+* Show team and repo badges on README
+* Updated from global requirements
+* Deprecate PKI token format options
+* Updated from global requirements
+* Mock log only after app creation
+* Updated from global requirements
+* Update .coveragerc after the removal of respective directory
+* Updated from global requirements
+* Updated from global requirements
+* Updated from global requirements
+* Updated from global requirements
+* Updated from global requirements
+* Updated from global requirements
+* Updated from global requirements
+* Add service token to user token plugin
+* Specify that unknown arguments can be passed to fetch\_token
+* Enable release notes translation
+* Changed the home-page link
+
+4.10.0
+------
+
+* Return and use an app wherever possible
+* Refactor audit tests to use create\_middleware
+* Use oslo\_messaging conf fixture
+* Extract oslo\_messaging specific audit tests
+* Use the mocking fixture in notifier tests
+* Updated from global requirements
+* Use method constant\_time\_compare from oslo.utils
+* Raise NotImplementedError instead of NotImplemented
+* Updated from global requirements
+* Updated from global requirements
+* Update code to use Newton as the code name
+* standardize release note page ordering
+* Update reno for stable/newton
+* Globalize authentication failure error
+* Updated from global requirements
+
+4.9.0
+-----
+
+* Updated from global requirements
+* Updated from global requirements
+* Updated from global requirements
+* Updated from global requirements
+
+4.8.0
+-----
+
+* Updated from global requirements
+* Updated from global requirements
+* Fix description of option \`cache\`
+
+4.7.0
+-----
+
+* Add Python 3.5 classifier
+* Updated from global requirements
+* Updated from global requirements
+* Updated from global requirements
+* Use jsonutils instead of ast for loading the service catalog
+* Use AccessInfo in UserAuthPlugin instead of custom
+* Remove the \_is\_v2 and \_is\_v3 helpers
+* Remove oslo-incubator
+
+4.6.0
+-----
+
+* Updated from global requirements
+* Use extras for oslo.messaging dependency
+* Refactor API tests to not run middleware
+* Refactor audit api tests into their own file
+* Refactor create\_event onto the api object
+* Extract a common notifier pattern
+* Break out the API piece into its own file
+* Use createfile fixture in audit test
+* Move audit into its own folder
+* use local config options if available in audit middleware
+* Use oslo.config fixture in audit tests
+* Pop oslo\_config\_config before doing paste convert
+* Updated from global requirements
+* Fix typo 'olso' to 'oslo'
+* Config: no need to set default=None
+* Fix an issue with oslo\_config\_project paste config
+* Updated from global requirements
+* Pass X\_IS\_ADMIN\_PROJECT header from auth\_token
+* Clean up middleware architecture
+* Updated from global requirements
+* Add a fixture method to add your own token data
+* Move auth token opts calculation into auth\_token
+* Make audit middleware use common config object
+* Consolidate user agent calculation
+* Create a Config object
+* Updated from global requirements
+* Updated from global requirements
+* Improve documentation for auth\_uri
+* PEP257: Ignore D203 because it was deprecated
+* Updated from global requirements
+* Use method split\_path from oslo.utils
+* Updated from global requirements
+* Make sure audit can handle API requests which does not require a token
+* Updated from global requirements
+* Updated from global requirements
+* Updated from global requirements
+* Determine project name from oslo\_config or local config
+
+4.5.1
+-----
+
+* Fix AttributeError on cached-invalid token checks
+
+4.5.0
+-----
+
+* Updated from global requirements
+* Updated from global requirements
+* Fix D105: Missing docstring in magic method (PEP257)
+* Fix D200: One-line docstring should fit on one line with quotes (PEP257)
+* Fix D202: No blank lines allowed after function docstring (PEP257)
+* Adding audit middleware specific notification driver conf
+* remove old options from documentation
+* generate sample config automatically
+* Return default value for pkg\_version if missing
+* Updated from global requirements
+* Fix D204 PEP257 violation and enable D301 and D209
+* Fix D400 PEP257 violation
+* Fix D401 PEP257 violation and enable H403
+* Update config options
+* s3token config with auth URI
+* Updated from global requirements
+* Return JSON for Unauthorized message
+* Updated from global requirements
+* Fix doc build if git is absent
+* PEP257: add flake8-docstring testing
+* Only confirm token binding on one token
+* Create signing\_dir upon first usage
+* Updated from global requirements
+* Updated from global requirements
+* Handle cache invalidate outside cache object
+* Update reno for stable/mitaka
+* Remove bandit.yaml in favor of defaults
+* use the same context across a request
+* Updated from global requirements
+* Update documentation for running tests
+* Updated from global requirements
+* Add back a bandit tox job
+
+4.3.0
+-----
+
+* argparse expects a list not a dictionary
+* update deprecation message to indicate when deprecations were made
+* Updated from global requirements
+* Split oslo\_config and list all opts
+* Updated from global requirements
+* Make pep8 \*the\* linting interface
+* Remove clobbering of passed oslo\_config\_config
+* Updated from global requirements
+* Use positional instead of keystoneclient version
+* Updated from global requirements
+* Remove Babel from requirements.txt
+
+4.2.0
+-----
+
+* Updated from global requirements
+* Deprecate in-process cache
+* Revert "Disable memory caching of tokens"
+* Revert "Don't cache signed tokens"
+* Updated from global requirements
+* Remove bandit tox environment
+* Remove unnecessary \_reject\_request function
+* Group common PKI validation code - Refactor
+* Group common PKI validation code - Tests
+* Remove except Exception handler
+* Fix tests to work with keystoneauth1 2.2.0
+* Bandit profile updates
+* Replace deprecated library function os.popen() with subprocess
+
+4.1.0
+-----
+
+* Add project\_name to the auth\_token fixture
+* Revert "Stop using private keystoneclient functions"
+* create release notes for ksm 4.1.0
+* Don't cache signed tokens
+* Disable memory caching of tokens
+* Updated from global requirements
+* Use oslo\_config choices support
+* Stop using private keystoneclient functions
+* Use fixture for mock patch
+* auth\_token verify revocation by audit\_id
+* Updated from global requirements
+* Deprecated tox -downloadcache option removed
+* Updated from global requirements
+* Make BaseAuthProtocol public
+* Use load\_from\_options\_getter for auth plugins
+* Configuration is outdated
+* Updated from global requirements
+* Use keystoneauth for auth\_token fixture
+* Don't list deprecated opts in sample config
+* Updated from global requirements
+* Put py34 first in the env order of tox
+
+4.0.0
+-----
+
+* Add release notes for keystonemiddleware
+* Updated from global requirements
+* Adding parse of protocol v4 of AWS auth to ec2\_token
+* Add a mock-fixture for keystonemiddleware auth\_protocol
+* Add domain and trust details to user plugin
+* Remove py26 target from tox.ini
+* Use keystoneauth
+* Updated from global requirements
+* Address hacking check H405
+* update middlewarearchitecture.rst
+* Make "Auth Token confirmed use of %s apis" debug level
+* Define entry points for filter factories for Paste Deployment
+* Updated from global requirements
+* Updated from global requirements
+
+3.0.0
+-----
+
+* Updated from global requirements
+* drop use of norm\_ns
+
+2.4.1
+-----
+
+* Updated from global requirements
+* Straighten up exceptions imports
+* Separate setting catalog on headers from others
+
+2.4.0
+-----
+
+* Updated from global requirements
+* Updated from global requirements
+* Remove auth headers in AuthProtocol
+* Use request helpers for token\_info/token\_auth
+* Make \_\_all\_\_ immutable
+* Move response status check to the call
+* only make token invalid when it really is
+* auto-generate release history
+* Add shields.io version/downloads links/badges into README.rst
+* Updated from global requirements
+* Change ignore-errors to ignore\_errors
+* Ensure auth\_plugin options are in generated CONF
+* Cleanup a few auth\_token comments
+
+2.3.0
+-----
+
+* Updated from global requirements
+* Remove unused group parameter from tests
+* auth\_token tests use clean config
+* Docstring updates
+* Use ConnectionRefused for auth\_token tests
+
+2.2.0
+-----
+
+* Seperate standalone cache tests
+* Import \_memcache\_pool normally
+* Create Environment cache pool
+* Handle memcache pool arguments collectively
+* Updated from global requirements
+* Allow specifying a region name to auth\_token
+* Updated from global requirements
+* Allow to use oslo.config without global CONF
+* Updated from global requirements
+* Updated from global requirements
+* Updated from global requirements
+* Updated from global requirements
+* Move common request processing to base class
+* Fix rst
+* py34 not py33 is tested and supported
+* Refactor extract method for offline validation
+* Send the correct user-agent to Keystone
+* Move enforcement and time validation to base class
+* Separate the fetch and validate parts of auth\_token
+* Fixes modules index generated by Sphinx
+
+2.1.0
+-----
+
+* Add token\_auth helper to request
+* Add user\_token and service\_token to request
+* Create a simple base class from AuthProtocol
+* Switch from deprecated oslo\_utils.timeutils.strtime
+* Updated from global requirements
+* Refactor \_confirm\_token\_bind takes AccessInfo
+* Make token bind work with a request
+* Rename \_LOG to log in auth\_token middleware
+* Don't allow webob to set a default content type
+* Prevent a UnicodeDecodeError in the s3token middleware
+* Remove install\_venv\_common and fix typo in memorycache
+
+2.0.0
+-----
+
+* Ensure cache keys are a known/fixed length
+* Updated from global requirements
+* Refactor request methods onto request object
+* validate\_token returns AccessInfo
+* Updated from global requirements
+* Fixes a spelling error in a test name
+* Remove custom header handling
+* Unit tests catch deprecated function usage
+* Common base class for unit tests
+* Stop using function deprecated in py34
+* Move bandit requirement to test-requirements.txt
+* Fetch user token from request rather than env
+* Remove the \_msg\_format function
+* Base use webob
+* Don't rely on token\_info for header building
+* Move project included validation
+* Depend on keystoneclient for expiration checking
+* Don't store expire into memcache
+* Removes discover from test-reqs
+* Drop py2.6 support for keystone middleware
+* Create new user plugin tests
+* Add an explicit test failure condition when auth\_token is missing
+* Fixup test-requirements-py3.txt
+* Fix list\_opts test to not check all deps
+* Refactor certificate fetch functions
+* tox env for Bandit
+* Cleanup token hashes generated by cache
+* Updated from global requirements
+* Improved handling of endpoints missing urls
+* Refactor: extract echo\_app from enclosing class
+* Add keystone v3 API to fetch revocation list
+* Simplify request making in auth\_token tests
+* Change auth\_token to use keystoneclient
+* Deprecate auth\_token authentication
+* Updated from global requirements
+
+1.6.1
+-----
+
+* Ignore cover directory
+* Remove superfluous / spammy log line
+* Drop use of 'oslo' namespace package
+* Port keystonemiddleware to Python 3
+* Remove unused iso8601 dependency
+* Update README to work with release tools
+
+1.6.0
+-----
+
+* Uncap library requirements for liberty
+* Remove retry parameter
+* Fix s3\_token middleware parsing insecure option
+* Updated from global requirements
+* Pull echo service out of auth\_token
+* Fix typos in keystonemiddleware
+* Rename requests mock object in testing
+* Update auth\_token config docs
+* Crosslink to other sites that are owned by Keystone
+* Move \_memcache\_pool into auth\_token
+* Move unit tests into tests.unit
+
+1.5.0
+-----
+
+* Allow loading auth plugins via overrides
+* Updated from global requirements
+* Delay denial when service token is invalid
+* Updated from global requirements
+* Move UserAuthPlugin into its own file
+* Extract IdentityServer into file
+* Extract all TokenCache related classes to file
+* Break default auth plugin into file
+* Extract revocations to file
+* Extract SigningDirectory into file
+* Separate exceptions into their own file
+* Updated from global requirements
+* Updated from global requirements
+* Move auth\_token into its own folder
+* Updated from global requirements
+
+1.4.0
+-----
+
+* Refactor auth\_token revocation list members to new class
+* Refactor extract class for signing directory
+* Turn our auth plugin into a token interface
+* iso expires should be returned in one place
+* move add event creation logic to keystonemiddleware
+* Updated from global requirements
+* Sync with oslo-incubator
+* Use oslo.context instead of incubator code
+* Refactor auth\_uri handling
+* make audit event scoped to request session and not middleware
+* Updated from global requirements
+* Remove custom string truth handling
+* Updated from global requirements
+* incorrect reference in enabling audit middleware
+* Updated from global requirements
+* Enforce check F821 and H304
+* Switch from oslo.config to oslo\_config
+* Switch from oslo.serialization to oslo\_serialization
+* Switch from oslo.utils to oslo\_utils
+* Add python-memcached to test-requirements
+* Correct failures for check E122
+* Correct failures for check H703
+* Updated from global requirements
+* Correct failures for check H238
+* Move to hacking 0.10
+* Updated from global requirements
+* Use a test fixture for mocking time
+* Fix environ keys missing HTTP\_ prefix
+* support micro version if sent
+* Fix passing parameters to log message
+* Correct incorrect rst in docstrings
+* remove unused variable in \_IdentityServer
+
+1.3.1
+-----
+
+* Fix auth\_token does version request for no token
+* Adds Memcached dependencies doc
+* fallback to online validation if offline validation fails
+
+1.3.0
+-----
+
+* documentation for audit middleware
+* remove the unused method \_will\_expire\_soon
+* Updated from global requirements
+* Use newer requests-mock syntax
+* Allow loading other auth methods in auth\_token
+* Auth token tests create temp cert directory
+* Add a test to ensure the version check error
+* Split identity server into v2 and v3
+* Workflow documentation is now in infra-manual
+* Use real discovery object in auth\_token middleware
+* Updated from global requirements
+* Make everything in audit middleware private
+* Updated from global requirements
+* Adding audit middleware to keystonemiddleware
+* Fix paste config option conversion for auth options
+* Auth token supports deprecated names for paste conf options
+* Correct tests to use strings in conf
+* Change occurrences of keystone to identity server
+* Updated from global requirements
+* Updated from global requirements
+* Updated from global requirements
+* I18n
+* Adds space after # in comments
+* Update python-keystoneclient reference
+* Use Discovery fixtures for auth token tests
+* Convert authentication into a plugin
+* Add versions to requests
+* Use an adapter in IdentityServer
+* Use connection retrying from keystoneclient
+* Updated from global requirements
+* Use correct name of oslo debugger script
+* Use new ksc features in User Token Plugin
+* Remove netaddr package requirement
+* add context to keystonemiddleware
+* Updated from global requirements
+* Improve help strings
+* Updated from global requirements
+* Changing the value type of http\_connect\_timeout
+* Revert "Support service user and project in non-default domain"
+* Replace httpretty with requests-mock
+* Encode middleware error message as bytes
+* Docstring cleanup
+* Remove HTTP\_X\_STORAGE\_TOKEN doc
+* Fix reference to middleware architecture doc
+* Clean up the middleware docs
+* Update oslo-incubator and switch to oslo.{utils,serialization}
+* Refactor auth\_token cache
+
+1.2.0
+-----
+
+* Add an optional advanced pool of memcached clients
+* Fix auth\_token for old oslo.config
+* Support service user and project in non-default domain
+* Add composite authentication support
+* Fix test failure after discovery hack
+* Updated from global requirements
+* BaseAuthTokenMiddlewareTest.setUp call super normally
+* Remove unused iso8601
+* Use oslo\_debug\_helper and remove our own version
+* convert the conf value into correct type
+* Always add auth URI to unauthorized requests
+* Work toward Python 3.4 support and testing
+* warn against sorting requirements
+* Always supply a username to auth\_token tests setup
+* Create an Auth Plugin to pass to users
+* Updated from global requirements
+
+1.1.1
+-----
+
+* Hash for PKIZ
+* auth\_token cached token handling
+* Add a test for re-caching a token
+* Updated from global requirements
+* Remove intersphinx mappings
+* Use oslosphinx in keystonemiddlware for documentation
+* Updated from global requirements
+* Convert auth\_token middleware to use sessions
+
+1.1.0
+-----
+
+* Updated from global requirements
+* Remove mox dependency
+* move webob from test-requirements to requirements
+* remove unused dep: stevedore
+* remove unused dep: prettytable
+* Example JSON files should be human-readable
+* Updated from global requirements
+* Mark keystonemiddleware as being a universal wheel
+* Use keystoneclient fixtures in middleware tests
+* prefer identity API v3 over v2 in auth\_token
+* Clean up openstack-common.conf
+* Sync with oslo-incubator 569979adf
+* Refactor auth\_token, move identity server members to class
+
+1.0.0
+-----
+
+* Expose an entry point to list auth\_token middleware config options
+* Privatize Everything
+* Privatize Everything
+* add CONTRIBUTING.rst
+* add README
+* Update setup.cfg to remove keystoneclient ref
+* Bring over debug\_helper.sh
+* Update requirement files
+* Update .gitignore files
+* Correct Doc location and update for middleware only
+* Move Docs to the right location
+* Remove .update-venv
+* Update middleware and tests for new package
+* Update requirements
+* Update MANIFEST.in
+* Remove unused testing files from keystoneclient
+* Move examples split to new location
+* Move ec2\_token to new location
+* Add in original keystoneclient test-requirements.txt
+* Initial oslo-incubator sync
+* Cleanup unused testr.conf file
+* Move tests to new location
+* Moving middleware to new location
+* Initial commit
+* Fix 500 error if request body is not JSON object
+* auth\_token \_cache\_get checks token expired
+* auth\_token \_cache\_get checks token expired
+* Using six.u('') instead of u''
+* Session Documentation
+* Link to docstrings in using-api-v3
+* Refactor auth\_token token cache members to class
+* Refactor auth\_token token cache members to class
+* Add service\_name to URL discovery
+* Don't use mock non-exist method assert\_called\_once
+* Remove \_factory methods from auth plugins
+* Make get\_oauth\_params conditional for specific oauthlib versions
+* Changes exception raised by v3.trusts.update()
+* Add role assignments as concept in Client API V3 docs
+* Fix tests to use UUID strings rather than ints for IDs
+* Clean up oauth auth plugin code
+* Add endpoint handling to Token/Endpoint auth
+* Add support for extensions-list
+* auth\_token middleware hashes tokens with configurable algorithm
+* auth\_token middleware hashes tokens with configurable algorithm
+* Remove left over vim headers
+* Add /role\_assignments endpoint support
+* Authenticate via oauth
+* Auth Plugin invalidation
+* Move DisableModuleFixture to utils
+* replace string format arguments with function parameters
+* Fixes an erroneous type check in a test
+* auth\_token hashes PKI token once
+* auth\_token hashes PKI token once
+* Compressed Signature and Validation
+* Compressed Signature and Validation
+* Compressed Signature and Validation
+* OAuth request/access token and consumer support for oauth client API
+* Regions Management
+* Discovery URL querying functions
+* Move auth\_token tests not requiring v2/v3 to new class
+* Cached tokens aren't expired
+* Cached tokens aren't expired
+* Move auth\_token cache pool tests out of NoMemcache
+* Fixed the size limit tests in Python 3
+* Make auth\_token return a V2 Catalog
+* Make auth\_token return a V2 Catalog
+* Fix client fixtures
+* fixed typos found by RETF rules
+* fixed typos found by RETF rules
+* auth\_token configurable check of revocations for cached
+* auth\_token configurable check of revocations for cached
+* Remove unused AdjustedBaseAuthTokenMiddlewareTest
+* auth\_token test remove unused fake\_app parameter
+* Fix typo in BaseAuthTokenMiddlewareTest
+* Enhance tests for auth\_token middleware
+* Limited use trusts
+* Debug log when token found in revocation list
+* Ensure that cached token is not revoked
+* Fix the catalog format of a sample token
+* remove universal\_newlines
+* replace double quotes with single
+* Deprecate admin\_token option in auth\_token
+* Create a V3 Token Generator
+* Implement endpoint filtering functionality on the client side
+* Fix typo of ANS1 to ASN1
+* Fix typo of ANS1 to ASN1
+* Add new error for invalid response
+* Rename HTTPError -> HttpError
+* Add CRUD operations for Federation Mapping Rules
+* Don't use generic kwargs in v2 Token Generation
+* Update docs for auth\_token middleware config options
+* Allow session to return an error response object
+* Add service name to catalog
+* Hash functions support different hash algorithms
+* Add CRUD operations for Identity Providers
+* eliminate race condition fetching certs
+* eliminate race condition fetching certs
+* Allow passing auth plugin as a parameter
+* Prefer () to continue line per PEP8
+* Prefer () to continue line per PEP8
+* Use \`HttpNotImplemented\` in \`tests.v3.test\_trusts\`
+* Ensure JSON headers in Auth Requests
+* Create a test token generator and use it
+* Safer noqa handling
+* Rename request\_uri to identity\_uri
+* Tests should use identity\_uri by default
+* Replace auth fragements with identity\_uri
+* Replace auth fragements with identity\_uri
+* Remove releases.rst from keystone docs
+* Handle URLs via the session and auth\_plugins
+* Add a method for changing a user's password in v3
+* sanity check memcached availability before running tests against it
+* Change the default version discovery URLs
+* add functional test for cache pool
+* Add a positional decorator
+* add pooling for cache references
+* add pooling for cache references
+* use v3 api to get certificates
+* use v3 api to get certificates
+* Don't use a connection pool unless provided
+* Reference docstring for auth\_token fields
+* Docs link to middlewarearchitecture
+* Uses explicit imports for \_
+* Discover should support other services
+* Replace httplib.HTTPSConnection in ec2\_token
+* Revert "Add request/access token and consumer..."
+* Revert "Authenticate via oauth"
+* Fix doc build errors
+* Fix doc build errors
+* Fix doc build errors
+* Generate module docs
+* Authenticate via oauth
+* Add request/access token and consumer support for keystoneclient
+* Add 'methods' to all v3 test tokens
+* Use AccessInfo in auth\_token middleware
+* Add 'methods' to all v3 test tokens
+* Handle Token/Endpoint authentication
+* Split sample PKI token generation
+* Fix retry logic
+* Fix state modifying catalog tests
+* Remove reference to non-existent shell doc
+* increase default revocation\_cache\_time
+* Make keystoneclient not log auth tokens
+* improve configuration help text in auth\_token
+* Log the command output on CertificateConfigError
+* V3 xml responses should use v3 namespace
+* Enforce scope mutual exclusion for trusts
+* Token Revocation Extension
+* Atomic write of certificate files and revocation list
+* Privatize auth construction parameters
+* Set the right permissions for signing\_dir in tests
+* deprecate XML support in favor of JSON
+* Capitalize Client API title consistently
+* Remove http\_handler config option in auth\_token
+* Rely on OSLO.config
+* Use admin\_prefix consistently
+* demonstrate auth\_token behavior with a simple echo service
+* Remove redundant default value None for dict.get
+* Remove redundant default value None for dict.get
+* correct typo of config option name in error message
+* remove extra indentation
+* refer to non-deprecated config option in help
+* Create V3 Auth Plugins
+* Create V2 Auth Plugins
+* Fix role\_names call from V3 AccessInfo
+* Interactive prompt for create user
+* Replace assertEqual(None, \*) with assertIsNone in tests
+* Ensure domains.list filtered results are correct
+* Test query-string for list actions with filter arguments
+* Fix keystone command man page
+* Add link to the v3 client api doc
+* Fix references to auth\_token in middlewarearchitecture doc
+* Use WebOb directly in ec2\_token middleware
+* Don't use private last\_request variable
+* Python: Pass bytes to derive\_keys()
+* Use WebOb directly for locale testing
+* Make sure to unset all variable starting with OS\_
+* Python3: use six.moves.urllib.parse.quote instead of urllib.quote
+* Remove vim header
+* Remove vim header
+* Remove vim header
+* Python3: httpretty.last\_request().body is now bytes
+* Python3: fix test\_insecure
+* Deprecate s3\_token middleware
+* Python3: webob.Response.body must be bytes
+* Python 3: call functions from memcache\_crypt.py with bytes as input
+* Python 3: call functions from memcache\_crypt.py with bytes as input
+* Use requests library in S3 middleware
+* Use requests library in S3 middleware
+* Python 3: make tests from v2\_0/test\_access.py pass
+* Python 3: make tests from v2\_0/test\_access.py pass
+* Create Authentication Plugins
+* Fix debug curl commands for included data
+* Add back --insecure option to CURL debug
+* Use HTTPretty in S3 test code
+* Provide a conversion function for creating session
+* Update reference to middlewarearchitecture doc
+* Update middlewarearchitecture config options docs
+* Remove support for old Swift memcache interface
+* Remove support for old Swift memcache interface
+* Replace urllib/urlparse with six.moves.\*
+* Python 3: fix tests/test\_utils.py
+* Python 3: Fix an str vs bytes issue in tempfile
+* Return role names by AccessInfo.role\_names
+* Copy s3\_token middleware from keystone
+* Copy s3\_token middleware from keystone
+* build auth context from middleware
+* Fix E12x warnings found by Pep8 1.4.6
+* Fix typos in documents and comments
+* Fix typos in documents and comments
+* Consistently support kwargs across all v3 CRUD Manager ops
+* Use six to make dict work in Python 2 and Python 3
+* Python 3: set webob.Response().body to a bytes value
+* Remove test\_print\_{dict,list}\_unicode\_without\_encode
+* Tests use cleanUp rather than tearDown
+* Adjust import items according to hacking import rule
+* Adjust import items according to hacking import rule
+* Adjust import items according to hacking import rule
+* Replace assertTrue with explicit assertIsInstance
+* Fix discover command failed to read extension list issue
+* Fix incorrect assertTrue usage
+* Make assertQueryStringIs usage simpler
+* auth\_token tests use assertIs/Not/None
+* Make common log import consistent
+* Python 3: Use HTTPMessage.get() rather than HTTPMessage.getheader()
+* auth\_token tests close temp file descriptor
+* Tests cleanup temporary files
+* Removes use of timeutils.set\_time\_override
+* Controllable redirect handling
+* Verify token binding in auth\_token middleware
+* Verify token binding in auth\_token middleware
+* Fix auth\_token middleware test invalid cross-device link issue
+* Add unit tests for generic/shell.py
+* Rename using-api.rst to using-api-v2.rst
+* Documents keystone v3 API usage - part 1
+* v3 test utils, don't modify input parameter
+* Fix error in v3 credentials create/update
+* Rename instead of writing directly to revoked file
+* Correctly handle auth\_url/token authentication
+* Remove debug specific handling
+* Fix missed management\_url setter in v3 client
+* Add service catalog to domain scoped token fixture
+* Change assertEquals to assertIsNone
+* Avoid meaningless comparison that leads to a TypeError
+* Python3: replace urllib by six.moves.urllib
+* Fix --debug handling in the shell
+* Rename tokenauth to authtoken in the doc
+* use six.StringIO for compatibility with io.StringIO in python3
+* Properly handle Regions in keystoneclient
+* Use testresources for example files
+* Discover supported APIs
+* Warn user about unsupported API version
+* Add workaround for OSError raised by Popen.communicate()
+* Use assertIn where appropriate
+* Extract a base Session object
+* Do not format messages before they are logged
+* keystoneclient requires an email address when creating a user
+* Fix typo in keystoneclient
+* Encode the text before print it to console
+* Opt-out of service catalog
+* Opt-out of service catalog
+* Opt-out of service catalog
+* Remove deprecated auth\_token middleware
+* "publicurl" should be required on endpoint-create
+* Update the management url for every fetched token
+* Fix python3 incompatible use of urlparse
+* Convert revocation list file last modified to UTC
+* Convert revocation list file last modified to UTC
+* Migrate the keystone.common.cms to keystoneclient
+* Migrate the keystone.common.cms to keystoneclient
+* Avoid returning stale token via auth\_token property
+* Remove SERVICE\_TOKEN and SERVICE\_ENDPOINT env vars
+* Make ROOTDIR determination more robust
+* Replace OpenStack LLC with OpenStack Foundation
+* Replace OpenStack LLC with OpenStack Foundation
+* Replace OpenStack LLC with OpenStack Foundation
+* Replace OpenStack LLC with OpenStack Foundation
+* Add AssertRequestHeaderEqual test helper and make use of it
+* python3: Make iteritems py3k compat
+* Normalize datetimes to account for tz
+* Normalize datetimes to account for tz
+* assertEquals is deprecated, use assertEqual (H602)
+* remove the nova dependency in the ec2\_token middleware
+* Fix H202 assertRaises Exception
+* Fix H202 assertRaises Exception
+* Refactor for testability of an upcoming change
+* Refactor for testability of an upcoming change
+* Allow v2 client authentication with trust\_id
+* Fix misused assertTrue in unit tests
+* Add auth\_uri in conf to avoid unnecessary warning
+* Move tests in keystoneclient
+* Set example timestamps to 2038-01-18T21:14:07Z
+* Replace HttpConnection in auth\_token with Requests
+* Replace HttpConnection in auth\_token with Requests
+* Support client generate literal ipv6 auth\_uri base on auth\_host
+* Log user info in auth\_token middleware
+* Changed header from LLC to Foundation based on trademark policies
+* python3: Use from future import unicode\_literals
+* Fix and enable gating on F841
+* Use OSLO jsonutils instead of json module
+* Allow configure the number of http retries
+* Use hashed token for invalid PKI token cache key
+* Make auth\_token middleware fetching respect prefix
+* Move all opens in auth\_token to be in context
+* Refactor Keystone to use unified logging from Oslo
+* Refactor verify signing dir logic
+* Fixes files with wrong bitmode
+* Don't cache tokens as invalid on network errors
+* Fix a typo in fetch\_revocation\_list
+* auth\_uri (public ep) should not default to auth\_\* values (admin ep)
+* Adds help in keystone\_authtoken config opts
+* python3: Add basic compatibility support
+* remove swift dependency of s3 middleware
+* flake8: fix alphabetical imports and enable H306
+* Drop webob from auth\_token.py
+* no logging on cms failure
+* rm improper assert syntax
+* Fix and enable gating on H402
+* Raise key length defaults
+* Fix auth\_token.py bad signing\_dir log message
+* Fix and enable H401
+* Revert environment module usage in middleware
+* Fix the cache interface to use time= by default
+* Change memcache config entry name in Keystone to be consistent with Oslo
+* Change memcache config entry name in Keystone to be consistent with Oslo
+* Fix memcache encryption middleware
+* Fix memcache encryption middleware
+* Isolate eventlet code into environment
+* Provide keystone CLI man page
+* Check Expiry
+* Check Expiry
+* import only modules (flake8 H302)
+* Satisfy flake8 import rules F401 and F403
+* Default signing\_dir to secure temp dir (bug 1181157)
+* Use testr instead of nose
+* Securely create signing\_dir (bug 1174608)
+* adding notes about dealing with exceptions in the client
+* Fix v3 with UUID and memcache expiring
+* Fix v3 with UUID and memcache expiring
+* Allow keystoneclient to work with older keystone installs
+* Wrap config module and require manual setup (bug 1143998)
+* Config value for revocation list timeout
+* Cache tokens using memorycache from oslo
+* Cache tokens using memorycache from oslo
+* xml\_body returns backtrace on XMLSyntaxError
+* Make auth\_token lazy load the auth\_version
+* Doc info and other readability improvements
+* Retry http\_request and json\_request failure
+* Use v2.0 api by default in auth\_token middleware
+* Fix auth-token middleware to understand v3 tokens
+* Fix auth-token middleware to understand v3 tokens
+* Remove test dep on name of dir (bug 1124283)
+* bug 1131840: fix auth and token data for XML translation
+* Rework S3Token middleware tests
+* v3 token API
+* Use oslo-config-2013.1b3
+* Allow configure auth\_token http connect timeout
+* Allow configure auth\_token http connect timeout
+* Fix spelling mistakes
+* Mark password config options with secret
+* Fixes 'not in' operator usage
+* Fix thinko in self.middleware.cert\_file\_missing
+* Limit the size of HTTP requests
+* Blueprint memcache-protection: enable memcache value encryption/integrity check
+* Blueprint memcache-protection: enable memcache value encryption/integrity check
+* Warning message is not logged for valid token-less request
+* Use os.path to find ~/keystone-signing (bug 1078947)
+* Remove iso8601 dep in favor of openstack.common
+* remove unused import
+* Bug 1052674: added support for Swift cache
+* URL-encode user-supplied tokens (bug 974319)
+* Fix middleware logging for swift
+* Remove swift auth
+* Don't try to split a list of memcache servers
+* Import auth\_token middleware from keystoneclient
+* Throw validation response into the environment
+* Add auth-token code to keystoneclient, along with supporting files
+* Add auth-token code to keystoneclient, along with supporting files
+* Use the right subprocess based on os monkeypatch
+* Make initial structural changes to keystoneclient in preparation to moving auth\_token here from keystone.  No functional change should occur from this commit (even though it did refresh a newer copy of openstack.common.setup.py, none of the newer updates are in functions called from this client)
+* fixes bug 1074172
+* HACKING compliance: consistent use of 'except'
+* auth\_token hash pki key PKI tokens on hash in memcached when accessed by auth\_token middelware
+* Move 'opentack.context' and 'openstack.params' definitions to keystone.common.wsgi
+* Replace refs to 'Keystone API' with 'Identity API'
+* replacing PKI token detection from content length to content prefix. (bug 1060389)
+* updating base keystoneclient documentation
+* updating keystoneclient doc theme
+* Backslash continuation cleanup
+* Check for expected cfg impl (bug 1043479)
+* Fix PEP8 issues
+* Fix auth\_token middleware to fetch revocation list as admin
+* allow middleware configuration from app config
+* Change underscores in new cert options to dashes
+* PKI Token revocation
+* Use user home dir as default for cache
+* Set default signing\_dir based on os USER
+* Test for Cert by name
+* Cryptographically Signed tokens
+* Prevent service catalog injection in auth\_token
+* Admin Auth URI prefix
+* Support 2-way SSL with Keystone server if it is configured to enforce 2-way SSL.  See also https://review.openstack.org/#/c/7706/ for the corresponding review for the 2-way SSL addition to Keystone
+* Change CLI options to use dashes
+* Keystone should use openstack.common.jsonutils
+* Removed unused import
+* Reorder imports by full module path
+* Pass serviceCatalog in auth\_token middleware
+* 400 on unrecognized content type (bug 1012282)
+* PEP8 fixes
+* Move docs to doc
+* fix importing of optional modules in auth\_token
+* blueprint 2-way-ssl
+* Fixes some pep8 warning/errors
+* Update swift\_auth documentation
+* Add ACL check using <tenant\_id>:<user> format
+* Use X\_USER\_NAME and X\_ROLES headers
+* Allow other middleware overriding authentication
+* Backslash continuation removal (Keystone folsom-1)
+* Added 'NormalizingFilter' middleware
+* Make sure we parse delay\_auth\_decision as boolean
+* Exit on error in a S3 way
+* Add a \_ at the end of reseller\_prefix default
+* additional logging to support debugging auth issue
+* Add support to swift\_auth for tokenless authz
+* Improve swift\_auth test coverage + Minor fixes
+* S3 tokens cleanups
+* updating docs to include creating service accts
+* Rename tokenauth to authtoken
+* Remove nova-specific middlewares
+* Remove glance\_auth\_token middleware
+* Update username -> name in token response
+* Refactor keystone.common.logging use (bug 948224)
+* Allow connect to another tenant
+* Improved legacy tenancy resolution (bug 951933)
+* Fix iso8601 import/use and date comparaison
+* Add simple set of tests for auth\_token middleware
+* Add token caching via memcache
+* Added license header (bug 929663)
+* Make sure we have a port number before int it
+* HTTP\_AUTHORIZATION was used in proxy mode
+* Add reseller admin capability
+* improve auth\_token middleware
+* Unpythonic code in redux in auth\_token.py
+* Handle KeyError in \_get\_admin\_auth\_token
+* Provide request to Middleware.process\_response()
+* Set tenantName to 'admin' in get\_admin\_auth\_token
+* XML de/serialization (bug 928058)
+* Update auth\_token middleware so it sets X\_USER\_ID
+* Fix case of admin role in middleware
+* Remove extraneous \_validate\_claims() arg
+* Fix copyright dates and remove duplicate Apache licenses
+* Re-adds admin\_pass/user to auth\_tok middleware
+* Update docs for Swift and S3 middlewares
+* Added Apache 2.0 License information
+* Update swift token middleware
+* Add s3\_token
+* Fixes role checking for admin check
+* Add tests for core middleware
+* termie all the things
+* be more safe with getting json aprams
+* fix keystoneclient tests
+* pep8 cleanup
+* doc updates
+* fix middleware
+* update some names
+* fix some imports
+* re-indent
+* check for membership
+* add more middleware
+* woops
+* add legacy middleware

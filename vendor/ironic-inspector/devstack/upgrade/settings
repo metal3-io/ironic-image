@@ -1,0 +1,4 @@
+# Enabling Inspector grenade plug-in
+# Based on Ironic/devstack/grenade/settings
+register_project_for_upgrade ironic-inspector
+register_db_to_save ironic_inspector

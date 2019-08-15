@@ -1,0 +1,474 @@
+CHANGES
+=======
+
+3.23.1
+------
+
+* add python 3.7 unit test job
+* Change python3.5 job to python3.7 job on Stein+
+* Update hacking version
+* Update mailinglist from dev to discuss
+
+3.23.0
+------
+
+* Override getttext.find to cache result
+* Don't quote {posargs} in tox.ini
+* Clean up .gitignore references to personal tools
+* Always build universal wheels
+* Remove references to log translation functions
+* Use templates for cover and lower-constraints
+
+3.22.1
+------
+
+* Remove unused code
+* Imported Translations from Zanata
+* add lib-forward-testing-python3 test job
+* add python 3.6 unit test job
+* import zuul job settings from project-config
+* Update reno for stable/rocky
+
+3.21.0
+------
+
+* Switch to stestr
+* Add release notes to README.rst
+* fix tox python3 overrides
+* Remove moxstubout usage
+* Remove stale pip-missing-reqs tox test
+* Trivial: Update pypi url to new url
+* set default python to python3
+* add lower-constraints job
+* Updated from global requirements
+
+3.20.0
+------
+
+* Imported Translations from Zanata
+* Update links in README
+* Imported Translations from Zanata
+* Update reno for stable/queens
+* Updated from global requirements
+* Updated from global requirements
+* Updated from global requirements
+
+3.19.0
+------
+
+* Remove -U from pip install
+* Avoid tox\_install.sh for constraints support
+* add bandit to pep8 job
+* Updated from global requirements
+* Remove setting of version/release from releasenotes
+* Updated from global requirements
+* Imported Translations from Zanata
+* Updated from global requirements
+
+3.18.0
+------
+
+* Updated from global requirements
+* Updated from global requirements
+* Imported Translations from Zanata
+* Update reno for stable/pike
+* Updated from global requirements
+
+3.17.0
+------
+
+* Imported Translations from Zanata
+* Update URLs in documents according to document migration
+
+3.16.0
+------
+
+* switch from oslosphinx to openstackdocstheme
+* turn on warning-is-error in doc build
+* rearrange the documentation to fit into the new standard layout
+* Updated from global requirements
+* Enable some off-by-default checks
+* Updated from global requirements
+* Updated from global requirements
+* Updated from global requirements
+
+3.15.3
+------
+
+* Revert "Remove Babel as a runtime requirement"
+
+3.15.2
+------
+
+* Updated from global requirements
+* Remove Babel as a runtime requirement
+
+3.15.1
+------
+
+* Updated from global requirements
+* Updated from global requirements
+* Updated from global requirements
+* Check reStructuredText documents for common style issues
+
+3.15.0
+------
+
+* add notes about skipping log translation setup
+* Updated from global requirements
+
+3.14.0
+------
+
+* Python 3.5 is added
+
+3.13.0
+------
+
+* Updated from global requirements
+* [Fix gate]Update test requirement
+* Fix wrong response with language zh-TW
+* Updated from global requirements
+* Update reno for stable/ocata
+
+3.12.0
+------
+
+* Add Constraints support
+* Show team and repo badges on README
+* Replace six.iteritems() with .items()
+
+3.11.0
+------
+
+* Updated from global requirements
+* Updated from global requirements
+* Updated from global requirements
+* Add reno for release notes management
+* Add missing dependency testscenarios
+* Typo fix in oslo.i18n
+* Changed the home-page link
+* Add docs on how to display translated strings in your app
+
+3.10.0
+------
+
+* Updated from global requirements
+
+3.9.0
+-----
+
+* Updated from global requirements
+* Fix parameters of assertEqual are misplaced
+
+3.8.0
+-----
+
+* Updated from global requirements
+* Don't include openstack/common in flake8 exclude list
+* Updated from global requirements
+
+3.7.0
+-----
+
+* Imported Translations from Zanata
+* Updated from global requirements
+
+3.6.0
+-----
+
+* Updated from global requirements
+* Updated from global requirements
+* Better isolate tests and fixtures from environment
+* Updated from global requirements
+
+3.4.0
+-----
+
+* Imported Translations from Zanata
+
+3.3.0
+-----
+
+* Update translation setup
+* Updated from global requirements
+* Imported Translations from Zanata
+* Updated from global requirements
+
+3.2.0
+-----
+
+* Updated from global requirements
+* add versionadded designations to newer functions
+* doc: contextual/plural translation requires oslo.i18n >=2.1.0
+* Trival: Remove 'MANIFEST.in'
+
+3.1.0
+-----
+
+* [doc] Update \_i18n.py example to pass pep8
+* Add missing blank in usage.rst
+* Remove Python 2.6 workround for logging
+* Drop python 2.6 support
+
+3.0.0
+-----
+
+* Updated from global requirements
+* Remove python 2.6 classifier
+* Remove python 2.6 and cleanup tox.ini
+* Improved integration module documentation
+* Updated from global requirements
+* Imported Translations from Zanata
+
+2.7.0
+-----
+
+* Fix coverage configuration and execution
+* No need for Oslo Incubator Sync
+* Enhance the formatting error robustness patch
+* Imported Translations from Zanata
+* Move 'history' -> release notes section
+* Add shields.io version/downloads links/badges into README.rst
+* Change ignore-errors to ignore\_errors
+* Added the home-page value with Oslo wiki
+* Updated from global requirements
+
+2.6.0
+-----
+
+* Updated from global requirements
+* Updated from global requirements
+
+2.5.0
+-----
+
+* Trap formatting errors
+
+2.4.0
+-----
+
+* Imported Translations from Transifex
+* Updated from global requirements
+* Imported Translations from Transifex
+* Updated from global requirements
+* Clean up \_translate\_msgid logic a bit
+
+2.3.0
+-----
+
+* Imported Translations from Transifex
+* Updated from global requirements
+
+2.2.0
+-----
+
+* Imported Translations from Transifex
+* Updated from global requirements
+* Updated from global requirements
+* Updated from global requirements
+* Updated from global requirements
+* Fix mock use for 1.1.0
+* Add requirements for pre-release test scripts
+* Imported Translations from Transifex
+
+2.1.0
+-----
+
+* Only define CONTEXT\_SEPARATOR once
+* Support contextual and plural form of gettext functions
+* Imported Translations from Transifex
+* clarify translation policy
+* Add tox target to find missing requirements
+* Imported Translations from Transifex
+
+2.0.0
+-----
+
+* Updated from global requirements
+* Updated from global requirements
+* Remove oslo namespace package
+
+1.7.0
+-----
+
+* Advertise support for Python3.4 / Remove support for Python 3.3
+* Updated from global requirements
+* Misplaced parenthesis causing confusion
+* Remove run\_cross\_tests.sh
+* Imported Translations from Transifex
+
+1.6.0
+-----
+
+* Uncap library requirements for liberty
+* Standardize setup.cfg summary for oslo libs
+* Updated from global requirements
+* Move to hacking 0.10
+* Update guideline doc of multiple use msg case
+
+1.5.0
+-----
+
+* Updated from global requirements
+
+1.4.0
+-----
+
+* Add test fixture to prefix lazily translated messages
+
+1.3.1
+-----
+
+* Clear global cache in test\_get\_available\_languages
+* Make setup.cfg packages include oslo.i18n
+* Improve fixture documentation
+
+1.3.0
+-----
+
+* Add a fixture to let tests manage the lazy flag
+* Fix the link to the bug tracker in the README
+
+1.2.0
+-----
+
+* Correct the translation domain for loading messages
+* Move out of the oslo namespace package
+* Workflow documentation is now in infra-manual
+* Force code sample to be treated as python
+
+1.1.0
+-----
+
+* Imported Translations from Transifex
+* Add note for integration modules in libraries
+* Activate pep8 check that \_ is imported
+* Add pbr to installation requirements
+* Updated from global requirements
+* Updated from global requirements
+* Remove extraneous vim editor configuration comments
+* Make clear in docs to use \_LE() when using LOG.exception()
+* Support building wheels (PEP-427)
+* Imported Translations from Transifex
+* Fix coverage testing
+* Imported Translations from Transifex
+* Use same indentation in doc/source/usage
+* Imported Translations from Transifex
+* Imported Translations from Transifex
+* Updated from global requirements
+* Remove unused/mutable default args
+* Fixes a small syntax error in the doc examples
+
+1.0.0
+-----
+
+* Add missing six dependency
+
+0.3.0
+-----
+
+* Imported Translations from Transifex
+* Work toward Python 3.4 support and testing
+* Updated from global requirements
+* Imported Translations from Transifex
+* Document how to add import exceptions
+
+0.2.0
+-----
+
+* Add a test fixture for translatable strings
+* Imported Translations from Transifex
+* Remove mention of Message objects from public docs
+* Add Changelog to the documentation
+
+0.1.0
+-----
+
+* Shift public API to top level package
+* Add links to policy discussions
+* Improve initial documentation
+* Update sphinx and hacking requirements
+* Fix import grouping in tests
+* Build locale dir env var name consistently
+* Updated from global requirements
+* Remove Babel version workaround code
+* Trivial refactors for gettextutils
+* Setup for translation
+* Update the public API of the library
+* Check the lazy flag at runtime
+* Handle . and - in translation domains
+* Split up monolithic test file
+* Updated from global requirements
+* Fix up usage instructions
+* fix docstring for fakes module
+* Update default tox settings
+* update .gitreview
+* update tests for python 3
+* sync cross-test script from incubator
+* pep8 fixes from import
+* update .gitignore with new lib name
+* Make unit tests pass
+* initial export with graduate.sh
+* Add API for creating translation functions
+* Use oslotest instead of common test module
+* Fix test\_gettextutils on Python 3
+* Fix gettextutil.Message handling of deep copy failures
+* Change lazy translation to retain complete dict
+* Remove requirements.txt from .gitignore
+* Add etc/openstack.conf.sample to .gitignore
+* Add support for translating log levels separately
+* Fix E501 in individual openstack projects
+* Fix test method use
+* Make Message keep string interpolation args
+* Add support for locales missing from babel
+* Allow the Message class to have non-English default locales
+* Implementation of translation log handler
+* Use hacking import\_exceptions for gettextutils.\_
+* Translation Message improvements
+* Fix violations of H302:import only modules
+* Fixed misspellings of common words
+* Trivial: Make vertical white space after license header consistent
+* Remove vim header
+* Use six.text\_type instead of unicode function in tests
+* Fix typos in oslo
+* Adjust import order according to PEP8 imports rule
+* Replace assertEquals with assertEqual
+* When translating if no locale is given use default locale
+* Type check for Message param to avoid AttributeError
+* gettextutils: port to Python 3
+* Translate all substitution elements of a Message object
+* python3: Fix UserString import
+* Replace using tests.utils part2
+* Enable multiple translation domains for gettextutils
+* Bump hacking to 0.7.0
+* Allow mapping \_ to lazy gettext path
+* Fix Message format-string parsing
+* Add common methods required to allow translation of REST API responses
+* Add eclipse project files to .gitignore
+* Add more robust gettext interpolation handling
+* Add .testrepository to .gitignore
+* python3: Add basic python3 compatibility
+* Enable hacking H404 test
+* Add basic lazy gettext implementation
+* Ignore backup files in .gitignore
+* Support overriding oslo localedir too
+* Add a gettextutils.install() helper function
+* gettextutils: fix translation domain
+* Fix Copyright Headers - Rename LLC to Foundation
+* Add join\_consumer\_pool() to RPC connections
+* Replace direct use of testtools BaseTestCase
+* Use testtools as test base class
+* Fixes import order errors
+* Add common base weigher/weigher handler for filter scheduler
+* updating sphinx documentation
+* Correcting openstack-common mv to oslo-incubator
+* Update .gitreview for oslo
+* .gitignore updates for generated files
+* Add gettext support
+* Updated tox config for multi-python testing
+* Added .gitreview file
+* ignore cover's html directory
+* Rajaram/Vinkesh|increased tests for Request and Response serializers
+* Rajaram/Vinkesh|Added nova's serializaiton classes into common
+* Initial skeleton project

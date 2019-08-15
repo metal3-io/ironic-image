@@ -1,0 +1,85 @@
+{
+  "drivers": [
+    {
+      "hosts": [
+        "897ab1dad809"
+      ],
+      "links": [
+        {
+          "href": "http://127.0.0.1:6385/v1/drivers/agent_ipmitool",
+          "rel": "self"
+        },
+        {
+          "href": "http://127.0.0.1:6385/drivers/agent_ipmitool",
+          "rel": "bookmark"
+        }
+      ],
+      "name": "agent_ipmitool",
+      "properties": [
+        {
+          "href": "http://127.0.0.1:6385/v1/drivers/agent_ipmitool/properties",
+          "rel": "self"
+        },
+        {
+          "href": "http://127.0.0.1:6385/drivers/agent_ipmitool/properties",
+          "rel": "bookmark"
+        }
+      ],
+      "type": "classic"
+    },
+    {
+      "hosts": [
+        "897ab1dad809"
+      ],
+      "links": [
+        {
+          "href": "http://127.0.0.1:6385/v1/drivers/fake",
+          "rel": "self"
+        },
+        {
+          "href": "http://127.0.0.1:6385/drivers/fake",
+          "rel": "bookmark"
+        }
+      ],
+      "name": "fake",
+      "properties": [
+        {
+          "href": "http://127.0.0.1:6385/v1/drivers/fake/properties",
+          "rel": "self"
+        },
+        {
+          "href": "http://127.0.0.1:6385/drivers/fake/properties",
+          "rel": "bookmark"
+        }
+      ],
+      "type": "classic"
+    },
+    {
+      "hosts": [
+        "897ab1dad809"
+      ],
+      "links": [
+        {
+          "href": "http://127.0.0.1:6385/v1/drivers/ipmi",
+          "rel": "self"
+        },
+        {
+          "href": "http://127.0.0.1:6385/drivers/ipmi",
+          "rel": "bookmark"
+        }
+      ],
+      "name": "ipmi",
+      "properties": [
+        {
+          "href": "http://127.0.0.1:6385/v1/drivers/ipmi/properties",
+          "rel": "self"
+        },
+        {
+          "href": "http://127.0.0.1:6385/drivers/ipmi/properties",
+          "rel": "bookmark"
+        }
+      ],
+      "type": "dynamic"
+    }
+  ]
+}

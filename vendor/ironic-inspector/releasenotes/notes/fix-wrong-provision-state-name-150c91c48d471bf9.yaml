@@ -1,0 +1,11 @@
+---
+fixes:
+  - |
+    Wrong provision state name 'inspectfail' in *ironic-inspector* valid
+    states for node inspection.
+    This issue leads to state inconsistency between *ironic* and
+    *ironic-inspector*. For example, if *ironic* inspection timeout is
+    lower than *ironic-inspector*'s, and inspection timeout occurs, *ironic*
+    will transition node into 'inspect failed' provision state. In such case
+    when node inspection finishes without errors the node will be in
+    'inspect failed' provision state with inspection in 'finished' state.

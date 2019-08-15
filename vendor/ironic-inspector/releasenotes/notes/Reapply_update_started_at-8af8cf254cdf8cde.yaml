@@ -1,0 +1,4 @@
+---
+fixes:
+  - The POST /v1/introspection/<Node ID>/data/unprocessed API updates the
+    started_at time when ironic inspector begins processing the node.

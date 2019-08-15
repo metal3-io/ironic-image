@@ -1,0 +1,4 @@
+---
+features:
+  - Introduced API "POST /v1/introspection/UUID/data/unprocessed"
+    for reapplying the introspection over stored data.

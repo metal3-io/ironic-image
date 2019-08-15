@@ -1,0 +1,257 @@
+# variables in header
+x-auth-token:
+  description: |
+    The client token being passed into Ironic Inspector API to make
+    authentication.
+  in: header
+  required: true
+  type: string
+x-openstack-ironic-inspector-api-maximum-version:
+  description: |
+    Maximum API microversion supported by this endpoint, eg. "1.10"
+  in: header
+  required: true
+  type: string
+x-openstack-ironic-inspector-api-minimum-version:
+  description: |
+    Minimum API microversion supported by this endpoint, eg. "1.1"
+  in: header
+  required: true
+  type: string
+x-openstack-ironic-inspector-api-version:
+  description: >
+    A request SHOULD include this header to indicate to the Ironic Inspector
+    API service what version the client supports. The server may transform
+    the response object into compliance with the requested version, if it is
+    supported, or return a 406 Not Supported error.
+    If this header is not supplied, the server will default to current
+    supported version in all responses.
+  in: header
+  required: true
+  type: string
+
+# variables in path
+node_id:
+  description: |
+    The UUID of the Ironic node.
+  in: path
+  required: true
+  type: string
+
+uuid:
+  description: |
+    The UUID of the Ironic Inspector rule.
+  in: path
+  required: true
+  type: string
+
+# common variables to query strings
+limit:
+  description: |
+    Requests a page size of items. Returns a number of items up to a limit
+    value. Use the ``limit`` parameter to make an initial limited request and
+    use the ID of the last-seen item from the response as the ``marker``
+    parameter value in a subsequent limited request. This value cannot be
+    larger than the ``api_max_limit`` option in the configuration. If it is
+    higher than ``api_max_limit``, return 400 Bad Request.
+  in: query
+  required: false
+  type: integer
+manage_boot:
+  description: |
+    Whether the current installation of ironic-inspector can manage PXE
+    booting of nodes.
+  in: query
+  required: false
+  type: string
+marker:
+  description: |
+    The ID of the last-seen item. Use the ``limit`` parameter to make an
+    initial limited request and use the ID of the last-seen item from the
+    response as the ``marker`` parameter value in a subsequent request.
+  in: query
+  required: false
+  type: string
+
+
+# variables to methods
+actions:
+  description: |
+    List of operations that will be performed if ``conditions`` of this
+    rule are fulfilled.
+  in: body
+  required: true
+  type: array
+bmc_address:
+  description: |
+    IP address of the node's BMC
+  in: body
+  required: false
+  type: string
+boot_interface:
+  description: |
+    MAC address of the NIC that the machine PXE booted from
+  in: body
+  required: false
+  type: string
+conditions:
+  description: |
+    List of a logic statementd or operations in rules, that can be
+    evaluated as True or False.
+  in: body
+  required: false
+  type: array
+cpu:
+  description: |
+    CPU information containing at least keys ``count`` (CPU count) and
+    ``architecture`` (CPU architecture, e.g. ``x86_64``),
+  in: body
+  required: true
+  type: string
+description:
+  description: |
+    Rule human-readable description.
+  in: body
+  required: false
+  type: string
+disks:
+  description: |
+    List of disk block devices containing at least ``name`` and ``size``
+    keys. In case ``disks`` are not provided **ironic-inspector**  assumes
+    that this is a disk-less node.
+  in: body
+  required: true
+  type: array
+error:
+  description: |
+    Error description string or ``null``;
+    ``Canceled by operator`` in case introspection was aborted.
+  in: body
+  required: true
+  type: string
+finished:
+  description: |
+    Whether introspection has finished for this node.
+  in: body
+  required: true
+  type: boolean
+finished_at:
+  description: |
+    UTC ISO8601 timestamp of introspection finished or ``null``.
+  in: body
+  required: true
+  type: string
+href:
+  description: |
+    A bookmark link to resource object.
+  in: body
+  required: true
+  type: string
+id:
+  description: |
+    API microversion, eg, "1.12".
+  in: body
+  required: true
+  type: string
+interfaces:
+  description: |
+    List of dictionaries with interfaces info, contains following keys:
+    ``name``,  ``ipv4_address``, ``mac_address``, ``client_id``.
+  in: body
+  required: true
+  type: array
+inventory:
+  description: Dictionary with hardware inventory keys.
+  in: body
+  required: true
+  type: object
+links:
+  description: |
+    A list of relative links. Includes the self and
+    bookmark links.
+  in: body
+  required: true
+  type: array
+logs:
+  description: Base64-encoded logs from the ramdisk.
+  in: body
+  required: false
+  type: string
+memory:
+  description: |
+    Memory information containing at least ``physical_mb`` key,
+    memory size is reported by dmidecod.
+  in: body
+  required: true
+  type: string
+name:
+  description: |
+    Resource name, like `introspection`, `rules`.
+  in: body
+  required: true
+  type: string
+node_uuid:
+  description: Ironic node UUID.
+  in: body
+  required: true
+  type: string
+rel:
+  description: |
+    The relationship between the version and the href.
+  in: body
+  required: true
+  type: string
+resources:
+  description: |
+    A list of available API resources.
+  in: body
+  required: true
+  type: array
+root_disk:
+  description: |
+    Default deployment root disk as calculated by the **ironic-python-agent**
+    algorithm.
+  in: body
+  required: true
+  type: string
+started_at:
+  description: |
+    UTC ISO8601 timestamp of introspection start.
+  in: body
+  required: true
+  type: string
+state:
+  description: |
+    Current state of the introspection, possible values:  ``enrolling``,
+    ``error``, ``finished``, ``processing``, ``reapplying``, ``starting``,
+    ``waiting``. For detail information about states see
+    `Inspector states <https://docs.openstack.org/ironic-inspector/latest/user/workflow.html#state-machine-diagram>`_.
+  in: body
+  required: true
+  type: string
+status:
+  description: |
+    The status of this API version. This can be one of:
+
+    - ``CURRENT`` This version is up to date recent and should be prioritized over all others.
+
+    - ``SUPPORTED`` This version is available and may not be updated in future.
+
+    - ``DEPRECATED`` This version is still available but may be removed in future.
+
+    - ``EXPERIMENTAL`` This version is under development and may be changed in future.
+  in: body
+  required: true
+  type: string
+version:
+  description: |
+    Versioning of this API response, eg. "1.12".
+  in: body
+  required: true
+  type: string
+versions:
+  description: |
+    Array of information about currently supported versions.
+  in: body
+  required: true
+  type: array

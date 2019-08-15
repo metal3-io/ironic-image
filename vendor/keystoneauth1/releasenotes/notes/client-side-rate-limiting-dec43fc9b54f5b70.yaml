@@ -1,0 +1,10 @@
+---
+features:
+  - |
+    Support added for client-side rate limiting. Two new parameters now
+    exist for ``keystoneauth1.adapter.Adapter``. ``rate`` expresses a
+    maximum rate at which to execute requests. ``parallel_limit`` allows
+    for the creation of a semaphore to control the maximum number of
+    requests that can be active at any one given point in time.
+    Both default to ``None`` which has the normal behavior or not limiting
+    requests in any manner.

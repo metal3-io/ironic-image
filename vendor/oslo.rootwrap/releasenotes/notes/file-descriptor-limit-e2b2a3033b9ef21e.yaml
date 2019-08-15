@@ -1,0 +1,14 @@
+---
+features:
+  - |
+    A configurable limit on the number of file descriptors that can be opened
+    by a rootwrap-started process has been added. It defaults to 1024, but
+    can be adjusted by setting the ``rlimit_nofile`` option in rootwrap.conf
+    to a larger or smaller value.
+upgrade:
+  - |
+    Because a file descriptor limit was added in this release (see the features
+    section for details), rootwrap processes that were previously relying on
+    inheriting their parent process's descriptor limits may exhaust their
+    available file descriptors. Use the ``rlimit_nofile`` option to restore
+    the previous limits if this is the case.

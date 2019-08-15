@@ -1,0 +1,5 @@
+---
+upgrade:
+  - Removed support for introspecting nodes in maintenance mode, deprecated in
+    the liberty cycle. Use "inspecting", "manageable" or "enroll" states
+    instead.

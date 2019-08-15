@@ -1,0 +1,24 @@
+---
+deprecations:
+  - |
+    Several configuration options related to ironic API access
+    are deprecated and will be removed in the Rocky release.
+    These include:
+
+    - ``[ironic]/os_region`` - use ``[ironic]/region_name`` option instead
+    - ``[ironic]/auth_strategy`` - set ``[ironic]/auth_type`` option to
+      ``none`` to access ironic API in noauth mode
+    - ``[ironic]/ironic_url`` - use ``[ironic]/endpoint_override`` option
+      to set specific ironic API endpoint address if discovery of ironic API
+      endpoint is not desired or impossible (for example in standalone mode)
+    - ``[ironic]/os_service_type`` - use ``[ironic]/service_type`` option
+    - ``[ironic]/os_endpoint_type`` - use ``[ironic]/valid_interfaces``
+      option to set ironic endpoint types that will be attempted to be used
+  - |
+    Several configuration options related to swift API access are deprecated
+    and will be removed in Rocky release.
+    These include:
+
+    - ``[swift]/os_service_type`` - use ``[swift]/service_type`` option
+    - ``[swift]/os_endpoint_type`` - use ``[swift]/valid_interfaces`` option
+    - ``[swift]/os_region`` - use ``[swift]region_name`` option

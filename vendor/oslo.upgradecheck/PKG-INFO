@@ -1,0 +1,36 @@
+Metadata-Version: 1.1
+Name: oslo.upgradecheck
+Version: 0.3.1
+Summary: Common code for writing OpenStack upgrade checks
+Home-page: http://launchpad.net/oslo
+Author: OpenStack
+Author-email: openstack-discuss@lists.openstack.org
+License: UNKNOWN
+Description: =================
+        oslo.upgradecheck
+        =================
+        
+        Common code for writing OpenStack upgrade checks
+        
+        This project contains the common code necessary for writing upgrade checks
+        in OpenStack projects. It includes a module (oslo_upgradecheck.upgradecheck)
+        for the common code as well as an example (oslo_upgradecheck.__main__) of
+        integrating that code into a project.
+        
+        * Free software: Apache license
+        * Documentation: https://docs.openstack.org/oslo.upgradecheck/latest/
+        * Source: https://opendev.org/openstack/oslo.upgradecheck
+        * Bugs: https://bugs.launchpad.net/oslo.upgradecheck
+        
+        
+Platform: UNKNOWN
+Classifier: Environment :: OpenStack
+Classifier: Intended Audience :: Information Technology
+Classifier: Intended Audience :: System Administrators
+Classifier: License :: OSI Approved :: Apache Software License
+Classifier: Operating System :: POSIX :: Linux
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 2
+Classifier: Programming Language :: Python :: 2.7
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.6

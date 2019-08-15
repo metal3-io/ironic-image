@@ -1,0 +1,6 @@
+---
+fixes:
+  - |
+    Ensure the configuration options ``firewall.firewall_update_period`` and
+    ``clean_up_period`` are applied to the ``periodic_clean_up`` and
+    ``periodic_update`` tasks after the config file is read.

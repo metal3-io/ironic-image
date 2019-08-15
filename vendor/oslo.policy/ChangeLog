@@ -1,0 +1,718 @@
+CHANGES
+=======
+
+2.3.0
+-----
+
+* Add attribute to suppress deprecation warnings
+* Add Python 3 Train unit tests
+* Updated from global requirements
+* Replace git.openstack.org URLs with opendev.org URLs
+* Cap Bandit below 1.6.0 and update Sphinx requirement
+
+2.2.0
+-----
+
+* OpenDev Migration Patch
+* Dropping the py35 testing
+* Clarify policy\_file configuration option help text
+* Update master for stable/stein
+* Corrects tox.ini snippet to point to config file
+* Provide more specific error when namespace is missing
+* Add py36 and py37 tox envs
+
+2.1.1
+-----
+
+* add python 3.7 unit test job
+* Update hacking version
+
+2.1.0
+-----
+
+* Add ability for policy-checker to read configuration
+
+2.0.0
+-----
+
+
+1.44.1
+------
+
+* Fix sample config value when set\_defaults is used
+* Fixes is\_admin type from StrOpt to BoolOpt
+* Fixes file access using with statements
+
+1.44.0
+------
+
+* Use template for lower-constraints
+* Use oslo.config instead of argparse
+* Add policy-upgrade tool
+
+1.43.1
+------
+
+* Prevent sensitive target data from being logged
+
+1.43.0
+------
+
+* Change openstack-dev to openstack-discuss
+
+1.42.0
+------
+
+* Fully log RBAC enforcement data
+* Add domain scope support for scope types
+* Make upgrades more robust with policy overrides
+* oslopolicy-checker: iterate through rules in sorted order
+* Enhance test to prevent JSON parsing regression
+* Correct typo in docs
+
+1.41.1
+------
+
+* Fix usage of token fixture in shell tests
+
+1.41.0
+------
+
+* Add ability to pass in target data for the oslopolicy-checker
+* Pass in policy name as part of the oslopolicy-check check call
+* Unit test for CLI
+
+1.40.1
+------
+
+* Update sphinx extension logging
+* Add minor nits in testing documentation
+* Clean up .gitignore references to personal tools
+* Add guidelines for naming policies
+
+1.40.0
+------
+
+* Add docs for developers testing APIs
+
+1.39.1
+------
+
+* sphinxext: Start parsing 'DocumentedRuleDefault.description' as rST
+* Docs: Remove references to JSON format
+* add lib-forward-testing-python3 test job
+* Imported Translations from Zanata
+* add python 3.6 unit test job
+* Move \_capture\_stdout to a common place
+* Remove PyPI downloads
+* import zuul job settings from project-config
+* Update reno for stable/rocky
+
+1.38.1
+------
+
+* Avoid redundant policy syntax checks
+
+1.38.0
+------
+
+* Teach Enforcer.enforce to deal with context objects
+* Pass dictionary as creds in policy tests
+* Fix requirements and convert to stestr
+* Add blueprints and releasenotes link to README
+* generator: Reimplement wrapping of 'description'
+* fix tox python3 overrides
+
+1.37.0
+------
+
+* Add CLI usage documentation
+* Clarify CLI documentation
+* Remove erroneous newline in sample generation
+* Update sphinxext to include scope\_types in docs
+
+1.36.0
+------
+
+* Fix document formatting
+* Add examples and clarification around scope\_types
+* Include deprecated\_reason when deprecated\_rule is set
+* Include both new and deprecated rules in generated sample
+* trivial: Fix file permissions
+
+1.35.0
+------
+
+* Remove stale pip-missing-reqs tox test
+* make the sphinxpolicygen extension handle multiple input/output files
+* Update documentation to include usage for new projects
+* Trivial: Update pypi url to new url
+* set default python to python3
+* add lower-constraints job
+* Updated from global requirements
+* Update links in README
+
+1.34.0
+------
+
+* Imported Translations from Zanata
+* Imported Translations from Zanata
+* Update reno for stable/queens
+* Updated from global requirements
+* Imported Translations from Zanata
+* Updated from global requirements
+* Render deprecated policy names when generating files
+* Updated from global requirements
+* Updated from global requirements
+
+1.33.1
+------
+
+* Only log deprecation warnings when they are overridden
+
+1.33.0
+------
+
+* Add a release note for enforce\_scope
+* Add configuration option for enforcing scope
+
+1.32.2
+------
+
+* Fix string injection for InvalidScope
+
+1.32.1
+------
+
+* Imported Translations from Zanata
+
+1.32.0
+------
+
+* Add scope\_types to RuleDefault objects
+
+1.31.0
+------
+
+* Remove -U from pip install
+* Avoid tox\_install.sh for constraints support
+* add bandit to pep8 job
+* Updated from global requirements
+* Handle deprecation of inspect.getargspec
+* Remove setting of version/release from releasenotes
+* Updated from global requirements
+
+1.30.0
+------
+
+* Imported Translations from Zanata
+* Add functionality to deprecate policies
+* Pass creds as a dict in tests
+
+1.29.0
+------
+
+* Documentation and release notes for plugins
+* expand type documentation for Enforcer arguments
+* Imported Translations from Zanata
+* http/https check rules as stevedore extensions
+* External Policy hook should support SSL
+
+1.28.1
+------
+
+* Modification to add additional information in the HTTPCheck request
+
+1.28.0
+------
+
+* Updated from global requirements
+* rewrite HttpCheckFixture to not mock out entire HttpCheck class
+
+1.27.0
+------
+
+* Updated from global requirements
+* Add JSON output option to sample generator
+
+1.26.0
+------
+
+* Imported Translations from Zanata
+* Updated from global requirements
+* throw an exception when sphinxext cannot find the config file
+* Update reno for stable/pike
+* fix formatting for empty defaults
+* Updated from global requirements
+
+1.25.0
+------
+
+* Updated from global requirements
+* Update URLs in documents according to document migration
+* Fix parsing bug when config file is empty
+
+1.24.1
+------
+
+* import configuration guide content from openstack-manuals repo
+* sphinxext: Use field lists in output
+* sphinxext: Format definition lists correctly
+* switch from oslosphinx to openstackdocstheme
+* move existing documentation into new standard layout
+
+1.24.0
+------
+
+* Updated from global requirements
+* Updated from global requirements
+* Updated from global requirements
+* Updated from global requirements
+* Updated from global requirements
+
+1.23.0
+------
+
+* Updated from global requirements
+* Simplify message of exception PolicyNotAuthorized
+* Updated from global requirements
+
+1.22.1
+------
+
+* Updated from global requirements
+* Add Sphinx extension to pretty-print modules
+* Optimize the link address
+* Check reStructuredText documents for common style issues
+
+1.22.0
+------
+
+* Update usage documentation
+* Add release note for DocumentedRuleDefault
+* Remove log translations
+* oslopolicy-sample-generator description support
+* Use Sphinx 1.5 warning-is-error
+
+1.21.0
+------
+
+* Comment out the rule from generated sample-policy file
+* Modify tests in test\_generator
+* Add additional param to policy.RuleDefault
+* Updated from global requirements
+* Seperate each policy rule with new line
+
+1.20.0
+------
+
+* Allow multiline descriptions for RuleDefaults
+
+1.19.0
+------
+
+* Updated from global requirements
+* [Fix gate]Update test requirement
+* Updated from global requirements
+* Updated from global requirements
+* Remove support for py34
+* pbr.version.VersionInfo needs package name (oslo.xyz and not oslo\_xyz)
+* Delete the unnecessary word in policy.py
+* Update reno for stable/ocata
+* Add optional exception for check\_rules
+
+1.18.0
+------
+
+* Remove references to Python 3.4
+* Remove dead code and use default value of argparse
+* Add Constraints support
+* Updated from global requirements
+
+1.17.0
+------
+
+* Improved performance of parse\_file\_contents() method
+* Show team and repo badges on README
+* Remove wrong parameter type for class NotCheck from docstring
+* Fix a code logic while doing cyclical reference check to the policy
+* Updated from global requirements
+* Add missing parameter description in module \_cache\_handler
+* Fix typo in oslo.policy
+* Updated from global requirements
+* Add stevedore to requirements
+* Imported Translations from Zanata
+* Updated from global requirements
+* Make exception PolicyNotAuthorized more readable
+
+1.16.0
+------
+
+* Change assertTrue(isinstance()) by optimal assert
+* Perform basic checks on policy definitions
+* Enable release notes translation
+* Changed the home-page link
+* Change assertTrue(isinstance()) by optimal assert
+
+1.15.0
+------
+
+* Updated from global requirements
+* Update docs on policy sample generator
+* Updated from global requirements
+* doc: Add introduction to index page
+* Add sphinx extension to build sample policy
+* Updated from global requirements
+* Updated from global requirements
+* Doc: declare YAML/JSON support
+* Remove oslo.utils from requirements
+* Update reno for stable/newton
+
+1.14.0
+------
+
+* Revert "Adds debug logging for policy file validation"
+* Updated from global requirements
+* Delete H803 in flake8 ignore
+
+1.13.0
+------
+
+* Updated from global requirements
+* Add note about not all APIs support policy enforcement by user\_id
+* Allow policy file to not exist
+* Adds debug logging for policy file validation
+* Fixed unit tests running on Windows
+* Add Python 3.5 classifier and venv
+
+1.12.0
+------
+
+* Updated from global requirements
+* Updated from global requirements
+* Fix mispelled method name in setup.cfg
+* Updated from global requirements
+* Updated from global requirements
+* Imported Translations from Zanata
+
+1.11.0
+------
+
+* Updated from global requirements
+
+1.10.0
+------
+
+* Imported Translations from Zanata
+* Improve policy sample generation testing
+* Add helper scripts for generating policy info
+
+1.9.0
+-----
+
+* Add sample file generation script and helper methods
+* Add equality operator to policy.RuleDefault
+* Imported Translations from Zanata
+* Updated from global requirements
+* Fix typo: 'olso' to 'oslo'
+* Updated from global requirements
+* Updated from global requirements
+* Add reno for release notes management
+* Add policy registration and authorize method
+* Updated from global requirements
+* doc: Fix wrong import statement in usage
+
+1.8.0
+-----
+
+* Trivial: ignore openstack/common in flake8 exclude list
+
+1.7.0
+-----
+
+* Updated from global requirements
+* Imported Translations from Zanata
+* Imported Translations from Zanata
+* Updated from global requirements
+* Updated from global requirements
+* Deprecate load\_json() in favor of load()
+* Support policy file in YAML
+
+1.5.0
+-----
+
+* Updated from global requirements
+
+1.4.0
+-----
+
+* Update translation setup
+* Updated from global requirements
+* Updated from global requirements
+* Updated from global requirements
+* Updated from global requirements
+* Revert "Pass environment variables of proxy to tox"
+* Run docs testenv by default with tox
+* Add oslopolicy-checker command-line tool
+
+1.3.0
+-----
+
+* Updated from global requirements
+* Don't crash on RoleCheck when roles not present
+* assertIsNone(val) instead of assertEqual(None,val)
+
+1.2.0
+-----
+
+* Updated from global requirements
+* Add string format rendering to RoleCheck.\_\_call\_\_()
+* Pass environment variables of proxy to tox
+* Fixes combined "and" and "or" rule handling
+* Make sure item of policy\_dirs is directory
+* Updated from global requirements
+* Use dict comprehension
+* Don't generate doc from test
+
+1.1.0
+-----
+
+* Trival: Remove 'MANIFEST.in'
+* Updated from global requirements
+* Updated from global requirements
+* Updated from global requirements
+* Use requests-mock instead of httpretty in tests
+* Clarify usage docs
+* Correct invalid doc references
+
+1.0.0
+-----
+
+* Updated from global requirements
+* Remove Python 2.6 classifier
+* Remove python 2.6 and cleanup tox.ini
+
+0.13.0
+------
+
+* Updated from global requirements
+* Updated from global requirements
+* Updated from global requirements
+* Use JSON generator
+* Add test for enforce with rule doesn't exist
+* Add test for raising default exception
+* Add test for invalid JSON
+* Add cover test requirement
+* Fix a typo in policy.py
+
+0.12.0
+------
+
+* Updated from global requirements
+* Custom fixture to avoid external call in HttpCheck
+* Fix coverage configuration and execution
+* add auto-generated docs for config options
+* Add shields.io version/downloads links/badges into README.rst
+* Updated from global requirements
+* Use requests in http check instead of urllib
+* Change ignore-errors to ignore\_errors
+* Updated from global requirements
+* remove deprecation text for policy\_dirs option
+
+0.11.0
+------
+
+* Updated from global requirements
+
+0.10.0
+------
+
+* Pass reference then actual to assertEqual
+* Overwrite option should not cause policy file reloading
+* Updated from global requirements
+* Setup translations
+* Have the enforcer have its own file cache
+* Updated from global requirements
+
+0.9.0
+-----
+
+* Updated from global requirements
+
+0.8.0
+-----
+
+* Updated from global requirements
+* Fix typo of 'available' in token\_fixture.py
+* Fixes up the API docs and module index
+
+0.7.0
+-----
+
+* Remove oslo-incubator specific code
+* Move fileutils functions to oslo.policy
+* Add six and oslo.utils to requirements
+* Add tox target to find missing requirements
+* Updated from global requirements
+* Updated from global requirements
+
+0.6.0
+-----
+
+* Fix Enforcer docstring
+
+0.5.0
+-----
+
+* Expose base check classes as part of public API
+* Cleanup logging to conform to guidelines
+* Cleanup logging to conform to guidelines
+* Remove support for Python 3.3
+* Updated from global requirements
+
+0.4.0
+-----
+
+* Uncap library requirements for liberty
+* Fix invalid indentation in \_load\_policy\_file method
+* Cleanup README.rst and setup.cfg
+* Avoid reloading policy files in policy.d for every call
+* Lists for Generic Checks
+* Updated from global requirements
+
+0.3.1
+-----
+
+* Switch to non-namespaced module imports
+
+0.3.0
+-----
+
+* deprecate policy\_dirs option
+* Updated from global requirements
+* Expose register and Check as part of public API
+* provide more descriptive exception
+
+0.2.0
+-----
+
+* Add missing space to help message
+* Add Rules.from\_dict classmethod
+* Use assertTrue or assertFalse where appropriate
+* Fix the order of args to assertEqual in tests
+
+0.1.0
+-----
+
+* Clean up configuration option management
+* Update comments about tox configuration
+* Fix i18n imports
+* Change default set of tox environments
+* Create the temporary files needed for tests
+* Fix minor spelling issues in oslo.policy
+* Use single quotes consistently
+* Do not log on missing or empty policy\_dirs
+* Remove symlinked file from tests
+* document the migration process and update the docs a bit
+* Use standard logging in oslo.policy
+* Updated from global requirements
+* Remove globals that were introduced for compatibility
+* Upgrade hacking to >=0.10.0
+* Remove oslo.concurrency from requirements
+* Stop shouting test attribute names
+* Do not use global enforcer for tests
+* Make use of private modules
+* Privatize parsing classes
+* Add entry points for option discovery
+* Add pep8 import exception for oslo\_policy.\_i18n
+* Use oslo\_i18n
+* Perform an oslo-sync
+* General docstring cleanup
+* Drop use of oslo namespace for oslo libraries
+* Update .gitignore
+* Drop usage of namespaced packages
+* Remove use of graduated modules
+* Add docstrings for check classes
+* Correct docstring references
+* Improve policy documentation
+* Explicit configuration object
+* Fix project metadata
+* Add API documentation
+* Move project imports after 3rd party imports
+* Fix tests
+* Add openstack.common and requirements fixes
+* exported from oslo-incubator by graduate.sh
+* Improving docstrings for policy API
+* Don't log missing policy.d as a warning
+* Add rule overwrite flag to Enforcer class
+* Fixed a problem with neutron http policy check
+* Expanding the help text for policy\_dirs
+* policy: add a missing staticmethod declaration
+* Fixes nits in module policy
+* add list\_opts to all modules with configuration options
+* Correct default rule name for policy.Enforcer
+* Minor fixes in policy module
+* Delete graduated serialization files
+* Remove code that moved to oslo.i18n
+* Allow dictionary lookup in credentials with dot notation
+* Remove graduated test and fixtures libraries
+* Fix typo to show correct log message
+* Use MultiStrOpt for policy\_dirs
+* Add support for policy configration directories
+* Fix deletion of cached file for policy enforcer
+* Make policy debug logging less verbose
+* Improve help strings
+* Use oslotest instead of common test module
+* policy: rename Exception to avoid nose regression
+* Adds a flag to determine whether to reload the rules in policy
+* Documenting policy.json syntax
+* Update oslo log messages with translation domains
+* Fix policy tests for parallel testing
+* Allow policy.json resource vs constant check
+* Replaces use of urlutils with six in policy module
+* Utilizes assertIsNone and assertIsNotNone
+* Use hacking import\_exceptions for gettextutils.\_
+* Use urlutils functions instead of urllib/urllib2
+* Remove vim header
+* Use six.string\_type instead of basestring
+* Apply six for metaclass
+* ConfigFileNotFoundError with proper argument
+* Keystone user can't perform revoke\_token
+* Remove useless unit test codes in test\_policy
+* Replace using tests.utils part2
+* Bump hacking to 0.7.0
+* Fix wrong argument in openstack common policy
+* Fix missing argument bug in oslo common policy
+* Fix policy default\_rule issue
+* Allow use of hacking 0.6.0 and enable new checks
+* Fix missing argument bug in oslo common policy
+* Enable H302 hacking check
+* Enable hacking H404 test
+* Enable H306 hacking check
+* python3: python3 binary/text data compatbility
+* Reduce duplicated code related to policies
+* Removes len() on empty sequence evaluation
+* Convert unicode for python3 portability
+* Replaces standard logging with common logging
+* Update to use flake8
+* Removes unused imports in the tests module
+* update OpenStack, LLC to OpenStack Foundation
+* Replace direct use of testtools BaseTestCase
+* Use testtools as test base class
+* Fix pep8 E125 errors
+* Revert "Add support for finer-grained policy decisions"
+* Remove an unneeded 'global'
+* Add support for finer-grained policy decisions
+* Add a 'not' operator to the policy langage
+* Add a new policy language
+* Remove deprecated policy engine APIs
+* Rewrite the policy engine from scratch
+* Use pep8 v1.3.3
+* Allow non-string items in the creds dict
+* Use function registration for policy checks
+* Fix missing gettextutils in several modules
+* Switch common files to using jsonutils
+* Update common code to support pep 1.3. bug 1014216
+* Common-ize policies
+* initial commit
+* Initial skeleton project

@@ -1,0 +1,9 @@
+---
+fixes:
+  - |
+    Fixes bug in which the ``switch_id`` field in a port's ``local_link_connection`` can be set to
+    a non-MAC address if the processed LLDP has a value other than a
+    MAC address for ``ChassisID``. The bare metal API requires the ``switch_id``
+    field to be a MAC address, and will return an error otherwise.
+    See `bug 1748022 <https://bugs.launchpad.net/ironic-inspector/+bug/1748022>`_
+    for details.

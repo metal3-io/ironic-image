@@ -1,0 +1,535 @@
+- job:
+    name: ironic-base
+    description: Base job for devstack/tempest based ironic jobs.
+    parent: devstack-tempest
+    nodeset: openstack-single-node-bionic
+    timeout: 10800
+    required-projects:
+      - openstack/ironic
+      - openstack/ironic-python-agent
+      - openstack/ironic-python-agent-builder
+      - openstack/ironic-tempest-plugin
+      - openstack/virtualbmc
+    irrelevant-files:
+      - ^.*\.rst$
+      - ^api-ref/.*$
+      - ^doc/.*$
+      - ^driver-requirements.txt$
+      - ^install-guide/.*$
+      - ^ironic/locale/.*$
+      - ^ironic/tests/.*$
+      - ^releasenotes/.*$
+      - ^setup.cfg$
+      - ^tools/.*$
+      - ^tox.ini$
+    vars:
+      tox_envlist: all
+      tempest_test_regex: ironic_tempest_plugin.tests.scenario
+      tempest_concurrency: 1
+      devstack_localrc:
+        DEFAULT_INSTANCE_TYPE: baremetal
+        FORCE_CONFIG_DRIVE: True
+        INSTALL_TEMPEST: False # Don't install a tempest package globaly
+        OVERRIDE_PUBLIC_BRIDGE_MTU: 1400
+        TEMPEST_PLUGINS: "{{ ansible_user_dir }}/src/opendev.org/openstack/ironic-tempest-plugin"
+        VIRT_DRIVER: ironic
+        BUILD_TIMEOUT: 720
+        IRONIC_BAREMETAL_BASIC_OPS: True
+        IRONIC_BUILD_DEPLOY_RAMDISK: False
+        IRONIC_CALLBACK_TIMEOUT: 600
+        IRONIC_DEPLOY_DRIVER: ipmi
+        IRONIC_INSPECTOR_BUILD_RAMDISK: False
+        IRONIC_RAMDISK_TYPE: tinyipa
+        IRONIC_TEMPEST_BUILD_TIMEOUT: 720
+        IRONIC_TEMPEST_WHOLE_DISK_IMAGE: False
+        IRONIC_VM_COUNT: 1
+        IRONIC_VM_EPHEMERAL_DISK: 1
+        IRONIC_VM_LOG_DIR: '{{ devstack_base_dir }}/ironic-bm-logs'
+        IRONIC_VM_SPECS_RAM: 384
+        IRONIC_DEFAULT_DEPLOY_INTERFACE: iscsi
+        IRONIC_DEFAULT_RESCUE_INTERFACE: agent
+
+        Q_AGENT: openvswitch
+        Q_ML2_TENANT_NETWORK_TYPE: vxlan
+      devstack_plugins:
+        ironic: https://opendev.org/openstack/ironic
+      zuul_copy_output:
+        '{{ devstack_base_dir }}/ironic-bm-logs': 'logs'
+      devstack_services:
+        q-agt: false
+        q-dhcp: false
+        q-l3: false
+        q-meta: false
+        q-metering: false
+        q-svc: false
+        neutron-api: true
+        neutron-agent: true
+        neutron-dhcp: true
+        neutron-l3: true
+        neutron-metadata-agent: true
+        neutron-metering: true
+
+        c-api: False
+        c-bak: False
+        c-sch: False
+        c-vol: False
+        cinder: False
+
+        s-account: False
+        s-container: False
+        s-object: False
+        s-proxy: False
+
+- job:
+    name: ironic-standalone
+    description: Test ironic standalone
+    parent: ironic-base
+    irrelevant-files:
+      - ^.*\.rst$
+      - ^api-ref/.*$
+      - ^doc/.*$
+      - ^install-guide/.*$
+      - ^ironic/locale/.*$
+      - ^ironic/tests/.*$
+      - ^releasenotes/.*$
+      - ^setup.cfg$
+      - ^test-requirements.txt$
+      - ^tools/.*$
+      - ^tox.ini$
+    vars:
+      tempest_test_regex: ironic_standalone
+      tempest_concurrency: 4
+      devstack_localrc:
+        FORCE_CONFIG_DRIVE: False
+
+        IRONIC_AUTOMATED_CLEAN_ENABLED: False
+        IRONIC_DEFAULT_DEPLOY_INTERFACE: direct
+        IRONIC_ENABLED_DEPLOY_INTERFACES: "iscsi,direct,ansible"
+        IRONIC_RPC_TRANSPORT: json-rpc
+        IRONIC_VM_COUNT: 6
+        SWIFT_ENABLE_TEMPURLS: True
+        SWIFT_TEMPURL_KEY: secretkey
+      devstack_services:
+        n-api: False
+        n-api-meta: False
+        n-cauth: False
+        n-cond: False
+        n-cpu: False
+        n-novnc: False
+        n-obj: False
+        n-sch: False
+        nova: False
+        placement-api: False
+        s-account: True
+        s-container: True
+        s-object: True
+        s-proxy: True
+
+- job:
+    name: ironic-tempest-ipa-partition-redfish-tinyipa
+    description: ironic-tempest-ipa-partition-redfish-tinyipa
+    parent: ironic-base
+    timeout: 5400
+    vars:
+      devstack_localrc:
+        IRONIC_DEPLOY_DRIVER: redfish
+        IRONIC_ENABLED_HARDWARE_TYPES: redfish
+
+- job:
+    name: ironic-tempest-pxe_ipmitool-postgres
+    description: ironic-tempest-pxe_ipmitool-postgres
+    parent: ironic-base
+    vars:
+      devstack_localrc:
+        IRONIC_IPXE_ENABLED: False
+      devstack_services:
+        mysql: False
+        postgresql: True
+
+- job:
+    name: ironic-tempest-ipa-wholedisk-bios-agent_ipmitool-tinyipa
+    description: ironic-tempest-ipa-wholedisk-bios-agent_ipmitool-tinyipa
+    parent: ironic-base
+    timeout: 5400
+    vars:
+      devstack_localrc:
+        IRONIC_DEFAULT_DEPLOY_INTERFACE: direct
+        IRONIC_TEMPEST_WHOLE_DISK_IMAGE: True
+        IRONIC_VM_EPHEMERAL_DISK: 0
+        SWIFT_ENABLE_TEMPURLS: True
+        SWIFT_TEMPURL_KEY: secretkey
+      devstack_services:
+        s-account: True
+        s-container: True
+        s-object: True
+        s-proxy: True
+
+- job:
+    name: ironic-tempest-ipa-wholedisk-bios-pxe_snmp-tinyipa
+    description: ironic-tempest-ipa-wholedisk-bios-pxe_snmp-tinyipa
+    parent: ironic-base
+    timeout: 5400
+    vars:
+      devstack_localrc:
+        IRONIC_ENABLED_HARDWARE_TYPES: snmp
+        IRONIC_DEPLOY_DRIVER: snmp
+        IRONIC_TEMPEST_WHOLE_DISK_IMAGE: True
+        IRONIC_VM_EPHEMERAL_DISK: 0
+        IRONIC_AUTOMATED_CLEAN_ENABLED: False
+
+- job:
+    name: ironic-tempest-ipa-partition-uefi-pxe_ipmitool-tinyipa
+    description: ironic-tempest-ipa-partition-uefi-pxe_ipmitool-tinyipa
+    parent: ironic-base
+    timeout: 5400
+    vars:
+      devstack_localrc:
+        IRONIC_BOOT_MODE: uefi
+        IRONIC_VM_SPECS_RAM: 512
+        IRONIC_AUTOMATED_CLEAN_ENABLED: False
+
+- job:
+    name: ironic-tempest-ipa-partition-pxe_ipmitool-tinyipa-python3
+    description: ironic-tempest-ipa-partition-pxe_ipmitool-tinyipa-python3
+    parent: ironic-base
+    timeout: 5400
+    vars:
+      devstack_localrc:
+        USE_PYTHON3: True
+
+- job:
+    name: ironic-tempest-bfv
+    description: ironic-tempest-bfv
+    parent: ironic-base
+    timeout: 9600
+    vars:
+      tempest_test_regex: baremetal_boot_from_volume
+      devstack_localrc:
+        IRONIC_ENABLED_STORAGE_INTERFACES: cinder,noop
+        IRONIC_STORAGE_INTERFACE: cinder
+        IRONIC_ENABLED_BOOT_INTERFACES: ipxe,pxe,fake
+        IRONIC_DEFAULT_BOOT_INTERFACE: ipxe
+        IRONIC_DEFAULT_DEPLOY_INTERFACE: direct
+        IRONIC_TEMPEST_WHOLE_DISK_IMAGE: True
+        IRONIC_VM_EPHEMERAL_DISK: 0
+        IRONIC_VM_COUNT: 3
+        IRONIC_AUTOMATED_CLEAN_ENABLED: False
+        SWIFT_ENABLE_TEMPURLS: True
+        SWIFT_TEMPURL_KEY: secretkey
+      devstack_services:
+        c-api: True
+        c-bak: True
+        c-sch: True
+        c-vol: True
+        cinder: True
+
+- job:
+    name: ironic-inspector-tempest
+    description: ironic-inspector-tempest
+    parent: ironic-base
+    required-projects:
+      - openstack/ironic-inspector
+    vars:
+      tempest_test_regex: InspectorBasicTest
+      devstack_localrc:
+        IRONIC_DEFAULT_DEPLOY_INTERFACE: direct
+        IRONIC_INSPECTOR_MANAGE_FIREWALL: True
+        IRONIC_TEMPEST_WHOLE_DISK_IMAGE: True
+        IRONIC_VM_EPHEMERAL_DISK: 0
+        IRONIC_AUTOMATED_CLEAN_ENABLED: False
+        SWIFT_ENABLE_TEMPURLS: True
+        SWIFT_TEMPURL_KEY: secretkey
+      devstack_plugins:
+        ironic-inspector: https://opendev.org/openstack/ironic-inspector
+      devstack_services:
+        s-account: True
+        s-container: True
+        s-object: True
+        s-proxy: True
+
+- job:
+    name: ironic-tempest-ipa-wholedisk-bios-agent_ipmitool-tinyipa-indirect
+    description: ironic-tempest-ipa-wholedisk-bios-agent_ipmitool-tinyipa-indirect
+    parent: ironic-tempest-ipa-wholedisk-bios-agent_ipmitool-tinyipa
+    timeout: 5400
+    vars:
+      devstack_localrc:
+        IRONIC_AGENT_IMAGE_DOWNLOAD_SOURCE: http
+        IRONIC_AUTOMATED_CLEAN_ENABLED: False
+
+- job:
+    name: ironic-tempest-ipa-partition-bios-agent_ipmitool-tinyipa-indirect
+    description: ironic-tempest-ipa-partition-bios-agent_ipmitool-tinyipa-indirect
+    parent: ironic-tempest-ipa-wholedisk-bios-agent_ipmitool-tinyipa
+    timeout: 5400
+    vars:
+      devstack_localrc:
+        IRONIC_AGENT_IMAGE_DOWNLOAD_SOURCE: http
+        IRONIC_TEMPEST_WHOLE_DISK_IMAGE: False
+        IRONIC_AUTOMATED_CLEAN_ENABLED: False
+
+- job:
+    name: ironic-tempest-functional-python2
+    description: ironic-tempest-functional-python2
+    parent: ironic-base
+    timeout: 5400
+    pre-run: playbooks/ci-workarounds/etc-neutron.yaml
+    vars:
+      tempest_test_regex: ironic_tempest_plugin.tests.api
+      devstack_localrc:
+        IRONIC_BAREMETAL_BASIC_OPS: False
+        IRONIC_DEFAULT_DEPLOY_INTERFACE: ""
+        IRONIC_DEFAULT_NETWORK_INTERFACE: noop
+        IRONIC_TEMPEST_WHOLE_DISK_IMAGE: True
+        IRONIC_VM_EPHEMERAL_DISK: 0
+        IRONIC_RPC_TRANSPORT: json-rpc
+      devstack_services:
+        rabbit: False
+        g-api: False
+        g-reg: False
+        n-api: False
+        n-api-meta: False
+        n-cauth: False
+        n-cond: False
+        n-cpu: False
+        n-novnc: False
+        n-obj: False
+        n-sch: False
+        nova: False
+        placement-api: False
+        q-agt: False
+        q-dhcp: False
+        q-l3: False
+        q-meta: False
+        q-metering: False
+        q-svc: False
+        neutron-api: False
+        neutron-agent: False
+        neutron-dhcp: False
+        neutron-l3: False
+        neutron-metadata-agent: False
+        neutron-metering: False
+
+- job:
+    name: ironic-tempest-functional-python3
+    description: ironic-tempest-functional-python3
+    parent: ironic-tempest-functional-python2
+    vars:
+      devstack_localrc:
+        IRONIC_TEMPEST_WHOLE_DISK_IMAGE: False
+        IRONIC_VM_EPHEMERAL_DISK: 1
+        USE_PYTHON3: True
+
+- job:
+    name: ironic-tempest-ipa-wholedisk-direct-tinyipa-multinode
+    description: ironic-tempest-ipa-wholedisk-direct-tinyipa-multinode
+    parent: tempest-multinode-full
+    pre-run: playbooks/ci-workarounds/pre.yaml
+    timeout: 10800
+    required-projects:
+      - openstack/ironic
+      - openstack/ironic-python-agent
+      - openstack/ironic-tempest-plugin
+      - openstack/virtualbmc
+      - openstack/networking-generic-switch
+    irrelevant-files:
+      - ^.*\.rst$
+      - ^api-ref/.*$
+      - ^doc/.*$
+      - ^driver-requirements.txt$
+      - ^install-guide/.*$
+      - ^ironic/locale/.*$
+      - ^ironic/tests/.*$
+      - ^releasenotes/.*$
+      - ^setup.cfg$
+      - ^tools/.*$
+      - ^tox.ini$
+    roles:
+      - zuul: opendev.org/zuul/zuul-jobs
+    vars:
+      tox_envlist: all
+      tempest_concurrency: 4
+      tempest_test_regex: "(ironic_tempest_plugin.tests.scenario|test_schedule_to_all_nodes)"
+      devstack_localrc:
+        BUILD_TIMEOUT: 1200
+        DEFAULT_INSTANCE_TYPE: baremetal
+        ENABLE_TENANT_TUNNELS: False
+        ENABLE_TENANT_VLANS: True
+        FORCE_CONFIG_DRIVE: True
+        GENERIC_SWITCH_KEY_FILE: /opt/stack/.ssh/id_rsa
+        HOST_TOPOLOGY: multinode
+        HOST_TOPOLOGY_ROLE: primary
+        INSTALL_TEMPEST: False # Don't install a tempest package globaly
+        IRONIC_AUTOMATED_CLEAN_ENABLED: False
+        HOST_TOPOLOGY_SUBNODES: "{{ hostvars['compute1']['nodepool']['public_ipv4'] }}"
+        IRONIC_BAREMETAL_BASIC_OPS: True
+        IRONIC_BUILD_DEPLOY_RAMDISK: False
+        IRONIC_CALLBACK_TIMEOUT: 600
+        IRONIC_DEFAULT_DEPLOY_INTERFACE: direct
+        IRONIC_DEFAULT_BOOT_OPTION: local
+        IRONIC_DEPLOY_DRIVER: ipmi
+        IRONIC_ENABLED_NETWORK_INTERFACES: flat,neutron
+        IRONIC_INSPECTOR_BUILD_RAMDISK: False
+        IRONIC_NETWORK_INTERFACE: neutron
+        IRONIC_PROVISION_NETWORK_NAME: ironic-provision
+        IRONIC_PROVISION_SUBNET_GATEWAY: 10.0.5.1
+        IRONIC_PROVISION_SUBNET_PREFIX: 10.0.5.0/24
+        IRONIC_RAMDISK_TYPE: tinyipa
+        IRONIC_TEMPEST_BUILD_TIMEOUT: 600
+        IRONIC_TEMPEST_WHOLE_DISK_IMAGE: True
+        IRONIC_USE_LINK_LOCAL: True
+        IRONIC_VM_COUNT: 7
+        IRONIC_VM_EPHEMERAL_DISK: 0
+        IRONIC_VM_LOG_DIR: '{{ devstack_base_dir }}/ironic-bm-logs'
+        IRONIC_VM_SPECS_RAM: 384
+        OS_TEST_TIMEOUT: 2400
+        OVERRIDE_PUBLIC_BRIDGE_MTU: 1400
+        OVS_BRIDGE_MAPPINGS: 'mynetwork:brbm,public:br-infra'
+        OVS_PHYSICAL_BRIDGE: brbm
+        PHYSICAL_NETWORK: mynetwork
+        PUBLIC_BRIDGE: br-infra
+        Q_AGENT: openvswitch
+        Q_ML2_TENANT_NETWORK_TYPE: vlan
+        Q_PLUGIN: ml2
+        SWIFT_ENABLE_TEMPURLS: True
+        SWIFT_TEMPURL_KEY: secretkey
+        TEMPEST_PLUGINS: "{{ ansible_user_dir }}/src/opendev.org/openstack/ironic-tempest-plugin"
+        TENANT_VLAN_RANGE: 100:150
+        VIRT_DRIVER: ironic
+      devstack_plugins:
+        ironic: https://opendev.org/openstack/ironic
+        networking-generic-switch: https://opendev.org/openstack/networking-generic-switch
+      zuul_copy_output:
+        '{{ devstack_base_dir }}/ironic-bm-logs': 'logs'
+      devstack_services:
+        c-api: False
+        c-bak: False
+        c-sch: False
+        c-vol: False
+        cinder: False
+
+        s-account: True
+        s-container: True
+        s-object: True
+        s-proxy: True
+
+        dstat: True
+        g-api: True
+        g-reg: True
+        key: True
+        mysql: True
+        n-api: True
+        n-api-meta: True
+        n-cauth: True
+        n-cond: True
+        n-cpu: True
+        n-novnc: True
+        n-obj: True
+        n-sch: True
+        placement-api: True
+        q-agt: True
+        q-dhcp: True
+        q-l3: True
+        q-meta: True
+        q-metering: True
+        q-svc: True
+        rabbit: True
+    group-vars:
+      subnode:
+        devstack_localrc:
+          ENABLE_TENANT_TUNNELS: False
+          ENABLE_TENANT_VLANS: True
+          HOST_TOPOLOGY: multinode
+          HOST_TOPOLOGY_ROLE: subnode
+          IRONIC_AUTOMATED_CLEAN_ENABLED: False
+          IRONIC_BAREMETAL_BASIC_OPS: True
+          IRONIC_DEPLOY_DRIVER: ipmi
+          IRONIC_DEFAULT_BOOT_OPTION: local
+          IRONIC_ENABLED_NETWORK_INTERFACES: flat,neutron
+          IRONIC_NETWORK_INTERFACE: neutron
+          IRONIC_PROVISION_NETWORK_NAME: ironic-provision
+          IRONIC_RAMDISK_TYPE: tinyipa
+          IRONIC_USE_LINK_LOCAL: True
+          IRONIC_VM_COUNT: 7
+          IRONIC_VM_EPHEMERAL_DISK: 0
+          IRONIC_VM_LOG_DIR: '{{ devstack_base_dir }}/ironic-bm-logs'
+          IRONIC_VM_NETWORK_BRIDGE: sub1brbm
+          IRONIC_VM_SPECS_RAM: 384
+          OVS_BRIDGE_MAPPINGS: 'mynetwork:sub1brbm,public:br-infra'
+          OVS_PHYSICAL_BRIDGE: sub1brbm
+          PHYSICAL_NETWORK: mynetwork
+          Q_ML2_TENANT_NETWORK_TYPE: vlan
+          VIRT_DRIVER: ironic
+          PUBLIC_BRIDGE: br-infra
+        devstack_services:
+          c-api: False
+          c-bak: False
+          c-sch: False
+          c-vol: False
+          cinder: False
+
+          q-agt: True
+          n-cpu: True
+
+- job:
+    name: ironic-tox-unit-with-driver-libs
+    parent: tox
+    description: |
+      Run unit tests with driver dependencies installed.
+    vars:
+      tox_envlist: unit-with-driver-libs
+
+- job:
+    name: ironic-tox-unit-with-driver-libs-python3
+    parent: tox
+    description: |
+      Run python 3 unit tests with driver dependencies installed.
+    vars:
+      tox_envlist: unit-with-driver-libs-python3
+
+- job:
+    name: ironic-inspector-tempest-discovery-fast-track
+    description: ironic-inspector-tempest-discovery-fast-track
+    parent: ironic-inspector-tempest-discovery
+    vars:
+      tempest_test_regex: BareMetalFastTrackTest
+      devstack_localrc:
+        IRONIC_INSPECTOR_POWER_OFF: False
+        IRONIC_DEPLOY_FAST_TRACK: True
+        IRONIC_DEPLOY_FAST_TRACK_CLEANING: True
+
+- job:
+    name: ironic-tempest-ipa-partition-uefi-pxe-grub2
+    description: Ironic tempest scenario test utilizing PXE, UEFI, and Grub2
+    parent: ironic-base
+    vars:
+      devstack_localrc:
+        USE_PYTHON3: True
+        IRONIC_ENABLED_HARDWARE_TYPES: ipmi
+        IRONIC_ENABLED_BOOT_INTERFACES: pxe
+        IRONIC_VM_SPECS_RAM: 512
+        IRONIC_IPXE_ENABLED: False
+        IRONIC_BOOT_MODE: uefi
+        IRONIC_AUTOMATED_CLEAN_ENABLED: False
+
+- job:
+    # Security testing for known issues
+    name: ironic-tox-bandit
+    parent: openstack-tox
+    timeout: 2400
+    vars:
+      tox_envlist: bandit
+    required-projects:
+      - openstack/ironic
+    irrelevant-files:
+      - ^.*\.rst$
+      - ^api-ref/.*$
+      - ^doc/.*$
+      - ^driver-requirements.txt$
+      - ^install-guide/.*$
+      - ^ironic/locale/.*$
+      - ^ironic/tests/.*$
+      - ^releasenotes/.*$
+      - ^setup.cfg$
+      - ^tools/(?!bandit\.yml).*$
+      - ^tox.ini$

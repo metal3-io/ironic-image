@@ -1,0 +1,4 @@
+---
+features:
+  - Introduced API "POST /v1/introspection/<UUID>/abort" for aborting
+    the introspection process.

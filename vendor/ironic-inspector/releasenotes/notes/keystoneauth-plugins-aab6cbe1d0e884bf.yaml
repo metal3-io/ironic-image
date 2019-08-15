@@ -1,0 +1,17 @@
+---
+features:
+  - Ironic-Inspector is now using keystoneauth and proper auth_plugins
+    instead of keystoneclient for communicating with Ironic and Swift.
+    It allows to finely tune authentification for each service independently.
+    For each service, the keystone session is created and reused, minimizing
+    the number of authentification requests to Keystone.
+upgrade:
+  - Operators are advised to specify a proper keystoneauth plugin
+    and its appropriate settings in [ironic] and [swift] config sections.
+    Backward compatibility with previous authentification options is included.
+    Using authentification informaiton for Ironic and Swift from
+    [keystone_authtoken] config section is no longer supported.
+deprecations:
+  - Most of current authentification options for either Ironic or Swift are
+    deprecated and will be removed in a future release. Please configure
+    the keystoneauth auth plugin authentification instead.

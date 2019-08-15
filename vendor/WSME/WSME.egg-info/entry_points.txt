@@ -1,0 +1,7 @@
+[wsme.protocols]
+extdirect = wsmeext.extdirect:ExtDirectProtocol
+rest = wsme.rest.protocol:RestProtocol
+restjson = wsme.rest.protocol:RestProtocol
+restxml = wsme.rest.protocol:RestProtocol
+soap = wsmeext.soap:SoapProtocol
+

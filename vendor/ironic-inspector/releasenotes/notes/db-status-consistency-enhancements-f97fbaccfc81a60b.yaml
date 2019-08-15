@@ -1,0 +1,12 @@
+---
+upgrade:
+  - |
+    A new state ``aborting`` was introduced to distinguish between the node
+    introspection abort precondition (being able to perform the state
+    transition from the ``waiting`` state) from the activities necessary to
+    abort an ongoing node introspection (power-off, set finished timestamp
+    etc.)
+fixes:
+  - |
+    The ``node_info.finished(<transition>, error=<error>)`` now updates node
+    state together with other status attributes in a single DB transaction.

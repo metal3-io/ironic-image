@@ -1,0 +1,5 @@
+---
+fixes:
+  - |
+    Loopback BMC addresses (useful e.g. with virtualbmc) are no longer used
+    for lookup.

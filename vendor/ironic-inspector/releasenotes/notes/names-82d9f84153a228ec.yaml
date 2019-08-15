@@ -1,0 +1,5 @@
+---
+features:
+  - Add support for using Ironic node names in API instead of UUIDs.
+    Note that using node names in the introspection status API will require
+    a call to Ironic to be made by the service.

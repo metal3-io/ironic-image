@@ -1,0 +1,1127 @@
+CHANGES
+=======
+
+5.0.1
+-----
+
+* Rollback existing nested transacvtion before restarting
+* Dropping the py35 testing
+
+5.0.0
+-----
+
+* docs: Use sphinxcontrib.apidoc for building API docs
+* Cap Bandit below 1.6.0 and update Sphinx requirement
+* Replace git.openstack.org URLs with opendev.org URLs
+
+4.46.0
+------
+
+* OpenDev Migration Patch
+* Fix deprecation warnings under py36
+* Support context function argument as keyword
+* Removing deprecated min\_pool\_size
+* Bump psycopg lower-constraint to 2.7
+* Update master for stable/stein
+
+4.44.0
+------
+
+* exc\_filters: fix deadlock detection for MariaDB/Galera cluster
+* Resolve SAWarning in Query.soft\_delete()
+* Update hacking version
+
+4.43.0
+------
+
+* Remove convert\_unicode flag
+* Use template for lower-constraints
+* Update mailinglist from dev to discuss
+
+4.42.0
+------
+
+* Add "is\_started" flag to enginefacade
+* Move warnings to their own module
+* Clean up .gitignore references to personal tools
+* Always build universal wheels
+* Don't quote {posargs} in tox.ini
+
+4.41.1
+------
+
+* Fix FOREIGN KEY messages for MariaDB 10.2, 10.3
+* Imported Translations from Zanata
+* add lib-forward-testing-python3 test job
+* add python 3.6 unit test job
+* import zuul job settings from project-config
+* Update reno for stable/rocky
+* Switch to stestr
+
+4.40.0
+------
+
+* Rename enginefacade.async to enginefacade.async\_
+* Add release notes to README.rst
+
+4.39.0
+------
+
+* Remove most server\_default comparison logic
+* remove sqla\_09 test environment
+* fix tox python3 overrides
+
+4.38.0
+------
+
+* Remove stale pip-missing-reqs tox test
+* Deprecate min\_pool\_size
+* List PyMySQL first in installation docs
+
+4.37.0
+------
+
+* Trivial: Update pypi url to new url
+
+4.36.0
+------
+
+* set default python to python3
+* Improve exponential backoff for wrap\_db\_retry
+* uncap eventlet
+* add lower-constraints job
+
+4.35.0
+------
+
+* Add testresources / testscenarios to requirements.txt
+* Updated from global requirements
+
+4.34.0
+------
+
+* Ignore 'use\_tpool' option
+* Remove tox\_install.sh and align constraints consumption
+* Update links in README
+* Ensure all test fixtures in oslo\_db.tests are private
+* Imported Translations from Zanata
+* Conditionally adjust for quoting in comparing MySQL defaults
+* Imported Translations from Zanata
+* Allow connection query string to be passed separately
+* Reverse role of synchronous\_reader
+* Imported Translations from Zanata
+* Update reno for stable/queens
+* Updated from global requirements
+* Fix a typo of "transaction" in comment
+* Updated from global requirements
+* Updated from global requirements
+* Updated from global requirements
+
+4.33.0
+------
+
+* Updated from global requirements
+* add bandit to pep8 job
+* Drop tox-mysql-python job
+* Use the new PTI for document build
+* Updated from global requirements
+
+4.32.0
+------
+
+* Imported Translations from Zanata
+* Updated from global requirements
+* Add requirements.txt for docs builds
+
+4.31.0
+------
+
+* Updated from global requirements
+* Handle deprecation of inspect.getargspec
+
+4.30.0
+------
+
+* Remove setting of version/release from releasenotes
+* Updated from global requirements
+* Updated from global requirements
+* Updated from global requirements
+* Use assertRegex instead of assertRegexpMatches
+* Zuul: add file extension to playbook path
+* Remove kwarg retry\_on\_request in wrap\_db\_retry
+* Migrate to zuulv3 - move legacy jobs to project
+
+4.29.0
+------
+
+* Use skipTest() method instead of deprecated skip()
+* Drop MySQL-python dependency from oslo.db
+* Updated from global requirements
+* Remove method get\_connect\_string and is\_backend\_avail
+* Test illegal "boolean" values without Boolean datatype
+* Imported Translations from Zanata
+
+4.28.0
+------
+
+* Add new foreign key utility function to utils
+* Updated from global requirements
+
+4.27.0
+------
+
+* Fix pagination when marker value is None
+* Updated from global requirements
+* Remove property message for DBInvalidUnicodeParameter and InvalidSortKey
+* Throw DBMigrationError instead of DbMigrationError
+* Remove function optimize\_db\_test\_loader in test\_base.py
+* Remove provisioned\_engine in class BackendImpl
+* Remove AutoString\* in ndb.py
+* Remove class InsertFromSelect
+* Remove class TransactionResource
+* Remove method provisioned\_engine in class Backend
+* Update the documentation link
+
+4.26.0
+------
+
+* Updated from global requirements
+* Rename idle\_timeout to connection\_recycle\_time
+* Workaround non-compatible type.adapt() for SQLAlchemy < 1.1
+* Let others listen to SQLAlchemy errors
+* Update reno for stable/pike
+* Replace ndb "auto" types with unified String
+* Updated from global requirements
+* Remove deprecation warning when loading tests/sqlalchemy
+* Replace six.iteritems() with .items()
+
+4.25.0
+------
+
+* Log an exception when reconnect-to-disconnected occurs
+* Don't access connection.info if connection is invalidated
+* Update URLs according to document migration
+
+4.24.1
+------
+
+* update the docs url in the readme
+* turn on warning-is-error in doc build
+* switch from oslosphinx to openstackdocstheme
+
+4.24.0
+------
+
+* rearrange content to fit the new standard layout
+* Updated from global requirements
+* Fix compatibility with SQLAlchemy < 1.1.0
+* Enable MySQL Storage Engine selection
+* Updated from global requirements
+* Updated from global requirements
+* Using assertIsNone(xxx) instead of assertEqual(None, xxx)
+
+4.23.0
+------
+
+* Updated from global requirements
+* Updated from global requirements
+
+4.22.0
+------
+
+* Updated from global requirements
+* add release note for new warning about missing driver
+* Raise only DbMigrationError from migrate 'upgrade' method
+* Warn on URL without a drivername
+* Updated from global requirements
+
+4.21.1
+------
+
+* Updated from global requirements
+* Add 'save\_and\_reraise\_exception' method when call 'session.rollback()'
+* Move oslo.context to test-requirements
+* Attach context being used to session/connection info
+* Updated from global requirements
+
+4.21.0
+------
+
+* Updated from global requirements
+* Updated from global requirements
+
+4.20.0
+------
+
+* Remove log translations
+
+4.19.0
+------
+
+* Updated from global requirements
+* Remove deprecated config option sqlite\_db
+* Imported Translations from Zanata
+* Updated from global requirements
+
+4.18.0
+------
+
+* Updated from global requirements
+* Update test requirement
+* Establish flush() for "sub" facade contexts
+* Remove unused logging import
+* Support facade arguments, unstarted facade for patch\_engine()
+* Repair unused rollback\_reader\_sessions parameter
+* Updated from global requirements
+* Prepare for using standard python tests
+* Explain paginate\_query doesn't provide parameter offset
+* Updated from global requirements
+* Update reno for stable/ocata
+* Coerce booleans to integer values in paginate\_query
+* Remove references to Python 3.4
+
+4.17.0
+------
+
+* Modify word "whetever" to "whether"
+* Updated from global requirements
+* Add Constraints support
+* Support packet sequence wrong error
+* docs: mention that it's possible to use Connection directly
+* exc\_filters: fix deadlock detection for percona xtradb cluster
+* Replaces uuid.uuid4 with uuidutils.generate\_uuid()
+* Fix marker checking when value is None
+* Strip prefix \`migrate\_\` in parameter \`migrate\_engine\`
+
+4.16.0
+------
+
+* migration: don't assume the mixin use provision
+* Check if an index on given columns exists
+
+4.15.0
+------
+
+* Ensure provision\_new\_database is True by default
+* Don't run LegacyBaseClass provision test for unavailable database
+* SoftDeleteMixin: allow for None values
+* SoftDeleteMixin: coerce deleted param to be an integer
+* Show team and repo badges on README
+* Support MariaDB error 1927
+* Break optimize\_db\_test\_loader into package and module level
+* Adjust SAVEPOINT cause test for SQLA 1.1
+* Updated from global requirements
+* Restore provisioning of DBs in legacy test base
+* Updated from global requirements
+* Updated from global requirements
+* Enhanced fixtures for enginefacade-based provisioning
+* utils: deprecate InsertFromSelect properly
+* Using new style assertions instead of  old style assertions
+* Updated from global requirements
+* Fix exc\_filters for mysql-python
+* Updated from global requirements
+* Change assertTrue(isinstance()) by optimal assert
+* OpenStack typo
+* Changed the home-page link
+
+4.14.0
+------
+
+* standardize release note page ordering
+* Add a specific exception for 'unknown database' errors
+* Enable release notes translation
+* Updated from global requirements
+* Add DBDataError for "Data too long"
+* Updated from global requirements
+* Updated from global requirements
+* Add additional caution looking for table, info
+* utils: fix get\_unique\_keys() when model has no table attached to it
+* Update reno for stable/newton
+* Updated from global requirements
+* Correctly detect incomplete sort\_keys passed to paginate\_query
+* Fix DBReferenceError and DBNonExistentTable with new PyMySQL version
+
+4.13.0
+------
+
+* Updated from global requirements
+
+4.12.0
+------
+
+* Updated from global requirements
+* Link enginefacade to test database provisioning
+* Display full reason for backend not available
+* Updated from global requirements
+* Deprecate argument sqlite\_db in method set\_defaults
+
+4.11.0
+------
+
+* Updated from global requirements
+* Add test helpers to enginefacade
+* Add logging\_name to enginefacade config
+
+4.10.0
+------
+
+* Capture DatabaseError for deadlock check
+* Add a hook to process newly created engines
+
+4.9.0
+-----
+
+* Updated from global requirements
+* Memoize sys.exc\_info() before attempting a savepoint rollback
+* Updated from global requirements
+* Fix parameters of assertEqual are misplaced
+* Consolidate pifpaf commands into variables
+* Updated from global requirements
+* Updated from global requirements
+* Fixed unit tests running on Windows
+* Remove discover from setup.cfg
+* Add dispose\_pool() method to enginefacade context, factory
+
+4.8.0
+-----
+
+* Updated from global requirements
+* Set a min and max on the connection\_debug option
+* Set max pool size default to 5
+* Add support for LONGTEXT, MEDIUMTEXT to JsonEncodedType
+* tox: add py35 envs for convenience
+* Deprecate config option sqlite\_db for removal
+* Catch empty value DBDuplicate errors
+* release notes: mention changes in wrap\_db\_retry()
+* Updated from global requirements
+* api: use sane default in wrap\_db\_retry()
+* Imported Translations from Zanata
+* exc\_filters: catch and translate non existent table on drop
+* exception: make message mandatory in DbMigrationError and deprecates it
+* Make it possible to use enginefacade decorators with class methods
+* Updated from global requirements
+* tests: fix order of assertEqual in exc\_filter
+* exc\_filters: catch and translate non existent constraint on drop
+* Replace tempest-lib dependency with os-testr
+* Imported Translations from Zanata
+* Fix typos in comments and docstring
+* Updated from global requirements
+* Updated from global requirements
+* Fix typo: 'olso' to 'oslo'
+* Repair boolean CHECK constraint detection
+* api: do not log a traceback if error is not expected
+* Fix imports in doc
+* Allow testing of MySQL and PostgreSQL scenario locally
+* Add support for custom JSON serializer
+* api: always enable retry\_on\_request
+* Remove oslo-incubator related stuff
+* Updated from global requirements
+* Updated from global requirements
+* Remove direct dependency on babel
+* Imported Translations from Zanata
+* Add debtcollector to requirements
+* Fix unit tests failures, when psycopg2 is not installed
+* Fix server\_default comparison for BigInteger
+* Remove unused sqlite\_fk in \_init\_connection\_args call
+* Updated from global requirements
+* Fix db\_version checking for sqlalchemy-migrate
+* Correct docstring
+* Updated from global requirements
+* Updated from global requirements
+* Updated from global requirements
+* Updated from global requirements
+* Updated from global requirements
+* Raise DbMigrationError for invalid version
+* Add new filter for DBDataError exception
+* Fix spelling mistake
+* Let enginefacade.\_TransactionContextManager look for context
+* Remove  sqlalchemy < 1.0.0 compatible layer
+* Update reno for stable/mitaka
+* Updated from global requirements
+* Add tests for float interval values in wrap\_db\_retry()
+
+4.6.0
+-----
+
+* Increase the default max\_overflow value
+* Updated from global requirements
+* add reno for release notes management
+* Updated from global requirements
+* Updated from global requirements
+* Clarify the types for retry\_interval args of wrap\_db\_retry
+
+4.5.0
+-----
+
+* Updated from global requirements
+* stop making a copy of options discovered by config generator
+
+4.4.0
+-----
+
+* exceptions: provide .message attribute for Py3K compatibility
+* Updated from global requirements
+* InvalidSortKey constructor change breaks Heat unittests
+* exception: fix DBInvalidUnicodeParameter error message
+* exceptions: enhance InvalidSortKey to carry the invalid key
+* exception: fix InvalidSortKey message
+* Update translation setup
+* Updated from global requirements
+* Add exc\_filter for invalid Unicode string
+* Updated from global requirements
+* Updated from global requirements
+* Updated from global requirements
+
+4.3.1
+-----
+
+* Imported Translations from Zanata
+* Updated from global requirements
+* Fix tests to work under both pymsysql 0.6.2 and 0.7.x
+* Don't log non-db error in retry wrapper
+
+4.3.0
+-----
+
+* Updated from global requirements
+* Put py34 first in the env order of tox
+* Updated from global requirements
+
+4.2.0
+-----
+
+* Fix comparison of Variant and other type in compare\_type
+* Updated from global requirements
+* Updated from global requirements
+* Don't trace DB errors when we're retrying
+* Updated from global requirements
+* Remove iso8601 in requirements.txt
+* Trival: Remove 'MANIFEST.in'
+
+4.1.0
+-----
+
+* Refactor deps to use extras and env markers
+* Added allow\_async property
+
+4.0.0
+-----
+
+* Updated from global requirements
+* Remove python 2.6 classifier
+* Remove python 2.6 and cleanup tox.ini
+
+3.2.0
+-----
+
+* Detect not-started \_TransactionFactory in legacy
+* Added method get\_legacy\_facade() to the \_TransactionContextManager
+* Removed Unused variable 'drivertype'
+* Updated from global requirements
+* Imported Translations from Zanata
+* Updated from global requirements
+
+3.1.0
+-----
+
+* Updated from global requirements
+* Updated from global requirements
+* Add debug logging for DB retry attempt
+
+3.0.0
+-----
+
+* Fix coverage configuration and execution
+* Add universal wheel tag to setup.cfg
+* No need for Oslo Incubator Sync
+* Updated from global requirements
+* Correct invalid reference
+* Imported Translations from Zanata
+* Use stevedore directive to document plugins
+* Make readme and documentation titles consistent
+* Docstring fixes for enginefacade
+* Fix warnings in docstrings
+* Autogenerate the module docs
+* Add config options to the documentation
+* Add support for pickling enginefacade context objects
+* Change ignore-errors to ignore\_errors
+* Fix the home-page value with Oslo wiki page
+* Updated from global requirements
+* Imported Translations from Zanata
+
+2.6.0
+-----
+
+* Imported Translations from Transifex
+* Handle case where oslo\_db.tests has not been imported
+* Updated from global requirements
+
+2.5.0
+-----
+
+* Updated from global requirements
+* Imported Translations from Transifex
+* Updated from global requirements
+* Move runtime test resources into setup.cfg [extras]
+* Updated from global requirements
+
+2.4.1
+-----
+
+* Assume relative revisions belong to alembic
+* Use correct config key in alembic extension
+* Fix exception message about unavailable backend
+
+2.4.0
+-----
+
+* Imported Translations from Transifex
+* Updated from global requirements
+* Updated from global requirements
+* Fix hacking rules and docs job
+* Imported Translations from Transifex
+* pagination: enhance sorting of null values
+* Upgrade and downgrade based on revision existence
+* Imported Translations from Transifex
+* Updated from global requirements
+* Add JSON-encoded types for sqlalchemy
+
+2.3.0
+-----
+
+* Imported Translations from Transifex
+* Python 3: Use use\_unicode=1 under Python 3
+* Imported Translations from Transifex
+* Updated from global requirements
+* Fix test\_migrations on Python 3
+* Improve failure mode handling in enginefacade
+
+2.2.0
+-----
+
+* Imported Translations from Transifex
+* Updated from global requirements
+* Updated from global requirements
+* Add mock to test-requirements.txt
+* Test that concurrent sqlalchemy transactions don't block
+* Updated from global requirements
+* Added catching of errors 1047 (Galera) for MySQL oslo db reconnect
+* Remove outdated tox environments for SQLAlchemy 0.8
+* Imported Translations from Transifex
+
+2.1.0
+-----
+
+* Allow projects that use test\_models\_sync to filter some changes
+* Updated from global requirements
+* Add legacy get\_sessionmaker() method
+
+2.0.0
+-----
+
+* Fix sqlalchemy.ModelBase.\_\_contains\_\_() behaviour
+* Add tox target to find missing requirements
+* Allow additional exceptions in wrap\_db\_retry
+* Remove implicit RequestContext decoration
+* Add a new ModelBase.items() method
+* Updated from global requirements
+* Add oslo.context to requirements.txt
+* Imported Translations from Transifex
+
+1.12.0
+------
+
+* Updated from global requirements
+* Remove oslo namespace package
+* Drop use of 'oslo' namespace package
+* Switch from MySQL-python to PyMySQL
+* Updated from global requirements
+* Switch badges from 'pypip.in' to 'shields.io'
+* Updated from global requirements
+
+1.11.0
+------
+
+* Replace utils method with oslo.utils reflection provided one
+* Implement new oslo.db.sqlalchemy.enginefacade module
+* Allow to fail instead of skip in DbFixture
+
+1.10.0
+------
+
+* Updated from global requirements
+* Imported Translations from Transifex
+* Add a keys() method to SQLAlchemy ModelBase
+* Remove support for Python 3.3
+* Updated from global requirements
+* Remove run\_cross\_tests.sh
+* Sort model fields using getattr(), not inspect()
+* Imported Translations from Transifex
+* Updated from global requirements
+* Remove pre-SQLAlchemy-0.9.7 compat utilities
+* Add Python 3 classifiers to setup.cfg
+
+1.9.0
+-----
+
+* Uncap library requirements for liberty
+
+1.8.0
+-----
+
+* Sanity check after migration
+* Add filters for DBDataError exception
+* Add pypi download + version badges
+* exc\_filters: support for ForeignKey error on delete
+* Standardize setup.cfg summary for oslo libs
+* Update to latest hacking
+* Handle CHECK constraint integrity in PostgreSQL
+* Catch DBDuplicateError in MySQL if primary key is binary
+* Imported Translations from Transifex
+* Updated from global requirements
+* Imported Translations from Transifex
+* Provide working SQLA\_VERSION attribute
+* Avoid excessing logging of RetryRequest exception
+* Fixed bug in InsertFromSelect columns order
+* Add process guards + invalidate to the connection pool
+
+1.7.0
+-----
+
+* Switch to non-namespaced module import - oslo\_i18n
+* Fix documented env variable for test connection
+* Updated from global requirements
+* Implement generic update-on-match feature
+
+1.6.0
+-----
+
+* Updated from global requirements
+
+1.5.0
+-----
+
+* Make DBAPI class work with mocks correctly
+* Updated from global requirements
+* Imported Translations from Transifex
+* Fix PyMySQL reference error detection
+* Use PyMySQL as DB driver in py3 environment
+* Updated from global requirements
+* Organize provisioning to use testresources
+* Add retry decorator allowing to retry DB operations on request
+* Imported Translations from Transifex
+* Implement backend-specific drop\_all\_objects for provisioning
+* Ensure that create\_engine() close test connection
+* Refactor database migration manager to use given engine
+* Fix 0 version handling in migration\_cli manager
+* Updated from global requirements
+* Fix PatchStacktraceTest for pypy
+* Update Oslo imports to remove namespace package
+* Retry query if db deadlock error is received
+
+1.4.1
+-----
+
+* Restore the check\_foreign\_keys() method
+* Ensure DBConnectionError is raised on failed revalidate
+
+1.4.0
+-----
+
+* Fix slowest test output after test run
+* Updated from global requirements
+* Make sure sort\_key\_attr is QueryableAttribute when query
+* Ensure mysql\_sql\_mode is set for MySQLOpportunisticTests
+* Add pretty\_tox wrapper script
+* Fix PatchStacktraceTest test
+* Ensure PostgreSQL connection errors are wrapped
+* Remove check\_foreign\_keys from ModelsMigrationsSync
+* Move files out of the namespace package
+* Updated from global requirements
+* Fix the link to the bug reporting site
+
+1.3.0
+-----
+
+* Repair string-based disconnect filters for MySQL, DB2
+* Fix python3.x scoping issues with removed 'uee' variable
+* Updated from global requirements
+* Fix test\_migrate\_cli for py3
+* Fix TestConnectionUtils to py3x compatibility
+* Updated from global requirements
+* Upgrade exc\_filters for 'engine' argument and connect behavior
+* Workflow documentation is now in infra-manual
+
+1.2.0
+-----
+
+* Imported Translations from Transifex
+* Fix nested() for py3
+* Make test\_models pass on py3
+* Repair include\_object to accommodate new objects
+* Add table name to foreign keys diff
+* Updated from global requirements
+* Handle Galera deadlock on SELECT FOR UPDATE
+* Add exception filter for \_sqlite\_dupe\_key\_error
+* Add info on how to run unit tests
+* Ensure is\_backend\_avail() doesn't leave open connections
+* Updated from global requirements
+
+1.1.0
+-----
+
+* Imported Translations from Transifex
+* Add pbr to installation requirements
+* Updated from global requirements
+* Activate pep8 check that \_ is imported
+* Assert exceptions based on API, not string messages
+* Fix python3.x scoping issues with removed 'de' variable
+* Updated from global requirements
+* Updated from global requirements
+* Reorganize DbTestCase to use provisioning completely
+* Set utf8 encoding for mysql and postgresql
+* ModelsMigrationsSync: Add check for foreign keys
+* Updated from global requirements
+* Remove extraneous vim editor configuration comments
+* Remove utils.drop\_unique\_constraint()
+* Improve error reporting for backend import failures
+* Ensure create\_engine() retries the initial connection test
+* Imported Translations from Transifex
+* Use fixture from oslo.config instead of oslo-incubator
+* Move begin ping listener to a connect listener
+* Create a nested helper function that will work on py3.x
+* Imported Translations from Transifex
+* Start adding a environment for py34/py33
+* Explicitly depend on six in requirements file
+* Unwrap DialectFunctionDispatcher from itself
+* Updated from global requirements
+* Use six.wraps instead of functools.wraps
+* Update help string to use database
+
+1.0.1
+-----
+
+* Use \_\_qualname\_\_ if we can
+* Fixup Fixtures Use in db test classes
+* Add description for test\_models\_sync function
+* Use the six provided iterator mix-in
+* ModelsMigrationsSync:add correct server\_default check for Enum
+
+1.0.0
+-----
+
+* Updated from global requirements
+* Imported Translations from Transifex
+* Add history/changelog to docs
+* Add a check for SQLite transactional state
+* Add run\_cross\_tests.sh script
+* Let oslotest manage the six.move setting for mox
+* Fix DBReferenceError on MySQL and SQLite
+* Renaming in WalkVersionsMixin
+* Clean up documentation
+* Use single quotes for db schema sanity check
+* warn against sorting requirements
+* ModelsMigrationsSync:Override compare\_server\_default
+* Updated from global requirements
+* Imported Translations from Transifex
+* Add doc8 to tox environment docs
+* Use oslo.i18n
+* Repair pysqlite transaction support
+* Extract logging setup into a separate function
+* Updated from global requirements
+* Remove reliance on create\_engine() from TestsExceptionFilter
+* Consolidate sqlite and mysql event listeners
+* Use dialect dispatch for engine initiailization
+* Add get\_non\_innodb\_tables() to utils
+* Added check to see whether oslotest is installed
+
+0.4.0
+-----
+
+* Implement a dialect-level function dispatch system
+* Move to oslo.utils
+* Restore correct source file encodings
+* Handle DB2 SmallInteger type for change\_deleted\_column\_type\_to\_boolean
+* Imported Translations from Transifex
+* Fixes comments to pass E265 check
+* Fixes indentations to pass E128 check
+* Uses keyword params for i18n string to pass H703
+* Adds empty line to multilines docs to pass H405
+* Updates one line docstring with dot to pass H402
+* Changes import orders to pass H305 check
+* Fixed DeprecationWarning in exc\_filters
+* Imported Translations from Transifex
+* oslo.db.exceptions module documentation
+* Updated from global requirements
+* Extension of DBDuplicateEntry exception
+* oslo.db.options module documentation
+* oslo.db.api module documentation
+* Imported Translations from Transifex
+* Use SQLAlchemy cursor execute events for tracing
+* Remove sqla\_07 from tox.ini
+* Updated from global requirements
+* Specify raise\_on\_warnings=False for mysqlconnector
+* Make MySQL regexes generic across MySQL drivers
+* Allow tox tests with complex OS\_TEST\_DBAPI\_CONNECTION URLs
+* Raise DBReferenceError on foreign key violation
+* Add host argument to get\_connect\_string()
+* Imported Translations from Transifex
+* Don't drop pre-existing database before tests
+* Port \_is\_db\_connection\_error check to exception filters
+* Integrate the ping listener into the filter system
+* Add disconnect modification support to exception handling
+* Implement new exception interception and filtering layer
+* Implement the SQLAlchemy \`\`handle\_error()\`\` event
+* Remove moxstubout.py from oslo.db
+* Added check for DB2 deadlock error
+* Bump hacking to version 0.9.2
+* Opportunistic migration tests
+* Move all db exception to exception.py
+* Enable skipped tests from test\_models.py
+* Use explicit loops instead of list comprehensions
+* Imported Translations from Transifex
+* Allow usage of several iterators on ModelBase
+* Add DBDuplicateEntry detection for mysqlconnector driver
+* Check for mysql\_sql\_mode is not None in create\_engine()
+
+0.3.0
+-----
+
+* Add a base test case for DB schema comparison
+* Test for distinct SQLAlchemy major releases
+* Updated from global requirements
+* Add \_\_contains\_\_ to ModelBase to fully behave like a dict
+* Fix test to not assume eventlet isn't present
+* Avoid usage of mutables as default args
+* Updated from global requirements
+
+0.2.0
+-----
+
+* Fix kwarg passed twice error in EngineFacade.from\_config()
+
+0.1.0
+-----
+
+* Add psycopg2 to test-requirements.txt
+* Adding dependency documentation for MySQL
+* Prevent races in opportunistic db test cases
+* Fix Sphinx directive name
+* Bump hacking to 0.9.x series
+* Add \_wrap\_db\_error support for postgresql
+* Handle slave database connection in EngineFacade
+* Add eventlet.tpool.Proxy for DB API calls
+* Added \`\`docs\`\` environment to tox.ini
+* Setup for translation
+* Remove common context from oslo.db
+* Remove common context usage from db model\_query()
+* replace string format arguments with function parameters
+* Make get\_session() pass kwargs to a sessionmaker
+* Allow for skipping thread\_yielding
+* Add index modifying methods
+* Log a cause of db backend connection failure
+* Do not always adjust sqlalchemy.engine logging
+* Fix the test using in-file SQLite database
+* Updated from global requirements
+* cleaning up index.rst file
+* Fix usage of oslo.config
+* Add import\_exceptions to tox.ini
+* Fix changing the type of column deleted
+* Remove redundant default=None for config options
+* remove definitions of Python Source Code Encoding
+* Improve help strings
+* Ignore oslo.db.egg-info
+* Allow cover tests to work
+* Fix wrong method name with assert\_called\_once\_with
+* Fix call to mock.assert\_not\_called()
+* Remove obsolete entries from .gitignore
+* Remove patch\_migrate()
+* Fix typos: Remove extra ")" in message
+* Fix .gitreview for oslo.db
+* Fix dhellmann's notes from April 18
+* Make the tests passing
+* Fix the graduate.sh script result
+* Prevent races in opportunistic db test cases
+* Drop dependency oslo.db from common.log
+* Use oslotest instead of common test module
+* Start ping listener also for postgresql
+* Add a warning to not use get\_table for working with ForeignKeys
+* Ignore migrate versioning tables in utf8 sanity check
+* Fix sqlalchemy utils test cases for SA 0.9.x
+* Fix Keystone doc build errors with SQLAlchemy 0.9
+* Make table utf-8 charset checking be optional for DB migration
+* Dispose db connections pool on disconnect
+* Python3: pass bytes as 'contents' to create\_tempfiles()
+* Do not use the 'extend' method on a dict\_items object
+* Set sql\_mode callback on connect instead of checkout
+* Fix excessive logging from db.sqlalchemy.session
+* Add lockutils fixture to OpportunisticTestCase
+* Move test\_insert\_from\_select unit test from nova to oslo
+* Adapt DB provisioning code for CI requirements
+* Make db utils importable without migrate
+* Remove requirements.txt from .gitignore
+* Get mysql\_sql\_mode parameter from config
+* Prevent incorrect usage of \_wrap\_db\_error()
+* Python3: define a \_\_next\_\_() method for ModelBase
+* Add from\_config() method to EngineFacade
+* db: move all options into database group
+* Drop special case for MySQL traditional mode, update unit tests
+* Make TRADITIONAL the default SQL mode
+* Introduce mysql\_sql\_mode option, remove old warning
+* Introduce a method to set any MySQL session SQL mode
+* Handle ibm\_db\_sa DBDuplicateEntry integrity errors
+* Fix doc build errors in db.sqlalchemy
+* Fix migration.db\_version when no tables
+* Update log translation domains
+* Add model\_query() to db.sqlalchemy.utils module
+* Fix a small typo in api.py
+* migration.db\_sync requires an engine now
+* Remove CONF.database.connection default value
+* Remove None for dict.get()
+* Fix duplicating of SQL queries in logs
+* Update oslo log messages with translation domains
+* Restore the ability to load the DB backend lazily
+* Don't use cfg.CONF in oslo.db
+* Don't store engine instances in oslo.db
+* Add etc/openstack.conf.sample to .gitignore
+* py3kcompat: remove
+* Don't raise MySQL 2013 'Lost connection' errors
+* Format sql in db.sqlalchemy.session docstring
+* Handle exception messages with six.text\_type
+* Drop dependency on log from oslo db code
+* Automatic retry db.api query if db connection lost
+* Clean up docstring in db.sqlalchemy.session
+* Only enable MySQL TRADITIONAL mode if we're running against MySQL
+* Move db tests base.py to common code
+* Fix parsing of UC errors in sqlite 3.7.16+/3.8.2+
+* Use dialect rather than a particular DB API driver
+* Move helper DB functions to db.sqlalchemy.utils
+* Small edits on help strings
+* Transition from migrate to alembic
+* Fix mocking of utcnow() for model datetime cols
+* Add a db check for CHARSET=utf8
+* Remove unused variables
+* Remove "vim: tabstop=4 shiftwidth=4 softtabstop=4" from headers
+* Fix database connection string is secret
+* Cleanup unused log related code
+* Removed copyright from empty files
+* Fix the obsolete exception message
+* Fix filter() usage due to python 3 compability
+* Use hacking import\_exceptions for gettextutils.\_
+* Add docstring for exception handlers of session
+* Removal of \_REPOSITORY global variable
+* Remove string.lowercase usage
+* Remove eventlet tpool from common db.api
+* Database hook enabling traditional mode at MySQL
+* Replace xrange in for loop with range
+* SQLAlchemy error patterns improved
+* Remove unused import
+* Correct invalid docstrings
+* Remove start index 0 in range()
+* Make \_extra\_keys a property of ModelBase
+* Fix mis-spellings
+* Fix violations of H302:import only modules
+* Enables db2 server disconnects to be handled pessimistically
+* db.sqlalchemy.session add [sql].idle\_timeout
+* Use six.iteritems to make dict work on Python2/3
+* Trivial: Make vertical white space after license header consistent
+* Drop dependency on processutils from oslo db code
+* Fix locking in migration tests
+* Incorporating MIT licensed code
+* Typos fix in db and periodic\_task module
+* Use six.moves.configparser instead of ConfigParser
+* Drop dependency on fileutils from oslo db tests
+* fix typo in db session docstring
+* Added opportunistic DB test cases
+* The ability to run tests at various backend
+* Use log.warning() instead of log.warn() in oslo.db
+* Replace removed items in Python3
+* Remove vim header
+* Use py3kcompat urlutils functions instead of urlparse
+* Don't use deprecated module commands
+* Remove sqlalchemy-migrate 0.7.3 patching
+* SQLite behavior independent DB test cases
+* Drop dependency on lockutils from oslo db code
+* Remove lazy loading of database backend
+* Do not name variables as builtins
+* Add db2 communication error code when check the db connection
+* Replace using tests.utils part3
+* Add [sql].connection as deprecated opt for db
+* Modify SQLA session due to dispose of eventlet
+* Use monkey\_patch() in TestMigrationUtils setUp()
+* Clean up db.sqla.Models.extra\_keys interface
+* Use functools.wrap() instead of custom implementation
+* Move base migration test classes to common code
+* Bump hacking to 0.7.0
+* exception: remove
+* Replace using tests.utils with openstack.common.test
+* Use single meta when change column type
+* Helper function to sanitize db url credentials
+* BaseException.message is deprecated since Python 2.6
+* Add function drop\_unique\_constraint()
+* Change sqlalchemy/utils.py mode back to 644
+* Move sqlalchemy migration from Nova
+* Allow use of hacking 0.6.0 and enable new checks
+* Add eclipse project files to .gitignore
+* Raise ValueError if sort\_dir is unknown
+* Add tests for cinder/common/sqlalchemyutils.py
+* python3: Add python3 compatibility support
+* Add .testrepository to .gitignore
+* Move \`test\_migrations\` from Nova
+* Migrate sqlalchemy utils from Nova
+* Enable H302 hacking check
+* Add a monkey-patching util for sqlalchemy-migrate
+* Don't use mixture of cfg.Opt() deprecated args
+* Allow BaseTestCase use a different conf object
+* Ensure that DB configuration is backward compatible
+* Add a fixture for using of SQLite in-memory DB
+* Enable hacking H404 test
+* Enable user to configure pool\_timeout
+* Changed processing unique constraint name
+* Enable H306 hacking check
+* Add a slave db handle for the SQLAlchemy backend
+* Enable hacking H403 test
+* Changed processing unique constraint name
+* Ignore backup files in .gitignore
+* Specify database group instead of DEFAULT
+* Fixes import order nits
+* Line wrapper becomes to long when expanded
+* Convert unicode for python3 portability
+* Add test coverage for sqlite regexp function
+* Use range rather than xrange
+* Add support to clear DB
+* Add enforcement for foreign key contraints with sqlite
+* Improve Python 3.x compatibility
+* Removes metadata from ModelBase
+* Removes created\_at, updated\_at from ModelBase
+* Fixes private functions private
+* Mark sql\_connection with secret flag
+* Fix Copyright Headers - Rename LLC to Foundation
+* Fixes import order nits
+* Clean up sqlalchemy exception code
+* Move DB thread pooling to DB API loader
+* Use oslo-config-2013.1b3
+* Add join\_consumer\_pool() to RPC connections
+* Use importutils.try\_import() for MySQLdb
+* Minor tweak to make update.py happy
+* Remove pointless use of OpenStackException
+* Remove unused context from test\_sqlalchemy
+* Remove openstack.common.db.common
+* Provide creating real unique constraints for columns
+* Fix missing wrap\_db\_error for Session.execute() method
+* Fix eventlet/mysql db pooling code
+* Add missing DBDuplicateEntry
+* Be explicit about set\_default() parameters
+* Remove duplicate DB options
+* Eliminate gratuitous DB difference vs Nova
+* Import sqlalchemy session/models/utils
+* updating sphinx documentation
+* Correcting openstack-common mv to oslo-incubator
+* Update .gitreview for oslo
+* .gitignore updates for generated files
+* Updated tox config for multi-python testing
+* Added .gitreview file
+* ignore cover's html directory
+* Rajaram/Vinkesh|increased tests for Request and Response serializers
+* Rajaram/Vinkesh|Added nova's serializaiton classes into common
+* Initial skeleton project

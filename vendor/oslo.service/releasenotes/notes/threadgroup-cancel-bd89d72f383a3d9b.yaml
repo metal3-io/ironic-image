@@ -1,0 +1,5 @@
+---
+deprecations:
+  - |
+    The ``ThreadGroup.cancel()`` method is deprecated and will be removed in a
+    future major release.

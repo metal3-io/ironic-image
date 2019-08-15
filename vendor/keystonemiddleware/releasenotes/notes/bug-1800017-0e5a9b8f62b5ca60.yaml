@@ -1,0 +1,7 @@
+---
+fixes:
+  - |
+    [`bug 1800017 <https://bugs.launchpad.net/keystonemiddleware/+bug/1800017>`_]
+    Fix audit middleware service catalog parsing for the scenario where a
+    service does not contain any endpoints. In that case, we should just skip
+    over that service.

@@ -1,0 +1,135 @@
+# Andi Chandler <andi@gowling.com>, 2016. #zanata
+# Andreas Jaeger <jaegerandi@gmail.com>, 2016. #zanata
+# Andi Chandler <andi@gowling.com>, 2017. #zanata
+msgid ""
+msgstr ""
+"Project-Id-Version: oslo.service VERSION\n"
+"Report-Msgid-Bugs-To: https://bugs.launchpad.net/openstack-i18n/\n"
+"POT-Creation-Date: 2018-01-30 05:35+0000\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2017-10-07 09:30+0000\n"
+"Last-Translator: Andi Chandler <andi@gowling.com>\n"
+"Language-Team: English (United Kingdom)\n"
+"Language: en_GB\n"
+"X-Generator: Zanata 4.3.3\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+
+msgid ""
+"A dynamic backoff interval looping call can only run one function at a time"
+msgstr ""
+"A dynamic backoff interval looping call can only run one function at a time"
+
+msgid "A dynamic interval looping call can only run one function at a time"
+msgstr "A dynamic interval looping call can only run one function at a time"
+
+msgid ""
+"A dynamic interval looping call should supply either an interval or "
+"periodic_interval_max"
+msgstr ""
+"A dynamic interval looping call should supply either an interval or "
+"periodic_interval_max"
+
+msgid "A fixed interval looping call can only run one function at a time"
+msgstr "A fixed interval looping call can only run one function at a time"
+
+msgid ""
+"A fixed interval looping call with timeout checking and can only run one "
+"function at at a time"
+msgstr ""
+"A fixed interval looping call with timeout checking and can only run one "
+"function at at a time"
+
+msgid "A looping call can only run one function at a time"
+msgstr "A looping call can only run one function at a time"
+
+#, python-format
+msgid "Could not find config at %(path)s"
+msgstr "Could not find config at %(path)s"
+
+#, python-format
+msgid "Could not load paste app '%(name)s' from %(path)s"
+msgstr "Could not load paste app '%(name)s' from %(path)s"
+
+msgid "Did not create backdoor at requested location"
+msgstr "Did not create backdoor at requested location"
+
+msgid "Dynamic backoff interval looping call"
+msgstr "Dynamic backoff interval looping call"
+
+msgid "Dynamic interval looping call"
+msgstr "Dynamic interval looping call"
+
+msgid "Fixed interval looping call"
+msgstr "Fixed interval looping call"
+
+msgid "Fixed interval looping call with timeout checking."
+msgstr "Fixed interval looping call with timeout checking."
+
+#, python-format
+msgid "Invalid SSL version : %s"
+msgstr "Invalid SSL version : %s"
+
+#, python-format
+msgid "Invalid backdoor_port configuration %(range)s: %(ex)s. %(help)s"
+msgstr "Invalid backdoor_port configuration %(range)s: %(ex)s. %(help)s"
+
+#, python-format
+msgid ""
+"Invalid input received: Unexpected argument for periodic task creation: "
+"%(arg)s."
+msgstr ""
+"Invalid input received: Unexpected argument for periodic task creation: "
+"%(arg)s."
+
+#, python-format
+msgid "Invalid restart_method: %s"
+msgstr "Invalid restart_method: %s"
+
+msgid "Launcher asked to start multiple workers"
+msgstr "Launcher asked to start multiple workers"
+
+#, python-format
+msgid "Looping call timed out after %.02f seconds"
+msgstr "Looping call timed out after %.02f seconds"
+
+msgid "Number of workers should be positive!"
+msgstr "Number of workers should be positive!"
+
+#, python-format
+msgid "Service %(service)s must an instance of %(base)s!"
+msgstr "Service %(service)s must an instance of %(base)s!"
+
+msgid "The backlog must be more than 0"
+msgstr "The backlog must be more than 0"
+
+#, python-format
+msgid "Unable to find ca_file : %s"
+msgstr "Unable to find ca_file : %s"
+
+#, python-format
+msgid "Unable to find cert_file : %s"
+msgstr "Unable to find cert_file : %s"
+
+#, python-format
+msgid "Unable to find key_file : %s"
+msgstr "Unable to find key_file : %s"
+
+#, python-format
+msgid "Unexpected argument for periodic task creation: %(arg)s."
+msgstr "Unexpected argument for periodic task creation: %(arg)s."
+
+msgid "Unknown looping call"
+msgstr "Unknown looping call"
+
+#, python-format
+msgid "Unsupported socket family: %s"
+msgstr "Unsupported socket family: %s"
+
+msgid ""
+"When running server in SSL mode, you must specify both a cert_file and "
+"key_file option value in your configuration file"
+msgstr ""
+"When running server in SSL mode, you must specify both a cert_file and "
+"key_file option value in your configuration file"

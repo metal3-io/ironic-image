@@ -1,0 +1,6 @@
+---
+features:
+  - >
+    [`bug 1544840 <https://bugs.launchpad.net/keystonemiddleware/+bug/1544840>`_]
+    Adding audit middleware specific notification related configuration
+    to allow a different notification driver and transport for audit if needed.

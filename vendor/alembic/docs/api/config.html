@@ -1,0 +1,368 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Configuration &#8212; Alembic 1.0.11 documentation</title>
+    <link rel="stylesheet" href="../_static/nature_override.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/changelog.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx_paramlinks.css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Commands" href="commands.html" />
+    <link rel="prev" title="Runtime Objects" href="runtime.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="commands.html" title="Commands"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="runtime.html" title="Runtime Objects"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Alembic 1.0.11 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">API Details</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="configuration">
+<span id="alembic-config-toplevel"></span><h1>Configuration<a class="headerlink" href="#configuration" title="Permalink to this headline">¶</a></h1>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>this section discusses the <strong>internal API of Alembic</strong> as
+regards internal configuration constructs.
+This section is only useful for developers who wish to extend the
+capabilities of Alembic.  For documentation on configuration of
+an Alembic environment, please see <a class="reference internal" href="../tutorial.html"><span class="doc">Tutorial</span></a>.</p>
+</div>
+<p>The <a class="reference internal" href="#alembic.config.Config" title="alembic.config.Config"><code class="xref py py-class docutils literal notranslate"><span class="pre">Config</span></code></a> object represents the configuration
+passed to the Alembic environment.  From an API usage perspective,
+it is needed for the following use cases:</p>
+<ul class="simple">
+<li><p>to create a <a class="reference internal" href="script.html#alembic.script.ScriptDirectory" title="alembic.script.ScriptDirectory"><code class="xref py py-class docutils literal notranslate"><span class="pre">ScriptDirectory</span></code></a>, which allows you to work
+with the actual script files in a migration environment</p></li>
+<li><p>to create an <a class="reference internal" href="runtime.html#alembic.runtime.environment.EnvironmentContext" title="alembic.runtime.environment.EnvironmentContext"><code class="xref py py-class docutils literal notranslate"><span class="pre">EnvironmentContext</span></code></a>, which allows you to
+actually run the <code class="docutils literal notranslate"><span class="pre">env.py</span></code> module within the migration environment</p></li>
+<li><p>to programatically run any of the commands in the <a class="reference internal" href="commands.html#alembic-command-toplevel"><span class="std std-ref">Commands</span></a>
+module.</p></li>
+</ul>
+<p>The <a class="reference internal" href="#alembic.config.Config" title="alembic.config.Config"><code class="xref py py-class docutils literal notranslate"><span class="pre">Config</span></code></a> is <em>not</em> needed for these cases:</p>
+<ul class="simple">
+<li><p>to instantiate a <a class="reference internal" href="runtime.html#alembic.runtime.migration.MigrationContext" title="alembic.runtime.migration.MigrationContext"><code class="xref py py-class docutils literal notranslate"><span class="pre">MigrationContext</span></code></a> directly - this object
+only needs a SQLAlchemy connection or dialect name.</p></li>
+<li><p>to instantiate a <a class="reference internal" href="../ops.html#alembic.operations.Operations" title="alembic.operations.Operations"><code class="xref py py-class docutils literal notranslate"><span class="pre">Operations</span></code></a> object - this object only
+needs a <a class="reference internal" href="runtime.html#alembic.runtime.migration.MigrationContext" title="alembic.runtime.migration.MigrationContext"><code class="xref py py-class docutils literal notranslate"><span class="pre">MigrationContext</span></code></a>.</p></li>
+</ul>
+<span class="target" id="module-alembic.config"></span><dl class="class">
+<dt id="alembic.config.Config">
+<em class="property">class </em><code class="sig-prename descclassname">alembic.config.</code><code class="sig-name descname">Config</code><span class="sig-paren">(</span><em class="sig-param">file_=None</em>, <em class="sig-param">ini_section='alembic'</em>, <em class="sig-param">output_buffer=None</em>, <em class="sig-param">stdout=&lt;_io.TextIOWrapper name='&lt;stdout&gt;' mode='w' encoding='UTF-8'&gt;</em>, <em class="sig-param">cmd_opts=None</em>, <em class="sig-param">config_args={}</em>, <em class="sig-param">attributes=None</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.config.Config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Represent an Alembic configuration.</p>
+<p>Within an <code class="docutils literal notranslate"><span class="pre">env.py</span></code> script, this is available
+via the <a class="reference internal" href="runtime.html#alembic.runtime.environment.EnvironmentContext.config" title="alembic.runtime.environment.EnvironmentContext.config"><code class="xref py py-attr docutils literal notranslate"><span class="pre">EnvironmentContext.config</span></code></a> attribute,
+which in turn is available at <code class="docutils literal notranslate"><span class="pre">alembic.context</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">alembic</span> <span class="k">import</span> <span class="n">context</span>
+
+<span class="n">some_param</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get_main_option</span><span class="p">(</span><span class="s2">&quot;my option&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>When invoking Alembic programatically, a new
+<a class="reference internal" href="#alembic.config.Config" title="alembic.config.Config"><code class="xref py py-class docutils literal notranslate"><span class="pre">Config</span></code></a> can be created by passing
+the name of an .ini file to the constructor:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">alembic.config</span> <span class="k">import</span> <span class="n">Config</span>
+<span class="n">alembic_cfg</span> <span class="o">=</span> <span class="n">Config</span><span class="p">(</span><span class="s2">&quot;/path/to/yourapp/alembic.ini&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>With a <a class="reference internal" href="#alembic.config.Config" title="alembic.config.Config"><code class="xref py py-class docutils literal notranslate"><span class="pre">Config</span></code></a> object, you can then
+run Alembic commands programmatically using the directives
+in <a class="reference internal" href="commands.html#module-alembic.command" title="alembic.command"><code class="xref py py-mod docutils literal notranslate"><span class="pre">alembic.command</span></code></a>.</p>
+<p>The <a class="reference internal" href="#alembic.config.Config" title="alembic.config.Config"><code class="xref py py-class docutils literal notranslate"><span class="pre">Config</span></code></a> object can also be constructed without
+a filename.   Values can be set programmatically, and
+new sections will be created as needed:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">alembic.config</span> <span class="k">import</span> <span class="n">Config</span>
+<span class="n">alembic_cfg</span> <span class="o">=</span> <span class="n">Config</span><span class="p">()</span>
+<span class="n">alembic_cfg</span><span class="o">.</span><span class="n">set_main_option</span><span class="p">(</span><span class="s2">&quot;script_location&quot;</span><span class="p">,</span> <span class="s2">&quot;myapp:migrations&quot;</span><span class="p">)</span>
+<span class="n">alembic_cfg</span><span class="o">.</span><span class="n">set_main_option</span><span class="p">(</span><span class="s2">&quot;sqlalchemy.url&quot;</span><span class="p">,</span> <span class="s2">&quot;postgresql://foo/bar&quot;</span><span class="p">)</span>
+<span class="n">alembic_cfg</span><span class="o">.</span><span class="n">set_section_option</span><span class="p">(</span><span class="s2">&quot;mysection&quot;</span><span class="p">,</span> <span class="s2">&quot;foo&quot;</span><span class="p">,</span> <span class="s2">&quot;bar&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>When using programmatic configuration, make sure the
+<code class="docutils literal notranslate"><span class="pre">env.py</span></code> file in use is compatible with the target configuration;
+including that the call to Python <code class="docutils literal notranslate"><span class="pre">logging.fileConfig()</span></code> is
+omitted if the programmatic configuration doesn’t actually include
+logging directives.</p>
+</div>
+<p>For passing non-string values to environments, such as connections and
+engines, use the <a class="reference internal" href="#alembic.config.Config.attributes" title="alembic.config.Config.attributes"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Config.attributes</span></code></a> dictionary:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">engine</span><span class="o">.</span><span class="n">begin</span><span class="p">()</span> <span class="k">as</span> <span class="n">connection</span><span class="p">:</span>
+    <span class="n">alembic_cfg</span><span class="o">.</span><span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;connection&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">connection</span>
+    <span class="n">command</span><span class="o">.</span><span class="n">upgrade</span><span class="p">(</span><span class="n">alembic_cfg</span><span class="p">,</span> <span class="s2">&quot;head&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span class="target" id="alembic.config.Config.params.file_"></span><strong>file_</strong><a class="paramlink headerlink reference internal" href="#alembic.config.Config.params.file_">¶</a> – name of the .ini file to open.</p></li>
+<li><p><span class="target" id="alembic.config.Config.params.ini_section"></span><strong>ini_section</strong><a class="paramlink headerlink reference internal" href="#alembic.config.Config.params.ini_section">¶</a> – name of the main Alembic section within the
+.ini file</p></li>
+<li><p><span class="target" id="alembic.config.Config.params.output_buffer"></span><strong>output_buffer</strong><a class="paramlink headerlink reference internal" href="#alembic.config.Config.params.output_buffer">¶</a> – optional file-like input buffer which
+will be passed to the <a class="reference internal" href="runtime.html#alembic.runtime.migration.MigrationContext" title="alembic.runtime.migration.MigrationContext"><code class="xref py py-class docutils literal notranslate"><span class="pre">MigrationContext</span></code></a> - used to redirect
+the output of “offline generation” when using Alembic programmatically.</p></li>
+<li><p><span class="target" id="alembic.config.Config.params.stdout"></span><strong>stdout</strong><a class="paramlink headerlink reference internal" href="#alembic.config.Config.params.stdout">¶</a> – <p>buffer where the “print” output of commands will be sent.
+Defaults to <code class="docutils literal notranslate"><span class="pre">sys.stdout</span></code>.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 0.4.</span></p>
+</div>
+</p></li>
+<li><p><span class="target" id="alembic.config.Config.params.config_args"></span><strong>config_args</strong><a class="paramlink headerlink reference internal" href="#alembic.config.Config.params.config_args">¶</a> – <p>A dictionary of keys and values that will be used
+for substitution in the alembic config file.  The dictionary as given
+is <strong>copied</strong> to a new one, stored locally as the attribute
+<code class="docutils literal notranslate"><span class="pre">.config_args</span></code>. When the <a class="reference internal" href="#alembic.config.Config.file_config" title="alembic.config.Config.file_config"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Config.file_config</span></code></a> attribute is
+first invoked, the replacement variable <code class="docutils literal notranslate"><span class="pre">here</span></code> will be added to this
+dictionary before the dictionary is passed to <code class="docutils literal notranslate"><span class="pre">SafeConfigParser()</span></code>
+to parse the .ini file.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 0.7.0.</span></p>
+</div>
+</p></li>
+<li><p><span class="target" id="alembic.config.Config.params.attributes"></span><strong>attributes</strong><a class="paramlink headerlink reference internal" href="#alembic.config.Config.params.attributes">¶</a> – <p>optional dictionary of arbitrary Python keys/values,
+which will be populated into the <a class="reference internal" href="#alembic.config.Config.attributes" title="alembic.config.Config.attributes"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Config.attributes</span></code></a> dictionary.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 0.7.5.</span></p>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="../cookbook.html#connection-sharing"><span class="std std-ref">Sharing a Connection with a Series of Migration Commands and Environments</span></a></p>
+</div>
+</p></li>
+</ul>
+</dd>
+</dl>
+<p>Construct a new <a class="reference internal" href="#alembic.config.Config" title="alembic.config.Config"><code class="xref py py-class docutils literal notranslate"><span class="pre">Config</span></code></a></p>
+<dl class="attribute">
+<dt id="alembic.config.Config.attributes">
+<code class="sig-name descname">attributes</code><a class="headerlink" href="#alembic.config.Config.attributes" title="Permalink to this definition">¶</a></dt>
+<dd><p>A Python dictionary for storage of additional state.</p>
+<p>This is a utility dictionary which can include not just strings but
+engines, connections, schema objects, or anything else.
+Use this to pass objects into an env.py script, such as passing
+a <code class="xref py py-class docutils literal notranslate"><span class="pre">sqlalchemy.engine.base.Connection</span></code> when calling
+commands from <a class="reference internal" href="commands.html#module-alembic.command" title="alembic.command"><code class="xref py py-mod docutils literal notranslate"><span class="pre">alembic.command</span></code></a> programmatically.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 0.7.5.</span></p>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="../cookbook.html#connection-sharing"><span class="std std-ref">Sharing a Connection with a Series of Migration Commands and Environments</span></a></p>
+<p><a class="reference internal" href="#alembic.config.Config.params.attributes" title="alembic.config.Config"><code class="xref py py-paramref docutils literal notranslate"><span class="pre">Config.attributes</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="alembic.config.Config.cmd_opts">
+<code class="sig-name descname">cmd_opts</code><em class="property"> = None</em><a class="headerlink" href="#alembic.config.Config.cmd_opts" title="Permalink to this definition">¶</a></dt>
+<dd><p>The command-line options passed to the <code class="docutils literal notranslate"><span class="pre">alembic</span></code> script.</p>
+<p>Within an <code class="docutils literal notranslate"><span class="pre">env.py</span></code> script this can be accessed via the
+<a class="reference internal" href="runtime.html#alembic.runtime.environment.EnvironmentContext.config" title="alembic.runtime.environment.EnvironmentContext.config"><code class="xref py py-attr docutils literal notranslate"><span class="pre">EnvironmentContext.config</span></code></a> attribute.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 0.6.0.</span></p>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="runtime.html#alembic.runtime.environment.EnvironmentContext.get_x_argument" title="alembic.runtime.environment.EnvironmentContext.get_x_argument"><code class="xref py py-meth docutils literal notranslate"><span class="pre">EnvironmentContext.get_x_argument()</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="alembic.config.Config.config_file_name">
+<code class="sig-name descname">config_file_name</code><em class="property"> = None</em><a class="headerlink" href="#alembic.config.Config.config_file_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Filesystem path to the .ini file in use.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="alembic.config.Config.config_ini_section">
+<code class="sig-name descname">config_ini_section</code><em class="property"> = None</em><a class="headerlink" href="#alembic.config.Config.config_ini_section" title="Permalink to this definition">¶</a></dt>
+<dd><p>Name of the config file section to read basic configuration
+from.  Defaults to <code class="docutils literal notranslate"><span class="pre">alembic</span></code>, that is the <code class="docutils literal notranslate"><span class="pre">[alembic]</span></code> section
+of the .ini file.  This value is modified using the <code class="docutils literal notranslate"><span class="pre">-n/--name</span></code>
+option to the Alembic runnier.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="alembic.config.Config.file_config">
+<code class="sig-name descname">file_config</code><a class="headerlink" href="#alembic.config.Config.file_config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the underlying <code class="docutils literal notranslate"><span class="pre">ConfigParser</span></code> object.</p>
+<p>Direct access to the .ini file is available here,
+though the <a class="reference internal" href="#alembic.config.Config.get_section" title="alembic.config.Config.get_section"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Config.get_section()</span></code></a> and
+<a class="reference internal" href="#alembic.config.Config.get_main_option" title="alembic.config.Config.get_main_option"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Config.get_main_option()</span></code></a>
+methods provide a possibly simpler interface.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="alembic.config.Config.get_main_option">
+<code class="sig-name descname">get_main_option</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">default=None</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.config.Config.get_main_option" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return an option from the ‘main’ section of the .ini file.</p>
+<p>This defaults to being a key from the <code class="docutils literal notranslate"><span class="pre">[alembic]</span></code>
+section, unless the <code class="docutils literal notranslate"><span class="pre">-n/--name</span></code> flag were used to
+indicate a different section.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="alembic.config.Config.get_section">
+<code class="sig-name descname">get_section</code><span class="sig-paren">(</span><em class="sig-param">name</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.config.Config.get_section" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return all the configuration options from a given .ini file section
+as a dictionary.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="alembic.config.Config.get_section_option">
+<code class="sig-name descname">get_section_option</code><span class="sig-paren">(</span><em class="sig-param">section</em>, <em class="sig-param">name</em>, <em class="sig-param">default=None</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.config.Config.get_section_option" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return an option from the given section of the .ini file.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="alembic.config.Config.get_template_directory">
+<code class="sig-name descname">get_template_directory</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#alembic.config.Config.get_template_directory" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the directory where Alembic setup templates are found.</p>
+<p>This method is used by the alembic <code class="docutils literal notranslate"><span class="pre">init</span></code> and <code class="docutils literal notranslate"><span class="pre">list_templates</span></code>
+commands.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="alembic.config.Config.print_stdout">
+<code class="sig-name descname">print_stdout</code><span class="sig-paren">(</span><em class="sig-param">text</em>, <em class="sig-param">*arg</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.config.Config.print_stdout" title="Permalink to this definition">¶</a></dt>
+<dd><p>Render a message to standard out.</p>
+<p>When <a class="reference internal" href="#alembic.config.Config.print_stdout" title="alembic.config.Config.print_stdout"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Config.print_stdout()</span></code></a> is called with additional args
+those arguments will formatted against the provided text,
+otherwise we simply output the provided text verbatim.</p>
+<p>e.g.:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">config</span><span class="o">.</span><span class="n">print_stdout</span><span class="p">(</span><span class="s1">&#39;Some text </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;arg&#39;</span><span class="p">)</span>
+<span class="go">Some Text arg</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="alembic.config.Config.set_main_option">
+<code class="sig-name descname">set_main_option</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">value</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.config.Config.set_main_option" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set an option programmatically within the ‘main’ section.</p>
+<p>This overrides whatever was in the .ini file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span class="target" id="alembic.config.Config.set_main_option.params.name"></span><strong>name</strong><a class="paramlink headerlink reference internal" href="#alembic.config.Config.set_main_option.params.name">¶</a> – name of the value</p></li>
+<li><p><span class="target" id="alembic.config.Config.set_main_option.params.value"></span><strong>value</strong><a class="paramlink headerlink reference internal" href="#alembic.config.Config.set_main_option.params.value">¶</a> – the value.  Note that this value is passed to
+<code class="docutils literal notranslate"><span class="pre">ConfigParser.set</span></code>, which supports variable interpolation using
+pyformat (e.g. <code class="docutils literal notranslate"><span class="pre">%(some_value)s</span></code>).   A raw percent sign not part of
+an interpolation symbol must therefore be escaped, e.g. <code class="docutils literal notranslate"><span class="pre">%%</span></code>.
+The given value may refer to another value already in the file
+using the interpolation format.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="alembic.config.Config.set_section_option">
+<code class="sig-name descname">set_section_option</code><span class="sig-paren">(</span><em class="sig-param">section</em>, <em class="sig-param">name</em>, <em class="sig-param">value</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.config.Config.set_section_option" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set an option programmatically within the given section.</p>
+<p>The section is created if it doesn’t exist already.
+The value here will override whatever was in the .ini
+file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span class="target" id="alembic.config.Config.set_section_option.params.section"></span><strong>section</strong><a class="paramlink headerlink reference internal" href="#alembic.config.Config.set_section_option.params.section">¶</a> – name of the section</p></li>
+<li><p><span class="target" id="alembic.config.Config.set_section_option.params.name"></span><strong>name</strong><a class="paramlink headerlink reference internal" href="#alembic.config.Config.set_section_option.params.name">¶</a> – name of the value</p></li>
+<li><p><span class="target" id="alembic.config.Config.set_section_option.params.value"></span><strong>value</strong><a class="paramlink headerlink reference internal" href="#alembic.config.Config.set_section_option.params.value">¶</a> – the value.  Note that this value is passed to
+<code class="docutils literal notranslate"><span class="pre">ConfigParser.set</span></code>, which supports variable interpolation using
+pyformat (e.g. <code class="docutils literal notranslate"><span class="pre">%(some_value)s</span></code>).   A raw percent sign not part of
+an interpolation symbol must therefore be escaped, e.g. <code class="docutils literal notranslate"><span class="pre">%%</span></code>.
+The given value may refer to another value already in the file
+using the interpolation format.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="alembic.config.main">
+<code class="sig-prename descclassname">alembic.config.</code><code class="sig-name descname">main</code><span class="sig-paren">(</span><em class="sig-param">argv=None</em>, <em class="sig-param">prog=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.config.main" title="Permalink to this definition">¶</a></dt>
+<dd><p>The console runner function for Alembic.</p>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="runtime.html"
+                        title="previous chapter">Runtime Objects</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="commands.html"
+                        title="next chapter">Commands</a></p>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="commands.html" title="Commands"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="runtime.html" title="Runtime Objects"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Alembic 1.0.11 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >API Details</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2010-2019, Mike Bayer.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.1.2.
+    </div>
+  </body>
+</html>

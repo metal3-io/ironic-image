@@ -1,0 +1,5 @@
+---
+upgrade:
+  - |
+    Removes support for attaching periodic tasks on a driver object, rather
+    than an interface.

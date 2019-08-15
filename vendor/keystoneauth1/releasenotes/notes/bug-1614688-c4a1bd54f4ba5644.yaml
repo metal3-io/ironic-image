@@ -1,0 +1,9 @@
+---
+prelude: >
+    HTTP connections work under Windows Subsystem for Linux
+fixes:
+  - >
+    [`bug 1614688 <https://bugs.launchpad.net/keystoneauth/+bug/1614688>`_]
+    HTTP connections were failing under Windows subsystem for Linux because
+    TCP_KEEPCNT was being set and that environment does not support such
+    override yet.

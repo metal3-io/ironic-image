@@ -1,0 +1,1020 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Autogeneration &#8212; Alembic 1.0.11 documentation</title>
+    <link rel="stylesheet" href="../_static/nature_override.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/changelog.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx_paramlinks.css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Script Directory" href="script.html" />
+    <link rel="prev" title="Operation Directives" href="operations.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="script.html" title="Script Directory"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="operations.html" title="Operation Directives"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Alembic 1.0.11 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">API Details</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="autogeneration">
+<span id="alembic-autogenerate-toplevel"></span><h1>Autogeneration<a class="headerlink" href="#autogeneration" title="Permalink to this headline">¶</a></h1>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>this section discusses the <strong>internal API of Alembic</strong>
+as regards the autogeneration feature of the <code class="docutils literal notranslate"><span class="pre">alembic</span> <span class="pre">revision</span></code>
+command.
+This section is only useful for developers who wish to extend the
+capabilities of Alembic.  For general documentation on the autogenerate
+feature, please see <a class="reference internal" href="../autogenerate.html"><span class="doc">Auto Generating Migrations</span></a>.</p>
+</div>
+<p>The autogeneration system has a wide degree of public API, including
+the following areas:</p>
+<ol class="arabic simple">
+<li><p>The ability to do a “diff” of a <a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/metadata.html#sqlalchemy.schema.MetaData" title="(in SQLAlchemy v1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">MetaData</span></code></a> object against
+a database, and receive a data structure back.  This structure
+is available either as a rudimentary list of changes, or as
+a <a class="reference internal" href="operations.html#alembic.operations.ops.MigrateOperation" title="alembic.operations.ops.MigrateOperation"><code class="xref py py-class docutils literal notranslate"><span class="pre">MigrateOperation</span></code></a> structure.</p></li>
+<li><p>The ability to alter how the <code class="docutils literal notranslate"><span class="pre">alembic</span> <span class="pre">revision</span></code> command generates
+revision scripts, including support for multiple revision scripts
+generated in one pass.</p></li>
+<li><p>The ability to add new operation directives to autogeneration, including
+custom schema/model comparison functions and revision script rendering.</p></li>
+</ol>
+<div class="section" id="getting-diffs">
+<h2>Getting Diffs<a class="headerlink" href="#getting-diffs" title="Permalink to this headline">¶</a></h2>
+<p>The simplest API autogenerate provides is the “schema comparison” API;
+these are simple functions that will run all registered “comparison” functions
+between a <a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/metadata.html#sqlalchemy.schema.MetaData" title="(in SQLAlchemy v1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">MetaData</span></code></a> object and a database
+backend to produce a structure showing how they differ.   The two
+functions provided are <a class="reference internal" href="#alembic.autogenerate.compare_metadata" title="alembic.autogenerate.compare_metadata"><code class="xref py py-func docutils literal notranslate"><span class="pre">compare_metadata()</span></code></a>, which is more of the
+“legacy” function that produces diff tuples, and <a class="reference internal" href="#alembic.autogenerate.produce_migrations" title="alembic.autogenerate.produce_migrations"><code class="xref py py-func docutils literal notranslate"><span class="pre">produce_migrations()</span></code></a>,
+which produces a structure consisting of operation directives detailed in
+<a class="reference internal" href="operations.html#alembic-operations-toplevel"><span class="std std-ref">Operation Directives</span></a>.</p>
+<dl class="function">
+<dt id="alembic.autogenerate.compare_metadata">
+<code class="sig-prename descclassname">alembic.autogenerate.</code><code class="sig-name descname">compare_metadata</code><span class="sig-paren">(</span><em class="sig-param">context</em>, <em class="sig-param">metadata</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.autogenerate.compare_metadata" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compare a database schema to that given in a
+<a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/metadata.html#sqlalchemy.schema.MetaData" title="(in SQLAlchemy v1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">MetaData</span></code></a> instance.</p>
+<p>The database connection is presented in the context
+of a <a class="reference internal" href="runtime.html#alembic.runtime.migration.MigrationContext" title="alembic.runtime.migration.MigrationContext"><code class="xref py py-class docutils literal notranslate"><span class="pre">MigrationContext</span></code></a> object, which
+provides database connectivity as well as optional
+comparison functions to use for datatypes and
+server defaults - see the “autogenerate” arguments
+at <a class="reference internal" href="runtime.html#alembic.runtime.environment.EnvironmentContext.configure" title="alembic.runtime.environment.EnvironmentContext.configure"><code class="xref py py-meth docutils literal notranslate"><span class="pre">EnvironmentContext.configure()</span></code></a>
+for details on these.</p>
+<p>The return format is a list of “diff” directives,
+each representing individual differences:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">alembic.migration</span> <span class="k">import</span> <span class="n">MigrationContext</span>
+<span class="kn">from</span> <span class="nn">alembic.autogenerate</span> <span class="k">import</span> <span class="n">compare_metadata</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy.schema</span> <span class="k">import</span> <span class="n">SchemaItem</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy.types</span> <span class="k">import</span> <span class="n">TypeEngine</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy</span> <span class="k">import</span> <span class="p">(</span><span class="n">create_engine</span><span class="p">,</span> <span class="n">MetaData</span><span class="p">,</span> <span class="n">Column</span><span class="p">,</span>
+        <span class="n">Integer</span><span class="p">,</span> <span class="n">String</span><span class="p">,</span> <span class="n">Table</span><span class="p">)</span>
+<span class="kn">import</span> <span class="nn">pprint</span>
+
+<span class="n">engine</span> <span class="o">=</span> <span class="n">create_engine</span><span class="p">(</span><span class="s2">&quot;sqlite://&quot;</span><span class="p">)</span>
+
+<span class="n">engine</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;</span>
+<span class="s1">    create table foo (</span>
+<span class="s1">        id integer not null primary key,</span>
+<span class="s1">        old_data varchar,</span>
+<span class="s1">        x integer</span>
+<span class="s1">    )&#39;&#39;&#39;</span><span class="p">)</span>
+
+<span class="n">engine</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;</span>
+<span class="s1">    create table bar (</span>
+<span class="s1">        data varchar</span>
+<span class="s1">    )&#39;&#39;&#39;</span><span class="p">)</span>
+
+<span class="n">metadata</span> <span class="o">=</span> <span class="n">MetaData</span><span class="p">()</span>
+<span class="n">Table</span><span class="p">(</span><span class="s1">&#39;foo&#39;</span><span class="p">,</span> <span class="n">metadata</span><span class="p">,</span>
+    <span class="n">Column</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="n">Integer</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+    <span class="n">Column</span><span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="n">Integer</span><span class="p">),</span>
+    <span class="n">Column</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">Integer</span><span class="p">,</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="p">)</span>
+<span class="n">Table</span><span class="p">(</span><span class="s1">&#39;bat&#39;</span><span class="p">,</span> <span class="n">metadata</span><span class="p">,</span>
+    <span class="n">Column</span><span class="p">(</span><span class="s1">&#39;info&#39;</span><span class="p">,</span> <span class="n">String</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">mc</span> <span class="o">=</span> <span class="n">MigrationContext</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">engine</span><span class="o">.</span><span class="n">connect</span><span class="p">())</span>
+
+<span class="n">diff</span> <span class="o">=</span> <span class="n">compare_metadata</span><span class="p">(</span><span class="n">mc</span><span class="p">,</span> <span class="n">metadata</span><span class="p">)</span>
+<span class="n">pprint</span><span class="o">.</span><span class="n">pprint</span><span class="p">(</span><span class="n">diff</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Output:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span> <span class="p">(</span> <span class="s1">&#39;add_table&#39;</span><span class="p">,</span>
+    <span class="n">Table</span><span class="p">(</span><span class="s1">&#39;bat&#39;</span><span class="p">,</span> <span class="n">MetaData</span><span class="p">(</span><span class="n">bind</span><span class="o">=</span><span class="kc">None</span><span class="p">),</span>
+        <span class="n">Column</span><span class="p">(</span><span class="s1">&#39;info&#39;</span><span class="p">,</span> <span class="n">String</span><span class="p">(),</span> <span class="n">table</span><span class="o">=&lt;</span><span class="n">bat</span><span class="o">&gt;</span><span class="p">),</span> <span class="n">schema</span><span class="o">=</span><span class="kc">None</span><span class="p">)),</span>
+  <span class="p">(</span> <span class="s1">&#39;remove_table&#39;</span><span class="p">,</span>
+    <span class="n">Table</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;bar&#39;</span><span class="p">,</span> <span class="n">MetaData</span><span class="p">(</span><span class="n">bind</span><span class="o">=</span><span class="kc">None</span><span class="p">),</span>
+        <span class="n">Column</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="n">VARCHAR</span><span class="p">(),</span> <span class="n">table</span><span class="o">=&lt;</span><span class="n">bar</span><span class="o">&gt;</span><span class="p">),</span> <span class="n">schema</span><span class="o">=</span><span class="kc">None</span><span class="p">)),</span>
+  <span class="p">(</span> <span class="s1">&#39;add_column&#39;</span><span class="p">,</span>
+    <span class="kc">None</span><span class="p">,</span>
+    <span class="s1">&#39;foo&#39;</span><span class="p">,</span>
+    <span class="n">Column</span><span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="n">Integer</span><span class="p">(),</span> <span class="n">table</span><span class="o">=&lt;</span><span class="n">foo</span><span class="o">&gt;</span><span class="p">)),</span>
+  <span class="p">(</span> <span class="s1">&#39;remove_column&#39;</span><span class="p">,</span>
+    <span class="kc">None</span><span class="p">,</span>
+    <span class="s1">&#39;foo&#39;</span><span class="p">,</span>
+    <span class="n">Column</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;old_data&#39;</span><span class="p">,</span> <span class="n">VARCHAR</span><span class="p">(),</span> <span class="n">table</span><span class="o">=</span><span class="kc">None</span><span class="p">)),</span>
+  <span class="p">[</span> <span class="p">(</span> <span class="s1">&#39;modify_nullable&#39;</span><span class="p">,</span>
+      <span class="kc">None</span><span class="p">,</span>
+      <span class="s1">&#39;foo&#39;</span><span class="p">,</span>
+      <span class="sa">u</span><span class="s1">&#39;x&#39;</span><span class="p">,</span>
+      <span class="p">{</span> <span class="s1">&#39;existing_server_default&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="s1">&#39;existing_type&#39;</span><span class="p">:</span> <span class="n">INTEGER</span><span class="p">()},</span>
+      <span class="kc">True</span><span class="p">,</span>
+      <span class="kc">False</span><span class="p">)]]</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span class="target" id="alembic.autogenerate.compare_metadata.params.context"></span><strong>context</strong><a class="paramlink headerlink reference internal" href="#alembic.autogenerate.compare_metadata.params.context">¶</a> – a <a class="reference internal" href="runtime.html#alembic.runtime.migration.MigrationContext" title="alembic.runtime.migration.MigrationContext"><code class="xref py py-class docutils literal notranslate"><span class="pre">MigrationContext</span></code></a>
+instance.</p></li>
+<li><p><span class="target" id="alembic.autogenerate.compare_metadata.params.metadata"></span><strong>metadata</strong><a class="paramlink headerlink reference internal" href="#alembic.autogenerate.compare_metadata.params.metadata">¶</a> – a <a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/metadata.html#sqlalchemy.schema.MetaData" title="(in SQLAlchemy v1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">MetaData</span></code></a>
+instance.</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#alembic.autogenerate.produce_migrations" title="alembic.autogenerate.produce_migrations"><code class="xref py py-func docutils literal notranslate"><span class="pre">produce_migrations()</span></code></a> - produces a <a class="reference internal" href="operations.html#alembic.operations.ops.MigrationScript" title="alembic.operations.ops.MigrationScript"><code class="xref py py-class docutils literal notranslate"><span class="pre">MigrationScript</span></code></a>
+structure based on metadata comparison.</p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="alembic.autogenerate.produce_migrations">
+<code class="sig-prename descclassname">alembic.autogenerate.</code><code class="sig-name descname">produce_migrations</code><span class="sig-paren">(</span><em class="sig-param">context</em>, <em class="sig-param">metadata</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.autogenerate.produce_migrations" title="Permalink to this definition">¶</a></dt>
+<dd><p>Produce a <a class="reference internal" href="operations.html#alembic.operations.ops.MigrationScript" title="alembic.operations.ops.MigrationScript"><code class="xref py py-class docutils literal notranslate"><span class="pre">MigrationScript</span></code></a> structure based on schema
+comparison.</p>
+<p>This function does essentially what <a class="reference internal" href="#alembic.autogenerate.compare_metadata" title="alembic.autogenerate.compare_metadata"><code class="xref py py-func docutils literal notranslate"><span class="pre">compare_metadata()</span></code></a> does,
+but then runs the resulting list of diffs to produce the full
+<a class="reference internal" href="operations.html#alembic.operations.ops.MigrationScript" title="alembic.operations.ops.MigrationScript"><code class="xref py py-class docutils literal notranslate"><span class="pre">MigrationScript</span></code></a> object.   For an example of what this looks like,
+see the example in <a class="reference internal" href="#customizing-revision"><span class="std std-ref">Customizing Revision Generation</span></a>.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 0.8.0.</span></p>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#alembic.autogenerate.compare_metadata" title="alembic.autogenerate.compare_metadata"><code class="xref py py-func docutils literal notranslate"><span class="pre">compare_metadata()</span></code></a> - returns more fundamental “diff”
+data from comparing a schema.</p>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="customizing-revision-generation">
+<span id="customizing-revision"></span><h2>Customizing Revision Generation<a class="headerlink" href="#customizing-revision-generation" title="Permalink to this headline">¶</a></h2>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 0.8.0: </span>- the <code class="docutils literal notranslate"><span class="pre">alembic</span> <span class="pre">revision</span></code> system is now customizable.</p>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">alembic</span> <span class="pre">revision</span></code> command, also available programmatically
+via <a class="reference internal" href="commands.html#alembic.command.revision" title="alembic.command.revision"><code class="xref py py-func docutils literal notranslate"><span class="pre">command.revision()</span></code></a>, essentially produces a single migration
+script after being run.  Whether or not the <code class="docutils literal notranslate"><span class="pre">--autogenerate</span></code> option
+was specified basically determines if this script is a blank revision
+script with empty <code class="docutils literal notranslate"><span class="pre">upgrade()</span></code> and <code class="docutils literal notranslate"><span class="pre">downgrade()</span></code> functions, or was
+produced with alembic operation directives as the result of autogenerate.</p>
+<p>In either case, the system creates a full plan of what is to be done
+in the form of a <a class="reference internal" href="operations.html#alembic.operations.ops.MigrateOperation" title="alembic.operations.ops.MigrateOperation"><code class="xref py py-class docutils literal notranslate"><span class="pre">MigrateOperation</span></code></a> structure, which is then
+used to produce the script.</p>
+<p>For example, suppose we ran <code class="docutils literal notranslate"><span class="pre">alembic</span> <span class="pre">revision</span> <span class="pre">--autogenerate</span></code>, and the
+end result was that it produced a new revision <code class="docutils literal notranslate"><span class="pre">'eced083f5df'</span></code>
+with the following contents:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;create the organization table.&quot;&quot;&quot;</span>
+
+<span class="c1"># revision identifiers, used by Alembic.</span>
+<span class="n">revision</span> <span class="o">=</span> <span class="s1">&#39;eced083f5df&#39;</span>
+<span class="n">down_revision</span> <span class="o">=</span> <span class="s1">&#39;beafc7d709f&#39;</span>
+
+<span class="kn">from</span> <span class="nn">alembic</span> <span class="k">import</span> <span class="n">op</span>
+<span class="kn">import</span> <span class="nn">sqlalchemy</span> <span class="k">as</span> <span class="nn">sa</span>
+
+
+<span class="k">def</span> <span class="nf">upgrade</span><span class="p">():</span>
+    <span class="n">op</span><span class="o">.</span><span class="n">create_table</span><span class="p">(</span>
+        <span class="s1">&#39;organization&#39;</span><span class="p">,</span>
+        <span class="n">sa</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="n">sa</span><span class="o">.</span><span class="n">Integer</span><span class="p">(),</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+        <span class="n">sa</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="n">sa</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="mi">50</span><span class="p">),</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="p">)</span>
+    <span class="n">op</span><span class="o">.</span><span class="n">add_column</span><span class="p">(</span>
+        <span class="s1">&#39;user&#39;</span><span class="p">,</span>
+        <span class="n">sa</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s1">&#39;organization_id&#39;</span><span class="p">,</span> <span class="n">sa</span><span class="o">.</span><span class="n">Integer</span><span class="p">())</span>
+    <span class="p">)</span>
+    <span class="n">op</span><span class="o">.</span><span class="n">create_foreign_key</span><span class="p">(</span>
+        <span class="s1">&#39;org_fk&#39;</span><span class="p">,</span> <span class="s1">&#39;user&#39;</span><span class="p">,</span> <span class="s1">&#39;organization&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;organization_id&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span>
+    <span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">downgrade</span><span class="p">():</span>
+    <span class="n">op</span><span class="o">.</span><span class="n">drop_constraint</span><span class="p">(</span><span class="s1">&#39;org_fk&#39;</span><span class="p">,</span> <span class="s1">&#39;user&#39;</span><span class="p">)</span>
+    <span class="n">op</span><span class="o">.</span><span class="n">drop_column</span><span class="p">(</span><span class="s1">&#39;user&#39;</span><span class="p">,</span> <span class="s1">&#39;organization_id&#39;</span><span class="p">)</span>
+    <span class="n">op</span><span class="o">.</span><span class="n">drop_table</span><span class="p">(</span><span class="s1">&#39;organization&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The above script is generated by a <a class="reference internal" href="operations.html#alembic.operations.ops.MigrateOperation" title="alembic.operations.ops.MigrateOperation"><code class="xref py py-class docutils literal notranslate"><span class="pre">MigrateOperation</span></code></a> structure
+that looks like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">alembic.operations</span> <span class="k">import</span> <span class="n">ops</span>
+<span class="kn">import</span> <span class="nn">sqlalchemy</span> <span class="k">as</span> <span class="nn">sa</span>
+
+<span class="n">migration_script</span> <span class="o">=</span> <span class="n">ops</span><span class="o">.</span><span class="n">MigrationScript</span><span class="p">(</span>
+    <span class="s1">&#39;eced083f5df&#39;</span><span class="p">,</span>
+    <span class="n">ops</span><span class="o">.</span><span class="n">UpgradeOps</span><span class="p">(</span>
+        <span class="n">ops</span><span class="o">=</span><span class="p">[</span>
+            <span class="n">ops</span><span class="o">.</span><span class="n">CreateTableOp</span><span class="p">(</span>
+                <span class="s1">&#39;organization&#39;</span><span class="p">,</span>
+                <span class="p">[</span>
+                    <span class="n">sa</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="n">sa</span><span class="o">.</span><span class="n">Integer</span><span class="p">(),</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+                    <span class="n">sa</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="n">sa</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="mi">50</span><span class="p">),</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                <span class="p">]</span>
+            <span class="p">),</span>
+            <span class="n">ops</span><span class="o">.</span><span class="n">ModifyTableOps</span><span class="p">(</span>
+                <span class="s1">&#39;user&#39;</span><span class="p">,</span>
+                <span class="n">ops</span><span class="o">=</span><span class="p">[</span>
+                    <span class="n">ops</span><span class="o">.</span><span class="n">AddColumnOp</span><span class="p">(</span>
+                        <span class="s1">&#39;user&#39;</span><span class="p">,</span>
+                        <span class="n">sa</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s1">&#39;organization_id&#39;</span><span class="p">,</span> <span class="n">sa</span><span class="o">.</span><span class="n">Integer</span><span class="p">())</span>
+                    <span class="p">),</span>
+                    <span class="n">ops</span><span class="o">.</span><span class="n">CreateForeignKeyOp</span><span class="p">(</span>
+                        <span class="s1">&#39;org_fk&#39;</span><span class="p">,</span> <span class="s1">&#39;user&#39;</span><span class="p">,</span> <span class="s1">&#39;organization&#39;</span><span class="p">,</span>
+                        <span class="p">[</span><span class="s1">&#39;organization_id&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span>
+                    <span class="p">)</span>
+                <span class="p">]</span>
+            <span class="p">)</span>
+        <span class="p">]</span>
+    <span class="p">),</span>
+    <span class="n">ops</span><span class="o">.</span><span class="n">DowngradeOps</span><span class="p">(</span>
+        <span class="n">ops</span><span class="o">=</span><span class="p">[</span>
+            <span class="n">ops</span><span class="o">.</span><span class="n">ModifyTableOps</span><span class="p">(</span>
+                <span class="s1">&#39;user&#39;</span><span class="p">,</span>
+                <span class="n">ops</span><span class="o">=</span><span class="p">[</span>
+                    <span class="n">ops</span><span class="o">.</span><span class="n">DropConstraintOp</span><span class="p">(</span><span class="s1">&#39;org_fk&#39;</span><span class="p">,</span> <span class="s1">&#39;user&#39;</span><span class="p">),</span>
+                    <span class="n">ops</span><span class="o">.</span><span class="n">DropColumnOp</span><span class="p">(</span><span class="s1">&#39;user&#39;</span><span class="p">,</span> <span class="s1">&#39;organization_id&#39;</span><span class="p">)</span>
+                <span class="p">]</span>
+            <span class="p">),</span>
+            <span class="n">ops</span><span class="o">.</span><span class="n">DropTableOp</span><span class="p">(</span><span class="s1">&#39;organization&#39;</span><span class="p">)</span>
+        <span class="p">]</span>
+    <span class="p">),</span>
+    <span class="n">message</span><span class="o">=</span><span class="s1">&#39;create the organization table.&#39;</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>When we deal with a <a class="reference internal" href="operations.html#alembic.operations.ops.MigrationScript" title="alembic.operations.ops.MigrationScript"><code class="xref py py-class docutils literal notranslate"><span class="pre">MigrationScript</span></code></a> structure, we can render
+the upgrade/downgrade sections into strings for debugging purposes
+using the <a class="reference internal" href="#alembic.autogenerate.render_python_code" title="alembic.autogenerate.render_python_code"><code class="xref py py-func docutils literal notranslate"><span class="pre">render_python_code()</span></code></a> helper function:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">alembic.autogenerate</span> <span class="k">import</span> <span class="n">render_python_code</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">render_python_code</span><span class="p">(</span><span class="n">migration_script</span><span class="o">.</span><span class="n">upgrade_ops</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>Renders:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">### commands auto generated by Alembic - please adjust! ###</span>
+    <span class="n">op</span><span class="o">.</span><span class="n">create_table</span><span class="p">(</span><span class="s1">&#39;organization&#39;</span><span class="p">,</span>
+    <span class="n">sa</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="n">sa</span><span class="o">.</span><span class="n">Integer</span><span class="p">(),</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
+    <span class="n">sa</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="n">sa</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="n">length</span><span class="o">=</span><span class="mi">50</span><span class="p">),</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
+    <span class="n">sa</span><span class="o">.</span><span class="n">PrimaryKeyConstraint</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">)</span>
+    <span class="p">)</span>
+    <span class="n">op</span><span class="o">.</span><span class="n">add_column</span><span class="p">(</span><span class="s1">&#39;user&#39;</span><span class="p">,</span> <span class="n">sa</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s1">&#39;organization_id&#39;</span><span class="p">,</span> <span class="n">sa</span><span class="o">.</span><span class="n">Integer</span><span class="p">(),</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+    <span class="n">op</span><span class="o">.</span><span class="n">create_foreign_key</span><span class="p">(</span><span class="s1">&#39;org_fk&#39;</span><span class="p">,</span> <span class="s1">&#39;user&#39;</span><span class="p">,</span> <span class="s1">&#39;organization&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;organization_id&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">])</span>
+    <span class="c1">### end Alembic commands ###</span>
+</pre></div>
+</div>
+<p>Given that structures like the above are used to generate new revision
+files, and that we’d like to be able to alter these as they are created,
+we then need a system to access this structure when the
+<a class="reference internal" href="commands.html#alembic.command.revision" title="alembic.command.revision"><code class="xref py py-func docutils literal notranslate"><span class="pre">command.revision()</span></code></a> command is used.  The
+<a class="reference internal" href="runtime.html#alembic.runtime.environment.EnvironmentContext.configure.params.process_revision_directives" title="alembic.runtime.environment.EnvironmentContext.configure"><code class="xref py py-paramref docutils literal notranslate"><span class="pre">EnvironmentContext.configure.process_revision_directives</span></code></a>
+parameter gives us a way to alter this.   This is a function that
+is passed the above structure as generated by Alembic, giving us a chance
+to alter it.
+For example, if we wanted to put all the “upgrade” operations into
+a certain branch, and we wanted our script to not have any “downgrade”
+operations at all, we could build an extension as follows, illustrated
+within an <code class="docutils literal notranslate"><span class="pre">env.py</span></code> script:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">process_revision_directives</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">revision</span><span class="p">,</span> <span class="n">directives</span><span class="p">):</span>
+    <span class="n">script</span> <span class="o">=</span> <span class="n">directives</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="c1"># set specific branch</span>
+    <span class="n">script</span><span class="o">.</span><span class="n">head</span> <span class="o">=</span> <span class="s2">&quot;mybranch@head&quot;</span>
+
+    <span class="c1"># erase downgrade operations</span>
+    <span class="n">script</span><span class="o">.</span><span class="n">downgrade_ops</span><span class="o">.</span><span class="n">ops</span><span class="p">[:]</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="c1"># ...</span>
+
+<span class="k">def</span> <span class="nf">run_migrations_online</span><span class="p">():</span>
+
+    <span class="c1"># ...</span>
+    <span class="k">with</span> <span class="n">engine</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span> <span class="k">as</span> <span class="n">connection</span><span class="p">:</span>
+
+        <span class="n">context</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span>
+            <span class="n">connection</span><span class="o">=</span><span class="n">connection</span><span class="p">,</span>
+            <span class="n">target_metadata</span><span class="o">=</span><span class="n">target_metadata</span><span class="p">,</span>
+            <span class="n">process_revision_directives</span><span class="o">=</span><span class="n">process_revision_directives</span><span class="p">)</span>
+
+        <span class="k">with</span> <span class="n">context</span><span class="o">.</span><span class="n">begin_transaction</span><span class="p">():</span>
+            <span class="n">context</span><span class="o">.</span><span class="n">run_migrations</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Above, the <code class="docutils literal notranslate"><span class="pre">directives</span></code> argument is a Python list.  We may alter the
+given structure within this list in-place, or replace it with a new
+structure consisting of zero or more <a class="reference internal" href="operations.html#alembic.operations.ops.MigrationScript" title="alembic.operations.ops.MigrationScript"><code class="xref py py-class docutils literal notranslate"><span class="pre">MigrationScript</span></code></a> directives.
+The <a class="reference internal" href="commands.html#alembic.command.revision" title="alembic.command.revision"><code class="xref py py-func docutils literal notranslate"><span class="pre">command.revision()</span></code></a> command will then produce scripts corresponding
+to whatever is in this list.</p>
+<dl class="function">
+<dt id="alembic.autogenerate.render_python_code">
+<code class="sig-prename descclassname">alembic.autogenerate.</code><code class="sig-name descname">render_python_code</code><span class="sig-paren">(</span><em class="sig-param">up_or_down_op</em>, <em class="sig-param">sqlalchemy_module_prefix='sa.'</em>, <em class="sig-param">alembic_module_prefix='op.'</em>, <em class="sig-param">render_as_batch=False</em>, <em class="sig-param">imports=()</em>, <em class="sig-param">render_item=None</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.autogenerate.render_python_code" title="Permalink to this definition">¶</a></dt>
+<dd><p>Render Python code given an <a class="reference internal" href="operations.html#alembic.operations.ops.UpgradeOps" title="alembic.operations.ops.UpgradeOps"><code class="xref py py-class docutils literal notranslate"><span class="pre">UpgradeOps</span></code></a> or
+<a class="reference internal" href="operations.html#alembic.operations.ops.DowngradeOps" title="alembic.operations.ops.DowngradeOps"><code class="xref py py-class docutils literal notranslate"><span class="pre">DowngradeOps</span></code></a> object.</p>
+<p>This is a convenience function that can be used to test the
+autogenerate output of a user-defined <a class="reference internal" href="operations.html#alembic.operations.ops.MigrationScript" title="alembic.operations.ops.MigrationScript"><code class="xref py py-class docutils literal notranslate"><span class="pre">MigrationScript</span></code></a> structure.</p>
+</dd></dl>
+
+<div class="section" id="fine-grained-autogenerate-generation-with-rewriters">
+<span id="autogen-rewriter"></span><h3>Fine-Grained Autogenerate Generation with Rewriters<a class="headerlink" href="#fine-grained-autogenerate-generation-with-rewriters" title="Permalink to this headline">¶</a></h3>
+<p>The preceding example illustrated how we can make a simple change to the
+structure of the operation directives to produce new autogenerate output.
+For the case where we want to affect very specific parts of the autogenerate
+stream, we can make a function for
+<a class="reference internal" href="runtime.html#alembic.runtime.environment.EnvironmentContext.configure.params.process_revision_directives" title="alembic.runtime.environment.EnvironmentContext.configure"><code class="xref py py-paramref docutils literal notranslate"><span class="pre">EnvironmentContext.configure.process_revision_directives</span></code></a>
+which traverses through the whole <a class="reference internal" href="operations.html#alembic.operations.ops.MigrationScript" title="alembic.operations.ops.MigrationScript"><code class="xref py py-class docutils literal notranslate"><span class="pre">MigrationScript</span></code></a> structure, locates
+the elements we care about and modifies them in-place as needed.  However,
+to reduce the boilerplate associated with this task, we can use the
+<a class="reference internal" href="#alembic.autogenerate.rewriter.Rewriter" title="alembic.autogenerate.rewriter.Rewriter"><code class="xref py py-class docutils literal notranslate"><span class="pre">Rewriter</span></code></a> object to make this easier.  <a class="reference internal" href="#alembic.autogenerate.rewriter.Rewriter" title="alembic.autogenerate.rewriter.Rewriter"><code class="xref py py-class docutils literal notranslate"><span class="pre">Rewriter</span></code></a> gives
+us an object that we can pass directly to
+<a class="reference internal" href="runtime.html#alembic.runtime.environment.EnvironmentContext.configure.params.process_revision_directives" title="alembic.runtime.environment.EnvironmentContext.configure"><code class="xref py py-paramref docutils literal notranslate"><span class="pre">EnvironmentContext.configure.process_revision_directives</span></code></a> which
+we can also attach handler functions onto, keyed to specific types of
+constructs.</p>
+<p>Below is an example where we rewrite <a class="reference internal" href="operations.html#alembic.operations.ops.AddColumnOp" title="alembic.operations.ops.AddColumnOp"><code class="xref py py-class docutils literal notranslate"><span class="pre">ops.AddColumnOp</span></code></a> directives;
+based on whether or not the new column is “nullable”, we either return
+the existing directive, or we return the existing directive with
+the nullable flag changed, inside of a list with a second directive
+to alter the nullable flag in a second step:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># ... fragmented env.py script ....</span>
+
+<span class="kn">from</span> <span class="nn">alembic.autogenerate</span> <span class="k">import</span> <span class="n">rewriter</span>
+<span class="kn">from</span> <span class="nn">alembic.operations</span> <span class="k">import</span> <span class="n">ops</span>
+
+<span class="n">writer</span> <span class="o">=</span> <span class="n">rewriter</span><span class="o">.</span><span class="n">Rewriter</span><span class="p">()</span>
+
+<span class="nd">@writer</span><span class="o">.</span><span class="n">rewrites</span><span class="p">(</span><span class="n">ops</span><span class="o">.</span><span class="n">AddColumnOp</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">add_column</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">revision</span><span class="p">,</span> <span class="n">op</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">op</span><span class="o">.</span><span class="n">column</span><span class="o">.</span><span class="n">nullable</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">op</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">op</span><span class="o">.</span><span class="n">column</span><span class="o">.</span><span class="n">nullable</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">return</span> <span class="p">[</span>
+            <span class="n">op</span><span class="p">,</span>
+            <span class="n">ops</span><span class="o">.</span><span class="n">AlterColumnOp</span><span class="p">(</span>
+                <span class="n">op</span><span class="o">.</span><span class="n">table_name</span><span class="p">,</span>
+                <span class="n">op</span><span class="o">.</span><span class="n">column</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                <span class="n">modify_nullable</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                <span class="n">existing_type</span><span class="o">=</span><span class="n">op</span><span class="o">.</span><span class="n">column</span><span class="o">.</span><span class="n">type</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="p">]</span>
+
+<span class="c1"># ... later ...</span>
+
+<span class="k">def</span> <span class="nf">run_migrations_online</span><span class="p">():</span>
+    <span class="c1"># ...</span>
+
+    <span class="k">with</span> <span class="n">connectable</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span> <span class="k">as</span> <span class="n">connection</span><span class="p">:</span>
+        <span class="n">context</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span>
+            <span class="n">connection</span><span class="o">=</span><span class="n">connection</span><span class="p">,</span>
+            <span class="n">target_metadata</span><span class="o">=</span><span class="n">target_metadata</span><span class="p">,</span>
+            <span class="n">process_revision_directives</span><span class="o">=</span><span class="n">writer</span>
+        <span class="p">)</span>
+
+        <span class="k">with</span> <span class="n">context</span><span class="o">.</span><span class="n">begin_transaction</span><span class="p">():</span>
+            <span class="n">context</span><span class="o">.</span><span class="n">run_migrations</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Above, in a full <a class="reference internal" href="operations.html#alembic.operations.ops.MigrationScript" title="alembic.operations.ops.MigrationScript"><code class="xref py py-class docutils literal notranslate"><span class="pre">ops.MigrationScript</span></code></a> structure, the
+<a class="reference internal" href="ddl.html#alembic.ddl.base.AddColumn" title="alembic.ddl.base.AddColumn"><code class="xref py py-class docutils literal notranslate"><span class="pre">AddColumn</span></code></a> directives would be present within
+the paths <code class="docutils literal notranslate"><span class="pre">MigrationScript-&gt;UpgradeOps-&gt;ModifyTableOps</span></code>
+and <code class="docutils literal notranslate"><span class="pre">MigrationScript-&gt;DowngradeOps-&gt;ModifyTableOps</span></code>.   The
+<a class="reference internal" href="#alembic.autogenerate.rewriter.Rewriter" title="alembic.autogenerate.rewriter.Rewriter"><code class="xref py py-class docutils literal notranslate"><span class="pre">Rewriter</span></code></a> handles traversing into these structures as well
+as rewriting them as needed so that we only need to code for the specific
+object we care about.</p>
+<dl class="class">
+<dt id="alembic.autogenerate.rewriter.Rewriter">
+<em class="property">class </em><code class="sig-prename descclassname">alembic.autogenerate.rewriter.</code><code class="sig-name descname">Rewriter</code><a class="headerlink" href="#alembic.autogenerate.rewriter.Rewriter" title="Permalink to this definition">¶</a></dt>
+<dd><p>A helper object that allows easy ‘rewriting’ of ops streams.</p>
+<p>The <a class="reference internal" href="#alembic.autogenerate.rewriter.Rewriter" title="alembic.autogenerate.rewriter.Rewriter"><code class="xref py py-class docutils literal notranslate"><span class="pre">Rewriter</span></code></a> object is intended to be passed along
+to the
+<a class="reference internal" href="runtime.html#alembic.runtime.environment.EnvironmentContext.configure.params.process_revision_directives" title="alembic.runtime.environment.EnvironmentContext.configure"><code class="xref py py-paramref docutils literal notranslate"><span class="pre">EnvironmentContext.configure.process_revision_directives</span></code></a>
+parameter in an <code class="docutils literal notranslate"><span class="pre">env.py</span></code> script.    Once constructed, any number
+of “rewrites” functions can be associated with it, which will be given
+the opportunity to modify the structure without having to have explicit
+knowledge of the overall structure.</p>
+<p>The function is passed the <a class="reference internal" href="runtime.html#alembic.runtime.migration.MigrationContext" title="alembic.runtime.migration.MigrationContext"><code class="xref py py-class docutils literal notranslate"><span class="pre">MigrationContext</span></code></a> object and
+<code class="docutils literal notranslate"><span class="pre">revision</span></code> tuple that are passed to the  <code class="xref py py-paramref docutils literal notranslate"><span class="pre">Environment</span>
+<span class="pre">Context.configure.process_revision_directives</span></code> function normally,
+and the third argument is an individual directive of the type
+noted in the decorator.  The function has the choice of  returning
+a single op directive, which normally can be the directive that
+was actually passed, or a new directive to replace it, or a list
+of zero or more directives to replace it.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#autogen-rewriter"><span class="std std-ref">Fine-Grained Autogenerate Generation with Rewriters</span></a> - usage example</p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 0.8.</span></p>
+</div>
+<dl class="method">
+<dt id="alembic.autogenerate.rewriter.Rewriter.chain">
+<code class="sig-name descname">chain</code><span class="sig-paren">(</span><em class="sig-param">other</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.autogenerate.rewriter.Rewriter.chain" title="Permalink to this definition">¶</a></dt>
+<dd><p>Produce a “chain” of this <a class="reference internal" href="#alembic.autogenerate.rewriter.Rewriter" title="alembic.autogenerate.rewriter.Rewriter"><code class="xref py py-class docutils literal notranslate"><span class="pre">Rewriter</span></code></a> to another.</p>
+<p>This allows two rewriters to operate serially on a stream,
+e.g.:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">writer1</span> <span class="o">=</span> <span class="n">autogenerate</span><span class="o">.</span><span class="n">Rewriter</span><span class="p">()</span>
+<span class="n">writer2</span> <span class="o">=</span> <span class="n">autogenerate</span><span class="o">.</span><span class="n">Rewriter</span><span class="p">()</span>
+
+<span class="nd">@writer1</span><span class="o">.</span><span class="n">rewrites</span><span class="p">(</span><span class="n">ops</span><span class="o">.</span><span class="n">AddColumnOp</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">add_column_nullable</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">revision</span><span class="p">,</span> <span class="n">op</span><span class="p">):</span>
+    <span class="n">op</span><span class="o">.</span><span class="n">column</span><span class="o">.</span><span class="n">nullable</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="k">return</span> <span class="n">op</span>
+
+<span class="nd">@writer2</span><span class="o">.</span><span class="n">rewrites</span><span class="p">(</span><span class="n">ops</span><span class="o">.</span><span class="n">AddColumnOp</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">add_column_idx</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">revision</span><span class="p">,</span> <span class="n">op</span><span class="p">):</span>
+    <span class="n">idx_op</span> <span class="o">=</span> <span class="n">ops</span><span class="o">.</span><span class="n">CreateIndexOp</span><span class="p">(</span>
+        <span class="s1">&#39;ixc&#39;</span><span class="p">,</span> <span class="n">op</span><span class="o">.</span><span class="n">table_name</span><span class="p">,</span> <span class="p">[</span><span class="n">op</span><span class="o">.</span><span class="n">column</span><span class="o">.</span><span class="n">name</span><span class="p">])</span>
+    <span class="k">return</span> <span class="p">[</span>
+        <span class="n">op</span><span class="p">,</span>
+        <span class="n">idx_op</span>
+    <span class="p">]</span>
+
+<span class="n">writer</span> <span class="o">=</span> <span class="n">writer1</span><span class="o">.</span><span class="n">chain</span><span class="p">(</span><span class="n">writer2</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><span class="target" id="alembic.autogenerate.rewriter.Rewriter.chain.params.other"></span><strong>other</strong><a class="paramlink headerlink reference internal" href="#alembic.autogenerate.rewriter.Rewriter.chain.params.other">¶</a> – a <a class="reference internal" href="#alembic.autogenerate.rewriter.Rewriter" title="alembic.autogenerate.rewriter.Rewriter"><code class="xref py py-class docutils literal notranslate"><span class="pre">Rewriter</span></code></a> instance</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a new <a class="reference internal" href="#alembic.autogenerate.rewriter.Rewriter" title="alembic.autogenerate.rewriter.Rewriter"><code class="xref py py-class docutils literal notranslate"><span class="pre">Rewriter</span></code></a> that will run the operations
+of this writer, then the “other” writer, in succession.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="alembic.autogenerate.rewriter.Rewriter.rewrites">
+<code class="sig-name descname">rewrites</code><span class="sig-paren">(</span><em class="sig-param">operator</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.autogenerate.rewriter.Rewriter.rewrites" title="Permalink to this definition">¶</a></dt>
+<dd><p>Register a function as rewriter for a given type.</p>
+<p>The function should receive three arguments, which are
+the <a class="reference internal" href="runtime.html#alembic.runtime.migration.MigrationContext" title="alembic.runtime.migration.MigrationContext"><code class="xref py py-class docutils literal notranslate"><span class="pre">MigrationContext</span></code></a>, a <code class="docutils literal notranslate"><span class="pre">revision</span></code> tuple, and
+an op directive of the type indicated.  E.g.:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@writer1</span><span class="o">.</span><span class="n">rewrites</span><span class="p">(</span><span class="n">ops</span><span class="o">.</span><span class="n">AddColumnOp</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">add_column_nullable</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">revision</span><span class="p">,</span> <span class="n">op</span><span class="p">):</span>
+    <span class="n">op</span><span class="o">.</span><span class="n">column</span><span class="o">.</span><span class="n">nullable</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="k">return</span> <span class="n">op</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="revision-generation-with-multiple-engines-run-migrations-calls">
+<span id="autogen-customizing-multiengine-revision"></span><h3>Revision Generation with Multiple Engines / <code class="docutils literal notranslate"><span class="pre">run_migrations()</span></code> calls<a class="headerlink" href="#revision-generation-with-multiple-engines-run-migrations-calls" title="Permalink to this headline">¶</a></h3>
+<p>A lesser-used technique which allows autogenerated migrations to run
+against multiple database backends at once, generating changes into
+a single migration script, is illustrated in the
+provided <code class="docutils literal notranslate"><span class="pre">multidb</span></code> template.  This template features a special <code class="docutils literal notranslate"><span class="pre">env.py</span></code>
+which iterates through multiple <a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/connections.html#sqlalchemy.engine.Engine" title="(in SQLAlchemy v1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Engine</span></code></a> instances
+and calls upon <a class="reference internal" href="runtime.html#alembic.runtime.migration.MigrationContext.run_migrations" title="alembic.runtime.migration.MigrationContext.run_migrations"><code class="xref py py-meth docutils literal notranslate"><span class="pre">MigrationContext.run_migrations()</span></code></a> for each:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">rec</span> <span class="ow">in</span> <span class="n">engines</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Migrating database </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">name</span><span class="p">)</span>
+    <span class="n">context</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span>
+        <span class="n">connection</span><span class="o">=</span><span class="n">rec</span><span class="p">[</span><span class="s1">&#39;connection&#39;</span><span class="p">],</span>
+        <span class="n">upgrade_token</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">_upgrades&quot;</span> <span class="o">%</span> <span class="n">name</span><span class="p">,</span>
+        <span class="n">downgrade_token</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">_downgrades&quot;</span> <span class="o">%</span> <span class="n">name</span><span class="p">,</span>
+        <span class="n">target_metadata</span><span class="o">=</span><span class="n">target_metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+    <span class="p">)</span>
+    <span class="n">context</span><span class="o">.</span><span class="n">run_migrations</span><span class="p">(</span><span class="n">engine_name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Above, <a class="reference internal" href="runtime.html#alembic.runtime.migration.MigrationContext.run_migrations" title="alembic.runtime.migration.MigrationContext.run_migrations"><code class="xref py py-meth docutils literal notranslate"><span class="pre">MigrationContext.run_migrations()</span></code></a> is run multiple times,
+once for each engine.  Within the context of autogeneration, each time
+the method is called the <a class="reference internal" href="runtime.html#alembic.runtime.environment.EnvironmentContext.configure.params.upgrade_token" title="alembic.runtime.environment.EnvironmentContext.configure"><code class="xref py py-paramref docutils literal notranslate"><span class="pre">upgrade_token</span></code></a>
+and <a class="reference internal" href="runtime.html#alembic.runtime.environment.EnvironmentContext.configure.params.downgrade_token" title="alembic.runtime.environment.EnvironmentContext.configure"><code class="xref py py-paramref docutils literal notranslate"><span class="pre">downgrade_token</span></code></a> parameters
+are changed, so that the collection of template variables gains distinct
+entries for each engine, which are then referred to explicitly
+within <code class="docutils literal notranslate"><span class="pre">script.py.mako</span></code>.</p>
+<p>In terms of the
+<a class="reference internal" href="runtime.html#alembic.runtime.environment.EnvironmentContext.configure.params.process_revision_directives" title="alembic.runtime.environment.EnvironmentContext.configure"><code class="xref py py-paramref docutils literal notranslate"><span class="pre">EnvironmentContext.configure.process_revision_directives</span></code></a> hook,
+the behavior here is that the <code class="docutils literal notranslate"><span class="pre">process_revision_directives</span></code> hook
+is invoked <strong>multiple times, once for each call to
+context.run_migrations()</strong>.  This means that if
+a multi-<code class="docutils literal notranslate"><span class="pre">run_migrations()</span></code> approach is to be combined with the
+<code class="docutils literal notranslate"><span class="pre">process_revision_directives</span></code> hook, care must be taken to use the
+hook appropriately.</p>
+<p>The first point to note is that when a <strong>second</strong> call to
+<code class="docutils literal notranslate"><span class="pre">run_migrations()</span></code> occurs, the <code class="docutils literal notranslate"><span class="pre">.upgrade_ops</span></code> and <code class="docutils literal notranslate"><span class="pre">.downgrade_ops</span></code>
+attributes are <strong>converted into Python lists</strong>, and new
+<a class="reference internal" href="operations.html#alembic.operations.ops.UpgradeOps" title="alembic.operations.ops.UpgradeOps"><code class="xref py py-class docutils literal notranslate"><span class="pre">UpgradeOps</span></code></a> and <a class="reference internal" href="operations.html#alembic.operations.ops.DowngradeOps" title="alembic.operations.ops.DowngradeOps"><code class="xref py py-class docutils literal notranslate"><span class="pre">DowngradeOps</span></code></a> objects are appended
+to these lists.   Each <a class="reference internal" href="operations.html#alembic.operations.ops.UpgradeOps" title="alembic.operations.ops.UpgradeOps"><code class="xref py py-class docutils literal notranslate"><span class="pre">UpgradeOps</span></code></a> and <a class="reference internal" href="operations.html#alembic.operations.ops.DowngradeOps" title="alembic.operations.ops.DowngradeOps"><code class="xref py py-class docutils literal notranslate"><span class="pre">DowngradeOps</span></code></a>
+object maintains an <code class="docutils literal notranslate"><span class="pre">.upgrade_token</span></code> and a <code class="docutils literal notranslate"><span class="pre">.downgrade_token</span></code> attribute
+respectively, which serves to render their contents into the appropriate
+template token.</p>
+<p>For example, a multi-engine run that has the engine names <code class="docutils literal notranslate"><span class="pre">engine1</span></code>
+and <code class="docutils literal notranslate"><span class="pre">engine2</span></code> will generate tokens of <code class="docutils literal notranslate"><span class="pre">engine1_upgrades</span></code>,
+<code class="docutils literal notranslate"><span class="pre">engine1_downgrades</span></code>, <code class="docutils literal notranslate"><span class="pre">engine2_upgrades</span></code> and <code class="docutils literal notranslate"><span class="pre">engine2_downgrades</span></code> as
+it runs.  The resulting migration structure would look like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">alembic.operations</span> <span class="k">import</span> <span class="n">ops</span>
+<span class="kn">import</span> <span class="nn">sqlalchemy</span> <span class="k">as</span> <span class="nn">sa</span>
+
+<span class="n">migration_script</span> <span class="o">=</span> <span class="n">ops</span><span class="o">.</span><span class="n">MigrationScript</span><span class="p">(</span>
+    <span class="s1">&#39;eced083f5df&#39;</span><span class="p">,</span>
+    <span class="p">[</span>
+        <span class="n">ops</span><span class="o">.</span><span class="n">UpgradeOps</span><span class="p">(</span>
+            <span class="n">ops</span><span class="o">=</span><span class="p">[</span>
+                <span class="c1"># upgrade operations for &quot;engine1&quot;</span>
+            <span class="p">],</span>
+            <span class="n">upgrade_token</span><span class="o">=</span><span class="s2">&quot;engine1_upgrades&quot;</span>
+        <span class="p">),</span>
+        <span class="n">ops</span><span class="o">.</span><span class="n">UpgradeOps</span><span class="p">(</span>
+            <span class="n">ops</span><span class="o">=</span><span class="p">[</span>
+                <span class="c1"># upgrade operations for &quot;engine2&quot;</span>
+            <span class="p">],</span>
+            <span class="n">upgrade_token</span><span class="o">=</span><span class="s2">&quot;engine2_upgrades&quot;</span>
+        <span class="p">),</span>
+    <span class="p">],</span>
+    <span class="p">[</span>
+        <span class="n">ops</span><span class="o">.</span><span class="n">DowngradeOps</span><span class="p">(</span>
+            <span class="n">ops</span><span class="o">=</span><span class="p">[</span>
+                <span class="c1"># downgrade operations for &quot;engine1&quot;</span>
+            <span class="p">],</span>
+            <span class="n">downgrade_token</span><span class="o">=</span><span class="s2">&quot;engine1_downgrades&quot;</span>
+        <span class="p">),</span>
+        <span class="n">ops</span><span class="o">.</span><span class="n">DowngradeOps</span><span class="p">(</span>
+            <span class="n">ops</span><span class="o">=</span><span class="p">[</span>
+                <span class="c1"># downgrade operations for &quot;engine2&quot;</span>
+            <span class="p">],</span>
+            <span class="n">downgrade_token</span><span class="o">=</span><span class="s2">&quot;engine2_downgrades&quot;</span>
+        <span class="p">)</span>
+    <span class="p">],</span>
+    <span class="n">message</span><span class="o">=</span><span class="s1">&#39;migration message&#39;</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>Given the above, the following guidelines should be considered when
+the <code class="docutils literal notranslate"><span class="pre">env.py</span></code> script calls upon <a class="reference internal" href="runtime.html#alembic.runtime.migration.MigrationContext.run_migrations" title="alembic.runtime.migration.MigrationContext.run_migrations"><code class="xref py py-meth docutils literal notranslate"><span class="pre">MigrationContext.run_migrations()</span></code></a>
+mutiple times when running autogenerate:</p>
+<ul class="simple">
+<li><p>If the <code class="docutils literal notranslate"><span class="pre">process_revision_directives</span></code> hook aims to <strong>add elements
+based on inspection of the current database /
+connection</strong>, it should do its operation <strong>on each iteration</strong>.  This is
+so that each time the hook runs, the database is available.</p></li>
+<li><p>Alternatively, if the <code class="docutils literal notranslate"><span class="pre">process_revision_directives</span></code> hook aims to
+<strong>modify the list of migration directives in place</strong>, this should
+be called <strong>only on the last iteration</strong>.  This is so that the hook
+isn’t being given an ever-growing structure each time which it has already
+modified previously.</p></li>
+<li><p>The <a class="reference internal" href="#alembic.autogenerate.rewriter.Rewriter" title="alembic.autogenerate.rewriter.Rewriter"><code class="xref py py-class docutils literal notranslate"><span class="pre">Rewriter</span></code></a> object, if used, should be called <strong>only on the
+last iteration</strong>, because it will always deliver all directives every time,
+so again to avoid double/triple/etc. processing of directives it should
+be called only when the structure is complete.</p></li>
+<li><p>The <code class="xref py py-attr docutils literal notranslate"><span class="pre">MigrationScript.upgrade_ops_list</span></code> and
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">MigrationScript.downgrade_ops_list</span></code> attributes should be consulted
+when referring to the collection of <a class="reference internal" href="operations.html#alembic.operations.ops.UpgradeOps" title="alembic.operations.ops.UpgradeOps"><code class="xref py py-class docutils literal notranslate"><span class="pre">UpgradeOps</span></code></a> and
+<a class="reference internal" href="operations.html#alembic.operations.ops.DowngradeOps" title="alembic.operations.ops.DowngradeOps"><code class="xref py py-class docutils literal notranslate"><span class="pre">DowngradeOps</span></code></a> objects.</p></li>
+</ul>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 0.8.1: </span>- multiple calls to
+<a class="reference internal" href="runtime.html#alembic.runtime.migration.MigrationContext.run_migrations" title="alembic.runtime.migration.MigrationContext.run_migrations"><code class="xref py py-meth docutils literal notranslate"><span class="pre">MigrationContext.run_migrations()</span></code></a> within an autogenerate operation,
+such as that proposed within the <code class="docutils literal notranslate"><span class="pre">multidb</span></code> script template,
+are now accommodated by the new extensible migration system
+introduced in 0.8.0.</p>
+</div>
+</div>
+</div>
+<div class="section" id="autogenerating-custom-operation-directives">
+<span id="autogen-custom-ops"></span><h2>Autogenerating Custom Operation Directives<a class="headerlink" href="#autogenerating-custom-operation-directives" title="Permalink to this headline">¶</a></h2>
+<p>In the section <a class="reference internal" href="operations.html#operation-plugins"><span class="std std-ref">Operation Plugins</span></a>, we talked about adding new
+subclasses of <a class="reference internal" href="operations.html#alembic.operations.ops.MigrateOperation" title="alembic.operations.ops.MigrateOperation"><code class="xref py py-class docutils literal notranslate"><span class="pre">MigrateOperation</span></code></a> in order to add new <code class="docutils literal notranslate"><span class="pre">op.</span></code>
+directives.  In the preceding section <a class="reference internal" href="#customizing-revision"><span class="std std-ref">Customizing Revision Generation</span></a>, we
+also learned that these same <a class="reference internal" href="operations.html#alembic.operations.ops.MigrateOperation" title="alembic.operations.ops.MigrateOperation"><code class="xref py py-class docutils literal notranslate"><span class="pre">MigrateOperation</span></code></a> structures are at
+the base of how the autogenerate system knows what Python code to render.
+Using this knowledge, we can create additional functions that plug into
+the autogenerate system so that our new operations can be generated
+into migration scripts when <code class="docutils literal notranslate"><span class="pre">alembic</span> <span class="pre">revision</span> <span class="pre">--autogenerate</span></code> is run.</p>
+<p>The following sections will detail an example of this using the
+the <code class="docutils literal notranslate"><span class="pre">CreateSequenceOp</span></code> and <code class="docutils literal notranslate"><span class="pre">DropSequenceOp</span></code> directives
+we created in <a class="reference internal" href="operations.html#operation-plugins"><span class="std std-ref">Operation Plugins</span></a>, which correspond to the
+SQLAlchemy <a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/defaults.html#sqlalchemy.schema.Sequence" title="(in SQLAlchemy v1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a> construct.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 0.8.0: </span>- custom operations can be added to the
+autogenerate system to support new kinds of database objects.</p>
+</div>
+<div class="section" id="tracking-our-object-with-the-model">
+<h3>Tracking our Object with the Model<a class="headerlink" href="#tracking-our-object-with-the-model" title="Permalink to this headline">¶</a></h3>
+<p>The basic job of an autogenerate comparison function is to inspect
+a series of objects in the database and compare them against a series
+of objects defined in our model.  By “in our model”, we mean anything
+defined in Python code that we want to track, however most commonly
+we’re talking about a series of <a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/metadata.html#sqlalchemy.schema.Table" title="(in SQLAlchemy v1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Table</span></code></a>
+objects present in a <a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/metadata.html#sqlalchemy.schema.MetaData" title="(in SQLAlchemy v1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">MetaData</span></code></a> collection.</p>
+<p>Let’s propose a simple way of seeing what <a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/defaults.html#sqlalchemy.schema.Sequence" title="(in SQLAlchemy v1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a>
+objects we want to ensure exist in the database when autogenerate
+runs.  While these objects do have some integrations with
+<a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/metadata.html#sqlalchemy.schema.Table" title="(in SQLAlchemy v1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Table</span></code></a> and <a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/metadata.html#sqlalchemy.schema.MetaData" title="(in SQLAlchemy v1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">MetaData</span></code></a>
+already, let’s assume they don’t, as the example here intends to illustrate
+how we would do this for most any kind of custom construct.   We
+associate the object with the <code class="xref py py-attr docutils literal notranslate"><span class="pre">info</span></code>
+collection of <a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/metadata.html#sqlalchemy.schema.MetaData" title="(in SQLAlchemy v1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">MetaData</span></code></a>, which is a dictionary
+we can use for anything, which we also know will be passed to the autogenerate
+process:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sqlalchemy.schema</span> <span class="k">import</span> <span class="n">Sequence</span>
+
+<span class="k">def</span> <span class="nf">add_sequence_to_model</span><span class="p">(</span><span class="n">sequence</span><span class="p">,</span> <span class="n">metadata</span><span class="p">):</span>
+    <span class="n">metadata</span><span class="o">.</span><span class="n">info</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;sequences&quot;</span><span class="p">,</span> <span class="nb">set</span><span class="p">())</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
+        <span class="p">(</span><span class="n">sequence</span><span class="o">.</span><span class="n">schema</span><span class="p">,</span> <span class="n">sequence</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+    <span class="p">)</span>
+
+<span class="n">my_seq</span> <span class="o">=</span> <span class="n">Sequence</span><span class="p">(</span><span class="s2">&quot;my_sequence&quot;</span><span class="p">)</span>
+<span class="n">add_sequence_to_model</span><span class="p">(</span><span class="n">my_seq</span><span class="p">,</span> <span class="n">model_metadata</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The <code class="xref py py-attr docutils literal notranslate"><span class="pre">info</span></code>
+dictionary is a good place to put things that we want our autogeneration
+routines to be able to locate, which can include any object such as
+custom DDL objects representing views, triggers, special constraints,
+or anything else we want to support.</p>
+</div>
+<div class="section" id="registering-a-comparison-function">
+<h3>Registering a Comparison Function<a class="headerlink" href="#registering-a-comparison-function" title="Permalink to this headline">¶</a></h3>
+<p>We now need to register a comparison hook, which will be used
+to compare the database to our model and produce <code class="docutils literal notranslate"><span class="pre">CreateSequenceOp</span></code>
+and <code class="docutils literal notranslate"><span class="pre">DropSequenceOp</span></code> directives to be included in our migration
+script.  Note that we are assuming a
+Postgresql backend:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">alembic.autogenerate</span> <span class="k">import</span> <span class="n">comparators</span>
+
+<span class="nd">@comparators</span><span class="o">.</span><span class="n">dispatch_for</span><span class="p">(</span><span class="s2">&quot;schema&quot;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">compare_sequences</span><span class="p">(</span><span class="n">autogen_context</span><span class="p">,</span> <span class="n">upgrade_ops</span><span class="p">,</span> <span class="n">schemas</span><span class="p">):</span>
+    <span class="n">all_conn_sequences</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+
+    <span class="k">for</span> <span class="n">sch</span> <span class="ow">in</span> <span class="n">schemas</span><span class="p">:</span>
+
+        <span class="n">all_conn_sequences</span><span class="o">.</span><span class="n">update</span><span class="p">([</span>
+            <span class="p">(</span><span class="n">sch</span><span class="p">,</span> <span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span>
+            <span class="n">autogen_context</span><span class="o">.</span><span class="n">connection</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+                <span class="s2">&quot;SELECT relname FROM pg_class c join &quot;</span>
+                <span class="s2">&quot;pg_namespace n on n.oid=c.relnamespace where &quot;</span>
+                <span class="s2">&quot;relkind=&#39;S&#39; and n.nspname=</span><span class="si">%(nspname)s</span><span class="s2">&quot;</span><span class="p">,</span>
+
+                <span class="c1"># note that we consider a schema of &#39;None&#39; in our</span>
+                <span class="c1"># model to be the &quot;default&quot; name in the PG database;</span>
+                <span class="c1"># this usually is the name &#39;public&#39;</span>
+                <span class="n">nspname</span><span class="o">=</span><span class="n">autogen_context</span><span class="o">.</span><span class="n">dialect</span><span class="o">.</span><span class="n">default_schema_name</span>
+                <span class="k">if</span> <span class="n">sch</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">sch</span>
+            <span class="p">)</span>
+        <span class="p">])</span>
+
+    <span class="c1"># get the collection of Sequence objects we&#39;re storing with</span>
+    <span class="c1"># our MetaData</span>
+    <span class="n">metadata_sequences</span> <span class="o">=</span> <span class="n">autogen_context</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">info</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span>
+        <span class="s2">&quot;sequences&quot;</span><span class="p">,</span> <span class="nb">set</span><span class="p">())</span>
+
+    <span class="c1"># for new names, produce CreateSequenceOp directives</span>
+    <span class="k">for</span> <span class="n">sch</span><span class="p">,</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">metadata_sequences</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="n">all_conn_sequences</span><span class="p">):</span>
+        <span class="n">upgrade_ops</span><span class="o">.</span><span class="n">ops</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="n">CreateSequenceOp</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">schema</span><span class="o">=</span><span class="n">sch</span><span class="p">)</span>
+        <span class="p">)</span>
+
+    <span class="c1"># for names that are going away, produce DropSequenceOp</span>
+    <span class="c1"># directives</span>
+    <span class="k">for</span> <span class="n">sch</span><span class="p">,</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">all_conn_sequences</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="n">metadata_sequences</span><span class="p">):</span>
+        <span class="n">upgrade_ops</span><span class="o">.</span><span class="n">ops</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="n">DropSequenceOp</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">schema</span><span class="o">=</span><span class="n">sch</span><span class="p">)</span>
+        <span class="p">)</span>
+</pre></div>
+</div>
+<p>Above, we’ve built a new function <code class="docutils literal notranslate"><span class="pre">compare_sequences()</span></code> and registered
+it as a “schema” level comparison function with autogenerate.   The
+job that it performs is that it compares the list of sequence names
+present in each database schema with that of a list of sequence names
+that we are maintaining in our <a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/metadata.html#sqlalchemy.schema.MetaData" title="(in SQLAlchemy v1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">MetaData</span></code></a> object.</p>
+<p>When autogenerate completes, it will have a series of
+<code class="docutils literal notranslate"><span class="pre">CreateSequenceOp</span></code> and <code class="docutils literal notranslate"><span class="pre">DropSequenceOp</span></code> directives in the list of
+“upgrade” operations;  the list of “downgrade” operations is generated
+directly from these using the
+<code class="docutils literal notranslate"><span class="pre">CreateSequenceOp.reverse()</span></code> and <code class="docutils literal notranslate"><span class="pre">DropSequenceOp.reverse()</span></code> methods
+that we’ve implemented on these objects.</p>
+<p>The registration of our function at the scope of “schema” means our
+autogenerate comparison function is called outside of the context
+of any specific table or column.  The three available scopes
+are “schema”, “table”, and “column”, summarized as follows:</p>
+<ul>
+<li><p><strong>Schema level</strong> - these hooks are passed a <a class="reference internal" href="#alembic.autogenerate.api.AutogenContext" title="alembic.autogenerate.api.AutogenContext"><code class="xref py py-class docutils literal notranslate"><span class="pre">AutogenContext</span></code></a>,
+an <a class="reference internal" href="operations.html#alembic.operations.ops.UpgradeOps" title="alembic.operations.ops.UpgradeOps"><code class="xref py py-class docutils literal notranslate"><span class="pre">UpgradeOps</span></code></a> collection, and a collection of string schema
+names to be operated upon. If the
+<a class="reference internal" href="operations.html#alembic.operations.ops.UpgradeOps" title="alembic.operations.ops.UpgradeOps"><code class="xref py py-class docutils literal notranslate"><span class="pre">UpgradeOps</span></code></a> collection contains changes after all
+hooks are run, it is included in the migration script:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@comparators</span><span class="o">.</span><span class="n">dispatch_for</span><span class="p">(</span><span class="s2">&quot;schema&quot;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">compare_schema_level</span><span class="p">(</span><span class="n">autogen_context</span><span class="p">,</span> <span class="n">upgrade_ops</span><span class="p">,</span> <span class="n">schemas</span><span class="p">):</span>
+    <span class="k">pass</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Table level</strong> - these hooks are passed a <a class="reference internal" href="#alembic.autogenerate.api.AutogenContext" title="alembic.autogenerate.api.AutogenContext"><code class="xref py py-class docutils literal notranslate"><span class="pre">AutogenContext</span></code></a>,
+a <a class="reference internal" href="operations.html#alembic.operations.ops.ModifyTableOps" title="alembic.operations.ops.ModifyTableOps"><code class="xref py py-class docutils literal notranslate"><span class="pre">ModifyTableOps</span></code></a> collection, a schema name, table name,
+a <a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/metadata.html#sqlalchemy.schema.Table" title="(in SQLAlchemy v1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Table</span></code></a> reflected from the database if any
+or <code class="docutils literal notranslate"><span class="pre">None</span></code>, and a <a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/metadata.html#sqlalchemy.schema.Table" title="(in SQLAlchemy v1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Table</span></code></a> present in the
+local <a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/metadata.html#sqlalchemy.schema.MetaData" title="(in SQLAlchemy v1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">MetaData</span></code></a>.  If the
+<a class="reference internal" href="operations.html#alembic.operations.ops.ModifyTableOps" title="alembic.operations.ops.ModifyTableOps"><code class="xref py py-class docutils literal notranslate"><span class="pre">ModifyTableOps</span></code></a> collection contains changes after all
+hooks are run, it is included in the migration script:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@comparators</span><span class="o">.</span><span class="n">dispatch_for</span><span class="p">(</span><span class="s2">&quot;table&quot;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">compare_table_level</span><span class="p">(</span><span class="n">autogen_context</span><span class="p">,</span> <span class="n">modify_ops</span><span class="p">,</span>
+    <span class="n">schemaname</span><span class="p">,</span> <span class="n">tablename</span><span class="p">,</span> <span class="n">conn_table</span><span class="p">,</span> <span class="n">metadata_table</span><span class="p">):</span>
+    <span class="k">pass</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Column level</strong> - these hooks are passed a <a class="reference internal" href="#alembic.autogenerate.api.AutogenContext" title="alembic.autogenerate.api.AutogenContext"><code class="xref py py-class docutils literal notranslate"><span class="pre">AutogenContext</span></code></a>,
+an <a class="reference internal" href="operations.html#alembic.operations.ops.AlterColumnOp" title="alembic.operations.ops.AlterColumnOp"><code class="xref py py-class docutils literal notranslate"><span class="pre">AlterColumnOp</span></code></a> object, a schema name, table name,
+column name, a <a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/metadata.html#sqlalchemy.schema.Column" title="(in SQLAlchemy v1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Column</span></code></a> reflected from the
+database and a <a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/metadata.html#sqlalchemy.schema.Column" title="(in SQLAlchemy v1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Column</span></code></a> present in the
+local table.  If the <a class="reference internal" href="operations.html#alembic.operations.ops.AlterColumnOp" title="alembic.operations.ops.AlterColumnOp"><code class="xref py py-class docutils literal notranslate"><span class="pre">AlterColumnOp</span></code></a> contains changes after
+all hooks are run, it is included in the migration script;
+a “change” is considered to be present if any of the <code class="docutils literal notranslate"><span class="pre">modify_</span></code> attributes
+are set to a non-default value, or there are any keys
+in the <code class="docutils literal notranslate"><span class="pre">.kw</span></code> collection with the prefix <code class="docutils literal notranslate"><span class="pre">&quot;modify_&quot;</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@comparators</span><span class="o">.</span><span class="n">dispatch_for</span><span class="p">(</span><span class="s2">&quot;column&quot;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">compare_column_level</span><span class="p">(</span><span class="n">autogen_context</span><span class="p">,</span> <span class="n">alter_column_op</span><span class="p">,</span>
+    <span class="n">schemaname</span><span class="p">,</span> <span class="n">tname</span><span class="p">,</span> <span class="n">cname</span><span class="p">,</span> <span class="n">conn_col</span><span class="p">,</span> <span class="n">metadata_col</span><span class="p">):</span>
+    <span class="k">pass</span>
+</pre></div>
+</div>
+</li>
+</ul>
+<p>The <a class="reference internal" href="#alembic.autogenerate.api.AutogenContext" title="alembic.autogenerate.api.AutogenContext"><code class="xref py py-class docutils literal notranslate"><span class="pre">AutogenContext</span></code></a> passed to these hooks is documented below.</p>
+<dl class="class">
+<dt id="alembic.autogenerate.api.AutogenContext">
+<em class="property">class </em><code class="sig-prename descclassname">alembic.autogenerate.api.</code><code class="sig-name descname">AutogenContext</code><span class="sig-paren">(</span><em class="sig-param">migration_context</em>, <em class="sig-param">metadata=None</em>, <em class="sig-param">opts=None</em>, <em class="sig-param">autogenerate=True</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.autogenerate.api.AutogenContext" title="Permalink to this definition">¶</a></dt>
+<dd><p>Maintains configuration and state that’s specific to an
+autogenerate operation.</p>
+<dl class="attribute">
+<dt id="alembic.autogenerate.api.AutogenContext.connection">
+<code class="sig-name descname">connection</code><em class="property"> = None</em><a class="headerlink" href="#alembic.autogenerate.api.AutogenContext.connection" title="Permalink to this definition">¶</a></dt>
+<dd><p>The <code class="xref py py-class docutils literal notranslate"><span class="pre">Connection</span></code> object currently
+connected to the database backend being compared.</p>
+<p>This is obtained from the <code class="xref py py-attr docutils literal notranslate"><span class="pre">MigrationContext.bind</span></code> and is
+utimately set up in the <code class="docutils literal notranslate"><span class="pre">env.py</span></code> script.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="alembic.autogenerate.api.AutogenContext.dialect">
+<code class="sig-name descname">dialect</code><em class="property"> = None</em><a class="headerlink" href="#alembic.autogenerate.api.AutogenContext.dialect" title="Permalink to this definition">¶</a></dt>
+<dd><p>The <code class="xref py py-class docutils literal notranslate"><span class="pre">Dialect</span></code> object currently in use.</p>
+<p>This is normally obtained from the
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">dialect</span></code> attribute.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="alembic.autogenerate.api.AutogenContext.imports">
+<code class="sig-name descname">imports</code><em class="property"> = None</em><a class="headerlink" href="#alembic.autogenerate.api.AutogenContext.imports" title="Permalink to this definition">¶</a></dt>
+<dd><p>A <code class="docutils literal notranslate"><span class="pre">set()</span></code> which contains string Python import directives.</p>
+<p>The directives are to be rendered into the <code class="docutils literal notranslate"><span class="pre">${imports}</span></code> section
+of a script template.  The set is normally empty and can be modified
+within hooks such as the
+<a class="reference internal" href="runtime.html#alembic.runtime.environment.EnvironmentContext.configure.params.render_item" title="alembic.runtime.environment.EnvironmentContext.configure"><code class="xref py py-paramref docutils literal notranslate"><span class="pre">EnvironmentContext.configure.render_item</span></code></a> hook.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 0.8.3.</span></p>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="../autogenerate.html#autogen-render-types"><span class="std std-ref">Affecting the Rendering of Types Themselves</span></a></p>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="alembic.autogenerate.api.AutogenContext.metadata">
+<code class="sig-name descname">metadata</code><em class="property"> = None</em><a class="headerlink" href="#alembic.autogenerate.api.AutogenContext.metadata" title="Permalink to this definition">¶</a></dt>
+<dd><p>The <a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/metadata.html#sqlalchemy.schema.MetaData" title="(in SQLAlchemy v1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">MetaData</span></code></a> object
+representing the destination.</p>
+<p>This object is the one that is passed within <code class="docutils literal notranslate"><span class="pre">env.py</span></code>
+to the <a class="reference internal" href="runtime.html#alembic.runtime.environment.EnvironmentContext.configure.params.target_metadata" title="alembic.runtime.environment.EnvironmentContext.configure"><code class="xref py py-paramref docutils literal notranslate"><span class="pre">EnvironmentContext.configure.target_metadata</span></code></a>
+parameter.  It represents the structure of <code class="xref py py-class docutils literal notranslate"><span class="pre">Table</span></code> and other
+objects as stated in the current database model, and represents the
+destination structure for the database being examined.</p>
+<p>While the <a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/metadata.html#sqlalchemy.schema.MetaData" title="(in SQLAlchemy v1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">MetaData</span></code></a> object is primarily
+known as a collection of <a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/metadata.html#sqlalchemy.schema.Table" title="(in SQLAlchemy v1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Table</span></code></a> objects,
+it also has an <code class="xref py py-attr docutils literal notranslate"><span class="pre">info</span></code> dictionary
+that may be used by end-user schemes to store additional schema-level
+objects that are to be compared in custom autogeneration schemes.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="alembic.autogenerate.api.AutogenContext.migration_context">
+<code class="sig-name descname">migration_context</code><em class="property"> = None</em><a class="headerlink" href="#alembic.autogenerate.api.AutogenContext.migration_context" title="Permalink to this definition">¶</a></dt>
+<dd><p>The <a class="reference internal" href="runtime.html#alembic.runtime.migration.MigrationContext" title="alembic.runtime.migration.MigrationContext"><code class="xref py py-class docutils literal notranslate"><span class="pre">MigrationContext</span></code></a> established by the <code class="docutils literal notranslate"><span class="pre">env.py</span></code> script.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="alembic.autogenerate.api.AutogenContext.run_filters">
+<code class="sig-name descname">run_filters</code><span class="sig-paren">(</span><em class="sig-param">object_</em>, <em class="sig-param">name</em>, <em class="sig-param">type_</em>, <em class="sig-param">reflected</em>, <em class="sig-param">compare_to</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.autogenerate.api.AutogenContext.run_filters" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run the context’s object filters and return True if the targets
+should be part of the autogenerate operation.</p>
+<p>This method should be run for every kind of object encountered within
+an autogenerate operation, giving the environment the chance
+to filter what objects should be included in the comparison.
+The filters here are produced directly via the
+<a class="reference internal" href="runtime.html#alembic.runtime.environment.EnvironmentContext.configure.params.include_object" title="alembic.runtime.environment.EnvironmentContext.configure"><code class="xref py py-paramref docutils literal notranslate"><span class="pre">EnvironmentContext.configure.include_object</span></code></a>
+and <a class="reference internal" href="runtime.html#alembic.runtime.environment.EnvironmentContext.configure.params.include_symbol" title="alembic.runtime.environment.EnvironmentContext.configure"><code class="xref py py-paramref docutils literal notranslate"><span class="pre">EnvironmentContext.configure.include_symbol</span></code></a>
+functions, if present.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="alembic.autogenerate.api.AutogenContext.sorted_tables">
+<code class="sig-name descname">sorted_tables</code><a class="headerlink" href="#alembic.autogenerate.api.AutogenContext.sorted_tables" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return an aggregate of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">MetaData.sorted_tables</span></code> collection(s).</p>
+<p>For a sequence of <code class="xref py py-class docutils literal notranslate"><span class="pre">MetaData</span></code> objects, this
+concatenates the <code class="xref py py-attr docutils literal notranslate"><span class="pre">MetaData.sorted_tables</span></code> collection
+for each individual <code class="xref py py-class docutils literal notranslate"><span class="pre">MetaData</span></code>  in the order of the
+sequence.  It does <strong>not</strong> collate the sorted tables collections.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 0.9.0.</span></p>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="alembic.autogenerate.api.AutogenContext.table_key_to_table">
+<code class="sig-name descname">table_key_to_table</code><a class="headerlink" href="#alembic.autogenerate.api.AutogenContext.table_key_to_table" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return an aggregate  of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">MetaData.tables</span></code> dictionaries.</p>
+<p>The <code class="xref py py-attr docutils literal notranslate"><span class="pre">MetaData.tables</span></code> collection is a dictionary of table key
+to <code class="xref py py-class docutils literal notranslate"><span class="pre">Table</span></code>; this method aggregates the dictionary across
+multiple <code class="xref py py-class docutils literal notranslate"><span class="pre">MetaData</span></code> objects into one dictionary.</p>
+<p>Duplicate table keys are <strong>not</strong> supported; if two <code class="xref py py-class docutils literal notranslate"><span class="pre">MetaData</span></code>
+objects contain the same table key, an exception is raised.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 0.9.0.</span></p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="creating-a-render-function">
+<h3>Creating a Render Function<a class="headerlink" href="#creating-a-render-function" title="Permalink to this headline">¶</a></h3>
+<p>The second autogenerate integration hook is to provide a “render” function;
+since the autogenerate
+system renders Python code, we need to build a function that renders
+the correct “op” instructions for our directive:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">alembic.autogenerate</span> <span class="k">import</span> <span class="n">renderers</span>
+
+<span class="nd">@renderers</span><span class="o">.</span><span class="n">dispatch_for</span><span class="p">(</span><span class="n">CreateSequenceOp</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">render_create_sequence</span><span class="p">(</span><span class="n">autogen_context</span><span class="p">,</span> <span class="n">op</span><span class="p">):</span>
+    <span class="k">return</span> <span class="s2">&quot;op.create_sequence(</span><span class="si">%r</span><span class="s2">, **</span><span class="si">%r</span><span class="s2">)&quot;</span> <span class="o">%</span> <span class="p">(</span>
+        <span class="n">op</span><span class="o">.</span><span class="n">sequence_name</span><span class="p">,</span>
+        <span class="p">{</span><span class="s2">&quot;schema&quot;</span><span class="p">:</span> <span class="n">op</span><span class="o">.</span><span class="n">schema</span><span class="p">}</span>
+    <span class="p">)</span>
+
+
+<span class="nd">@renderers</span><span class="o">.</span><span class="n">dispatch_for</span><span class="p">(</span><span class="n">DropSequenceOp</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">render_drop_sequence</span><span class="p">(</span><span class="n">autogen_context</span><span class="p">,</span> <span class="n">op</span><span class="p">):</span>
+    <span class="k">return</span> <span class="s2">&quot;op.drop_sequence(</span><span class="si">%r</span><span class="s2">, **</span><span class="si">%r</span><span class="s2">)&quot;</span> <span class="o">%</span> <span class="p">(</span>
+        <span class="n">op</span><span class="o">.</span><span class="n">sequence_name</span><span class="p">,</span>
+        <span class="p">{</span><span class="s2">&quot;schema&quot;</span><span class="p">:</span> <span class="n">op</span><span class="o">.</span><span class="n">schema</span><span class="p">}</span>
+    <span class="p">)</span>
+</pre></div>
+</div>
+<p>The above functions will render Python code corresponding to the
+presence of <code class="docutils literal notranslate"><span class="pre">CreateSequenceOp</span></code> and <code class="docutils literal notranslate"><span class="pre">DropSequenceOp</span></code> instructions
+in the list that our comparison function generates.</p>
+</div>
+<div class="section" id="running-it">
+<h3>Running It<a class="headerlink" href="#running-it" title="Permalink to this headline">¶</a></h3>
+<p>All the above code can be organized however the developer sees fit;
+the only thing that needs to make it work is that when the
+Alembic environment <code class="docutils literal notranslate"><span class="pre">env.py</span></code> is invoked, it either imports modules
+which contain all the above routines, or they are locally present,
+or some combination thereof.</p>
+<p>If we then have code in our model (which of course also needs to be invoked
+when <code class="docutils literal notranslate"><span class="pre">env.py</span></code> runs!) like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sqlalchemy.schema</span> <span class="k">import</span> <span class="n">Sequence</span>
+
+<span class="n">my_seq_1</span> <span class="o">=</span> <span class="n">Sequence</span><span class="p">(</span><span class="s2">&quot;my_sequence_1&quot;</span><span class="p">)</span>
+<span class="n">add_sequence_to_model</span><span class="p">(</span><span class="n">my_seq_1</span><span class="p">,</span> <span class="n">target_metadata</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>When we first run <code class="docutils literal notranslate"><span class="pre">alembic</span> <span class="pre">revision</span> <span class="pre">--autogenerate</span></code>, we’ll see this
+in our migration file:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">upgrade</span><span class="p">():</span>
+    <span class="c1">### commands auto generated by Alembic - please adjust! ###</span>
+    <span class="n">op</span><span class="o">.</span><span class="n">create_sequence</span><span class="p">(</span><span class="s1">&#39;my_sequence_1&#39;</span><span class="p">,</span> <span class="o">**</span><span class="p">{</span><span class="s1">&#39;schema&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">})</span>
+    <span class="c1">### end Alembic commands ###</span>
+
+
+<span class="k">def</span> <span class="nf">downgrade</span><span class="p">():</span>
+    <span class="c1">### commands auto generated by Alembic - please adjust! ###</span>
+    <span class="n">op</span><span class="o">.</span><span class="n">drop_sequence</span><span class="p">(</span><span class="s1">&#39;my_sequence_1&#39;</span><span class="p">,</span> <span class="o">**</span><span class="p">{</span><span class="s1">&#39;schema&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">})</span>
+    <span class="c1">### end Alembic commands ###</span>
+</pre></div>
+</div>
+<p>These are our custom directives that will invoke when <code class="docutils literal notranslate"><span class="pre">alembic</span> <span class="pre">upgrade</span></code>
+or <code class="docutils literal notranslate"><span class="pre">alembic</span> <span class="pre">downgrade</span></code> is run.</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Autogeneration</a><ul>
+<li><a class="reference internal" href="#getting-diffs">Getting Diffs</a></li>
+<li><a class="reference internal" href="#customizing-revision-generation">Customizing Revision Generation</a><ul>
+<li><a class="reference internal" href="#fine-grained-autogenerate-generation-with-rewriters">Fine-Grained Autogenerate Generation with Rewriters</a></li>
+<li><a class="reference internal" href="#revision-generation-with-multiple-engines-run-migrations-calls">Revision Generation with Multiple Engines / <code class="docutils literal notranslate"><span class="pre">run_migrations()</span></code> calls</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#autogenerating-custom-operation-directives">Autogenerating Custom Operation Directives</a><ul>
+<li><a class="reference internal" href="#tracking-our-object-with-the-model">Tracking our Object with the Model</a></li>
+<li><a class="reference internal" href="#registering-a-comparison-function">Registering a Comparison Function</a></li>
+<li><a class="reference internal" href="#creating-a-render-function">Creating a Render Function</a></li>
+<li><a class="reference internal" href="#running-it">Running It</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="operations.html"
+                        title="previous chapter">Operation Directives</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="script.html"
+                        title="next chapter">Script Directory</a></p>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="script.html" title="Script Directory"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="operations.html" title="Operation Directives"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Alembic 1.0.11 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >API Details</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2010-2019, Mike Bayer.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.1.2.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,6 @@
+---
+fixes:
+  - |
+    The retry interval for retries enabled by ``connect_retries`` and
+    ``status_code_retries`` is now limited at 60 seconds. Previously it would
+    grow exponentially.

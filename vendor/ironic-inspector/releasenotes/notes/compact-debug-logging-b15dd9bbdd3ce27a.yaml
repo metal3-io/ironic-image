@@ -1,0 +1,4 @@
+---
+other:
+  - Make debug-level logging more compact by removing newlines from firewall
+    logging and disabling some 3rdparty debug messages by default.

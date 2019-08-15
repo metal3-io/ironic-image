@@ -1,0 +1,8 @@
+---
+features:
+  - |
+    Added ``collect_timing`` option to ``keystoneauth1.session.Session``.
+    The option, which is off by default, causes the ``Session`` to collect
+    API timing information for every call it makes. Methods ``get_timings``
+    and ``reset_timings`` have been added to allow getting and clearing the
+    data.

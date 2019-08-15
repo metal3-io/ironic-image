@@ -1,0 +1,6 @@
+---
+features:
+  - |
+    Add ``oslopolicy-policy-upgrade`` command to help operators upgrade their
+    self-defined policy file to new release format. It will upgrade the
+    deprected policy name with the new name.

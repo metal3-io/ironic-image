@@ -1,0 +1,401 @@
+HTTP API
+--------
+
+.. _http_api:
+
+By default **ironic-inspector** listens on ``0.0.0.0:5050``, port
+can be changed in configuration. Protocol is JSON over HTTP.
+
+Start Introspection
+~~~~~~~~~~~~~~~~~~~
+
+``POST /v1/introspection/<Node ID>`` initiate hardware introspection for node
+``<Node ID>``. All power management configuration for this node needs to be
+done prior to calling the endpoint.
+
+Requires X-Auth-Token header with Keystone token for authentication.
+
+Optional parameter:
+
+* ``manage_boot`` boolean value, whether to manage boot (boot device, power
+  and firewall) for a node. Defaults to true.
+
+Response:
+
+* 202 - accepted introspection request
+* 400 - bad request
+* 401, 403 - missing or invalid authentication
+* 404 - node cannot be found
+
+Get Introspection Status
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+``GET /v1/introspection/<Node ID>`` get hardware introspection status.
+
+Requires X-Auth-Token header with Keystone token for authentication.
+
+Response:
+
+* 200 - OK
+* 400 - bad request
+* 401, 403 - missing or invalid authentication
+* 404 - node cannot be found
+
+Response body: JSON dictionary with keys:
+
+* ``finished`` (boolean) whether introspection is finished
+  (``true`` on introspection completion or if it ends because of an error)
+* ``state`` state of the introspection
+* ``error`` error string or ``null``; ``Canceled by operator`` in
+  case introspection was aborted
+* ``uuid`` node UUID
+* ``started_at`` a UTC ISO8601 timestamp
+* ``finished_at`` a UTC ISO8601 timestamp or ``null``
+* ``links`` containing a self URL
+
+Get All Introspection Statuses
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+``GET /v1/introspection`` get all hardware introspection statuses.
+
+Requires X-Auth-Token header with Keystone token for authentication.
+
+Returned status list is sorted by the ``started_at, uuid`` attribute pair,
+newer items first, and is paginated with these query string fields:
+
+* ``marker`` the UUID of the last node returned previously
+* ``limit`` default, max: ``CONF.api_max_limit``
+
+Response:
+
+* 200 - OK
+* 400 - bad request
+* 401, 403 - missing or invalid authentication
+
+Response body: a JSON object containing a list of status objects::
+
+  {
+    'introspection': [
+      {
+        'finished': false,
+        'state': 'waiting',
+        'error': null,
+        ...
+      },
+      ...
+    ]
+  }
+
+Each status object contains these keys:
+
+* ``finished`` (boolean) whether introspection is finished
+  (``true`` on introspection completion or if it ends because of an error)
+* ``state`` state of the introspection
+* ``error`` error string or ``null``; ``Canceled by operator`` in
+  case introspection was aborted
+* ``uuid`` node UUID
+* ``started_at`` an UTC ISO8601 timestamp
+* ``finished_at`` an UTC ISO8601 timestamp or ``null``
+
+
+Abort Running Introspection
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+``POST /v1/introspection/<Node ID>/abort`` abort running introspection.
+
+Requires X-Auth-Token header with Keystone token for authentication.
+
+Response:
+
+* 202 - accepted
+* 400 - bad request
+* 401, 403 - missing or invalid authentication
+* 404 - node cannot be found
+* 409 - inspector has locked this node for processing
+
+
+Get Introspection Data
+~~~~~~~~~~~~~~~~~~~~~~
+
+``GET /v1/introspection/<Node ID>/data`` get stored data from successful
+introspection.
+
+Requires X-Auth-Token header with Keystone token for authentication.
+
+Response:
+
+* 200 - OK
+* 400 - bad request
+* 401, 403 - missing or invalid authentication
+* 404 - data cannot be found or data storage not configured
+
+Response body: JSON dictionary with introspection data
+
+.. note::
+    We do not provide any backward compatibility guarantees regarding the
+    format and contents of the stored data. Notably, it depends on the ramdisk
+    used and plugins enabled both in the ramdisk and in inspector itself.
+
+Reapply introspection on stored data
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+``POST /v1/introspection/<Node ID>/data/unprocessed`` to trigger
+introspection on stored unprocessed data.  No data is allowed to be
+sent along with the request.
+
+Requires X-Auth-Token header with Keystone token for authentication.
+Requires enabling Swift store in processing section of the
+configuration file.
+
+Response:
+
+* 202 - accepted
+* 400 - bad request or store not configured
+* 401, 403 - missing or invalid authentication
+* 404 - node not found for Node ID
+* 409 - inspector locked node for processing
+
+Introspection Rules
+~~~~~~~~~~~~~~~~~~~
+
+See :ref:`rules <introspection_rules>` for details.
+
+All these API endpoints require X-Auth-Token header with Keystone token for
+authentication.
+
+* ``POST /v1/rules`` create a new introspection rule.
+
+  Request body: JSON dictionary with keys:
+
+  * ``conditions`` rule conditions, see :ref:`rules <introspection_rules>`
+  * ``actions`` rule actions, see :ref:`rules <introspection_rules>`
+  * ``description`` (optional) human-readable description
+  * ``uuid`` (optional) rule UUID, autogenerated if missing
+
+  Response
+
+  * 200 - OK for API version < 1.6
+  * 201 - OK for API version 1.6 and higher
+  * 400 - bad request
+
+  Response body: JSON dictionary with introspection rule representation (the
+  same as above with UUID filled in).
+
+* ``GET /v1/rules`` list all introspection rules.
+
+  Response
+
+  * 200 - OK
+
+  Response body: JSON dictionary with key ``rules`` - list of short rule
+  representations. Short rule representation is a JSON dictionary with keys:
+
+  * ``uuid`` rule UUID
+  * ``description`` human-readable description
+  * ``links`` list of HTTP links, use one with ``rel=self`` to get the full
+    rule details
+
+* ``DELETE /v1/rules`` delete all introspection rules.
+
+  Response
+
+  * 204 - OK
+
+* ``GET /v1/rules/<UUID>`` get one introspection rule by its ``<UUID>``.
+
+  Response
+
+  * 200 - OK
+  * 404 - not found
+
+  Response body: JSON dictionary with introspection rule representation
+  (see ``POST /v1/rules`` above).
+
+* ``DELETE /v1/rules/<UUID>`` delete one introspection rule by its ``<UUID>``.
+
+  Response
+
+  * 204 - OK
+  * 404 - not found
+
+Ramdisk Callback
+~~~~~~~~~~~~~~~~
+
+.. _ramdisk_callback:
+
+``POST /v1/continue`` internal endpoint for the ramdisk to post back
+discovered data. Should not be used for anything other than implementing
+the ramdisk. Request body: JSON dictionary with at least these keys:
+
+* ``inventory`` full `hardware inventory`_ from the ironic-python-agent with at
+  least the following keys:
+
+  * ``memory`` memory information containing at least key ``physical_mb`` -
+    physical memory size as reported by dmidecode,
+
+  * ``cpu`` CPU information containing at least keys ``count`` (CPU count) and
+    ``architecture`` (CPU architecture, e.g. ``x86_64``),
+
+  * ``bmc_address`` IP address of the node's BMC,
+
+  * ``interfaces`` list of dictionaries with the following keys:
+
+    * ``name`` interface name,
+
+    * ``ipv4_address`` IPv4 address of the interface,
+
+    * ``mac_address`` MAC (physical) address of the interface.
+
+    * ``client_id`` InfiniBand Client-ID, for Ethernet is None.
+
+  * ``disks`` list of disk block devices containing at least ``name`` and
+    ``size`` (in bytes) keys. In case ``disks`` are not provided
+    **ironic-inspector**  assumes that this is a disk-less node.
+
+* ``root_disk`` default deployment root disk as calculated by the
+  ironic-python-agent algorithm.
+
+  .. note::
+    **ironic-inspector** default plugin ``root_disk_selection`` may change
+    ``root_disk`` based on root device hints if node specify hints via
+    properties ``root_device`` key. See `Specifying the disk for deployment
+    root device hints`_ for more details.
+
+* ``boot_interface`` MAC address of the NIC that the machine PXE booted from
+  either in standard format ``11:22:33:44:55:66`` or in *PXELinux* ``BOOTIF``
+  format ``01-11-22-33-44-55-66``. Strictly speaking, this key is optional,
+  but some features will now work as expected, if it is not provided.
+
+Optionally the following keys might be provided:
+
+* ``error`` error happened during ramdisk run, interpreted by
+  ``ramdisk_error`` plugin.
+
+* ``logs`` base64-encoded logs from the ramdisk.
+
+.. note::
+    This list highly depends on enabled plugins, provided above are
+    expected keys for the default set of plugins. See
+    :ref:`plugins <introspection_plugins>` for details.
+
+.. note::
+    This endpoint is not expected to be versioned, though versioning will work
+    on it.
+
+Response:
+
+* 200 - OK
+* 400 - bad request
+* 403 - node is not on introspection
+* 404 - node cannot be found or multiple nodes found
+
+Response body: JSON dictionary with ``uuid`` key.
+
+.. _hardware inventory: https://docs.openstack.org/ironic-python-agent/latest/admin/how_it_works.html#hardware-inventory
+.. _Specifying the disk for deployment root device hints:
+   https://docs.openstack.org/ironic/latest/install/advanced.html#specifying-the-disk-for-deployment-root-device-hints
+
+Error Response
+~~~~~~~~~~~~~~
+
+If an error happens during request processing, **Ironic Inspector** returns
+a response with an appropriate HTTP code set, e.g. 400 for bad request or
+404 when something was not found (usually node in cache or node in ironic).
+The following JSON body is returned::
+
+    {
+        "error": {
+            "message": "Full error message"
+        }
+    }
+
+This body may be extended in the future to include details that are more error
+specific.
+
+API Versioning
+~~~~~~~~~~~~~~
+
+The API supports optional API versioning. You can query for minimum and
+maximum API version supported by the server. You can also declare required API
+version in your requests, so that the server rejects request of unsupported
+version.
+
+.. note::
+    Versioning was introduced in **Ironic Inspector 2.1.0**.
+
+All versions must be supplied as string in form of ``X.Y``, where ``X`` is a
+major version and is always ``1`` for now, ``Y`` is a minor version.
+
+* If ``X-OpenStack-Ironic-Inspector-API-Version`` header is sent with request,
+  the server will check if it supports this version. HTTP error 406 will be
+  returned for unsupported API version.
+
+* All HTTP responses contain
+  ``X-OpenStack-Ironic-Inspector-API-Minimum-Version`` and
+  ``X-OpenStack-Ironic-Inspector-API-Maximum-Version`` headers with minimum
+  and maximum API versions supported by the server.
+
+  .. note::
+     Maximum is server API version used by default.
+
+
+API Discovery
+~~~~~~~~~~~~~
+
+The API supports API discovery. You can query different parts of the API to
+discover what other endpoints are available.
+
+* ``GET /`` List API Versions
+
+  Response:
+
+  * 200 - OK
+
+  Response body: JSON dictionary containing a list of ``versions``, each
+  version contains:
+
+  * ``status`` Either CURRENT or SUPPORTED
+  * ``id`` The version identifier
+  * ``links`` A list of links to this version endpoint containing:
+
+    * ``href`` The URL
+    * ``rel`` The relationship between the version and the href
+
+* ``GET /v1`` List API v1 resources
+
+  Response:
+
+  * 200 - OK
+
+  Response body: JSON dictionary containing a list of ``resources``, each
+  resource contains:
+
+  * ``name`` The name of this resources
+  * ``links`` A list of link to this resource containing:
+
+    * ``href`` The URL
+    * ``rel`` The relationship between the resource and the href
+
+Version History
+^^^^^^^^^^^^^^^
+
+* **1.0** version of API at the moment of introducing versioning.
+* **1.1** adds endpoint to retrieve stored introspection data.
+* **1.2** endpoints for manipulating introspection rules.
+* **1.3** endpoint for canceling running introspection
+* **1.4** endpoint for reapplying the introspection over stored data.
+* **1.5** support for Ironic node names.
+* **1.6** endpoint for rules creating returns 201 instead of 200 on success.
+* **1.7** UUID, started_at, finished_at in the introspection status API.
+* **1.8** support for listing all introspection statuses.
+* **1.9** de-activate setting IPMI credentials, if IPMI credentials
+          are requested, API gets HTTP 400 response.
+* **1.10** adds node state to the GET /v1/introspection/<Node ID> and
+          GET /v1/introspection API response data.
+* **1.11** adds invert&multiple fields into rules response data
+* **1.12** this version indicates that support for setting IPMI credentials
+  was completely removed from API (all versions).
+* **1.13** adds ``manage_boot`` parameter for the introspection API.
+* **1.14** allows formatting to be applied to strings nested in dicts and lists
+  in the actions of introspection rules.
+* **1.15** allows reapply with provided introspection data from request.

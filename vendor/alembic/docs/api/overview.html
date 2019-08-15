@@ -1,0 +1,154 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Overview &#8212; Alembic 1.0.11 documentation</title>
+    <link rel="stylesheet" href="../_static/nature_override.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/changelog.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx_paramlinks.css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Runtime Objects" href="runtime.html" />
+    <link rel="prev" title="API Details" href="index.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="runtime.html" title="Runtime Objects"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="API Details"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Alembic 1.0.11 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">API Details</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="overview">
+<h1>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h1>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>this section is a technical overview of the
+<strong>internal API of Alembic</strong>.
+This section is only useful for developers who wish to extend the
+capabilities of Alembic; for regular users, reading this section
+is <strong>not necessary</strong>.</p>
+</div>
+<p>A visualization of the primary features of Alembic’s internals is presented
+in the following figure.   The module and class boxes do not list out
+all the operations provided by each unit; only a small set of representative
+elements intended to convey the primary purpose of each system.</p>
+<img alt="../_images/api_overview.png" src="../_images/api_overview.png" />
+<p>The script runner for Alembic is present in the <a class="reference internal" href="config.html#alembic-config-toplevel"><span class="std std-ref">Configuration</span></a> module.
+This module produces a <a class="reference internal" href="config.html#alembic.config.Config" title="alembic.config.Config"><code class="xref py py-class docutils literal notranslate"><span class="pre">Config</span></code></a> object and passes it to the
+appropriate function in <a class="reference internal" href="commands.html#alembic-command-toplevel"><span class="std std-ref">Commands</span></a>.   Functions within
+<a class="reference internal" href="commands.html#alembic-command-toplevel"><span class="std std-ref">Commands</span></a> will typically instantiate an
+<a class="reference internal" href="script.html#alembic.script.ScriptDirectory" title="alembic.script.ScriptDirectory"><code class="xref py py-class docutils literal notranslate"><span class="pre">ScriptDirectory</span></code></a> instance, which represents the collection of
+version files, and an <a class="reference internal" href="runtime.html#alembic.runtime.environment.EnvironmentContext" title="alembic.runtime.environment.EnvironmentContext"><code class="xref py py-class docutils literal notranslate"><span class="pre">EnvironmentContext</span></code></a>, which is a configurational
+facade passed to the environment’s <code class="docutils literal notranslate"><span class="pre">env.py</span></code> script.</p>
+<p>The <a class="reference internal" href="runtime.html#alembic.runtime.environment.EnvironmentContext" title="alembic.runtime.environment.EnvironmentContext"><code class="xref py py-class docutils literal notranslate"><span class="pre">EnvironmentContext</span></code></a> object is the primary object used within
+the <code class="docutils literal notranslate"><span class="pre">env.py</span></code> script, whose main purpose is that of a facade for creating and using
+a <a class="reference internal" href="runtime.html#alembic.runtime.migration.MigrationContext" title="alembic.runtime.migration.MigrationContext"><code class="xref py py-class docutils literal notranslate"><span class="pre">MigrationContext</span></code></a> object, which is the actual migration engine
+that refers to a database implementation.   The primary method called
+on this object within an <code class="docutils literal notranslate"><span class="pre">env.py</span></code> script is the
+<a class="reference internal" href="runtime.html#alembic.runtime.environment.EnvironmentContext.configure" title="alembic.runtime.environment.EnvironmentContext.configure"><code class="xref py py-meth docutils literal notranslate"><span class="pre">EnvironmentContext.configure()</span></code></a> method, which sets up the
+<a class="reference internal" href="runtime.html#alembic.runtime.migration.MigrationContext" title="alembic.runtime.migration.MigrationContext"><code class="xref py py-class docutils literal notranslate"><span class="pre">MigrationContext</span></code></a> with database connectivity and behavioral
+configuration.  It also supplies methods for transaction demarcation and
+migration running, but these methods ultimately call upon the
+<a class="reference internal" href="runtime.html#alembic.runtime.migration.MigrationContext" title="alembic.runtime.migration.MigrationContext"><code class="xref py py-class docutils literal notranslate"><span class="pre">MigrationContext</span></code></a> that’s been configured.</p>
+<p><a class="reference internal" href="runtime.html#alembic.runtime.migration.MigrationContext" title="alembic.runtime.migration.MigrationContext"><code class="xref py py-class docutils literal notranslate"><span class="pre">MigrationContext</span></code></a> is the gateway to the database
+for other parts of the application, and produces a <a class="reference internal" href="ddl.html#alembic.ddl.impl.DefaultImpl" title="alembic.ddl.impl.DefaultImpl"><code class="xref py py-class docutils literal notranslate"><span class="pre">DefaultImpl</span></code></a>
+object which does the actual database communication, and knows how to
+create the specific SQL text of the various DDL directives such as
+ALTER TABLE; <a class="reference internal" href="ddl.html#alembic.ddl.impl.DefaultImpl" title="alembic.ddl.impl.DefaultImpl"><code class="xref py py-class docutils literal notranslate"><span class="pre">DefaultImpl</span></code></a> has subclasses that are per-database-backend.
+In “offline” mode (e.g. <code class="docutils literal notranslate"><span class="pre">--sql</span></code>), the <a class="reference internal" href="runtime.html#alembic.runtime.migration.MigrationContext" title="alembic.runtime.migration.MigrationContext"><code class="xref py py-class docutils literal notranslate"><span class="pre">MigrationContext</span></code></a> will
+produce SQL to a file output stream instead of a database.</p>
+<p>During an upgrade or downgrade operation, a specific series of migration
+scripts are invoked starting with the <a class="reference internal" href="runtime.html#alembic.runtime.migration.MigrationContext" title="alembic.runtime.migration.MigrationContext"><code class="xref py py-class docutils literal notranslate"><span class="pre">MigrationContext</span></code></a> in conjunction
+with the <a class="reference internal" href="script.html#alembic.script.ScriptDirectory" title="alembic.script.ScriptDirectory"><code class="xref py py-class docutils literal notranslate"><span class="pre">ScriptDirectory</span></code></a>; the actual scripts themselves make use
+of the <a class="reference internal" href="../ops.html#alembic.operations.Operations" title="alembic.operations.Operations"><code class="xref py py-class docutils literal notranslate"><span class="pre">Operations</span></code></a> object, which provide the end-user interface to
+specific database operations.   The <a class="reference internal" href="../ops.html#alembic.operations.Operations" title="alembic.operations.Operations"><code class="xref py py-class docutils literal notranslate"><span class="pre">Operations</span></code></a> object is generated
+based on a series of “operation directive” objects that are user-extensible,
+and start out in the <a class="reference internal" href="operations.html#alembic-operations-ops-toplevel"><span class="std std-ref">Built-in Operation Objects</span></a> module.</p>
+<p>Another prominent feature of Alembic is the “autogenerate” feature, which
+produces new migration scripts that contain Python code.  The autogenerate
+feature starts in <a class="reference internal" href="autogenerate.html#alembic-autogenerate-toplevel"><span class="std std-ref">Autogeneration</span></a>, and is used exclusively
+by the <a class="reference internal" href="commands.html#alembic.command.revision" title="alembic.command.revision"><code class="xref py py-func docutils literal notranslate"><span class="pre">alembic.command.revision()</span></code></a> command when the <code class="docutils literal notranslate"><span class="pre">--autogenerate</span></code>
+flag is passed.  Autogenerate refers to the <a class="reference internal" href="runtime.html#alembic.runtime.migration.MigrationContext" title="alembic.runtime.migration.MigrationContext"><code class="xref py py-class docutils literal notranslate"><span class="pre">MigrationContext</span></code></a>
+and <a class="reference internal" href="ddl.html#alembic.ddl.impl.DefaultImpl" title="alembic.ddl.impl.DefaultImpl"><code class="xref py py-class docutils literal notranslate"><span class="pre">DefaultImpl</span></code></a> in order to access database connectivity and
+access per-backend rules for autogenerate comparisons.  It also makes use
+of <a class="reference internal" href="operations.html#alembic-operations-ops-toplevel"><span class="std std-ref">Built-in Operation Objects</span></a> in order to represent the operations that
+it will render into scripts.</p>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">API Details</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="runtime.html"
+                        title="next chapter">Runtime Objects</a></p>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="runtime.html" title="Runtime Objects"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="API Details"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Alembic 1.0.11 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >API Details</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2010-2019, Mike Bayer.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.1.2.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,5 @@
+---
+fixes:
+  - |
+    A workaround for misformed discovery documents was being applied too
+    soon causing ironic discovery documents to be mistakenly ignored.

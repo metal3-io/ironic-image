@@ -1,0 +1,8 @@
+---
+features:
+  - |
+    [`blueprint system-scope <https://blueprints.launchpad.net/keystone/+spec/system-scope>`_]
+    Keystoneauth now has the ability to authenticate for system-scoped tokens,
+    which were implemented during the Queens development cycle. System-scoped
+    tokens will eventually be required to separate system-level APIs from
+    project-level APIs, allowing for better security via scoped RBAC.

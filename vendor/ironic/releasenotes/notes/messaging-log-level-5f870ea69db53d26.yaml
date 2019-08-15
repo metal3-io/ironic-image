@@ -1,0 +1,5 @@
+---
+fixes:
+  - |
+    ``DEBUG``-level logging from the ``oslo.messaging`` library is no longer
+    displayed by default.

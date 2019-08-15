@@ -1,0 +1,27 @@
+@import "agogo.css";
+
+table.docutils {
+    margin: 0;
+    padding: 0;
+    border: 1;
+}
+
+table.docutils th {
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+
+table.docutils thead tr {
+}
+
+table.docutils td {
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+
+table.docutils tr.row-odd {
+    background: #EEEEEC;
+}
+

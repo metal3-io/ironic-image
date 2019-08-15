@@ -1,0 +1,3 @@
+---
+other:
+  - Allow autogeneration of database migrations.

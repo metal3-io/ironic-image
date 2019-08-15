@@ -1,0 +1,718 @@
+# Andi Chandler <andi@gowling.com>, 2017. #zanata
+# Andi Chandler <andi@gowling.com>, 2018. #zanata
+msgid ""
+msgstr ""
+"Project-Id-Version: ironic-inspector VERSION\n"
+"Report-Msgid-Bugs-To: https://bugs.launchpad.net/openstack-i18n/\n"
+"POT-Creation-Date: 2018-08-31 23:36+0000\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2018-08-09 08:49+0000\n"
+"Last-Translator: Andi Chandler <andi@gowling.com>\n"
+"Language-Team: English (United Kingdom)\n"
+"Language: en_GB\n"
+"X-Generator: Zanata 4.3.3\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+
+msgid ""
+"A (shell) command line to start the dnsmasq service upon filter "
+"initialization. Default: don't start."
+msgstr ""
+"A (shell) command line to start the dnsmasq service upon filter "
+"initialisation. Default: don't start."
+
+msgid ""
+"A (shell) command line to stop the dnsmasq service upon inspector (error) "
+"exit. Default: don't stop."
+msgstr ""
+"A (shell) command line to stop the dnsmasq service upon inspector (error) "
+"exit. Default: don't stop."
+
+msgid "Access denied by policy"
+msgstr "Access denied by policy"
+
+msgid ""
+"Amount of time in seconds, after which repeat clean up of timed out nodes "
+"and old nodes status information."
+msgstr ""
+"Amount of time in seconds, after which repeat clean up of timed out nodes "
+"and old nodes status information."
+
+msgid ""
+"Amount of time in seconds, after which repeat periodic update of the filter."
+msgstr ""
+"Amount of time in seconds, after which repeat periodic update of the filter."
+
+msgid ""
+"An alias for PCI device identified by 'vendor_id' and 'product_id' fields. "
+"Format: {\"vendor_id\": \"1234\", \"product_id\": \"5678\", \"name\": "
+"\"pci_dev1\"}"
+msgstr ""
+"An alias for PCI device identified by 'vendor_id' and 'product_id' fields. "
+"Format: {\"vendor_id\": \"1234\", \"product_id\": \"5678\", \"name\": "
+"\"pci_dev1\"}"
+
+msgid ""
+"Authentication method used on the ironic-inspector API. Either \"noauth\" or "
+"\"keystone\" are currently valid options. \"noauth\" will disable all "
+"authentication."
+msgstr ""
+"Authentication method used on the ironic-inspector API. Either \"noauth\" or "
+"\"keystone\" are currently valid options. \"noauth\" will disable all "
+"authentication."
+
+msgid "Authentication required"
+msgstr "Authentication required"
+
+#, python-format
+msgid "Bad request: %s"
+msgstr "Bad request: %s"
+
+msgid "Canceled by operator"
+msgstr "Cancelled by operator"
+
+#, python-format
+msgid "Cannot get node %(node)s: %(exc)s"
+msgstr "Cannot get node %(node)s: %(exc)s"
+
+msgid ""
+"Comma-separated list of default hooks for processing pipeline. Hook "
+"'scheduler' updates the node with the minimum properties required by the "
+"Nova scheduler. Hook 'validate_interfaces' ensures that valid NIC data was "
+"provided by the ramdisk. Do not exclude these two unless you really know "
+"what you're doing."
+msgstr ""
+"Comma-separated list of default hooks for processing pipeline. Hook "
+"'scheduler' updates the node with the minimum properties required by the "
+"Nova scheduler. Hook 'validate_interfaces' ensures that valid NIC data was "
+"provided by the ramdisk. Do not exclude these two unless you really know "
+"what you're doing."
+
+msgid ""
+"Comma-separated list of enabled hooks for processing pipeline. The default "
+"for this is $default_processing_hooks, hooks can be added before or after "
+"the defaults like this: \"prehook,$default_processing_hooks,posthook\"."
+msgstr ""
+"Comma-separated list of enabled hooks for processing pipeline. The default "
+"for this is $default_processing_hooks, hooks can be added before or after "
+"the defaults like this: \"prehook,$default_processing_hooks,posthook\"."
+
+msgid ""
+"Configuration error: add_ports set to disabled and keep_ports set to added. "
+"Please change keep_ports to all."
+msgstr ""
+"Configuration error: add_ports set to disabled and keep_ports set to added. "
+"Please change keep_ports to all."
+
+#, python-format
+msgid "Could not find a node for attributes %s"
+msgstr "Could not find a node for attributes %s"
+
+#, python-format
+msgid "Could not find node %s in cache"
+msgstr "Could not find node %s in cache"
+
+#, python-format
+msgid ""
+"Could not find node %s in introspection cache, probably it's not on "
+"introspection now"
+msgstr ""
+"Could not find node %s in introspection cache, probably it's not on "
+"introspection now"
+
+msgid "Default Swift container to use when creating objects."
+msgstr "Default Swift container to use when creating objects."
+
+msgid "Delay (in seconds) between two introspections."
+msgstr "Delay (in seconds) between two introspections."
+
+#, python-format
+msgid "Encountered an exception while getting the Ironic client: %s"
+msgstr "Encountered an exception while getting the Ironic client: %s"
+
+#, python-format
+msgid ""
+"Failed to power off node %(node)s, check its power management configuration: "
+"%(exc)s"
+msgstr ""
+"Failed to power off node %(node)s, check its power management configuration: "
+"%(exc)s"
+
+#, python-format
+msgid ""
+"Failed to power on the node, check it's power management configuration: %s"
+msgstr ""
+"Failed to power on the node, check it's power management configuration: %s"
+
+#, python-format
+msgid "Failed to resolve the hostname (%(value)s) for node %(uuid)s"
+msgstr "Failed to resolve the hostname (%(value)s) for node %(uuid)s"
+
+#, python-format
+msgid "Failed to set boot device to PXE: %s"
+msgstr "Failed to set boot device to PXE: %s"
+
+#, python-format
+msgid "Failed validation of power interface, reason: %s"
+msgstr "Failed validation of power interface, reason: %s"
+
+msgid ""
+"File name template for storing ramdisk logs. The following replacements can "
+"be used: {uuid} - node UUID or \"unknown\", {bmc} - node BMC address or "
+"\"unknown\", {dt} - current UTC date and time, {mac} - PXE booting MAC or "
+"\"unknown\"."
+msgstr ""
+"File name template for storing ramdisk logs. The following replacements can "
+"be used: {uuid} - node UUID or \"unknown\", {bmc} - node BMC address or "
+"\"unknown\", {dt} - current UTC date and time, {mac} - PXE booting MAC or "
+"\"unknown\"."
+
+msgid "Hardware inventory is empty or missing"
+msgstr "Hardware inventory is empty or missing"
+
+msgid "IP to listen on."
+msgstr "IP to listen on."
+
+msgid "If set, logs from ramdisk will be stored in this directory."
+msgstr "If set, logs from ramdisk will be stored in this directory."
+
+msgid ""
+"Inspector is not configured to store data. Set the [processing] store_data "
+"configuration option to change this."
+msgstr ""
+"Inspector is not configured to store data. Set the [processing] store_data "
+"configuration option to change this."
+
+msgid "Interface on which dnsmasq listens, the default is for VM's."
+msgstr "Interface on which dnsmasq listens, the default is for VM's."
+
+msgid "Internal server error"
+msgstr "Internal server error"
+
+msgid "Interval between retries in case of conflict error (HTTP 409)."
+msgstr "Interval between retries in case of conflict error (HTTP 409)."
+
+#, python-format
+msgid "Introspection for node %(node)s already finished on %(finish)s"
+msgstr "Introspection for node %(node)s already finished on %(finish)s"
+
+msgid "Invalid UUID value"
+msgstr "Invalid UUID value"
+
+#, python-format
+msgid "Invalid boolean value for manage_boot: %s"
+msgstr "Invalid boolean value for manage_boot: %s"
+
+#, python-format
+msgid "Invalid data: expected a JSON object, got %s"
+msgstr "Invalid data: expected a JSON object, got %s"
+
+#, python-format
+msgid "Invalid event: %s"
+msgstr "Invalid event: %s"
+
+#, python-format
+msgid "Invalid formatting variable key provided in value %(val)s: %(e)s"
+msgstr "Invalid formatting variable key provided in value %(val)s: %(e)s"
+
+#, python-format
+msgid "Invalid hardware inventory: %s key is missing or empty"
+msgstr "Invalid hardware inventory: %s key is missing or empty"
+
+msgid "Invalid index for mau type"
+msgstr "Invalid index for mau type"
+
+#, python-format
+msgid "Invalid parameters for action %(act)s: %(error)s"
+msgstr "Invalid parameters for action %(act)s: %(error)s"
+
+#, python-format
+msgid "Invalid parameters for operator %(op)s: %(error)s"
+msgstr "Invalid parameters for operator %(op)s: %(error)s"
+
+#, python-format
+msgid ""
+"Invalid provision state for introspection: \"%(state)s\", valid states are "
+"\"%(valid)s\""
+msgstr ""
+"Invalid provision state for introspection: \"%(state)s\", valid states are "
+"\"%(valid)s\""
+
+msgid ""
+"Ironic API URL, used to set Ironic API URL when auth_strategy option is "
+"noauth or auth_type is \"none\" to work with standalone Ironic without "
+"keystone."
+msgstr ""
+"Ironic API URL, used to set Ironic API URL when auth_strategy option is "
+"noauth or auth_type is \"none\" to work with standalone Ironic without "
+"Keystone."
+
+msgid "Ironic driver_info fields that are equivalent to ipmi_address."
+msgstr "Ironic driver_info fields that are equivalent to ipmi_address."
+
+msgid "Ironic endpoint type."
+msgstr "Ironic endpoint type."
+
+msgid "Ironic service type."
+msgstr "Ironic service type."
+
+msgid "Keystone region to get endpoint for."
+msgstr "Keystone region to get endpoint for."
+
+msgid "Keystone region used to get Ironic endpoints."
+msgstr "Keystone region used to get Ironic endpoints."
+
+msgid "Limit cannot be negative"
+msgstr "Limit cannot be negative"
+
+#, python-format
+msgid "Limit over %s"
+msgstr "Limit over %s"
+
+msgid "Limit the number of elements an API list-call returns"
+msgstr "Limit the number of elements an API list-call returns"
+
+msgid ""
+"List of Etherent Over InfiniBand interfaces on the Inspector host which are "
+"used for physical access to the DHCP network. Multiple interfaces would be "
+"attached to a bond or bridge specified in dnsmasq_interface. The MACs of the "
+"InfiniBand nodes which are not in desired state are going to be blacklisted "
+"based on the list of neighbor MACs on these interfaces."
+msgstr ""
+"List of Ethernet Over InfiniBand interfaces on the Inspector host which are "
+"used for physical access to the DHCP network. Multiple interfaces would be "
+"attached to a bond or bridge specified in dnsmasq_interface. The MACs of the "
+"InfiniBand nodes which are not in desired state are going to be blacklisted "
+"based on the list of neighbour MACs on these interfaces."
+
+#, python-format
+msgid "Look up error: %s"
+msgstr "Look up error: %s"
+
+msgid "Malformed API version: expected string in form of X.Y"
+msgstr "Malformed API version: expected string in form of X.Y"
+
+msgid ""
+"Managed boot is requested, but this installation cannot manage boot "
+"((can_manage_boot set to False)"
+msgstr ""
+"Managed boot is requested, but this installation cannot manage boot "
+"((can_manage_boot set to False)"
+
+msgid ""
+"Mapping between a CPU flag and a capability to set if this flag is present."
+msgstr ""
+"Mapping between a CPU flag and a capability to set if this flag is present."
+
+msgid "Marker not UUID-like"
+msgstr "Marker not UUID-like"
+
+msgid "Maximum number of retries in case of conflict error (HTTP 409)."
+msgstr "Maximum number of retries in case of conflict error (HTTP 409)."
+
+msgid "Maximum number of times to retry a Swift request, before failing."
+msgstr "Maximum number of times to retry a Swift request, before failing."
+
+msgid ""
+"Method for storing introspection data. If set to 'none', introspection data "
+"will not be stored."
+msgstr ""
+"Method for storing introspection data. If set to 'none', introspection data "
+"will not be stored."
+
+msgid "Method to use for authentication: noauth or keystone."
+msgstr "Method to use for authentication: noauth or Keystone."
+
+#, python-format
+msgid "Multiple nodes match the same number of attributes %(attr)s: %(found)s"
+msgstr "Multiple nodes match the same number of attributes %(attr)s: %(found)s"
+
+msgid ""
+"Name of the key to store the location of stored data in the extra column of "
+"the Ironic database."
+msgstr ""
+"Name of the key to store the location of stored data in the extra column of "
+"the Ironic database."
+
+#, python-format
+msgid ""
+"No disks could be found using the root device hints %(hints)s because they "
+"failed to validate. Error: %(error)s"
+msgstr ""
+"No disks could be found using the root device hints %(hints)s because they "
+"failed to validate. Error: %(error)s"
+
+msgid "No disks satisfied root device hints"
+msgstr "No disks satisfied root device hints"
+
+msgid "No interfaces supplied by the ramdisk"
+msgstr "No interfaces supplied by the ramdisk"
+
+msgid ""
+"No lookup attributes were found, inspector won't be able to find it after "
+"introspection, consider creating ironic ports or providing an IPMI address"
+msgstr ""
+"No lookup attributes were found, inspector won't be able to find it after "
+"introspection, consider creating Ironic ports or providing an IPMI address"
+
+#, python-format
+msgid "No suitable interfaces found in %s"
+msgstr "No suitable interfaces found in %s"
+
+#, python-format
+msgid "Node %(uuid)s already has BMC address %(ipmi_address)s, not enrolling"
+msgstr "Node %(uuid)s already has BMC address %(ipmi_address)s, not enrolling"
+
+#, python-format
+msgid "Node %s was not found in Ironic"
+msgstr "Node %s was not found in Ironic"
+
+msgid "Node is locked, please, retry later"
+msgstr "Node is locked, please, retry later"
+
+msgid "Node locked, please, try again later"
+msgstr "Node locked, please, try again later"
+
+#, python-format
+msgid "Node not found for marker: %s"
+msgstr "Node not found for marker: %s"
+
+#, python-format
+msgid "Node not found hook failed: %s"
+msgstr "Node not found hook failed: %s"
+
+msgid "Node not found hook returned nothing"
+msgstr "Node not found hook returned nothing"
+
+msgid "Node not found in the cache"
+msgstr "Node not found in the cache"
+
+#, python-format
+msgid "Node processing already finished with error: %s"
+msgstr "Node processing already finished with error: %s"
+
+msgid ""
+"Node state mismatch detected between the DB and the cached node_info object"
+msgstr ""
+"Node state mismatch detected between the DB and the cached node_info object"
+
+msgid ""
+"Number of seconds that the Swift object will last before being deleted. (set "
+"to 0 to never delete the object)."
+msgstr ""
+"Number of seconds that the Swift object will last before being deleted. (set "
+"to 0 to never delete the object)."
+
+msgid ""
+"PXE boot filter driver to use, possible filters are: \"iptables\", \"dnsmasq"
+"\" and \"noop\". Set \"noop \" to disable the firewall filtering."
+msgstr ""
+"PXE boot filter driver to use, possible filters are: \"iptables\", \"dnsmasq"
+"\" and \"noop\". Set \"noop \" to disable the firewall filtering."
+
+msgid "Path to SSL certificate"
+msgstr "Path to SSL certificate"
+
+msgid "Path to SSL key"
+msgstr "Path to SSL key"
+
+msgid ""
+"Path to the rootwrap configuration file to use for running commands as root"
+msgstr ""
+"Path to the rootwrap configuration file to use for running commands as root"
+
+#, python-format
+msgid "Port %(mac)s already exists, uuid: %(uuid)s"
+msgstr "Port %(mac)s already exists, uuid: %(uuid)s"
+
+msgid "Port to listen on."
+msgstr "Port to listen on."
+
+#, python-format
+msgid ""
+"Pre-processing failures detected reapplying introspection on stored data:\n"
+"%s"
+msgstr ""
+"Pre-processing failures detected reapplying introspection on stored data:\n"
+"%s"
+
+msgid ""
+"Purge the hostsdir upon driver initialization. Setting to false should only "
+"be performed when the deployment of inspector is such that there are "
+"multiple processes executing inside of the same host and namespace. In this "
+"case, the Operator is responsible for setting up a custom cleaning facility."
+msgstr ""
+"Purge the hostsdir upon driver initialisation. Setting to false should only "
+"be performed when the deployment of inspector is such that there are "
+"multiple processes executing inside of the same host and namespace. In this "
+"case, the Operator is responsible for setting up a custom cleaning facility."
+
+#, python-format
+msgid "Ramdisk reported error: %s"
+msgstr "Ramdisk reported error: %s"
+
+#, python-format
+msgid "Rule %s was not found"
+msgstr "Rule %s was not found"
+
+#, python-format
+msgid "Rule with UUID %s already exists"
+msgstr "Rule with UUID %s already exists"
+
+msgid "SSL Enabled/Disabled"
+msgstr "SSL Enabled/Disabled"
+
+msgid "Swift endpoint type."
+msgstr "Swift endpoint type."
+
+#, python-format
+msgid "Swift failed to create container %(container)s. Error was: %(error)s"
+msgstr "Swift failed to create container %(container)s. Error was: %(error)s"
+
+#, python-format
+msgid ""
+"Swift failed to create object %(object)s in container %(container)s. Error "
+"was: %(error)s"
+msgstr ""
+"Swift failed to create object %(object)s in container %(container)s. Error "
+"was: %(error)s"
+
+#, python-format
+msgid ""
+"Swift failed to get object %(object)s in container %(container)s. Error was: "
+"%(error)s"
+msgstr ""
+"Swift failed to get object %(object)s in container %(container)s. Error was: "
+"%(error)s"
+
+msgid "Swift service type."
+msgstr "Swift service type."
+
+msgid "Swift support is disabled"
+msgstr "Swift support is disabled"
+
+msgid ""
+"The MAC address cache directory, exposed to dnsmasq.This directory is "
+"expected to be in exclusive control of the driver."
+msgstr ""
+"The MAC address cache directory, exposed to dnsmasq.This directory is "
+"expected to be in the exclusive control of the driver."
+
+#, python-format
+msgid ""
+"The PXE filter driver %(driver)s: my fsm encountered an exception: %(error)s"
+msgstr ""
+"The PXE filter driver %(driver)s: my fsm encountered an exception: %(error)s"
+
+#, python-format
+msgid ""
+"The following failures happened during running pre-processing hooks:\n"
+"%s"
+msgstr ""
+"The following failures happened during running pre-processing hooks:\n"
+"%s"
+
+#, python-format
+msgid "The following hook(s) are missing or failed to load: %s"
+msgstr "The following hook(s) are missing or failed to load: %s"
+
+#, python-format
+msgid "The following problems encountered: %s"
+msgstr "The following problems encountered: %s"
+
+msgid "The green thread pool size."
+msgstr "The green thread pool size."
+
+msgid ""
+"The name of the Ironic driver used by the enroll hook when creating a new "
+"node in Ironic."
+msgstr ""
+"The name of the Ironic driver used by the enrol hook when creating a new "
+"node in Ironic."
+
+msgid ""
+"The name of the hook to run when inspector receives inspection information "
+"from a node it isn't already aware of. This hook is ignored by default."
+msgstr ""
+"The name of the hook to run when inspector receives inspection information "
+"from a node it isn't already aware of. This hook is ignored by default."
+
+msgid ""
+"Timeout after which introspection is considered failed, set to 0 to disable."
+msgstr ""
+"Timeout after which introspection is considered failed, set to 0 to disable."
+
+#, python-format
+msgid "Unable to parse field JSON path %(field)s: %(error)s"
+msgstr "Unable to parse field JSON path %(field)s: %(error)s"
+
+#, python-format
+msgid ""
+"Unexpected exception %(exc_class)s during preprocessing in hook %(hook)s: "
+"%(error)s"
+msgstr ""
+"Unexpected exception %(exc_class)s during preprocessing in hook %(hook)s: "
+"%(error)s"
+
+#, python-format
+msgid "Unexpected exception %(exc_class)s during processing: %(error)s"
+msgstr "Unexpected exception %(exc_class)s during processing: %(error)s"
+
+#, python-format
+msgid ""
+"Unexpected exception %(exc_class)s while fetching unprocessed introspection "
+"data from Swift: %(error)s"
+msgstr ""
+"Unexpected exception %(exc_class)s while fetching unprocessed introspection "
+"data from Swift: %(error)s"
+
+#, python-format
+msgid ""
+"Unsupported API version %(requested)s, supported range is %(min)s to %(max)s"
+msgstr ""
+"Unsupported API version %(requested)s, supported range is %(min)s to %(max)s"
+
+#, python-format
+msgid "Unsupported scheme for field: %s, valid values are node:// or data://"
+msgstr "Unsupported scheme for field: %s, valid values are node:// or data://"
+
+msgid ""
+"Use [ironic]/auth_type, for noauth case set [ironic]/auth_type to `none` and "
+"specify ironic API URL via [ironic]/endpoint_override option."
+msgstr ""
+"Use [ironic]/auth_type, for noauth case set [ironic]/auth_type to `none` and "
+"specify ironic API URL via [ironic]/endpoint_override option."
+
+msgid "Use [ironic]/endpoint_override option to set a specific ironic API url."
+msgstr ""
+"Use [ironic]/endpoint_override option to set a specific ironic API URL."
+
+msgid "Use [ironic]/region_name option instead to configure region."
+msgstr "Use [ironic]/region_name option instead to configure region."
+
+msgid "Use [ironic]/service_type option to set a specific type."
+msgstr "Use [ironic]/service_type option to set a specific type."
+
+msgid "Use [ironic]/valid_interfaces option to specify endpoint interfaces."
+msgstr "Use [ironic]/valid_interfaces option to specify endpoint interfaces."
+
+msgid "Use [swift]/region_name option to configure region."
+msgstr "Use [swift]/region_name option to configure region."
+
+msgid "Use [swift]/service_type option to set specific service type"
+msgstr "Use [swift]/service_type option to set specific service type"
+
+msgid "Use [swift]/valid_interfaces option to specify endpoint interfaces."
+msgstr "Use [swift]/valid_interfaces option to specify endpoint interfaces."
+
+msgid "User data processing is not supported yet"
+msgstr "User data processing is not supported yet"
+
+#, python-format
+msgid "Validation failed for actions: %s"
+msgstr "Validation failed for actions: %s"
+
+#, python-format
+msgid "Validation failed for conditions: %s"
+msgstr "Validation failed for conditions: %s"
+
+msgid "Version not found."
+msgstr "Version not found."
+
+msgid ""
+"Whether the current installation of ironic-inspector can manage PXE booting "
+"of nodes. If set to False, the API will reject introspection requests with "
+"manage_boot missing or set to True."
+msgstr ""
+"Whether the current installation of Ironic-Inspector can manage PXE booting "
+"of nodes. If set to False, the API will reject introspection requests with "
+"manage_boot missing or set to True."
+
+msgid ""
+"Whether to leave 1 GiB of disk size untouched for partitioning. Only has "
+"effect when used with the IPA as a ramdisk, for older ramdisk local_gb is "
+"calculated on the ramdisk side."
+msgstr ""
+"Whether to leave 1 GiB of disk size untouched for partitioning. Only has "
+"effect when used with the IPA as a ramdisk, for older ramdisk local_gb is "
+"calculated on the ramdisk side."
+
+msgid ""
+"Whether to overwrite existing values in node database. Disable this option "
+"to make introspection a non-destructive operation."
+msgstr ""
+"Whether to overwrite existing values in node database. Disable this option "
+"to make introspection a non-destructive operation."
+
+msgid "Whether to power off a node after introspection."
+msgstr "Whether to power off a node after introspection."
+
+msgid ""
+"Whether to store ramdisk logs even if it did not return an error message "
+"(dependent upon \"ramdisk_logs_dir\" option being set)."
+msgstr ""
+"Whether to store ramdisk logs even if it did not return an error message "
+"(dependent upon \"ramdisk_logs_dir\" option being set)."
+
+msgid "Whether to store the boot mode (BIOS or UEFI)."
+msgstr "Whether to store the boot mode (BIOS or UEFI)."
+
+msgid ""
+"Which MAC addresses to add as ports during introspection. Possible values: "
+"all (all MAC addresses), active (MAC addresses of NIC with IP addresses), "
+"pxe (only MAC address of NIC node PXE booted from, falls back to \"active\" "
+"if PXE MAC is not supplied by the ramdisk)."
+msgstr ""
+"Which MAC addresses to add as ports during introspection. Possible values: "
+"all (all MAC addresses), active (MAC addresses of NIC with IP addresses), "
+"PXE (only MAC address of NIC node PXE booted from, falls back to \"active\" "
+"if PXE MAC is not supplied by the ramdisk)."
+
+msgid ""
+"Which ports (already present on a node) to keep after introspection. "
+"Possible values: all (do not delete anything), present (keep ports which "
+"MACs were present in introspection data), added (keep only MACs that we "
+"added during introspection)."
+msgstr ""
+"Which ports (already present on a node) to keep after introspection. "
+"Possible values: all (do not delete anything), present (keep ports which "
+"MACs were present in introspection data), added (keep only MACs that we "
+"added during introspection)."
+
+#, python-format
+msgid "[node: %s]"
+msgstr "[node: %s]"
+
+msgid "[unidentified node]"
+msgstr "[unidentified node]"
+
+#, python-format
+msgid "invalid regular expression: %s"
+msgstr "invalid regular expression: %s"
+
+msgid "iptables chain name to use."
+msgstr "iptables chain name to use."
+
+#, python-format
+msgid "malformed or missing CPU information: %s"
+msgstr "malformed or missing CPU information: %s"
+
+#, python-format
+msgid ""
+"malformed or missing memory information: %s; introspection requires physical "
+"memory size from dmidecode"
+msgstr ""
+"malformed or missing memory information: %s; introspection requires physical "
+"memory size from dmidecode"
+
+#, python-format
+msgid "missing required parameter(s): %s"
+msgstr "missing required parameter(s): %s"
+
+msgid "state"
+msgstr "state"
+
+#, python-format
+msgid "unexpected parameter(s): %s"
+msgstr "unexpected parameter(s): %s"

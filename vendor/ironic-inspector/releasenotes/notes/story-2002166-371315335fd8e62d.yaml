@@ -1,0 +1,14 @@
+---
+upgrade:
+  - |
+    Updates the default Ironic API version to 1.38.
+
+    This version is used by default within the Bare Metal Inspection service
+    when communicating with the Bare Metal API. It is the default used by
+    processing plugins, which may override the version, and by introspection
+    rules, which may not override the version.
+
+    1.38 was the API version at the time of the most recent Queens series
+    Bare Metal service release (10.1.0).
+
+    See `story 2002166 <https://storyboard.openstack.org/#!/story/2002166>`__.

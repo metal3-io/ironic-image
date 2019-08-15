@@ -1,0 +1,10 @@
+---
+features:
+  - |
+    Adds new parameter ``manage_boot`` to the introspection API to allow
+    disabling boot management (setting the boot device and rebooting)
+    for a specific node. If it is set to ``False``, the boot is supposed
+    to be managed by a 3rd party.
+
+    If the new option ``can_manage_boot`` is set to ``False`` (the default is
+    ``True), then ``manage_boot`` must be explicitly set to ``False``.

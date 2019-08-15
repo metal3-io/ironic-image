@@ -1,0 +1,7 @@
+---
+fixes:
+  - DHCP is now disabled completely when no nodes are on introspection and
+    the "node_not_found_hook" is not set. This reduces probability of serving
+    DHCP to wrong nodes, if their NIC is not registered in Ironic. See
+    https://bugs.launchpad.net/ironic-inspector/+bug/1557979 and
+    https://bugzilla.redhat.com/show_bug.cgi?id=1317695 for details.

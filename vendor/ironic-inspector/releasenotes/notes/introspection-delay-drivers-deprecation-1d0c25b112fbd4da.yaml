@@ -1,0 +1,10 @@
+---
+upgrade:
+  - |
+    The default value for the configuration option
+    "introspection_delay_drivers" was changed to ``.*``, which means that by
+    default "introspection_delay" is now applied to all drivers. Set
+    "introspection_delay" to 0 to disable the delay.
+deprecations:
+  - |
+    The configuration option "introspection_delay_drivers" is deprecated.

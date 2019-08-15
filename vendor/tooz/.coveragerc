@@ -1,0 +1,8 @@
+[run]
+branch = True
+source = tooz
+omit = tooz/tests/*
+
+[report]
+ignore_errors = True
+precision = 2

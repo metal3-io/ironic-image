@@ -1,0 +1,5 @@
+---
+fixes:
+  - |
+    Corrects introspection of active nodes that are not in the lookup cache,
+    see `story 2006233 <https://storyboard.openstack.org/#!/story/2006233>`_.

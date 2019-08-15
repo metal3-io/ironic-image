@@ -1,0 +1,4 @@
+---
+security:
+  - Never enable Flask debug mode as it may allow remote code execution.
+    See https://bugs.launchpad.net/bugs/1506419 for details.

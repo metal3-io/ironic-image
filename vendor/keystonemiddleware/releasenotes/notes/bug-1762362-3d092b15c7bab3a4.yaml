@@ -1,0 +1,6 @@
+---
+features:
+  - >
+    [`bug 1762362 <https://bugs.launchpad.net/keystonemiddleware/+bug/1762362>`_]
+    The value of the header "WWW-Authenticate" in a 401 (Unauthorized) response
+    now is double quoted to follow the RFC requirement.

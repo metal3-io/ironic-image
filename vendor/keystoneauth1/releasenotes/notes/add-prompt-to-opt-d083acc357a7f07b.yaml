@@ -1,0 +1,10 @@
+---
+prelude: >
+    Add the prompt parameter to loader Opts
+features:
+  - The prompt parameter was added to the Opts provided by auth plugins. The
+    presence of the prompt parameter on an Option will indicate to plugin
+    loaders that it is ok to prompt the user for input for this parameter if
+    none is provided initially. Actual implementation of this prompting
+    mechanism will be handled by the individual loaders such as
+    os-client-config.

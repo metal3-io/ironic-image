@@ -1,0 +1,4 @@
+---
+upgrade:
+  - The minimum required version of python-scciclient (needed for the iRMC
+    driver) was bumped to 0.4.0.

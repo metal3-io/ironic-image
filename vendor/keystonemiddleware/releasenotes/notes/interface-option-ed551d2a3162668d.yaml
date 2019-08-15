@@ -1,0 +1,9 @@
+---
+features:
+  - |
+    [`bug 1830002 <https://bugs.launchpad.net/keystonemiddleware/+bug/1830002>`_]
+    In order to allow an installation to work without deploying an admin
+    Identity endpoint, a new option `interface` has been added, allowing
+    select the Identity endpoint that is being used when verifying auth
+    tokens. It defaults to `admin` in order to replicate the old behaviour,
+    but may be set to `public` or `internal` as needed.

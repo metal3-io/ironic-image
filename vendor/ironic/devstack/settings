@@ -1,0 +1,12 @@
+enable_service ironic ir-api ir-cond
+
+source $DEST/ironic/devstack/common_settings
+
+# NOTE(vsaienko) mtu calculation has been changed recently to 1450
+# https://github.com/openstack/neutron/commit/51a697
+# and caused https://bugs.launchpad.net/ironic/+bug/1631875
+# Get the smallest local MTU
+local_mtu=$(ip link show | sed -ne 's/.*mtu \([0-9]\+\).*/\1/p' | sort -n | head -1)
+# 50 bytes is overhead for vxlan (which is greater than GRE
+# allowing us to use either overlay option with this MTU.
+PUBLIC_BRIDGE_MTU=${OVERRIDE_PUBLIC_BRIDGE_MTU:-$((local_mtu - 50))}

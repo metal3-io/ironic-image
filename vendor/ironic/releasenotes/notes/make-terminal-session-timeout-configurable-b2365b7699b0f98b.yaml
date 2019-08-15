@@ -1,0 +1,6 @@
+---
+features:
+  - |
+    Adds configuration option ``[console]terminal_timeout`` to allow setting
+    the time (in seconds) of inactivity, after which a socat-based
+    console terminates.

@@ -1,0 +1,8 @@
+---
+upgrade:
+  - |
+    Removed previously deprecated authentication options from "ironic",
+    "swift", and "keystone_authtoken" sections.
+  - |
+    Removed long deprecated support for "discoverd" section in configuration
+    file.

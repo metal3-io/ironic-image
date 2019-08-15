@@ -1,0 +1,63 @@
+# Ian Y. Choi <ianyrchoi@gmail.com>, 2017. #zanata
+msgid ""
+msgstr ""
+"Project-Id-Version: keystonemiddleware Release Notes\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-02-20 19:27+0000\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2017-01-19 04:08+0000\n"
+"Last-Translator: Ian Y. Choi <ianyrchoi@gmail.com>\n"
+"Language-Team: Korean (South Korea)\n"
+"Language: ko_KR\n"
+"X-Generator: Zanata 4.3.3\n"
+"Plural-Forms: nplurals=1; plural=0\n"
+
+msgid "4.1.0"
+msgstr "4.1.0"
+
+msgid "4.12.0"
+msgstr "4.12.0"
+
+msgid "4.2.0"
+msgstr "4.2.0"
+
+msgid "4.3.0"
+msgstr "4.3.0"
+
+msgid "4.5.0"
+msgstr "4.5.0"
+
+msgid "4.6.0"
+msgstr "4.6.0"
+
+msgid "Bug Fixes"
+msgstr "버그 수정"
+
+msgid "Current Series Release Notes"
+msgstr "최신 시리즈에 대한 릴리즈 노트"
+
+msgid "Deprecation Notes"
+msgstr "지원 종료된 기능 노트"
+
+msgid "Mitaka Series Release Notes"
+msgstr "Mitaka 시리즈에 대한 릴리즈 노트"
+
+msgid "New Features"
+msgstr "새로운 기능"
+
+msgid "Newton Series Release Notes"
+msgstr "Newton 시리즈에 대한 릴리즈 노트"
+
+msgid "Ocata Series Release Notes"
+msgstr "Ocata 시리즈에 대한 릴리즈 노트"
+
+msgid "Security Issues"
+msgstr "보안 이슈"
+
+msgid "Upgrade Notes"
+msgstr "업그레이드 노트"
+
+msgid "keystonemiddleware Release Notes"
+msgstr "keystonemiddleware 릴리즈 노트"

@@ -1,0 +1,24 @@
+docker-io
+ipmitool
+iptables
+ipxe-bootimgs
+gnupg
+libguestfs
+libguestfs-tools
+libvirt
+libvirt-python
+qemu-system-x86
+net-tools
+openssh-clients
+openvswitch
+sgabios
+shellinabox
+syslinux
+tftp-server
+xinetd
+squashfs-tools
+libvirt-devel
+socat
+edk2-ovmf # dist:f24,f25
+ipxe-roms-qemu
+jq

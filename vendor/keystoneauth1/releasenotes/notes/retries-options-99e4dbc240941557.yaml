@@ -1,0 +1,6 @@
+---
+features:
+  - |
+    The Adapter parameters ``connect_retries`` and ``status_code_retries`` can
+    now be set via configuration options ``connect-retries`` and
+    ``status-code-retries`` accordingly.

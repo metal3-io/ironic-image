@@ -1,0 +1,8 @@
+---
+features:
+  - |
+    Adds support to enable deployment workflow changes necessary to support
+    the use of Smart NICs in the ``ansible``, ``direct``, ``iscsi`` and
+    ``ramdisk`` deployment interfaces. Networking service integration for
+    this functionality is not anticipated until the Train release of the
+    Networking service.

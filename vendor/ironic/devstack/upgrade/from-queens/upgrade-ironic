@@ -1,0 +1,5 @@
+function configure_ironic_upgrade {
+    # Remove the classic drivers from the configuration (forced by devstack-gate)
+    # TODO(dtantsur): remove when classic drivers are removed
+    sed -i '/^enabled_drivers/d' $IRONIC_CONF_FILE
+}

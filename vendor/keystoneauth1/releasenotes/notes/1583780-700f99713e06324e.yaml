@@ -1,0 +1,9 @@
+---
+features:
+  - Added a new OidcAccessToken plugin, accessible via the 'v3oidcaccesstoken'
+    entry point, making possible to authenticate using an existing OpenID
+    Connect Access token.
+fixes:
+  - >
+    [`bug 1583780 <https://bugs.launchpad.net/keystoneauth/+bug/1583780>`_]
+    OpenID connect support should include authenticating using directly an access token.

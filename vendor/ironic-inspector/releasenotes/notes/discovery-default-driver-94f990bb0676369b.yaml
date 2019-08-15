@@ -1,0 +1,6 @@
+---
+upgrade:
+  - |
+    The ``[discovery]enroll_node_driver`` option, specifying the hardware type
+    or driver to use for newly discovered nodes, was changed from ``fake``
+    classic driver to ``fake-hardware`` hardware type.

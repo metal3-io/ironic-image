@@ -1,0 +1,4 @@
+---
+security:
+  - Private SSH keys are now masked when using the SSH power driver
+    and node details are requested.

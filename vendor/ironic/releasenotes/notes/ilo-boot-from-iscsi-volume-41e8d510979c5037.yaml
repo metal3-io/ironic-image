@@ -1,0 +1,5 @@
+---
+features:
+  - The ``ilo-pxe`` and ``ilo-virtual-media`` boot interfaces now support
+    firmware-based booting from iSCSI volume in UEFI boot mode.
+    Requires **proliantutils** library version 2.5.0 or newer.

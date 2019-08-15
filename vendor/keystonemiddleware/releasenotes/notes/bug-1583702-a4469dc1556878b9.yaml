@@ -1,0 +1,8 @@
+---
+fixes:
+  - >
+    [`bug 1583702 <https://bugs.launchpad.net/keystonemiddleware/+bug/1583702>`_]
+    Some services such as Swift does not use Oslo (global) config. In that
+    case, the options are conveyed via local config. This patch utilized
+    an established pattern in auth_token middleware, which is to first
+    look for the given option in local config, then Oslo global config.

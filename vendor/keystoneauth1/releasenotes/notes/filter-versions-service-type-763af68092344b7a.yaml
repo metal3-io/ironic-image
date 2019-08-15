@@ -1,0 +1,8 @@
+---
+features:
+  - |
+    Added ability to filter the results of ``get_all_version_data`` by
+    service-type.
+  - |
+    Added ``get_all_version_data`` to ``adapter.Adapter`` that uses the
+    adapter's ``service_type`` to filter the version data fetched.

@@ -1,0 +1,4 @@
+---
+features:
+  - |
+    Added ``split-loggers`` option to the oslo.config Session options.

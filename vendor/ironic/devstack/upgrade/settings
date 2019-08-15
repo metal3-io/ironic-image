@@ -1,0 +1,35 @@
+# Grenade needs to know that Ironic has a Grenade plugin. This is done in the
+# gate by setting GRENADE_PLUGINRC when using openstack-infra/devstack-gate.
+# That means that in the project openstack-infra/project-config we will need to
+# update the Ironic grenade job(s) in jenkins/jobs/devstack-gate.yaml with
+# this:
+#     export GRENADE_PLUGINRC="enable_grenade_plugin ironic https://opendev.org/openstack/ironic"
+# If openstack-infra/project-config is not updated then the Grenade tests will
+# never get run for Ironic
+
+register_project_for_upgrade ironic
+register_db_to_save ironic
+
+# Duplicate some settings from devstack. Use old devstack as we install base
+# environment from it. In common_settings we also source the old localrc
+# variables, so we need to do this before checking the HOST_TOPOLOGY value
+IRONIC_BASE_DEVSTACK_DIR=$TOP_DIR/../../old/ironic/devstack
+source $IRONIC_BASE_DEVSTACK_DIR/common_settings
+
+if [[ "${HOST_TOPOLOGY}" != "multinode" ]]; then
+    # Disable automated cleaning on single node grenade to save a time and resources.
+    export IRONIC_AUTOMATED_CLEAN_ENABLED=False
+fi
+
+# NOTE(jlvillal): For multi-node grenade jobs we do not want to upgrade Nova
+if [[ "${HOST_TOPOLOGY}" == "multinode" ]]; then
+    # Remove 'nova' from the list of projects to upgrade
+    UPGRADE_PROJECTS=$(echo $UPGRADE_PROJECTS | sed -e 's/\s*nova//g' )
+fi
+
+# NOTE(vdrok): Do not setup multicell during upgrade
+export CELLSV2_SETUP="singleconductor"
+
+# https://storyboard.openstack.org/#!/story/2003808
+# pxe booting with virtio broken in xenial-updates/queens/main
+export LIBVIRT_NIC_DRIVER=e1000

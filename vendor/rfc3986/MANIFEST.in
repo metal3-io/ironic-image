@@ -1,0 +1,8 @@
+include README.rst
+include LICENSE
+include AUTHORS.rst
+include setup.cfg
+prune *.pyc
+recursive-include docs *.rst *.py
+recursive-include tests *.py
+prune docs/_build

@@ -1,0 +1,6 @@
+---
+upgrade:
+  - |
+    Removes deprecated configuration options: ``introspection_delay_drivers`` from the
+    default section and ``log_bmc_address`` from the ``processing`` section.
+

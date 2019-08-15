@@ -1,0 +1,4 @@
+---
+fixes:
+  - Don't fail on finish power off if node in 'enroll' state. Nodes in
+    'enroll' state are not expected to have power credentials.

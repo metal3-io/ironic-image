@@ -1,0 +1,4 @@
+SQLAlchemy>=0.9.0
+Mako
+python-editor>=0.3
+python-dateutil

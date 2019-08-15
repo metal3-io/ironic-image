@@ -1,0 +1,69 @@
+Akihiro Motoki <amotoki@gmail.com>
+Andreas Jaeger <aj@suse.com>
+Angus Lees <gus@inodes.org>
+Ben Nemec <bnemec@redhat.com>
+Bogdan Dobrelya <bdobrelia@mirantis.com>
+Brian Haley <bhaley@redhat.com>
+Cedric Brandily <zzelle@gmail.com>
+ChangBo Guo(gcb) <eric.guo@easystack.cn>
+Christian Berendt <berendt@b1-systems.de>
+Claudiu Belu <cbelu@cloudbasesolutions.com>
+Corey Bryant <corey.bryant@canonical.com>
+Cyril Roelandt <cyril.roelandt@enovance.com>
+Daniel Alvarez <dalvarez@redhat.com>
+Davanum Srinivas <davanum@gmail.com>
+Davanum Srinivas <dims@linux.vnet.ibm.com>
+Dina Belova <dbelova@mirantis.com>
+Dirk Mueller <dirk@dmllr.de>
+Doug Hellmann <doug.hellmann@dreamhost.com>
+Doug Hellmann <doug@doughellmann.com>
+Flavio Percoco <flaper87@gmail.com>
+Ghanshyam Mann <gmann@ghanshyammann.com>
+IWAMOTO Toshihiro <iwamoto@valinux.co.jp>
+Ihar Hrachyshka <ihrachys@redhat.com>
+Jakub Libosvar <libosvar@redhat.com>
+James Carey <jecarey@us.ibm.com>
+Jeremy Stanley <fungi@yuggoth.org>
+Julien Danjou <julien@danjou.info>
+Kenneth Giusti <kgiusti@gmail.com>
+Kirill Bespalov <kbespalov@mirantis.com>
+Lucian Petrut <lpetrut@cloudbasesolutions.com>
+Mark McClain <mark.mcclain@dreamhost.com>
+Mark McLoughlin <markmc@redhat.com>
+Maru Newby <marun@redhat.com>
+Monty Taylor <mordred@inaugust.com>
+OpenStack Release Bot <infra-root@openstack.org>
+Pádraig Brady <P@draigBrady.com>
+Ralf Haferkamp <rhafer@suse.de>
+Roman Podolyaka <rpodolyaka@mirantis.com>
+Ronald Bradford <ronald.bradford@gmail.com>
+Sean Dague <sean@dague.net>
+Sean McGinnis <sean.mcginnis@huawei.com>
+Sergey Kraynev <skraynev@mirantis.com>
+Sergey Lukjanov <slukjanov@mirantis.com>
+Stanislav Kudriashev <skudriashev@griddynamics.com>
+Stephen Ma <stephen.ma@hpe.com>
+Steve Martinelli <stevemar@ca.ibm.com>
+Swapnil Kulkarni (coolsvap) <me@coolsvap.net>
+Thierry Carrez <thierry@openstack.org>
+Thomas Bechtold <thomasbechtold@jpberlin.de>
+Tomoki Sekiyama <tomoki.sekiyama@hds.com>
+Tony Breeds <tony@bakeyournoodle.com>
+Tony Xu <hhktony@gmail.com>
+Victor Stinner <vstinner@redhat.com>
+Vieri <15050873171@163.com>
+Vu Cong Tuan <tuanvc@vn.fujitsu.com>
+XianChaobo <xianchaobo@huawei.com>
+Yatin Kumbhare <yatinkumbhare@gmail.com>
+Yufang Zhang <zhangyufang@360.cn>
+Yuriy Taraday <yorik.sar@gmail.com>
+Zhao Lei <zhaolei@cn.fujitsu.com>
+ZhongShengping <chdzsp@163.com>
+Zhongyue Luo <zhongyue.nah@intel.com>
+fumihiko kakuma <kakuma@valinux.co.jp>
+howardlee <lihongweibj@inspur.com>
+jacky06 <zhang.min@99cloud.net>
+melissaml <ma.lei@99cloud.net>
+ricolin <rico.lin@easystack.cn>
+sonu.kumar <sonu.kumar@nectechnologies.in>
+yan.haifeng <yanheven@qq.com>

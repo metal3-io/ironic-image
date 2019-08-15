@@ -1,0 +1,7 @@
+- project:
+    templates:
+      - openstack-python-jobs
+      - publish-openstack-docs-pti
+      - check-requirements
+      - openstack-python3-train-jobs
+      - release-notes-jobs-python3

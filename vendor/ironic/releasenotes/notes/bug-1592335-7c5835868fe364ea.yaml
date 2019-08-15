@@ -1,0 +1,5 @@
+---
+fixes:
+  - A node using the ``agent_ilo`` or ``iscsi_ilo`` driver now has
+    its ``driver_info/ilo_deploy_iso`` field validated
+    during node validation.

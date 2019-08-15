@@ -1,0 +1,4 @@
+---
+fixes:
+  - Drivers using the ``AgentDeploy`` interface now correctly support take-over
+    for ``ACTIVE`` netboot-ed nodes.

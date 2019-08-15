@@ -1,0 +1,9 @@
+[oslo.config.opts]
+keystonemiddleware.auth_token = keystonemiddleware.auth_token._opts:list_opts
+
+[paste.filter_factory]
+audit = keystonemiddleware.audit:filter_factory
+auth_token = keystonemiddleware.auth_token:filter_factory
+ec2_token = keystonemiddleware.ec2_token:filter_factory
+s3_token = keystonemiddleware.s3_token:filter_factory
+

@@ -1,0 +1,189 @@
+- job:
+    name: glanceclient-dsvm-functional-v1
+    parent: devstack-tox-functional
+    description: |
+      Devstack-based functional tests for glanceclient
+      against the Image API v1.
+
+      The Image API v1 is removed from glance in Rocky, but
+      is still supported by glanceclient until the S cycle,
+      so we test it against glance stable/queens.
+
+      THIS JOB SHOULD BE REMOVED AT THE BEGINNING OF THE S
+      CYCLE.
+    override-checkout: stable/queens
+    required-projects:
+      - name: openstack/python-glanceclient
+        override-checkout: master
+    timeout: 4200
+    vars:
+      tox_envlist: functional-v1
+      devstack_localrc:
+        GLANCE_V1_ENABLED: true
+      devstack_services:
+        # turn off ceilometer
+        ceilometer-acentral: false
+        ceilometer-acompute: false
+        ceilometer-alarm-evaluator: false
+        ceilometer-alarm-notifier: false
+        ceilometer-anotification: false
+        ceilometer-api: false
+        ceilometer-collector: false
+        # turn on swift
+        s-account: true
+        s-container: true
+        s-object: true
+        s-proxy: true
+      # Hardcode glanceclient path so the job can be run on glance patches
+      zuul_work_dir: src/git.openstack.org/openstack/python-glanceclient
+    irrelevant-files:
+      - ^doc/.*$
+      - ^releasenotes/.*$
+      - ^.*\.rst$
+      - ^(test-|)requirements.txt$
+      - ^lower-constraints.txt$
+      - ^setup.cfg$
+      - ^tox.ini$
+      - ^\.zuul\.yaml$
+
+- job:
+    name: glanceclient-dsvm-functional
+    parent: devstack-tox-functional
+    description: |
+      Devstack-based functional tests for glanceclient.
+
+      These test glanceclient against Image API v2 only.
+    required-projects:
+      - openstack/python-glanceclient
+    timeout: 4200
+    vars:
+      devstack_localrc:
+        LIBS_FROM_GIT: python-glanceclient
+      devstack_services:
+        # turn off ceilometer
+        ceilometer-acentral: false
+        ceilometer-acompute: false
+        ceilometer-alarm-evaluator: false
+        ceilometer-alarm-notifier: false
+        ceilometer-anotification: false
+        ceilometer-api: false
+        ceilometer-collector: false
+        # turn on swift
+        s-account: true
+        s-container: true
+        s-object: true
+        s-proxy: true
+      # Hardcode glanceclient path so the job can be run on glance patches
+      zuul_work_dir: src/git.openstack.org/openstack/python-glanceclient
+    irrelevant-files:
+      - ^doc/.*$
+      - ^releasenotes/.*$
+      - ^.*\.rst$
+      - ^(test-|)requirements.txt$
+      - ^lower-constraints.txt$
+      - ^setup.cfg$
+      - ^tox.ini$
+      - ^\.zuul\.yaml$
+
+- job:
+    name: glanceclient-tox-keystone-tips-base
+    parent: tox
+    abstract: true
+    description: Abstract job for glanceclient vs. keystone
+    required-projects:
+      - name: openstack/keystoneauth
+
+- job:
+    name: glanceclient-tox-py27-keystone-tips
+    parent: glanceclient-tox-keystone-tips-base
+    description: |
+      glanceclient py27 unit tests vs. keystone masters
+    vars:
+      tox_envlist: py27
+
+- job:
+    name: glanceclient-tox-py35-keystone-tips
+    parent: glanceclient-tox-keystone-tips-base
+    description: |
+      glanceclient py35 unit tests vs. keystone masters
+    vars:
+      tox_envlist: py35
+
+- job:
+    name: glanceclient-tox-oslo-tips-base
+    parent: tox
+    abstract: true
+    description: Abstract job for glanceclient vs. oslo
+    required-projects:
+      - name: openstack/oslo.i18n
+      - name: openstack/oslo.utils
+
+- job:
+    name: glanceclient-tox-py27-oslo-tips
+    parent: glanceclient-tox-oslo-tips-base
+    description: |
+      glanceclient py27 unit tests vs. oslo masters
+    vars:
+      tox_envlist: py27
+
+- job:
+    name: glanceclient-tox-py35-oslo-tips
+    parent: glanceclient-tox-oslo-tips-base
+    description: |
+      glanceclient py35 unit tests vs. oslo masters
+    vars:
+      tox_envlist: py35
+
+- job:
+    name: glanceclient-dsvm-functional-py3
+    parent: glanceclient-dsvm-functional
+    vars:
+      devstack_localrc:
+        USE_PYTHON3: true
+
+- project:
+    templates:
+      - check-requirements
+      - lib-forward-testing
+      - lib-forward-testing-python3
+      - openstack-cover-jobs
+      - openstack-lower-constraints-jobs
+      - openstack-python-jobs
+      - openstack-python35-jobs
+      - openstack-python36-jobs
+      - openstack-python37-jobs
+      - publish-openstack-docs-pti
+      - release-notes-jobs-python3
+    check:
+      jobs:
+        - glanceclient-dsvm-functional-v1
+        - glanceclient-dsvm-functional
+    gate:
+      jobs:
+        - glanceclient-dsvm-functional-v1
+        - glanceclient-dsvm-functional
+    periodic:
+      jobs:
+        # NOTE(rosmaita): we only want the "tips" jobs to be run against
+        # master, hence the 'branches' qualifiers below.  Without them, when
+        # a stable branch is cut, the tests would be run against the stable
+        # branch as well, which is pointless because these libraries are
+        # frozen (more or less) in the stable branches.
+        #
+        # The "tips" jobs can be removed from the stable branch .zuul.yaml
+        # files if someone is so inclined, but that would require manual
+        # maintenance, so we do not do it by default.  Another option is
+        # to define these jobs in the openstack-infra/project-config repo.
+        # That would make us less agile in adjusting these tests, so we
+        # aren't doing that either.
+        - glanceclient-tox-py27-keystone-tips:
+            branches: master
+        - glanceclient-tox-py35-keystone-tips:
+            branches: master
+        - glanceclient-tox-py27-oslo-tips:
+            branches: master
+        - glanceclient-tox-py35-oslo-tips:
+            branches: master
+    experimental:
+      jobs:
+        - glanceclient-dsvm-functional-py3

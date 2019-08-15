@@ -1,0 +1,6 @@
+---
+features:
+  - |
+    The OneView drivers now retain the next boot device in node's internal
+    info when setting a boot device is requested. It is applied on the node
+    when it is power cycled.

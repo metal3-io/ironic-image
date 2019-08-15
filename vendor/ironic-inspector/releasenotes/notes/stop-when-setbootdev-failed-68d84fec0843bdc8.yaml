@@ -1,0 +1,5 @@
+---
+fixes:
+  - |
+    Stops introspection when setting boot device is failed, as the node is
+    not guaranteed to perform a PXE boot in this case.

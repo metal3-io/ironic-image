@@ -1,0 +1,4 @@
+---
+upgrade:
+  - Ramdisk logs are no longer part of data stored to Swift and returned
+    by the API.

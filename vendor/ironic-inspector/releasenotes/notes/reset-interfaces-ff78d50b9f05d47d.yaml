@@ -1,0 +1,10 @@
+---
+upgrade:
+  - |
+    The ``set-attribute`` action now automatically sets ``reset_interfaces`` to
+    ``True`` if the driver is updated. If it's not desired, set it explicitly
+    to ``False``.
+fixes:
+  - |
+    Fixes updating a driver with the ``set-attribute`` introspection rule
+    action by providing ``reset_interfaces``.

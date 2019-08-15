@@ -1,0 +1,4 @@
+---
+upgrade:
+- The deprecated use_syslog_rfc_format configuration option has been
+  removed.

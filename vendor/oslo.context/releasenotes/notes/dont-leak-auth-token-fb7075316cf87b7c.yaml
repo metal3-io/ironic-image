@@ -1,0 +1,7 @@
+---
+security:
+  - |
+    The ``get_logging_values`` function no longer outputs the auth_token, but
+    instead leaves it as ``***`` instead. As the name suggests, this function is
+    meant for logging, and letting the auth_token there might leak sensitive
+    data.

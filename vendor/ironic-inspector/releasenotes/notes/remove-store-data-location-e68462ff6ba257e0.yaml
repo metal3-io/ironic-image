@@ -1,0 +1,4 @@
+upgrade:
+  - |
+    The deprecated configuration option ``[processing]store_data_location``
+    was removed.

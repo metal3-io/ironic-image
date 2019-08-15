@@ -1,0 +1,5 @@
+---
+fixes:
+  - |
+    Fixed support for detecting microversion ranges on older Ironic
+    installations.

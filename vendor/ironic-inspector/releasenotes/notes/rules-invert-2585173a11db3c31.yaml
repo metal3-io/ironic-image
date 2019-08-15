@@ -1,0 +1,4 @@
+---
+features:
+  - Introspection rules conditions got a new generic "invert" parameter that
+    inverts the result of the condition.

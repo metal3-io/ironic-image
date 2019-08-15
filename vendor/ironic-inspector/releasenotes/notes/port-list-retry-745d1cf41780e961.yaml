@@ -1,0 +1,11 @@
+---
+fixes:
+  - |
+    The periodic PXE filter update task now retries fetching port list from
+    the Bare Metal service 5 times (with 1 second delay) before giving up.
+    This ensures that a temporary networking glitch will not result in
+    the ironic-inspector service stopping.
+upgrade:
+  - |
+    Adds dependency on the `retrying <https://github.com/rholder/retrying>`_
+    python library.

@@ -1,0 +1,5 @@
+---
+features:
+  - Added GenericLocalLinkConnectionHook processing plugin to process LLDP data
+    returned during inspection and set port ID and switch ID in an Ironic
+    node's port local link connection information using that data.

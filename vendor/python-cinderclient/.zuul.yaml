@@ -1,0 +1,43 @@
+- job:
+    name: cinderclient-dsvm-functional
+    parent: legacy-dsvm-base
+    run: playbooks/legacy/cinderclient-dsvm-functional/run.yaml
+    post-run: playbooks/legacy/cinderclient-dsvm-functional/post.yaml
+    timeout: 4200
+    voting: false
+    required-projects:
+      - openstack/devstack-gate
+      - openstack/cinder
+      - openstack/python-cinderclient
+
+- job:
+    name: cinderclient-dsvm-functional-identity-v3-only
+    parent: legacy-dsvm-base
+    run: playbooks/legacy/cinderclient-dsvm-functional-identity-v3-only/run.yaml
+    post-run: playbooks/legacy/cinderclient-dsvm-functional-identity-v3-only/post.yaml
+    timeout: 4200
+    voting: false
+    required-projects:
+      - openstack/devstack-gate
+      - openstack/cinder
+      - openstack/python-cinderclient
+
+
+- project:
+    templates:
+      - check-requirements
+      - lib-forward-testing
+      - lib-forward-testing-python3
+      - openstack-cover-jobs
+      - openstack-lower-constraints-jobs
+      - openstack-python-jobs
+      - openstack-python35-jobs
+      - openstack-python36-jobs
+      - publish-openstack-docs-pti
+      - release-notes-jobs-python3
+    check:
+      jobs:
+        - cinderclient-dsvm-functional
+        - cinderclient-dsvm-functional-identity-v3-only
+        - openstack-tox-pylint:
+            voting: false

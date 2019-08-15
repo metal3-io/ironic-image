@@ -1,0 +1,6 @@
+---
+fixes:
+  - |
+    [`bug 1741073 <https://bugs.launchpad.net/oslo.policy/+bug/1741073>`_]
+    Documentation has been improved to include ``oslopolicy-sample-generator``
+    and ``oslopolicy-list-redundant`` usage.

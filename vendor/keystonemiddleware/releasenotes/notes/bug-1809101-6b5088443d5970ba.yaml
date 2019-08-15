@@ -1,0 +1,7 @@
+---
+fixes:
+  - |
+    [`bug 1809101 <https://bugs.launchpad.net/keystonemiddleware/+bug/1809101>`_]
+    Fix req.context of Keystone audit middleware and Glance conflict with each
+    other issue. The audit middleware now stores the admin context to
+    req.environ['audit.context'].

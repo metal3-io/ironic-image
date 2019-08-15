@@ -1,0 +1,6 @@
+---
+other:
+  - >
+    The ``kwargs_to_fetch_token`` setting was removed from the
+    ``BaseAuthProtocol`` class. Implementations of auth_token now assume kwargs
+    will be passed to the ``fetch_token`` method.

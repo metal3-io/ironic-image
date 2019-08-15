@@ -1,0 +1,6 @@
+---
+features:
+  - |
+    The ThreadGroup add_timer_args() and add_dynamic_timer_args() methods now
+    support passing a stop_on_exception=False argument to allow the timer to
+    keep running even when an exception is raised by the callback function.

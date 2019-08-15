@@ -1,0 +1,13 @@
+---
+features:
+  - |
+    Adds capability to hardware type ``idrac`` for creating and
+    deleting RAID sets without rebooting the baremetal node.
+    This realtime mechanism is supported on PERC H730 and H740
+    RAID controllers that are running firmware version 25.5.5.0005
+    or later.
+
+upgrade:
+  - |
+    Updates the minimum required version of ``python-dracclient`` to ``3.0.0``
+    when using the ``idrac`` hardware type.

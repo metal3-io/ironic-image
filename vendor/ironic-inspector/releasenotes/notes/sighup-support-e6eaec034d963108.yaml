@@ -1,0 +1,11 @@
+---
+features:
+  - |
+    Issuing a SIGHUP to the ironic-inspector service will cause the service to
+    reload and use any changed values for *mutable* configuration options.
+
+    Mutable configuration options are indicated as such in the `sample
+    configuration file <https://docs.openstack.org/ironic-inspector/latest/configuration/sample-config.html>`_
+    by ``Note: This option can be changed without restarting``.
+
+    A warning is logged for any changes to immutable configuration options.

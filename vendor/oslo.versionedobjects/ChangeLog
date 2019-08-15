@@ -1,0 +1,3621 @@
+CHANGES
+=======
+
+1.36.0
+------
+
+* OpenDev Migration Patch
+* Fix deprecation warnings
+* Replace openstack.org git:// URLs with https://
+* Update master for stable/stein
+
+1.35.1
+------
+
+* add python 3.7 unit test job
+* Allow lists to be generated from any non-string iterable
+* Update hacking version
+
+1.35.0
+------
+
+* Lower ObjectVersionChecker logging to DEBUG level
+* Add ListOfUUIDField
+* Use template for lower-constraints
+* Update mailinglist from dev to discuss
+* Clean up .gitignore references to personal tools
+
+1.34.1
+------
+
+* Imported Translations from Zanata
+* add lib-forward-testing-python3 test job
+* add python 3.6 unit test job
+* import zuul job settings from project-config
+* delete unused '='
+* Update reno for stable/rocky
+* Switch to stestr
+
+1.33.3
+------
+
+* Add release notes link to README
+
+1.33.2
+------
+
+* fix tox python3 overrides
+* Make the hash of a defaulted set field stable
+* Add support version in exception output
+* Remove moxstubout usage
+* Remove stale pip-missing-reqs tox test
+* Trivial: Update pypi url to new url
+* set default python to python3
+
+1.33.1
+------
+
+* Don't force unicode strings for UUID coercion
+
+1.33.0
+------
+
+* Fixing UUID coerce function for unicode non uuid form
+* Updated from global requirements
+* add lower-constraints job
+* pypy is not checked at gate
+* Add bindep.txt file to prevent fallback to generic list
+* Updated from global requirements
+
+1.32.0
+------
+
+* Imported Translations from Zanata
+* Update links in README
+* Zuul: Remove project name
+* Imported Translations from Zanata
+* Zuul: Remove project name
+* Allow escalation of UUID validation warning to error
+* Update reno for stable/queens
+* Handle TZ change in iso8601 >=0.1.12
+* Updated from global requirements
+* Updated from global requirements
+* Updated from global requirements
+
+1.31.1
+------
+
+* Treat doc warnings as errors
+
+1.31.0
+------
+
+* Fix wrong indent of releasenotes
+* Remove log translations
+* Add bandit to pep8 job
+* Updated from global requirements
+* Follow the new PTI for document build
+* Avoid tox\_install.sh for constraints support
+
+1.30.0
+------
+
+* Updated from global requirements
+* Remove setting of version/release from releasenotes
+* Updated from global requirements
+* Updated from global requirements
+* Updated from global requirements
+* Zuul: add file extension to playbook path
+
+1.29.0
+------
+
+* Imported Translations from Zanata
+* Migrate to zuulv3 - move legacy jobs to project
+* Updated from global requirements
+* Imported Translations from Zanata
+* Use newer location for iso8601 UTC
+
+1.28.0
+------
+
+* Updated from global requirements
+
+1.27.0
+------
+
+* Updated from global requirements
+* iso8601.is8601.Utc No Longer Exists
+* Updated from global requirements
+* Imported Translations from Zanata
+* Add a TimestampedObject mixin
+* Updated from global requirements
+* Update reno for stable/pike
+* Updated from global requirements
+
+1.26.0
+------
+
+* Updated from global requirements
+* Update URLs in documents according to document migration
+* Add unit test for unicode in object \_\_repr\_\_
+* Fix the object is unhashable when inheriting the class "ComparableVersionedObject"
+
+1.25.1
+------
+
+* rearrange existing documentation to fit the new standard layout
+* switch from oslosphinx to openstackdocstheme
+* Enable warning-is-error in doc build
+
+1.25.0
+------
+
+* Updated from global requirements
+* Updated from global requirements
+* Remove pbr warnerrors in favor of sphinx check
+* Updated from global requirements
+* Updated from global requirements
+* Updated from global requirements
+* Updated from global requirements
+
+1.24.0
+------
+
+* Fix string interpolation in ValueError
+* Updated from global requirements
+* Updated from global requirements
+* Updated from global requirements
+
+1.23.0
+------
+
+* Start adding some basic ovo examples (with an initial basic one)
+* Updated from global requirements
+
+1.22.0
+------
+
+* Updated from global requirements
+* [Fix gate]Update test requirement
+* Updated from global requirements
+* Remove support for py34
+* Update reno for stable/ocata
+
+1.21.0
+------
+
+* Change Object schema type to be array instead of string
+* Add Constraints support
+* Replace six.iteritems() with .items()
+* Updated from global requirements
+
+1.20.0
+------
+
+
+1.19.0
+------
+
+* Fix a typo
+* Show team and repo badges on README
+* Updated from global requirements
+* Add reno for release notes management
+* fields: fix stringifying of objects when subclasses=True
+* Refactor get\_schema for patterned FieldTypes
+* Updated from global requirements
+* Fix recursive deepcopy
+* Updated from global requirements
+* Fix get\_schema() for Enum
+
+1.18.0
+------
+
+* Changed the home-page link
+* Updated from global requirements
+* Changed the home-page link
+* Updated from global requirements
+* JSON Schema get\_schema implementation for last few fields
+* Updated from global requirements
+* Add ObjectListBase concat methods
+* Fix documentation typo
+* Fix incorrect timestamp comment
+* Updated from global requirements
+
+1.17.0
+------
+
+* Add get\_schema for IPV6Address FieldType class
+* Fix remotable object change tracking
+
+1.16.0
+------
+
+* Updated from global requirements
+* JSON schema get\_schema implementation for more complex fields
+
+1.15.0
+------
+
+* Updated from global requirements
+* Adds new fields and field types
+* Fix to\_json\_schema() call
+
+1.14.0
+------
+
+* Updated from global requirements
+* Add Python 3.5 classifier and venv
+
+1.13.0
+------
+
+* Updated from global requirements
+* Imported Translations from Zanata
+* JSON schema get\_schema implementation for common fields
+* Updated from global requirements
+* JSON schema generation for versioned objects
+* Extend test\_hashes to allow extra info gathering
+* Updated from global requirements
+* Improved error message for Object.coerce
+* Imported Translations from Zanata
+
+1.12.0
+------
+
+* Imported Translations from Zanata
+
+1.11.0
+------
+
+* Updated from global requirements
+
+1.10.0
+------
+
+* Fix ComparableVersionedObject in python 3.4
+* Updated from global requirements
+* Updated from global requirements
+* Add objectify decorator for readability
+
+1.9.1
+-----
+
+
+1.9.0
+-----
+
+* Updated from global requirements
+* Fix a typo in Enum error path
+* Fix issue with coercing valid\_values to a tuple
+* Replace safe\_utils.getcallargs with inspect.getcallargs
+* Imported Translations from Zanata
+* Remove direct dependency on babel
+* Imported Translations from Zanata
+* Introduce fixture to enforce sorted order for object changes
+* Expose object context thru a public property
+* Updated from global requirements
+* Fix compare\_obj() to obey missing/unset fields
+* Updated from global requirements
+* Updated from global requirements
+* Updated from global requirements
+* Updated from global requirements
+* Add BaseEnumField valid\_values introspection
+* Use primitive type name in ValueError for Object field coerce failure
+* Update formatting for example statemachine field
+* Add a pci address  field
+* Remove the executable bit from files
+* Updated from global requirements
+
+1.7.0
+-----
+
+* Updated from global requirements
+* Updated from global requirements
+
+1.6.0
+-----
+
+* Updated from global requirements
+* Updated from global requirements
+
+1.5.0
+-----
+
+* Deprecate current UUIDField behaviour
+* Make sure functions in child object registries work
+* Fix messages in exceptions raised due to invalid state transitions
+* Update translation setup
+* Updated from global requirements
+* Add ability to pass args/kwargs to obj\_class init
+* Updated from global requirements
+* Added a state machine field
+* Use oslo\_utils for tupleizing versions
+* Add temporary registry pattern to VersionedObjectRegistry
+
+1.4.0
+-----
+
+* Updated from global requirements
+* Imported Translations from Zanata
+* Updated from global requirements
+* Move compare\_obj to the fixture module for external consumption
+
+1.3.0
+-----
+
+* Updated from global requirements
+* Fix MACAddress coerce method to validate string first
+* Updated from global requirements
+* Remove meaningless default value in \_\_get\_\_()
+
+1.2.0
+-----
+
+* Added checking compat using manifest backports
+* Fixed nondeterministicness of extra\_data test
+* Updated from global requirements
+* Updated from global requirements
+* Updated from global requirements
+* Clean up directory openstack/common
+* Use method is\_compatible from olso\_utils.versionutils
+* Trival: Remove 'MANIFEST.in'
+
+1.1.0
+-----
+
+* Add a callable to gather extra data for fps
+* Add testing for ObjectVersionChecker fixture
+* Leverage dict comprehension in PEP-0274
+* Use version convert methods from oslo\_utils.versionutils
+
+1.0.0
+-----
+
+* Add netaddr-related field types
+* Updated from global requirements
+* Adds new MACAddressField
+* Fix the wrong reference for DeprecationWarning
+* cleanup tox.ini
+* Updated from global requirements
+
+0.13.0
+------
+
+* Updated from global requirements
+* Remove remote\_object\_calls from \_BaseTestCase
+* Ensure\_\_repr\_\_ return value is encoded
+* Cleanup docstring for obj\_tree\_get\_versions
+* Updated from global requirements
+* Imported Translations from Zanata
+* Add warnings for deprecated IndirectionAPI methods
+* Make tests properly use object\_class\_action\_versions()
+* Make class action calls use version manifest
+* Updated from global requirements
+
+0.12.0
+------
+
+* Updated from global requirements
+* Updated from global requirements
+* Updated from global requirements
+* Updated from global requirements
+* Updated from global requirements
+
+0.11.0
+------
+
+* Fix obj\_to\_primitive() when using manifests (list version)
+* Add SensitiveString field type
+* Fix obj\_to\_primitive() when used with a manifest
+* Move \_\_contains\_\_ from VersionedObjectDictCompat to VersionedObject
+* Fix coverage configuration and execution
+* Imported Translations from Zanata
+* make configuration options discoverable
+* Add shields.io version/downloads links/badges into README.rst
+* add pbr-generated release history
+* Change ignore-errors to ignore\_errors
+* Updated from global requirements
+* Added test for DateTimeField in obj\_get\_change
+* Fix missing value types for log message
+
+0.10.0
+------
+
+* Imported Translations from Zanata
+* ObjectVersionChecker fingerprint documentation
+
+0.9.0
+-----
+
+* Updated from global requirements
+* Allow calling obj\_to\_primitive() with version\_manifest
+
+0.8.0
+-----
+
+* Switch back to iso format on the wire
+* Save and re-raise exception
+* Check for obj\_relationships in List objects
+* Updated from global requirements
+* Make compat of object lists use manifest function
+* Add tests for subobject backporting by manifest
+* Make ObjectListBase a collections.Sequence
+* Switch from deprecated timeutils.isotime
+* Make direct call to object's obj\_from\_primitive
+* Add usage information
+* Imported Translations from Transifex
+* Updated from global requirements
+* Add validation on target\_version arg when calling obj\_to\_primitive
+
+0.7.0
+-----
+
+* Fix error handling in the exception module on py3
+* Imported Translations from Transifex
+* Updated from global requirements
+* Support using the version manifest for obj\_make\_compatible()
+* Updated from global requirements
+* Implement multi-version object backport method
+* Add a new DictOfListOfStrings type of field
+* Imported Translations from Transifex
+* Updated from global requirements
+* Add a new VersionPredicate type of field
+* Add obj\_tree\_get\_versions() utility method
+
+0.6.0
+-----
+
+* Imported Translations from Transifex
+* Updated from global requirements
+* Updated from global requirements
+* Fix serializer supported version reporting in object\_backport
+* Remove dict assumption from remotable decorator
+* Updated from global requirements
+* Remove ununsed class in test.py
+* Replace 'hypervisor' with 'provided' version
+* Updated from global requirements
+* Compound fields now coerce their elements' values
+* Move fixture dependencies to extras
+* Updated from global requirements
+* Imported Translations from Transifex
+
+0.5.2
+-----
+
+* Sort child versions before generating fingerprint
+* Imported Translations from Transifex
+* Manual update the requirements
+* Remove classifiers not supported
+* Updated from global requirements
+
+0.5.1
+-----
+
+* Revert "Compound fields now coerce their elements' values"
+
+0.5.0
+-----
+
+* Add oslo.config to requirements
+* Add tox target to find missing requirements
+* Updated from global requirements
+* fields: allow subclasses in ObjectField/ListOfObjectsField
+* Updated from global requirements
+* Fix "comparason" typo in doc for ComparableVersionedObject
+* Updated from global requirements
+* Compound fields now coerce their elements' values
+* fields: report what the wrong type was when coerce fails
+* Updated from global requirements
+* Decouple ObjectVersionChecker and VersionedObjectRegistry
+* Updated from global requirements
+
+0.4.0
+-----
+
+* Remove unnecessary openstack-common.conf
+* Updated from global requirements
+
+0.3.0
+-----
+
+* Imported Translations from Transifex
+* Imported Translations from Transifex
+* fields: introduce BaseEnumField to allow subclassing
+* fields: add a FlexibleBoolean field type
+* Enhance documentation
+* Add delattr support
+* Imported Translations from Transifex
+* Enhance dict compat of VersionedObjectDictCompat
+* Drop outdated notes and docstrings
+* Add field name to error messages in object type checking
+* Adds missing WebOb in requirements.txt
+* Add enum fieldtype field
+* Get the indirection\_api from the current VersionedObject class
+* Updated from global requirements
+* Imported Translations from Transifex
+
+0.2.0
+-----
+
+* Uncap library requirements for liberty
+* Standardize setup.cfg summary for oslo libs
+* Update to the latest version of hacking
+* Copy the default value for field
+* Updated from global requirements
+* New config group for oslo\_versionedobjects
+
+0.1.1
+-----
+
+* Sync from oslo-incubator
+* Properly serialize/deserialize arguments in fake indirection api
+* Allow passing serializer and indirection API objects to Fixture
+* Make serializer use the provided base class for the indirection api
+
+0.1.0
+-----
+
+* Update README.rst
+* Remove serialize\_args(), per the work items
+* Allow subclasses to define the serialization namespaces
+* Sync default-setting change from Nova
+* Sync obj\_reset\_changes(recursive=) change from Nova
+* Remove already commented out and unused fixtures
+* Rename checks to fixture and update requirements
+* Cleanup comment and H803 hacking
+* Generalize the object relationships test
+* Generalize compatibility testing
+* Fixes for heat implementation
+* Add a test to ensure subclassibility of the object registry
+* Generalize object dependency change detection
+* Generalize object hash-based change detection
+* Generalize remote testing infrastructure
+* Add conditional object registration
+* Remove Nova objects module registration code
+* Generalize the indirection\_api interface
+* Disable some unstable tests until they are generalized
+* Fix py34 for iteritems() use in base.py
+* Remove internal items from public namespace
+* Rename utils -> \_utils
+* Set up translations
+* Use six.wraps for py2/py3 compat
+* Remove more Nova-isms
+* Compatibility with Python 3
+* Remove references to Nova
+* Remove the ambiguous context argument on remotable methods
+* Replace metaclass-based registry with a decorator-based one
+* Rename tests/fixtures to test/obj\_fixtures to avoid import collisions
+* Fix initial test failures
+* clean up and get most test running
+* sync oslo-incubator modules
+* apply oslo-cookiecutter template
+* rename files
+* object: serialize set to list
+* Fix leaking exceptions from scheduler utils
+* Add flavor fields to Instance object
+* Revert "Raise if sec-groups and port id are provided on boot"
+* Use a workarounds option to disable rootwrap
+* Create a 'workarounds' config group
+* Revert "Adds keypair type database migration"
+* Adds keypair type database migration
+* Revert temporary hack to monkey patch the fake rpc timeout
+* Raise if sec-groups and port id are provided on boot
+* Add method for getting the CPU pinning constraint
+* Ignore warnings from contextlib.nested
+* Enable check for H238 rule
+* Call ComputeNode instead of Service for getting the nodes
+* increase fake rpc POLL\_TIMEOUT to 0.1s
+* Performance: leverage  dict comprehension in PEP-0274
+* Do not use deprecated assertRaisesRegexp()
+* speed up tests setting fake rpc polling timeout
+* Make numa\_usage\_from\_instances consider CPU pinning
+* Fix and re-gate on H306
+* Move WarningsFixture after DatabaseFixture so emit once
+* Fix obj\_to\_primitive() expecting the dict interface methods
+* initialize objects with context in base object tests
+* Add WarningsFixture to only emit DeprecationWarning once in a test run
+* Update docstring for wrap\_exception decorator
+* Add numa\_node to PCIDevice
+* Nuke XML support from Nova REST API - Phase 2
+* Remove unused methods in nova utils
+* Use get\_my\_ipv4 from oslo.utils
+* Reuse methods from netutils
+* Move metadata filtering logic to utils.py
+* objects: remove NovaObjectDictCompat from Tag object
+* extract RPC setup into a fixture
+* Add pci\_device\_pools to ComputeNode object
+* objects: add method to verify requested hugepages
+* hardware: add method to return requested memory page size
+* Reject non existent mock assert calls
+* objects: allow creation of objects without dict item compat
+* Fix base obj\_make\_compatible() handling ListOfObjectsField
+* Add obj\_as\_admin() to NovaPersistentObject
+* simplify database fixture to the features we use
+* extract the timeout setup as a fixture
+* move all conf overrides to conf\_fixture
+* move ServiceFixture and TranslationFixture
+* extract fixtures from nova.test to nova.test.fixtures
+* Objects: add in missing translation
+* objects: introduce numa pages topology as an object
+* Libvirt: Fsfreeze during live-snapshot of qemu/kvm instances
+* Add cn\_get\_all\_by\_host and cn\_get\_by\_host\_and\_node to ComputeNode
+* Add host field to ComputeNode
+* rename oslo.concurrency to oslo\_concurrency
+* Remove needless workaround in utils module
+* Remove except Exception cases
+* Adds global API version check for microversions
+* Implement microversion support on api methods
+* Add CPU pinning data to InstanceNUMACell  object
+* Adds NUMA CPU Pinning object modeling
+* objects: Add several complex field types
+* Compute: Catch binding failed exception while init host
+* Break V2 XML Support
+* Added objects Tag and TagList
+* Switch to moxstubout and mockpatch from oslotest
+* factor out \_setup\_logging in test.py
+* extract \_setup\_timeouts in test.py
+* objects: introduce numa objects
+* Correct InvalidAggregateAction translation&format
+* Adds APIVersionRequest class for API Microversions
+* remove test.ReplaceModule from test.py
+* Added db API layer for CRUD operations on instance tags
+* Introduce a .z version element for backportable objects
+* Add count and limit\_check methods to quota object
+* Add obj\_set\_defaults() to NovaObject
+* Convert hardware.VirtCPUTopology to nova object
+* compute: rename hvtype.py to hv\_type.py
+* Replacement \`\_\` on \`\_LW\` in all LOG.warning part 1
+* Replacement \`\_\` on \`\_LE\` in all LOG.exception
+* Exceptions: finish sentence with fullstop
+* Pass expected\_attrs to instance\_get\_active\_by\_window\_joined
+* Add update\_cells to BandwidthUsage.create()
+* Generalize dependent object backporting
+* GET servers API sorting compute/instance/DB updates
+* move all tests to nova/tests/unit
+* Fixed typos in nova.objects.base docstrings
+* Switch Nova to use oslo.concurrency
+* remove use of explicit lockutils invocation in tests
+* Revert "Switch Nova to use oslo.concurrency"
+* Switch Nova to use oslo.concurrency
+* Faster get\_attrname in nova/objects/base.py
+* Replacement \`\_\` on \`\_LE\` in all LOG.error
+* Add supported\_hv\_specs to ComputeNode object
+* Don't log every (friggin) migration version step during unit tests
+* Update NoMoreFixedIps message description
+* Use oslo.utils
+* console: introduce a new exception InvalidConnectionInfo
+* console: introduce a new exception InvalidToken
+* VMware: Remove tests for None in fake.\_db\_content['files']
+* Fixes missing ec2 api address disassociate error on failure
+* add time to logging in unit tests
+* Revert "libvirt: support live migrate of instances with conf drives"
+* Handle volume bdm not found in lvm.get\_volume\_size
+* compute: tweaks to vm\_mode APIs to align with arch/hvtype
+* Remove stale code from ObjectListBase
+* virt: move assertPublicAPISignatures into base test class
+* compute: Add standard constants for hypervisor virt types
+* Add InstancePCIRequests object
+* Network: enable instance deletion when dhcp release fails
+* Move to oslo.db
+* Support image property for config drive
+* Add bandwidth usage object
+* virt: setup TCP chardevice in libvirt driver
+* console: add serial console module
+* Add instance\_extra table and related objects
+* Move and generalize decorator serialize\_args to nova.objects.base
+* Remove concatenation with translated messages
+* Add NetworkRequest object and associated list
+* Remove use of str on exceptions
+* libvirt: add validation of migration hostname
+* Add a Set and SetOfIntegers object fields
+* Make Object FieldType from\_primitive pass objects
+* Add QuotaError handling to servers rebuild API
+* libvirt: support live migrations of instances with config drives
+* Change error status code for out of quota to be 403 instead of 413
+* Correct seconds of a day from 84400 to 86400
+* Extend the docstring for obj\_make\_compatible() with examples
+* Add api extension for new network fields
+* Use real exceptions for network create and destroy
+* virt: helper for processing NUMA topology configuration
+* Make NovaObjectSerializer work with dicts
+* Split EC2 ID validator to validator per resource type
+* Create a Scheduler client library
+* docs - Fix errors,warnings from document generation
+* Enhance PCI whitelist
+* add log exception hints in some modules
+* Add ListOfDictOfNullableString field type
+* Network: interface attach and detach raised confusing exception
+* docs - Fix docstring issues
+* Add standard constants for CPU architectures
+* Fix and Gate on E265
+* Turn periodic tasks off in all unit tests
+* Add valid method check for quota resources
+* Use oslo.i18n
+* Avoid possible timing attack in metadata api
+* Cleanup and gate on hacking E713 rule
+* Correct exception for flavor extra spec create/update
+* Improve shared storage checks for live migration
+* Fix and gate on H305 and H307
+* Make compute api use util.check\_string\_length
+* Prevent max\_count > 1 and specified ip address as input
+* virt: add helper module for determining VCPU topology
+* Add \_\_repr\_\_ handler for NovaObjects
+* Use default rpc\_response\_timeout in unit tests
+* Replace nova.utils.cpu\_count() with processutils.get\_worker\_count()
+* Add Agent object
+* Avoid traceback logs from simple tenant usage extension
+* Catch ProcessExecutionError in revoke\_cert
+* Initialize objects field in ObjectsListBase class
+* Fix object change detection
+* Don't translate debug level logs in nova
+* Add testing for hooks
+* Use VIF details dictionary to get physical\_network
+* Add read\_only field attribute
+* Add missing translation support
+* Check if volume is bootable when creating an instance
+* Fix EC2 not found errors for volumes and snapshots
+* xenapi: move StorageError into global exception.py
+* Add unit test trap for object change detection
+* Enable flake8 F841 checking
+* Raise HTTPInternalServerError when boot\_from\_volume with cinder down
+* Fix nova/compute direct use of instance module objects
+* Address issues with objects of same name
+* Register objects in more services
+* Check object's field
+* Use Field in fixed\_ip
+* Improve conductor error cases when unshelving
+* objects: restore some datetime field comments
+* Rename NotAuthorized exception to Forbidden
+* Remove utils.reset\_is\_neutron() to avoid races
+* Fix up import of conductor
+* Use debug level logging in unit tests, but don't save them
+* Avoid the possibility of truncating disk info file
+* support local debug logging
+* Revert "Use debug level logging during unit tests"
+* libvirt: remove\_logical\_volumes should remove each separately
+* Nova utils: add in missing translation
+* Require admin context for interfaces on ext network
+* Persist image format to a file, to prevent attacks based on changing it
+* Add a decorator decorator that checks func args
+* Raise error on nova-api if missing subnets/fixed\_ips on networks/port
+* Refuse to block migrate instances with config drive
+* Make NovaObject report changed-ness of its children
+* Add security\_group\_rule to objects registry
+* Revert "Adding image multiple location support"
+* Use debug level logging during unit tests
+* Adding image multiple location support
+* Add a missing space in a log message
+* Sync the latest DB code from oslo-incubator
+* Add watchdog device support to libvirt driver
+* When a claim is rejected, explain why
+* Support IPv6 when booting instances
+* Enable flake8 H404 checking
+* Use oslo-common's logging fixture
+* libvirt: Enable custom video RAM setting
+* libvirt: host specific virtio-rng backend
+* VMware: fix the VNC port allocation
+* Make is\_neutron() thread-safe
+* Break out the meat of the object hydration  process
+* Fix VirtualInterfaceMacAddressException message
+* Remove vi modelines
+* Port to oslo.messaging
+* Add FloatingIP object implementation
+* Add FixedIP Object implementation
+* Add block device mapping objects implementation
+* Make obj\_to\_primitive() handle netaddr types
+* Add Network object
+* Use (# of CPUs) workers by default
+* Add DNSDomain object
+* Small edits on help strings
+* Add sort() method to ObjectListBase
+* Add VirtualInterface object
+* Make exception message more friendly
+* Add preserve\_ephemeral option to rebuild
+* Refactor CIDR field to use netaddr.IPNetwork
+* Remove unused dict BYTE\_MULTIPLIERS
+* replace type() to isinstance() in nova
+* Adds new method nova.utils.get\_hash\_str
+* Use the full string for localisation
+* Fix interprocess locks when running unit-tests
+* ValueError should use '%' instead of ','
+* Setting the xen vm device id on vm record
+* Rename instance\_type to flavor in nova.utils and nova.compute.utils
+* Make Serializer/Conductor able to backlevel objects
+* Require List objects to be able to backlevel their contents
+* Add IPAddress field type in object models
+* Correct uses of :params in docstrings
+* Libvirt: Making the video driver element configurable
+* Make obj\_from\_primitive() preserve version information
+* Make it possible to override test timeout value
+* Fix monkey\_patch docstring bug
+* Added a new scheduler metrics weight plugin
+* Misc typos in nova
+* Fix a tiny double quote matching in field obj model
+* Add API input validation framework
+* Add FloatField for objects
+* objects: declare some methods as static
+* Handle UnicodeEncodeError in validate\_integer
+* Clean up how test env variables are parsed
+* Rename InstanceType exceptions to Flavor
+* Added monitor (e.g. CPU) to monitor and collect data
+* Xenapi: Allow windows builds with xentools 6.1 and 6.2
+* Refactor UnexpectedTaskStateError for handling of deleting instances
+* Move \`diff\_dict\` to compute API
+* Include name/level in unit test log messages
+* Nova-all: Replace basestring by six for python3 compatability
+* Pull system\_metadata for notifications on instance.save()
+* Add nova.db.migration.db\_initial\_version()
+* Apply six for metaclass
+* Reply with a meaningful exception, when libvirt connection is broken
+* Make Object FieldType take an object name instead of a class
+* Merging two mkfs commands
+* Add obj\_make\_compatible()
+* A nicer calling convention for object instantiation
+* Adding support for multiple hypervisor versions
+* Add CIDR field type
+* Adding Read-Only volume attaching support to Nova
+* Use \`versionutils.is\_compatible\` for Nova Objects
+* Fix NovaObject versioning attribute usage
+* Use the oslo fixture module
+* Make a note about Object deepcopy helper
+* Remove transitional callable field interface
+* Make the base object infrastructure use Fields
+* Migrate NovaPersistentObject and ObjectListBase to Fields
+* Move exception definitions out of db api
+* Make field object support transitional call-based interface
+* Add Field model and tests
+* Fix conductor's object change detection
+* Fixes typos in the files in the nova folder
+* Move \`utils.hash\_file\` -> \`imagecache.\_hash\_file\`
+* Remove \`utils.timefunc\` function
+* Remove \`utils.total\_seconds\`
+* Remove \`utils.get\_from\_path\`
+* Remove unused dict functions from utils
+* Prefix \`utils.get\_root\_helper\` with underscore
+* Remove \`utils.debug\`
+* Remove \`utils.last\_octet\`
+* Remove \`utils.parse\_mailmap\`
+* Remove unecessary \`get\_boolean\` function
+* Make Exception.format\_message aware of Messages
+* Fix incorrect exception raised during evacuate
+* Remove exceptions.Duplicate
+* Fixes modules with wrong file mode bits
+* Object cleanups
+* Add new-world Quota object
+* Improve "keypair data is invalid" error message
+* Don't use sudo to discover ipv4 address
+* Fix asymmetric view of object fields
+* Wrong arguments when calling safe\_utils.getcallargs()
+* Add key manager implementation with static key
+* Removed duplicated class in exception.py
+* VMware image clone strategy settings and overrides
+* Clean up duplicated change-building code in objects
+* Add Neutron port check for the creation of multiple instances
+* Remove unused exceptions
+* Fixes unexpected exception message in ProjectUserQuotaNotFound
+* Fixes unexpected exception message in PciConfigInvalidWhitelist
+* Add methods to get image metadata from instance
+* fix conversion type missing
+* Port to oslo.messaging.Notifier API
+* Generalize the \_make\_list() function for objects
+* PCI passthrough Libvirt vm config
+* Create mixin class for common DB fields
+* Add nova.utils.get\_root\_helper()
+* Inherit base image properties on instance creation
+* Port all rpcapi modules to oslo.messaging interface
+* xenapi: add support for auto\_disk\_config=disabled
+* Check ephemeral and swap size in the API
+* Add support for API message localization
+* Improve EC2 API error responses
+* Remove EC2 postfix from InvalidInstanceIDMalformedEC2
+* Introduce InternalError EC2 error code
+* Introduce UnsupportedOperation EC2 error code
+* Introduce SecurityGroupLimitExceeded EC2 error code
+* Introduce IncorrectState EC2 error code
+* Introduce AuthFailure EC2 error code
+* Handle port over-quota when allocating network for instance
+* Introduce InvalidPermission.Duplicate EC2 error code
+* PCI devices resource tracker
+* Add PCI device filters support
+* Change prep\_resize paths to use objects
+* Make compute\_api confirm/revert resize use objects
+* Introduce Invalid\* EC2 error codes
+* Improve parameter related EC2 error codes
+* PCI alias support
+* Add PCI stats
+* Add PCI device object support
+* Pci Device DB support
+* PCI utils
+* Fix remove\_fixed\_ip test with CastAsCall
+* Clean up some unused wrap\_exception() stuff
+* Adding support for iSER transport protocol
+* Make API part of instance boot use new BDM format
+* VMware: Ensure Neutron networking works with VMware drivers
+* Remove deprecated CONF.fixed\_range
+* Fix message for server name with whitespace
+* Make InvalidInstanceIDMalformed an EC2 exception
+* maint: remove redundant default=None for config options
+* Enhance object inheritance
+* Make NovaObject.get() avoid lazy-load when defaulting
+* Add plug-in modules for direct downloads of glance locations
+* xenapi: Moving Glance fetch code into image/glance:download\_vhd
+* Add obj\_attr\_is\_set() method to NovaObject
+* Add ObjectActionFailed exception and make Instance use it
+* maint: remove unused exceptions
+* Remove the monkey patching of \_ into the builtins
+* Set lock\_path in tests
+* Add basic BDM format validation in the API layer
+* Add latest oslo DB support
+* Per-project-user-quotas for more granularity
+* Move \_validate\_int\_value controller func to utils
+* Raise exceptions when Spice/VNC are unavailable
+* Missed message -> msg\_fmt conversion
+* Remove locals() from various places
+* Avoid shadowing Exception 'message' attribute
+* Don't attach to multiple Quantum networks by default
+* Load cell data from a configuration file
+* xenapi:populating hypervisor version in host state
+* Change force\_dhcp\_release default to True
+* Add unique constraint to ConsolePool
+* Add unique constraint to AgentBuild
+* Make instance show and index use objects
+* Add unique constraints to Service
+* Add unique constraint to FixedIp
+* Exceptions raised by quantum validate\_networks result in 500 error
+* Fix and gate on E125
+* Add unique constraints to Quota
+* Add unique constraint for security groups
+* Fix metadata access in prep for instance objects
+* xenapi: Remove vestigial \`compile\_metrics\` code
+* Add update() method to NovaObject for dict compatibility
+* Add obj\_to\_primitive() to recursively primitiveize objects
+* Remove broken config\_drive image\_href support
+* Better default for my\_ip if 8.8.8.8 is unreachable
+* Fix a couple typos in the nova.exception module
+* Make NovaObject support the 'in' operator
+* Add basic SecurityGroup model
+* Fix serialization of iterable types
+* Do not raise NEW exceptions
+* Fix importing InstanceInfoCache during register\_all()
+* xenapi: revisit error handling around calls to agent
+* Fill context on objects in lists
+* Make NovaObject support extra attributes in items()
+* Fix instance obj refresh()
+* Add unique constraints to Cell
+* Accept is\_public=None when listing all flavors
+* Remove unused cert db method
+* Organize limits units and per-units constants
+* Replace utils.to\_bytes() with strutils.to\_bytes()
+* Remove unused arg from make\_class\_properties.getter method
+* Fix obj\_load() in NovaObject base class
+* Backup and restore object registry for tests
+* Fix and enable H403 tests
+* xenapi: remove auto\_disk\_config check during resize
+* Nova instance group DB support
+* Replace functions in utils with oslo.fileutils
+* Enhance group handling in extract\_opts
+* BDM class and transformation functions
+* Use InstanceList object for init\_host
+* Use Instance Objects for Start/Stop
+* Add base mixin class for object lists
+* Add deleted flag to NovaObject base
+* Speeding up scheduler tests
+* Adds check that the core V3 API is loaded
+* Improve Keypair error messages in osapi
+* Import osapi\_v3/enabled option in nova/test
+* Make object actions pass positional arguments
+* Call scheduler for run\_instance from conductor
+* Make instance object tolerate isotime strings
+* Adds ability to black/whitelist v3 API extensions
+* Improve Python 3.x compatibility
+* Adds v3 API disable config option
+* Add base object model
+* In utils.tempdir, pass CONF.tempdir as an argument
+* Add missing conversion specifier to ServiceGroupUnavailable
+* Fix tests for sqlalchemy utils
+* Moved sample network creation out of unittest base class constructor
+* Make a few places tolerant of sys\_meta being a dict
+* Remove ImageTooLarge exception
+* Use strict=True instead of \`is\_valid\_boolstr\`
+* Mox should cleanup before stubs
+* xenapi: ensure vdi is not too big when resizing down
+* Cells: Don't allow active -> build
+* Use Oslo's \`bool\_from\_string\`
+* Hide lock\_prefix argument using synchronized\_with\_prefix()
+* Convert to using newly imported processutils
+* Convert to using oslo's execute() method
+* Reset migrating task state for MigrationError exceptions
+* Update to using oslo periodic tasks implementation
+* Refactor \_run\_instance() to unify control flow
+* Remove unused exception and variable from scheduler
+* Import and convert to oslo loopingcall
+* Remove unnecessary LOG initialisation
+* Move console scripts to entrypoints
+* Limit the checks for block device becoming available
+* Remove print statements
+* Return proper error message when network conflicts
+* 'injected\_files' should be base 64 encoded
+* Add a format\_message method to the Exceptions
+* set up FakeLogger for root logger
+* Don't include traceback when wrapping exceptions
+* Add quotas for fixed ips
+* Makes safe xml data calls raise 400 http error instead of 500
+* Prevent rescue for volume-backed instances
+* Remove uses of instance['instance\_type'] from nova/compute
+* Remove parameters containing passwords from Notifications
+* Standarize ip validation along the code
+* instance\_info\_cache\_update creates wrongly
+* don't stack trace if long ints are passed to db
+* Adds retry on upload\_vhd for xapi glance plugin
+* Additional tests for safe parsing with minidom
+* Identify baremetal nodes by UUID
+* Wait for baremetal deploy inside driver.spawn
+* Add Nova quantum security group proxy
+* Use oslo-config-2013.1b4
+* Add support for network adapter hotplug
+* Add a safe\_minidom\_parse\_string function
+* Default SG rules for the Security Group "Default"
+* create new cidr type for data storage
+* clean up missing whitespace after ':'
+* Canonizes IPv6 before insert it into the db
+* Allow VIF model to be chosen per image
+* Check the length of flavor name in "flavor-create"
+* Fix nova-compute use of missing DBError
+* Move floating ip db access to calling side
+* Implement ZooKeeper driver for ServiceGroup API
+* Remove strcmp\_const\_time
+* Use oslo database code
+* Default value of monkey\_patch\_modules is broken
+* Reimplement is\_valid\_ipv4()
+* Tweakify is\_valid\_boolstr()
+* Make system\_metadata update in place
+* Record instance actions and events
+* Handle compute node not available for live migration
+* Fixes "is not" usage
+* Code cleanup for rebuild block device mapping
+* validate specified volumes to boot from at the API layer
+* Make sure there are no unused import
+* Allow users to specify a tmp location via config
+* VMware Compute Driver OVF Support
+* Avoid db lookup in info\_from\_instance()
+* Add support for Option Groups in LazyPluggable
+* enforce server\_id can only be uuid or int
+* Add encryption method using an ssh public key
+* Create ports in quantum matching hypervisor MAC addresses
+* Reject user ports that have MACs the hypervisor cannot use
+* Cells: Add cells API extension
+* Keep self and context out of error notification payload
+* Move service\_down\_time to nova.service
+* fix N402 for rest of nova
+* New instance\_actions and events table, model, and api
+* Move global glance opts into nova.image.glance
+* fix N401 errors, stop ignoring all N4\* errors
+* Invert test stream capture logic for debugging
+* Refactor periodic tasks
+* Timeout individual tests after one minute
+* Cells: Add the main code
+* Add helper methods to nova.paths
+* Move global path opts in nova.paths
+* Removed unused imports
+* Enable nova exception format checking in tests
+* Parameterize database connection in test.py
+* Move baremetal database tests to fixtures
+* Add option to make exception format errors fatal
+* Remove fake\_tests opt from test.py
+* Add DBDuplicateEntry exception for unique constraint violations
+* Move TimeOverride to the general reusable-test-helper place
+* Remove the WillNotSchedule exception
+* Replace fixtures.DetailStream with fixtures.StringStream
+* Use testr to run nova unittests
+* Add general mechanism for testing api coverage
+* Fixes string formatting error
+* Move some opts into nova.utils
+* Properly scope password options
+* Move monkey patch config opts into nova.utils
+* Move all temporary files into a single /tmp subdir
+* Use fixtures library for nova test fixtures
+* Add agent build API support for list/create/delete/modify agent build
+* Make policy.json not filesystem location specific
+* Fix test suite to use MiniDNS
+* Add pluggable ServiceGroup monitoring APIs
+* Add SSL support to utils.generate\_glance\_url()
+* Truncate large console logs in libvirt
+* Move global fixture setup into nova/test.py
+* Xenapi: Don't resize down if not auto\_disk\_config
+* Cells: Re-add DB model and calls
+* Remove extra space in exception
+* Use CONF.import\_opt() for nova.config opts
+* Remove nova.config.CONF
+* Remove nova.flags
+* Allow group='foo' in self.flags() for tests
+* Remove gen\_uuid()
+* Isolate tests from the environment variable http\_proxy
+* Remove unused volume exceptions
+* Add missing exception NetworkDuplicated
+* Remove custom test assertions
+* Switch from FLAGS to CONF in tests
+* Removed two unused imports
+* Fixes a bug in nova.utils, due to Windows compatibility issues
+* Make utils.mkfs() set label when fs=swap
+* Remove out-of-date comment
+* make utils.mkfs() more general
+* Use uuidutils.is\_uuid\_like for uuid validation
+* Switch from FLAGS to CONF in misc modules
+* Move parse\_args to nova.config
+* sync deprecated log method from openstack-common
+* Increased MAC address range to reduce conflicts
+* Move to a more canonicalized output from qemu-img info
+* Use testtools as the base testcase class
+* Make nova-rootwrap optional
+* Migrate to fileutils and lockutils
+* Fix Incorrect Exception when metadata is over 255 characters
+* Remove deprecated root\_helper config
+* SanISCSIDriver SSH execution fixes
+* Fix bad Log statement in nova-manage
+* Move mkfs from libvirt.utils to utils
+* Dis-associate an auto-assigned floating IP should return proper warning
+* Proxy floating IP calls to quantum
+* ip\_protocol for ec2 security groups
+* Add TestCase.stub\_module to make stubbing modules easier
+* remove deprecated connection\_type flag
+* Remove TestCase.assertNotRaises
+* Fixes error message for flavor-create duplicate ID
+* Check that an image is active before spawning instances
+* Restore SIGPIPE default action for subprocesses
+* Fix marker pagination for /servers
+* Add lookup by ip via Quantum for metadata service
+* Adds new volume API extensions
+* Return 400 if create volume snapshot force parameter is invalid
+* Backport changes from Cinder to Nova-Volume
+* Check flavor id on resize
+* Stop fetch\_ca from throwing IOError exceptions
+* Stop lock decorator from leaving tempdirs in tests
+* Use volume driver specific exceptions
+* Implement paginate query use marker in nova-api
+* Fix synchronized decorator path cleanup
+* Fix creation of iscsi targets
+* Address race condition from concurrent task state update
+* Add a new exception for live migration
+* External locking for image caching
+* Correct utils.execute() to check 0 in check\_exit\_code
+* Implement project specific flavors API
+* Move ensure\_tree to utils
+* Remove unused permitted\_instance\_types
+* Provide a hint for missing EC2 image ids
+* Remove unused exceptions from nova/exception.py
+* Keep the ComputeNode model updated with usage
+* Makes sure tests don't leave lockfiles around
+* Revert per-user-quotas
+* Remove unused imports
+* Fix spelling typos
+* Allow nova to guess device if not passed to attach
+* Adding port attribute in network parameter of boot
+* Simple checks for instance user data
+* Config drive v2
+* Uniqueness checks for floating ip addresses
+* Driver for IBM Storwize and SVC storage
+* Fix invalid exception format strings
+* Return 409 error if get\_vnc\_console is called before VM is created
+* Improve external locking on Windows
+* Solve possible race in semaphor creation
+* Adds per-user-quotas support for more detailed quotas management
+* Move root\_helper deprecation warning into execute
+* Simplify file hashing
+* Improve external lock implementation
+* Remove unused imports
+* Check instance lock in compute/api
+* Deprecate root\_helper in favor of rootwrap\_config
+* Clarify TooManyInstances exception message
+* Setting root passwd no longer fails silently
+* reduce debugging from utils.trycmd()
+* Refactor glance image service code
+* Convert fixed\_ips to using instance\_uuid
+* Inject instance metadata into xenstore
+* Fix wrong regex in cleanup\_file\_locks
+* Ensure 413 response for security group over-quota
+* Allow NoMoreFloatingIps to bubble up to FaultWrapper
+* Return 413 status on over-quota in the native API
+* General-host-aggregates part 1
+* Refactor instance\_usage\_audit. Add audit tasklog
+* Expose over-quota exceptions via native API
+* Distinguish over-quota for volume size and number
+* Switch to common logging
+* Cleanup of image service code
+* Removes utils.logging\_error (no longer used)
+* Removes utils.fetch\_file (no longer used)
+* SM volume driver: DB changes and tests
+* added deprecated.warn helper method
+* Replaces functions in utils.py with openstack/common/timeutils.py
+* Add CPU arch filter scheduler support
+* Remove unused DB calls
+* Remove utils.deprecated functions
+* add unit tests for new virt driver loader
+* Rename image to image\_id
+* Convert consoles to use instance uuid
+* Migrate instance\_metadata to use a uuid to refer to instances
+* Adds \`disabled\` field for instance-types
+* fix the instance quota overlimit message
+* Revert "blueprint <multi-process-api-service>"
+* Unused imports cleanup (folsom-2)
+* blueprint <multi-process-api-service>
+* convert virt drivers to fully dynamic loading
+* Eliminate a race condition on instance deletes
+* Make sure an exception is logged when config file isn't found
+* Use cfg's new global CONF object
+* Grammar fixes
+* Use utils.utcnow rather than datetime.utcnow
+* Finish quota refactor
+* Use cfg's new behavior of reset() clearing overrides
+* Rearchitect quota checking to partially fix bug 938317
+* Stop using nova.exception from nova.rpc
+* Make use of openstack.common.jsonutils
+* Alphabetize imports
+* Create an internal key pair API
+* Use ConfigOpts.find\_file() to find paste config
+* Remove instance Foreign Key in volumes table, replace with instance\_uuid
+* Remove old flagfile support
+* Defer image\_ref update to manager on rebuild
+* pylint cleanup
+* Replaces exceptions.Error with NovaException
+* Remove state altering in live-migration code
+* Find context arg by type rather than by name
+* Add instance\_system\_metadata modeling
+* Use ConfigOpts.find\_file() to locate policy.json
+* Pass context to notification drivers when we can
+* Use save\_and\_reraise\_exception() from common
+* Provide better quota error messages
+* adjust logging levels for utils.py
+* Use openstack.common.importutils
+* Moves \`usage\_from\_instance\` into nova.compute.utils
+* Add deleted\_at to instance usage notification
+* Renamed current\_audit\_period function to last\_completed\_audit\_period to clarify its purpose
+* Remove python-novaclient dependency from nova
+* Improved localization testing
+* Log kwargs on a failed String Format Operation
+* Run tools/hacking.py instead of pep8 mandatory
+* Delete fixed\_ips when network is deleted
+* Cleanup xenapi driver logging messages to include instance
+* Remove nova.rpc.impl\_carrot
+* fix TypeError with unstarted threads in nova-network
+* ensure atomic manipulation of libvirt disk images
+* Add periodic\_fuzzy\_delay option
+* Implement quota classes
+* Fixes bug 957708
+* Make sqlite in-memory-db usable to unittest
+* Fix run/terminate race conditions
+* Workaround issue with greenthreads and lockfiles
+* various cleanups
+* Remove Virtual Storage Array (VSA) code
+* Refix mac change to work around libvirt issue
+* Add pybasedir and bindir options
+* Use a high number for our default mac addresses
+* Add adjustable offset to audit\_period
+* Clear created attributes when tearing down tests
+* fix restructuredtext formatting in docstrings that show up in the developer guide
+* Only raw string literals should be used with \_()
+* assertRaises(Exception, ...) considered harmful
+* Fixes for ec2 images
+* Retry download\_vhd with different glance host each time
+* Refactor spawn to use UndoManager
+* Fail gracefully when the db doesn't speak unicode
+* Add missing format string type on some exception messages
+* Add missing filters for new root commands
+* Use constant time string comparisons for auth
+* Rename zones table to cells and Instance.zone\_name to cell\_name
+* Add utils.tempdir() context manager for easy temp dirs
+* Call detach\_volume when attach fails
+* OS X Support fixed, bug 942352
+* Adds temporary chown to sparse\_copy
+* Clean stale lockfiles on service startup : fixes bug 785955
+* blueprint host-aggregates: xenapi implementation
+* Add exception SnapshotIsBusy to be handled as VolumeIsBusy
+* Add attaching state for Volumes
+* Escape apostrophe in utils.xhtml\_escape() (lp#872450)
+* Partial fix for bug 919051
+* Support non-UTC timestamps in changes-since filter
+* Adding traceback to async faults
+* Allow file logging config
+* Removed zones from api and distributed scheduler
+* Prevent Duplicate VLAN IDs
+* Remove unnecessary constructors for exceptions
+* Don't allow EC2 removal of security group in use
+* Replace ApiError with new exceptions
+* Standardize logging delaration and use
+* Retry on network failure for melange GET requests
+* Extend glance retries to show() as well
+* Remove the last of the gflags shim layer
+* Use named logger when available
+* Removes constraints from instance and volume types
+* Backslash continuations (misc.)
+* Fix support for --flagfile argument
+* Allows nova to read files as root
+* Re-run nova-manage under sudo if unable to read conffile
+* Move cfg to nova.openstack.common
+* blueprint nova-image-cache-management phase1
+* Optionally disable file locking
+* Add support for pluggable l3 backends
+* lockfile.FileLock already appends .lock
+* Ties quantum, melange, and nova network model
+* Fix VPN ping packet length
+* Remove utils.runthis()
+* Implementation of new Nova Volume driver for SolidFire ISCSI SAN
+* Raise 400 if bad kepair data is provided
+* Refactor away the flags.DEFINE\_\* helpers
+* blueprint host-aggregates: OSAPI/virt integration, via nova.compute.api
+* Blueprint xenapi-provider-firewall and Bug #915403
+* Create nova cert worker for x509 support
+* Add nova.exception.InvalidRPCConnectionReuse
+* KVM and XEN Disk Management Parity
+* Handle error in associate floating IP (bug 845507)
+* ComputeNode Capacity support
+* scheduler host\_manager needs service for filters
+* Rename 'zone' to 'domain.'
+* Implements blueprint vnc-console-cleanup
+* blueprint host-aggregates
+* Add policy checking to nova.network.api.API
+* Implement BP untie-nova-network-models
+* First implementation of bp/live-migration-resource-calc
+* Add policy checks to Compute.API
+* catch InstanceInvalidState in more places
+* Add @utils.deprecated()
+* Refactors utils.load\_cached\_file
+* Adds simple policy engine support
+* Workaround bug 852095 without importing mox
+* Bug #912858: test\_authors\_up\_to\_date does not deal with capitalized names properly
+* Adds workaround check for mox in to\_primitive
+* PEP8 type comparison cleanup
+* Adds running\_deleted\_instance\_reaper task
+* PEP8 remove direct type comparisons
+* Clean up pylint errors in top-level files
+* Ensure generated passwords meet minimum complexity
+* Fixing novaclient\_converter NameError
+* Add an API for associating floating IPs with DNS entries
+* 'except:' to 'except Exception:' as per HACKING
+* Add exit\_code, stdout, stderr etc to ProcessExecutionException
+* Bug#898257 abstract out disk image access methods
+* Make UUID format checking more correct
+* Document return type from utils.execute()
+* Fixes bug 723235
+* Update utils.execute so that check\_exit\_code handles booleans. Fixes LP bug #904560
+* Fixes bug 887402
+* Refactor vm\_state and task\_state checking
+* Vm state management and error states
+* Moves find config to utils because it is useful
+* fixed\_ips by vif does not raise
+* Log it when we get a lock
+* Adds network model and network info cache
+* First steps towards consolidating testing infrastructure
+* remove duplicate netaddr in nova/utils
+* Implement resize down for XenAPI
+* Fix RPC responses to allow None response correctly
+* removed logic of throwing exception if no floating ip
+* Fixes bug 888649
+* snapshot/backup in compute manager to use uuids
+* Follow hostname RFCs
+* Log the URL to an image\_ref and not just the ID
+* Verify security group parameters
+* Refactor of QuotaError
+* More spelling fixes inside of nova
+* Refactor logging\_error into utils
+* Exception cleanup in scheduler
+* exception.KeypairNotFound usage correction
+* Fixes lp883279
+* Log original dropped exception when a new exception occurs
+* Improve the liveness checking for services
+* Repartition and resize disk when marked as managed
+* Remove unused flag\_overrides from TestCase
+* Xenapi driver can now generate swap from instance\_type
+* Adds more usage data to Nova's usage notifications
+* Remove AoE, Clean up volume code
+* Include original exception in ClassNotFound exception
+* Enable admin access to EC2 API server
+* moved floating ip db access and sanity checking from network api into network manager added floating ip get by fixed address added fixed\_ip\_get moved floating ip testing from osapi into the network tests where they belong
+* Moving admin actions to extension
+* Snapshots/backups can no longer happen simultaneously. Tests included
+* Accept message as sole argument to NovaException
+* Raise InsufficientFreeMemory
+* Add minDisk and minRam to OSAPI image details
+* This patch adds flavor filtering, specifically the ability to flavor on minRam, minDisk, or both, per the 1.1 OSAPI spec
+* Add next links for server lists in OSAPI 1.1. This adds servers\_links to the json responses, and an extra atom:link element to the servers node in the xml response
+* Update exception.wrap\_exception so that all exceptions (not just Error and NovaException types) get logged correctly
+* Merging trunk
+* This patch adds instance progress which is used by the OpenStack API to indicate how far along the current executing action is (BUILD/REBUILD, MIGRATION/RESIZE)
+* Merging trunk
+* Fixes lp:855115 -- issue with disassociating floating ips
+* Renumbering instance progress migration
+* Fixing tests
+* Keystone support in Nova across Zones
+* trunk merge fixup
+* Adds an 'alternate' link to image views per 3.10 and 3.11 of http://docs.openstack.org/cactus/openstack-compute/developer/openstack-compute-api-1.1/content/LinksReferences.html
+* Merging trunk
+* Instance deletions in Openstack are immediate. This can cause data to be lost accidentally
+* Makes sure ips are moved on the bridge for nodes running dnsmasq so that the gateway ip is always first
+* clean up based on cerberus review
+* Remove keystone middlewares
+* Merged trunk
+* merged trunk
+* Merging trunk
+* merge trunk, fix conflicts
+* Fixed unit tests with some minor refactoring
+* merge from trunk
+* convert images that are not 'raw' to 'raw' during caching to node
+* Add iptables filter rules for dnsmasq (lp:844935)
+* merge with trunk r1601
+* merged with trunk
+* Reverted some changes to instance\_get\_all\_by\_filters() that was added in rev 1594.  An additional argument for filtering on instance uuids is not needed, as you can add 'uuid: uuid\_list' into the filters dictionary.  Just needed to add 'uuid' as an exact\_match\_filter.  This restores the filtering to do a single DB query
+* merged trunk and resolved conflict
+* Adds the ability to automatically confirm resizes after the \`resize\_confirm\_window\` (0/disabled by default)
+* PEP8 cleanup
+* \* Remove the foreign key and backrefs tying vif<->instance \* Update instance filtering to pass ip related filters to the network manager \* move/update tests
+* Merging trunk
+* merge with trunk
+* Merged trunk
+* merge the sknurt
+* Fixes the handling of snapshotting in libvirt driver to actually use the proper image type instead of using raw for everything. Also cleans up an unneeded flag.  Based on doude's initial work
+* merge with trunk
+* Some Linux systems can also be slow to start the guest agent. This branch extends the windows agent timeout to apply to all systems
+* Fix a bug that would make spawning new instances fail if no port/protocol is given (for rules granting access for other security groups)
+* Merging trunk
+* Authorize to start a LXC instance withour, key, network file to inject or metadata
+* Update the v1.0 rescue admin action and the v1.1 rescue extension to generate 'adminPass'. Fixes an issue where rescue commands were broken on XenServer. lp#838518
+* merge the trunks
+* Fixes libvirt rescue to use the same strategy as xen.  Use a new copy of the base image as the rescue image.  It leaves the original rescue image flags in, so a hand picked rescue image can still be used if desired
+* merge the trunks
+* Merged trunk
+* I am using iputils-arping package to send arping command. You will need to install this package on the network nodes using apt-get command apt-get install iputils-arping
+* Removed sudo from the arguments
+* merge from trunk
+* Merged trunk
+* Update exception.wrap\_exception so that all exceptions (not just Error and NovaException types) get logged correctly
+* trunk merge
+* updates Exception.NoMoreFixedIps to subclass NovaException instead of Error
+* NoMoreFixedIps now subclasses NovaException instead of Error
+* it merges the trunk; or else it gets the conflicts again
+* This makes the OS api extension for booting from volumes work. The \_get\_view\_builder method was replaced in the parent class, but the BootFromVolume controller was not updated to use the new method
+* Merged trunk
+* Adding flavor extra data extension
+* Merged from trunk and resolved conflicts
+* Merged trunk
+* The 1.1 API specifies that two vendor content types are allowed in addition to the standard JSON and XML content types
+* Adding progress
+* merge trunk
+* merge trunks
+* resolve conflicts / merge with trunk revno 1569
+* Fixes an issue where 'invalid literal for int' would occur when listing images after making a v1.1 server snapshot (with a UUID)
+* merge the trunk
+* trunk merge
+* This branch changes XML Serializers and their tests to use lxml.etree instead of minidom
+* - remove translation of non-recognized attributes to user metadata, now just ignored - ensure all keys are defined in image dictionaries, defaulting to None if glance client doesn't provide one - remove BaseImageService - reorganize some GlanceImageService tests
+* we're back
+* merging trunk; resolving conflicts
+* Some arches dont have dmidecode, check to see if libvirt is capable of running rather getInfo of the arch its running on
+* fixups
+* parent merge
+* bug fixes
+* merging trunk
+* trunk merge
+* When vpn=true in allocate ip, it attempts to allocate the ip that is reserved in the network. Unfortunately fixed\_ip\_associate attempts to ignore reserved ips. This fix allows to filter reserved ip address only when vpn=True
+* Stock zones follows a fill-first methodology—the current zone is filled with instances before other zones are considered.  This adds a flag to nova to select a spread-first methodology.  The implementation is simply adding a random.shuffle() prior to sorting the list of potential compute hosts by weights
+* Pass reboot\_type (either HARD or SOFT) to the virt layers from the API
+* merging trunk
+* pull-up from trunk; move spread\_first into base\_scheduler.py
+* trunk merge
+* Merged trunk
+* merged rbp
+* adds a fake\_network module to tests to generate sensible network info for tests. It does not require using the db
+* Merged trunk
+* child zone queries working with keystone now
+* Added docstring to explain usage of reserved keyword argument
+* One more bug fix to make zones work in trunk.  Basic problem is that in novaclient using the 1.0 OSAPI, servers.create() takes an ipgroups argument, but when using the 1.1 OSAPI, it doesn't, which means booting instances in child zones won't work with OSAPI v1.0.  This fix works around that by using keyword arguments for all the arguments after the flavor, and dropping the unused ipgroups argument
+* Fixes the reroute\_compute decorator in the scheduler API so that it properly:
+* Fix lp:844155
+* Changing a behavior of update\_dhcp() to write out dhcp options file. This option file make dnsmasq offer a default gateway to only NICs of VM belonging to a network that the first NIC of VM belongs to. So, first NIC of VM must be connected to a network that a correct default gateway exists in. By means of this, VM will not get incorrect default gateways
+* merged trunk
+* merging trunk
+* merging trunk
+* merged trunk
+* Make weigh\_hosts() return a host per instance, instead of just a list of hosts
+* Merged trunk
+* pull-up from trunk
+* pull-up from trunk
+* pull-up from trunk
+* This code contains contains a new NetworkManager class that can leverage Quantum + Melange
+* create a new exception ZoneRequestError to use for returning errors when zone requests couldn't complete
+* merge trunk
+* pull-up from trunk
+* Fixes a case where if a VIF is returned with a NULL network it might not be able to be deleted. Added test case for that fix
+* Merged trunk
+* merged trunk
+* An AMI image without ramdisk image should start
+* At present, the os servers.detail api does not return server.user\_id or server.tenant\_id.  This is problematic, since the servers.detail api defaults to returning all servers for all users of a tenant, which makes it impossible to tell which user is associated with which server
+* merged trunk
+* trunk merge
+* meeging trunk
+* Merged trunk
+* Added list of security groups to the newly added extension (Createserverext)  for the Create Server and Get Server detail responses
+* merged trunk
+* Fixes a small bug which causes filters to not work at all.  Also reworks a bit of exception handling to allow the exception related to the bug to propagate up
+* Fixed review comments
+* pull-up from trunk
+* Merged trunk
+* Glance can now perform its own authentication/authorization checks when we're using keystone
+* Resolved conflicts and fixed pep8 errors
+* trunk merge
+* pull-up from trunk
+* - implements changes-since for servers resource - default sort is now created\_at desc for instances
+* merging trunk
+* Fixes NotFound exceptions to show the proper instance id in the ec2 api
+* Accept keypair when you launch a new server. These properties would be stored along with the other server properties in the database (like they are currently for ec2 api)
+* merge trunk, fix tests
+* merge trunk
+* Simple usage extension for nova.  Uses db to calculate tenant\_usage for specified time periods
+* Fix for LP Bug #838251
+* merged trunk
+* Fixed and improved the way instance "states" are set. Instead of relying on solely the power\_state of a VM, there are now explicitly defined VM states and VM task states which respectively define the current state of the VM and the task which is currently being performed by the VM
+* Implements lp:798876 which is 'switch carrot to kombu'.  Leaves carrot as the default for now... decision will be made later to switch the default to kombu after further testing.  There's a lot of code duplication between carrot and kombu, but I left it that way in preparation for ripping carrot out later and to keep minimal changes to carrot
+* Disassociated previously associated floating ips when calling network\_api.associate\_floating\_ip.  Also guard against double-association in the network.manager
+* trunk merge
+* merged trunk
+* fix FloatingIpAlreadyInUse to use correct string pattern, convert ApiErrors to 400 responses
+* merged trunk
+* The exception 'RamdiskNotFoundForImage' is no longer used
+* disassociate floating ips before re-associating, and prevent re-association of already associated floating ips in manager
+* merged trunk
+* Merged trunk
+* Adds assertIn and assertNotIn support to TestCase for compatibility with python 2.6 This is a very minimal addition which doesn't require unittest2
+* support the extra optional arguments for msg to assertIn and assertNotIn
+* fix for assertIn and assertNotIn use which was added in python 2.7.  this makes things work on 2.6 still
+* merge trunk
+* use 'uuid' field in networks table rather than 'bridge'.  Specify project\_id when creating instance in unit test
+* Virtual Storage Array (VSA) feature. - new Virtual Storage Array (VSA) objects / OS API extensions / APIs / CLIs - new schedulers for selecting nodes with particular volume capabilities - new special volume driver - report volume capabilities - some fixes for volume types
+* merged trunk
+* merge trunk
+* merged with rev.1499
+* VSA code redesign. Drive types completely replaced by Volume types
+* merged trunk
+* Merged trunk
+* Added: - volume metadata - volume types - volume types extra\_specs
+* merged trunk
+* Merged trunk
+* Once a network is associated with project, I can’t delete this network with ‘nova-manage network delete’. As you know, I can delete network by scrubbing the project with ‘nova-manage project scrub’. However it is too much. The cause of this problem is there is no modify command of network attribute
+* merged with volume types (based on rev.1490). no code rework yet
+* merged with volume\_types. no code refactoring yet
+* merged with nova 1490
+* merged trunk
+* Merged from trunk
+* The notifiers API was changed to take a list of notifiers. Some people might want to use more than one notifier so hopefully this will be accepted into trunk
+* merge trunk, fix tests
+* Fix for trying rebuilds when instance is not active
+* merged with rev.1485
+* Merged trunk
+* Commit with test data in migration
+* Merged from trunk
+* Fix not found exceptions to properly use ec2\_ips for not found
+* Merged from upstream
+* I added notifications  decorator for each API call using monkey\_patching. By this merge, users can get API call notification from any modules
+* Fixes bug that causes 400 status code when an instance wasn't attached to a network
+* Merged from upstream
+* merging trunk
+* Removed blank line
+* Merged with trunk
+* Fixed typo and docstring and example class name
+* Merged trunk
+* This branch does the final tear out of AuthManager from the main code. The NoAuth middlewares (active by default) allow a user to specify any user and project id through headers (os\_api) or access key (ec2\_api)
+* merge trunk, resolve conflicts, fix tests
+* Our goal is to add optional parameter to the Create server OS 1.0 and 1.1 API to achieve following objectives:-
+* Fixes bug 831627 where nova-manage does not exit when given a non-existent network address
+* initial cut on volume type APIs
+* Merged from trunk,resolved conflicts and fixed broken unit tests due to changes in the extensions which now include ProjectMapper
+* Fixed conflict with branch
+* merged trunk
+* Added Test Code, doc string, and fixed pip-requiresw
+* Merged trunk
+* Merged from upstream
+* merged trunk
+* implemented tenant ids to be included in request uris
+* Upstream merge
+* Merged trunk
+* merge with trunk
+* Adds accessIPv4 and accessIPv6 to servers requests and responses as per the current spec
+* Fixes utils.to\_primitive (again) to handle modules, builtins and whatever other crap might be hiding in an object
+* Added OS APIs to associate/disassociate security groups to/from instances
+* add/remove security groups to/from the servers as server actions
+* Merged from trunk
+* Assorted fixes to os-floating-ips to make it play nicely with an in-progress novaclient implementation, as well as some changes to make it more consistent with other os rest apis.  Changes include:
+* Merged trunk
+* Merged from trunk and fixed review comments
+* Fixed review comments
+* Fixed typo
+* merged trunk
+* Merged with trunkw
+* merge from trunk
+* Added monkey patching notification code function w
+* Next round of prep for keystone integration
+* Merged from trunk
+* Fixes primitive with builtins, modules, etc
+* merged trunk
+* merge with trunk
+* Added uuid column in virtual\_interfaces table, and an OpenStack extension API for virtual interfaces to expose these IDs.  Also set this UUID as one of the external IDs in the OVS vif driver
+* merge
+* Merged trunk
+* merged trunk
+* Currently, rescue/unrescue is only available over the admin API. Non-admin tenants also need to be able to access this functionality. This patch adds rescue functionality over an API extension
+* Makes all of the binary services launch using the same strategy.  \* Removes helper methods from utils for loading flags and logging  \* Changes service.serve to use Launcher  \* Changes service.wait to actually wait for all the services to exit  \* Changes nova-api to explicitly load flags and logging and use service.serve  \* Fixes the annoying IOError when /etc/nova/nova.conf doesn't exist
+* merged trunk
+* added volume metadata. Fixed test\_volume\_types\_extra\_specs
+* merge trunk
+* Fixes lp828207
+* Accept binary user\_data in radix-64 format when you launch a new server using OSAPI. This user\_data would be stored along with the other server properties in the database. Once the VM instance boots you can query for the user-data to do any custom installation of applications/servers or do some specific job like setting up networking route table
+* Change the call name
+* merged trunk
+* Merged with trunk
+* first cut on types & extra-data (only DB work, no tests)
+* merge from trunk
+* Merged trunk
+* Fixed several logical errors in the scheduling process. Renamed the 'ZoneAwareScheduler' to 'AbstractScheduler', since the zone-specific designation is no longer relevant. Created a BaseScheduler class that has basic filter\_hosts() and weigh\_hosts() capabilities. Moved the filters out of one large file and into a 'filters' subdirectory of nova/scheduler
+* Merged trunk
+* merged trunk
+* Merged with trunk and fixed broken testcases
+* merged with nova-1450
+* Make all services use the same launching strategy
+* Merged trunk
+* merge from trunk
+* Merged trunk
+* merge trunk
+* Resolved conflicts and merged with trunk
+* Added uuid for networks and made changes to the Create server API format to accept network as uuid instead of id
+* I'm taking Thierry at his word that I should merge early and merge often :)
+* Allow local\_gb size to be 0. libvirt uses local\_gb as a secondary drive, but XenServer uses it as the root partition's size. Now we support both
+* Merged trunk
+* merge from trunk
+* Use netaddr's subnet features to calculate subnets
+* merge from trunk
+* Updated the EC2 metadata controller so that it returns the correct value for instance-type metadata
+* merge the trunk
+* Merged with upstream
+* merge with trunk
+* Validate the size of VHD files in OVF containers
+* Merged trunk
+* Merged trunk
+* Merged trunk
+* merge trunk
+* Adding kvm-block-migration feature
+* merge trunk, remove \_validate\_cidrs and replace functionality with a double for loop
+* Merged with trunk
+* Merged trunk
+* Add durable flag for rabbit queues
+* merged trunk
+* Merged trunk
+* Added ability too boot VM from install ISO.  System detects an image of type iso.  Images is streamed to a VDI and mounted to the VM.  Blank disk allocated to VM based on instance type
+* Add source-group filtering
+* added logic to make the creation of networks (IPv4 only) validation a bit smarter:   - detects if the cidr is already in use   - detects if any existing smaller networks are within the range of requested cidr(s)   - detects if splitting a supernet into # of num\_networks && network\_size will fit   - detects if requested cidr(s) are within range of already existing supernet (larger cidr)
+* Fix v1.1 /servers/<id> PUT request to match API documentation by returning 200 code and the server data in the body
+* have NetworkManager generate MAC address and pass it to the driver for plugging.  Sets the stage for being able to do duplicate checks on those MACs as well
+* merge trunk, fix conflict frim dprince's branch to remove hostname from bin/nova-dhcpbridge
+* merge in trunk, resolving conflicts with ttx's branch to switch from using sudo to run\_as\_root=True
+* remerge trunk
+* Merged with trunk and fixed broken unit testcases
+* merged rev1418 and fixed code so that less than 1G image can be migrated
+* merge from trunk
+* merge from trunk
+* Merged trunk
+* Allows for a tunable number of SQL connections to be maintained between services and the SQL server using new configuration flags. Only applies when using the MySQLdb dialect in SQLAlchemy
+* Merged trunk
+* Merged trunk
+* merged trunk
+* Merged with trunk
+* Support for management of security groups in OS API as a new extension
+* Merged with trunk
+* Check compressed image size and PEP8 cleanup
+* merge from trunk
+* merged with 1416
+* merged trunk
+* \* Removes rogue direct usage of subprocess module by proper utils.execute calls \* Adds a run\_as\_root parameter to utils.execute, that prefixes your command with FLAG.root\_helper (which defaults to 'sudo') \* Turns all sudo calls into run\_as\_root=True calls \* Update fakes accordingly \* Replaces usage of "sudo -E" and "addl\_env" parameter into passing environment in the command (allows it to be compatible with alternative sudo\_helpers) \* Additionally, forces close\_fds=True on all utils.execute calls, since it's a more secure default
+* Fixed broken unit testcases
+* merge from trunk
+* tenant\_id -> project\_id
+* These fixes are the result of trolling the pylint violations here
+* merge trunk
+* Merged with trunk
+* Merged with trunk
+* merge from trunk
+* merged with nova-1411
+* This adds the servers search capabilities defined in the OS API v1.1 spec.. and more for admins
+* merged trunk
+* Update the OSAPI v1.1 server 'createImage' and 'createBackup' actions to limit the number of image metadata items based on the configured quota.allowed\_metadata\_items that is set
+* Rename sudo\_helper FLAG into root\_helper
+* Initial validation for ec2 security groups name
+* Command args can be a tuple, convert them to list
+* Fix usage of sudo -E and addl\_env in dnsmasq/radvd calls, remove addl\_env support, fix fake\_execute allowed kwargs
+* Use close\_fds by default since it's good for you
+* Fix ajaxterm's use of shell=True, prevent vmops.py from running its own version of utils.execute
+* With this branch, boot-from-volume can be marked as completed in some sense. The remaining is minor if any and will be addressed as bug fixes
+* Added xml schema validation for extensions resources. Added corresponding xml schemas. Added lxml dep, which is needed for doing xml schema validation
+* Fixing a bug in nova.utils.novadir()
+* Adds the ability to read/write to a local xenhost config. No changes to the nova codebase; this will be used only by admin tools that have yet to be created
+* Merged trunk
+* nova.exception.wrap\_exception will re-raise some exceptions, but in the process of possibly notifying that an exception has occurred, it may clobber the current exception information. nova.utils.to\_primitive in particular (used by the notifier code) will catch and handle an exception clobbering the current exception being handled in wrap\_exception. Eventually when using the bare 'raise', it will attempt to raise None resulting a completely different and unhelpful exception
+* Import sys as well
+* Resolve conflicts and fixed broken unit testcases
+* This branch adds additional capability to the hosts API extension. The new options allow an admin to reboot or shutdown a host. I also added code to hide this extension if the --allow-admin-api is False, as regular users should have no access to host API calls
+* Adds OS API 1.1 support
+* another trunk merge
+* Merged trunk
+* Merged trunk
+* merged with 1383
+* Updated with code changes on LP
+* Merged trunk
+* Save exception and re-raise that instead of depending on thread local exception that may have been clobbered by intermediate processing
+* Sync trunk
+* Sync trunk
+* Added possibility to mark fixed ip like reserved and unreserved
+* Glance Image Service now understands how to use glance client to paginate through images
+* Implemented @test.skip\_unless and @test.skip\_if functionality in nova/test.py
+* merged with 1382
+* Updates v1.1 servers/id/action requests to comply with the 1.1 spec
+* merging trunk
+* glance image service pagination
+* trunk merge
+* Add run\_as\_root parameter to utils.execute, uses new sudo\_helper FLAG to prefix command
+* Remove spurious direct use of subprocess
+* Trunk contained PEP8 errors.  Fixed
+* Trunk merge
+* merged trunk
+* merged with nova trunk
+* utilized functools.wraps
+* tests and merge with trunk
+* merged trunk
+* For nova-manage network create cmd, added warning when size of subnet(s) being created are larger than FLAG.network\_size,  in attempt to alleviate confusion.  For example, currently when 'nova-manage network create foo 192.168.0.0/16', the result is that it creates a 192.168.0.0/24 instead without any indication to why
+* Remove instances of the "diaper pattern"
+* There was a recent change to how we should flip FLAGS in tests, but not all tests were fixed.  This covers the rest of them.  I also added a method to test.UnitTest so that FLAGS.verbose can be set.  This removes the need for flags to be imported from a lot of tests
+* Merged in the power action changes
+* Fixed rescue/unrescue since the swap changes landed in trunk. Minor refactoring (renaming callback to \_callback since it's not used here)
+* another merge
+* Removed temporary debugging raise
+* Merged trunk
+* Merged trunk
+* Added xenhost config get/setting
+* remove storing original flags verbosity
+* remove set\_flags\_verbosity.. it's not needed
+* Merged trunk
+* Update the OS API servers metadata resource to match the current v1.1 specification - move /servers/<id>/meta to /servers/<id>/metadata - add PUT /servers/<id>/metadata
+* merged trunk
+* Sync with latest tests
+* Moves code restarting instances after compute node reboot from libvirt driver to compute manager; makes start\_guests\_on\_host\_boot flag global
+* Moved server actions tests to their own test file. Updated stubbing and how flags are set to be in line with how they're supposed to be set in tests
+* merging trunk
+* Nova uses instance\_type\_id and flavor\_id interchangeably when they almost always different values. This can often lead to an instance changing instance\_type during migration because the values passed around internally are wrong. This branch changes nova to use instance\_type\_id internally and flavor\_id in the API. This will hopefully avoid confusion in the future
+* Fixed rescue and unrescue
+* Conditionals were not actually runing the tests when they were supposed to. Renamed example testcases
+* Remove instances of the "diaper pattern"
+* Initial version
+* switch FLAGS.\* = in tests to self.flags(...) remove unused cases of FLAGS from tests modified test.TestCase's flags() to allow multiple overrides added missing license to test\_rpc\_amqp.py
+* more cleanup of API tests regarding FLAGS
+* Merged trunk
+* Merged trunk
+* Merged trunk and fixed conflicts to make tests pass
+* Yet another conflict resolved
+* merged from trunk
+* merged from trunk
+* merge trunk
+* Resolved pep8 errors
+* merging trunk
+* Merged trunk
+* Fixes lp819523
+* Fix for bug #798298
+* Merged trunk
+* Add support for 300 Multiple Choice responses when no version identifier is used in the URI (or no version header is present)
+* Merged trunk
+* Glance has been updated for integration with keystone.  That means that nova needs to forward the user's credentials (the auth token) when it uses the glance API.  This patch, combined with a forth-coming patch for nova\_auth\_token.py in keystone, establishes that for nova itself and for xenapi; other hypervisors will need to set up the appropriate hooks for their use of glance
+* Added changes from mini server
+* merge from trunk
+* merge the trunk
+* Merged trunk
+* merged trunk
+* Merged trunk
+* Merged from lab
+* merge from trunk
+* Moves image creation from POST /images to POST /servers/<id>/action
+* Merged trunk
+* pull-up from trunk/fix merge conflict
+* pull-up from trunk
+* Removing the xenapi\_image\_service flag in favor of image\_service
+* Merged trunk
+* merge from trunk
+* While we currently trap JSON encoding exceptions and bail out, for error notification it's more important that \*some\* form of the message gets out. So, we take complex notification payloads and convert them to something we know can be expressed in JSON
+* Better error handling for resizing
+* merged trunk rev1348
+* merged with nova trunk
+* Added @test.skip\_unless and @test.skip\_if functionality. Also created nova/tests/test\_skip\_examples.py to show the skip cases usage
+* merge trunk, resolve conflict in net/manater.py in favor of vif-plug
+* initial commit of vif-plugging for network-service interfaces
+* Merged trunk
+* merged from trunk
+* merge with trunk, resolve conflicts
+* merge from trunk
+* Resync to trunk
+* merging
+* FlavorNotFound already existed, no need to create another exception
+* Created exceptions for accepting in OSAPI, and handled them appropriately
+* Merged with trunk
+* Merged trunk
+* merging trunk
+* pull-up from trunk and conflict resolution
+* merge trunk
+* Round 1 of changes for keystone integration.  \* Modified request context to allow it to hold all of the relevant data from the auth component.  \* Pulled out access to AuthManager from as many places as possible  \* Massive cleanup of unit tests  \* Made the openstack api fakes use fake Authentication by default
+* pull-up from trunk
+* merged trunk
+* This change creates a minimalist API abstraction for the nova/rpc.py code so that it's possible to use other queue mechanisms besides Rabbit and/or AMQP, and even use other drivers for AMQP rather than Rabbit.  The change is intended to give the least amount of interference with the rest of the code, fixes several bugs in the tests, and works with the current branch.  I also have a small demo driver+server for using 0MQ which I'll submit after this patch is merged
+* made the whole instance handling thing optional
+* pull-up from trunk; fix problem obscuring context module with context param; fix conflicts and no-longer-skipped tests
+* --Stolen from https://code.launchpad.net/~cerberus/nova/lp809909/+merge/68602
+* Use the util.import\_object to import a module
+* merged trunk and fix time call
+* merge trunk
+* merged trunk
+* added instance support to to\_primitive and tests
+* merge with trunk
+* Adds XML serialization for servers responses that match the current v1.1 spec
+* merging trunk
+* merge trunk
+* Updated deserialization of POST /servers in the OSAPI to match the latest v1.1 spec
+* pull-up from trunk
+* merge trunk
+* merge from trunk
+* merge to trunk
+* merged with nova-1336
+* merged trunk
+* updates handling of arguments in nova-manage network create. updates a few of the arguments to nova-manage and related help. updates nova-manage to raise proper exceptions
+* Fail silently
+* merge trunk
+* Fixed conflict
+* Merged with trunk and fixed broken unit test cases
+* merged trunk
+* Fixes typo in attach volume
+* merged trunk
+* added ipv6 requirements to nova-manage network create. changed --network to --fixed\_range\_v4
+* updated nova-manage create network. better help, handling of required args, and exceptions. Also updated FLAG flat\_network\_bridge to default to None
+* add invalid device test and make sure NovaExceptions don't get wrapped
+* merge from trunk
+* pull-up from trunk
+* Makes security group rules with the newer version of the ec2 api and correctly supports boto 2.0
+* merging parent branch servers-xml-serialization
+* merged recent trunk
+* merge with trunk
+* Resolved conflicts with trunk
+* Implements a simplified messaging abstraction with the least amount of impact to the code base
+* merging parent branch lp:~rackspace-titan/nova/osapi-create-server
+* Updates to the compute API and manager so that rebuild, reboot, snapshots, and password resets work with the most recent versions of novaclient
+* merging trunk; resolving conflicts
+* merged from trunk
+* merged trunk
+* merging trunk
+* pull-up from trunk
+* Updates /servers requests to follow the v1.1 spec. Except for implementation of uuids replacing ids and access ips both of which are not yet implemented. Also, does not include serialized xml responses
+* merged trunk
+* merge from trunk
+* merged trunk
+* I'm sorry, for my fail with rebasing. Any way previous branch grew to many other futures, so I supersede it. 1. Used optparse for parsing arg string 2. Added decorator for describe method params 3. Added option for assigning network to certain project. 4. Added field to "network list" for showing which project owns network
+* Moved the VIF network connectivity logic('ensure\_bridge' and 'ensure\_vlan\_bridge') from the network managers to the virt layer.  In addition, VIF driver class is added to allow customized VIF configurations for various types of VIFs and underlying network technologies
+* merge with trunk, resolve conflicts
+* fixing merge conflict
+* merge from trunk
+* merged with 1320
+* merged trunk
+* This fixes the xml serialization of the /extensions and /extensions/foo resources. Add an ExtensionsXMLSerializer class and corresponding unit tests
+* merge with trunk, resolve conflicts
+* Merged with 1306 + fix for dns change
+* merge with 1305
+* Adds ability to set DNS entries on network create. Also allows 2 dns servers per network to be specified
+* merged trunk
+* Merged Dan's branch
+* Merged trunk
+* merge with trunk, resolve conflicts
+* merge ryu's branch
+* change context to maintain exact time, store roles, use ids instead of objects and use a uuid for request\_id
+* Resolved conflict with trunk
+* merge trunk
+* This fixes issues with invalid flavorRef's being passed in returning a 500 instead of a 400, and adds tests to verify that two separate cases work
+* merge from trunk
+* Perform fault wrapping in the openstack WSGI controller. This allows us to just raise webob Exceptions in OS API controllers with the appropriate explanations set. This resolves some inconsistencies with exception raising and returning that would cause HTML output to occur when faults weren't being handled correctly
+* Merged with trunk which includes ha-net changes
+* Fixes lp813006
+* Fixes lp808949 - "resize doesn't work with recent novaclient"
+* merge with trunk
+* Merged trunk
+* Merged lp:~~danwent/nova/network-refactoring
+* Adds HA networking (multi\_host) option to networks
+* merge ryu's branch
+* Merged trunk
+* merged trunk
+* network api release\_floating\_ip method will now check to see if an instance is associated to it, prior to releasing
+* Fixes lp809587
+* Merged with trunk
+* merged from trunk
+* Merged trunk
+* Merged with trunk
+* merged trunk
+* merged trunk
+* fixed reviewer's comment. 1. ctxt -> context, 2. erase unnecessary exception message from nova.sccheduler.driver
+* merged trunk
+* This change adds the basic boot-from-volume support to the image service
+* Merged with trunk
+* pep8'd
+* Some basic validation for creating ec2 security groups. (LP: #715443)
+* VSA: first cut. merged with 1279
+* Tests passing again
+* Updated with some changes from manual testing
+* merging trunk
+* Adds greater configuration flexibility to rate limiting via api-paste.ini.  In particular:
+* merge with trunk
+* - Present ip addresses in their actual networks, not just a static public/private - Floating ip addresses are grouped into the networks with their associated fixed ips - Add addresses attribute to server entities
+* merge with trunk, resolve conflicts
+* Existing Windows agent behaves differently than the Unix agents and require some workarounds to operate properly. Fixes are going into the Windows agent to make it behave better, but workarounds are needed for compatibility with existing installed base
+* Merged with trunk and fixed pep errors
+* merging trunk
+* pull-up from trunk, while we're at it
+* Merged with Trunk
+* Updated responses for GET /images and GET /images/detail to respect the OSAPI v1.1 spec
+* merge
+* merge from trunk
+* Extends the exception.wrap\_exception decorator to optionally send an update to the notification system in the event of a failure
+* trunk merge
+* merging trunk
+* merged branch lp:~rackspace-titan/nova/images-response-formatting
+* merged trunk
+* merge with trunk
+* Starting part of multi-nic support in the guest. Adds the remove\_fixed\_ip code, but is incomplete as it needs the API extension that Vek is working on
+* merged trunk
+* fix reviewer's comment
+* fixed marshalling problem to cast\_compute..
+* This doesn't actually fix anything anymore, as the wsgi\_refactor branch from Waldon took care of the issue. However, a couple rescue unit tests would have caught this originally, so I'm proposing this to include those
+* Merged with Trunk
+* add optional parameter networks to the Create server OS API
+* Made xen plugins rpm noarch
+* Set the proper return code for server delete requests
+* merging trunk
+* minor tweaks
+* Adds an extension which makes add\_fixed\_ip() available through an OpenStack extension
+* Fix the bug 800759
+* pre trunk merge
+* fix conflict
+* Fixed up an incorrect key being used to check Zones
+* merged trunk
+* Make the instance migration calls available via the API
+* Merged trunk
+* image/fake: added teardown method
+* merge with trunk
+* pull-up from trunk
+* pull-up from trunk
+* Merging issuse
+* implemented clean-up logic when VM fails to spawn for xenapi back-end
+* Adds the os-hosts API extension for interacting with hosts while performing maintenance. This differs from the previous merge prop as it uses a RESTful design instead of GET-based actions
+* stricter zone\_id checking
+* trunk merge
+* Merged trunk
+* Updated the links container for flavors to be compliant with the current spec
+* merged trunk
+* Add a socket server responding with an allowing flash socket policy for all requests from flash on port 843 to nova-vncproxy
+* Pull-up from trunk (post-multi\_nic)
+* merged trunk
+* merged trunk
+* merged trunk
+* merged trunk
+* merged trunk
+* merged trunk
+* merged trunk
+* First round of changes for ha-flatdhcp
+* fixed a bug which prevents suspend/resume after block-migration
+* after trunk merge
+* Added the GroupId param to any pertinent security\_group methods that support it in the official AWS API
+* Fixed the case where an exception was thrown when trying to get a list of flavors via the api yet there were no flavors to list
+* fix up tests
+* review fixes
+* added multi-nic support
+* trunk merge with migration renumbering
+* Child Zone Weight adjustment available when adding Child Zones
+* trunk merge
+* merge trunk
+* merged trunk
+* Windows instances will often take a few minutes setting up the image on first boot and then reboot. We should be more patient for those systems as well check if the domid changes so we can send agent requests to the current domid
+* - add metadata container to /images/detail and /images/<id> responses - update xml serialization to encode image entities properly
+* merging trunk
+* trunk merge
+* done and done
+* phew ... working
+* compute\_api.get\_all should be able to recurse zones (bug 744217). Also, allow to build more than one instance at once with zone\_aware\_scheduler types. Other cleanups with regards to zone aware scheduler..
+* fix issue of recurse\_zones not being converted to bool properly add bool\_from\_str util call add test for bool\_from\_str slight rework of min/max\_count check
+* merged trunk
+* pulled in koelkers test changes
+* merge with trey
+* Merged trunk
+* merged trunk, fixed the floating\_ip fixed\_ip exception stupidity
+* trunk merge
+* Implement backup with rotation and expose this functionality in the OS API
+* Merged trunk
+* adopt merge
+* moved to wrap\_exception approach
+* moved migration again & trunk merge
+* moved to wrap\_exception decorator
+* Merged trunk
+* merging trunk
+* This adds system usage notifications using the notifications framework. These are designed to feed an external billing or similar system that subscribes to the nova feed and does the analysis
+* Refactored usage generation
+* Re-worked some of the WSGI and WSGIService code to make launching WSGI services easier, less error prone, and more testable. Added tests for WSGI server, new WSGI loader, and modified integration tests where needed
+* Merged trunk
+* pep8 fix
+* Adds support for "extra specs", additional capability requirements associated with instance types
+* resync with trunk
+* remerged trunk
+* Added floating IP support in OS API
+* merge with trey
+* trunk merge, getting fierce.
+* Merged trunk
+* Added nova.version to utils.py
+* Pulled trunk, merged boot from ISO changes
+* review issues fixed
+* merge with trunk
+* Upstream merge
+* merging trunk; adding error handling around image xml serialization
+* Fix for bug #788265. Remove created\_at, updated\_at and deleted\_at from instance\_type dict returned by methods in sqlalchemy API
+* PEP8 fix
+* Merged from trunk
+* Add api methods to delete provider firewall rules
+* Removes the usage of the IPy module in favor of the netaddr module
+* merged
+* trunk merged. conflicts resolved
+* added disassociate method to tests
+* some tests and refactoring
+* Trunk merge fixes
+* Merging trunk
+* Refactored backup rotate
+* Merged from trunk
+* Merged with trunk
+* Unwind last commit, force anyjson to use our serialization methods
+* Created Bootstrapper to handle Nova bootstrapping logic
+* trunk merge
+* This adds a way to create global firewall blocks that apply to all instances in your nova installation
+* merge from trunk
+* proper xml serialization for images
+* Add xml serialization for all /images/<id>/meta and /images/<id>/meta/<key> responses
+* trunk merge and migration bump
+* Merged markwash's fixes
+* Merged trunk
+* Merged from trunk
+* This catches the InstanceNotFound exception on create, and ignores it.  This prevents errors in the compute log, and causes the server to not be built (it should only get InstanceNotFound if the server was deleted right after being created).  This is a temporary fix that should be fixed correctly once no-db-messaging stuff is complete
+* merging trunk
+* Adding backup rotation
+* fix some issues with flags and logging
+* api/ec2, boot-from-volume: an unit test for describe instances
+* merge with trunk
+* trunk merge
+* merge from trunk
+* This branch adds support to the xenapi driver for updating the guest agent on creation of a new instance. This ensures that the guest agent is running the latest code before nova starts configuring networking, setting root password or injecting files
+* merge from trunk
+* merge with trey
+* fixed reviewer's comment. 1. adding dest-instance-dir deleting operation to nova.compute.manager, 2. fix invalid raise statement
+* Merged trunk
+* added adjust child zone test
+* tests working again
+* updated the exceptions around virtual interface creation, updated flatDHCP manager comment
+* more trunks
+* another trunk merge
+* This patch adds support for working with instances by UUID in addition to integer IDs
+* Merging trunk, fixing conflicts
+* Cleanup and addition of tests for WSGI server
+* merged rev trunk 1198
+* Introduced Loader concept, for paste decouple
+* Cleaned up nova-api binary and logging a bit
+* General cleanup and refactor of a lot of the API/WSGI service code
+* Adding tests for is\_uuid\_like
+* Implements a portion of ec2 ebs boot. What's implemented - block\_device\_mapping option for run instance with volume   (ephemeral device and no device isn't supported yet) - stop/start instance
+* updated fixed ip and floating ip exceptions
+* Merging trunk
+* renamed VirtualInterface exception and extend NovaException
+* bunch of docstring changes
+* Removes nova/image/local.py (LocalImageService)
+* Increased error message readability for the OpenStack API
+* merging trunk
+* Upstream merge
+* Rename: intance\_type\_metadata -> instance\_type\_extra\_specs
+* merged trunk
+* merge with trey
+* Merged trunk
+* Prep-work to begin on reroute\_compute
+* Adding uuid test
+* merge with nova trunk
+* The Xen driver supports running instances in PV or HVM modes, but the method it uses to determine which to use is complicated and doesn't work in all cases. The result is that images that need to use HVM mode (such as FreeBSD 64-bit) end up setting a property named 'os' set to 'windows'
+* Phew ... ok, this is the last dist-scheduler merge before we get into serious testing and minor tweaks. The heavy lifting is largely done
+* Changed requests with malformed bodies to return a HTTP 400 Bad Request instead of a HTTP 500 error
+* merged trunk
+* mp fixes
+* merged trunk rev 1178
+* merge with trey
+* Created new exception for handling malformed requests Wrote tests Raise httpBadRequest on malformed request bodies
+* - fixes bug that prevented custom wsgi serialization
+* merging trunk, fixing pep8
+* This fixes the server\_metadata create and update functions that were returning req.body (as a string) instead of body (deserialized body dictionary object).  It also adds checks where appropriate to make sure that body is not empty (and return 400 if it is).  Tests updated/added where appropriate
+* merging trunk
+* trunk merge
+* merge trunk
+* block migration feature added
+* ec2 api method allocate\_address ; raises exception.NoFloatingIpsDefined instead of UnknownError when there aren't any floating ips available
+* Allows Nova to talk to multiple Glance APIs (without the need for an external load-balancer). Chooses a random Glance API for each request
+* added new exception more descriptive of not having available floating addresses avail for allocation
+* trunk merge and ec2 tests fixed
+* tests working after merge-3 update
+* Pull-up from multi\_nic
+* merged koelkers tests branch
+* Merging trunk
+* Merged trunk
+* Fix merge conflict
+* merged trunk again
+* Now forwards create instance requests to child zones. Refactored nova.compute.api.create() to support deferred db entry creation
+* MySQL database tables are currently using the MyISAM engine. Created migration script nova/db/sqlalchemy/migrate\_repo/versions/021\_set\_engine\_mysql\_innodb.py to change all current tables to InnoDB
+* merged trunk again
+* Cleaned up some pylint errors
+* removed network\_info shims in vmops
+* trunk merge
+* merge trunk
+* Cleaned up some of the larger pylint errors. Set to ignore some lines that pylint just couldn't understand
+* pep8
+* Make libvirt snapshotting work with images that don't have an 'architecture' property
+* run\_instances will check image for 'available' status before attempting to create a new instance
+* merged from trunk
+* This branch allows marker and limit parameters to be used on image listing (index and detail) requests.  It parses the parameters from the request, and passes it along to the glance\_client, which can now handle these parameters.  Essentially all of the logic for the pagination is handled in glance, we just pass along the correct parameters and do some error checking
+* merge from trunk, resolved conflicts
+* Update the OSAPI images controller to use 'serverRef' for image create requests
+* merge with trey
+* Merged trunk
+* merge trunk
+* merge with trunk
+* This branch removes nwfilter rules when instances are terminated to prevent resource leakage and serious eventual performance degradation.  Without this patch, launching instances and restarting nova-compute eventually become very slow
+* merge with trunk
+* resolve conflicts with trunk
+* Update migrate script version to 22
+* trunk merge after 2b hit
+* Distributed Scheduler developer docs
+* merged trunk again
+* paramiko is not installed into the venv, but is required by smoketests/base.py.  Added paramiko to tools/pip-requires
+* Changes all uses of utcnow to use the version in utils.  This is a simple wrapper for datetime.datetime.utcnow that allows us to use fake values for tests
+* Set pylint to ignore correct lines that it could not determine were correct, due to the means by which eventlet.green imported subprocess Minimized the number of these lines to ignore
+* LDAP optimization and fix for one small bug caused huge performance leak. Dashboard's benchmarks showed overall x22 boost in page request completion time
+* Adds LeastCostScheduler which uses a series of cost functions and associated weights to determine which host to provision to
+* trunk merge
+* Merged with trunk
+* This change set adds the ability to create new servers with an href that points to a server image on any glance server (not only the default one configured).  This means you can create a server with imageRef = http://glance1:9292/images/3  and then also create one with imageRef = http://glance2:9292/images/1.  Using the old way of passing in an image\_id still works as well, and will use the default configured glance server (imageRef = 3 for instance)
+* merged trunk
+* Tests that all exceptions can be raised properly, and fix the couple of instances where they couldn't be constructed due to typos
+* merge trunk... yay..
+* make all uses of utcnow use our testable utils.utcnow
+* Fixing conflicts
+* Tests to assure all exceptions can be raised as well as fixing NotAuthorized
+* This adds the ability to publish nova errors to an error queue
+* Sudo chown the vbd device to the nova user before streaming data to it. This resolves an issue where nova-compute required 'root' privs to successfully create nodes with connection\_type=xenapi
+* Bugfix #780784. KeyError when creating custom image
+* merged from trunk
+* fix pep8 issue from merge
+* - move osapi-specific wsgi code from nova/wsgi.py to nova/api/openstack/wsgi.py - refactor wsgi modules to use more object-oriented approach to wsgi request handling:     - Resource object steps up to original Controller position     - Resource coordinates deserialization, dispatch to controller, serialization     - serialization and deserialization broken down to be more testable/flexible
+* merge from trunk
+* Merged from trunk
+* Adds hooks for applying ovs flows when vifs are created and destroyed for XenServer instances
+* Fixing a bunch of conflicts
+* Incremented version of migration script to reflect changes in trunk
+* Basic hook-up to HostFilter and fixed up the passing of InstanceType spec to the scheduler
+* Resolving conflict and finish test\_images
+* merge
+* Merged trunk
+* Merged trunk and fixed conflicts
+* added pause/suspend implementation to nova.virt.libvirt\_conn
+* Added the filtering of image queries with image metadata. This is exposing the filtering functionality recently added to Glance. Attempting to filter using the local image service will be ignored
+* This enables us to create a new volume from a snapshot with the EC2 api
+* Add vnc\_keymap flag, enable setting keymap for vnc console and fix bug #782611
+* Rebased to trunk rev 1120
+* trunk merge
+* Cleaned up text conflict
+* pep8 fixes
+* Handle the case when a v1.0 api tries to list servers that contain image hrefs
+* merge trunk
+* merge from trunk
+* This adds a volume snapshot support with the EC2 api
+* Fixing pep8 problems
+* Adding accessor methods for instance type metadata
+* trunk merge
+* Adds the ability to make a call that returns multiple times (a call returning a generator). This is also based on the work in rpc-improvements + a bunch of fixes Vish and I worked through to get all the tests to pass so the code is a bit all over the place
+* merge with dietz
+* Virt tests passing while assuming the old style single nics
+* merge trunk
+* Essentially adds support for wiring up a swap disk when building
+* Merged trunk
+* branch 2a merge (including trunk)
+* trunk merge
+* merging trunk
+* merge with dietz
+* Renamed image\_ref variables to image\_href. Since the convention is that x\_ref vars may imply that they are db objects
+* Added test skipper class
+* cleanup the code for merging
+* lots of fixes for rpc and extra imports
+* almost everything working with fake\_rabbit
+* merge with dietz
+* Fixing divergence
+* Merged trunk
+* Fixed the mistyped line referred to in bug 787023
+* Merged trunk and resolved conflicts
+* Merged with trunk
+* Several changes designed to bring the openstack api 1.1 closer to spec - add ram limits to the nova compute quotas - enable injected file limits and injected file size limits to be overridden in the quota database table - expose quota limits as absolute limits in the openstack api 1.1 limits resource - add support for controlling 'unlimited' quotas to nova-manage
+* During the API create call, the API would kick off a build and then loop in a greenthread waiting for the scheduler to pick a host for the instance.  After API would see a host was picked, it would cast to the compute node's set\_admin\_password method
+* Merged upstream
+* merged trunk
+* Merged trunk
+* Created new libvirt directory, moved libvirt\_conn.py to libvirt/connection.py, moved libvirt templates, broke out firewall and network utilities
+* merge against 2a
+* trunk merge
+* New tests added
+* merged recent trunk
+* merged recent trunk
+* eventlet.spawn\_n() expects the function and arguments, but it expects the arguments unpacked since it uses \*args
+* merge with trey
+* merge trunk
+* moved auto assign floating ip functionality from compute manager to network manager
+* Fixes some minor doc issues - misspelled flags in zones doc and also adds zones doc to an index for easier findability
+* Synchronise with Diablo development
+* zone1 merge
+* merged from trunk
+* Renaming service\_image\_id vars to image\_id to reduce confusion. Also some minor cleanup
+* get rid of all mention of drivers ... it's filter only now
+* merge trunk
+* merge branch lp:~rackspace-titan/nova/ram-limits
+* Rebased to trunk rev 1101
+* merge from trunk
+* moved utils functions into nova/image/
+* Trunk merge
+* Fix bug #744150 by starting nova-api on an unused port
+* Removing utils.is\_int()
+* merge trunk
+* merging trunk
+* Merged with trunk
+* print information about nova-manage project problems
+* merge from trunk
+* This is the groundwork for the upcoming distributed scheduler changes. Nothing is actually wired up here, so it shouldn't break any existing code (and all tests pass)
+* Merging trunk
+* Get rid of old virt/images.py functions that are no longer needed.  Checked for any loose calls to these functions and found none.  All tests pass for me
+* Update OSAPI v1.1 extensions so that it supports RequestExtensions. ResponseExtensions were removed since the new RequestExtension covers both use cases. This branch also removes some of the odd serialization code in the RequestExtensionController that converted dictionary objects into webob objects. RequestExtension handlers should now always return proper webob objects
+* foo
+* Fixed some tests
+* merge with trunk
+* Added an EC2 API endpoint that'll allow import of public key. Prior, api only allowed generation of new keys
+* Add new flag 'max\_kernel\_ramdisk\_size' to specify a maximum size of kernel or ramdisk so we don't copy large files to dom0 and fill up /boot/guest
+* Merged with trunk
+* merge from trunk
+* Merged trunk and resolved horrible horrible conflicts
+* Merging trunk
+* minor cleanup, plus had to merge because of diverged-branches issue
+* merge from trunk
+* merge lp:nova
+* default to port 80 if it isnt in the href/uri
+* skeleton of forwarding calls to child zones
+* merge trunk
+* Adding FlagNotSet exception
+* Implements a basic mechanism for pushing notifications out to interested parties. The rationale for implementing notifications this way is that the responsibility for them shouldn't fall to Nova. As such, we simply will be pushing messages to a queue where another worker entirely can be written to push messages around to subscribers
+* Merging trunk
+* fix pep8 issues
+* fixed QuotaTestCases
+* fixed ComputeTestCase tests
+* made ImageControllerWithGlanceServiceTests pass
+* get integrated server\_tests passing
+* Removed all utils.import\_object(FLAGS.image\_service) and replaced with utils.get\_default\_image\_service()
+* added is\_int function to utils
+* Pep8 fixes
+* updates to utils methods, initial usage in images.py
+* added util functions to get image service
+* Adding fill first cost function
+* Fixes the naming of the server\_management\_url in auth and tests
+* Merging in Sandy's changes adding Noop Cost Fn with tests
+* merged trunk
+* Fixes improper attribute naming around instance types that broke Resizes
+* Convert instance\_type\_ids in the instances table from strings to integers to enable joins with instance\_types. This in particular fixes a problem when using postgresql
+* merge lp:nova
+* Re-pull changed notification branch
+* failure conditions are being sent back properly now
+* Migrate quota schema from hardcoded columns to a key-value approach. The hope is that this change would make it easier to change the quota system without future schema changes. It also adds the concept of quotas that are unlimited
+* Added missing flavorRef and imageRef checks in the os api xml deserialization code along with tests
+* This branch splits out the IPv6 address generation into pluggable backends. A new flag named ipv6\_backend specifies which backend to use
+* Review changes and merge from trunk
+* merge trunk
+* Adds proper error handling for images that can't be found and a test for deregister image
+* Merging in trunk
+* I'm assuming that openstack doesnt work with python < 2.6 here (which I read somewhere on the wiki).  This patch will check to make sure python >= 2.6 is installed, and also allow it to work with python 2.7 (and greater in the future)
+* merge lp:nova
+* XenAPI was not implemented to allow for multiple simultaneous XenAPI requests.  A single XenAPIConnection (and thus XenAPISession) is used for all queries.  XenAPISession's wait\_for\_task method would set a self.loop = for looping calls to \_poll\_task until task completion.  Subsequent (parallel) calls to wait\_for\_task for another query would overwrite this.  XenAPISession.\_poll\_task was pulled into the XenAPISession.wait\_for\_task method to avoid having to store self.loop
+* Merged trunk
+* Merging in Sandy's changes
+* volume/driver: implement basic snapshot
+* merge trunk
+* trunk merge
+* merge trunk
+* merged from trunk
+* if a LoopingCall has canceled the loop, break out early instead of sleeping any more than needed
+* merged from trunk
+* merged from trunk
+* merge from trunk
+* 1 Set default paths for nova.conf and api-paste.ini to /etc/nova/ 2 Changed countryName policy because https://bugs.launchpad.net/nova/+bug/724317 still affected
+* merge from trunk and update .mailmap file
+* Merged trunk
+* Fixes an issue with conversion of images that was introduced by exception refactoring.  This makes the exceptions when trying to locate an ec2 id clearer and also adds some tests for the conversion methods
+* make sure proper exceptions are raised for ec2 id conversion and add tests
+* merge trunk
+* Merged trunk
+* Abstract out IPv6 address generation to pluggable backends
+* Merged trunk
+* extracted xenserver capability reporting from dabo's dist-scheduler branch and added tests
+* Enable RightAWS style signature checking using server\_string without port number, add test cases for authenticate() and a new helper routine, and fix lp753660
+* Set root password upon XenServer instance creation
+* trunk merge
+* fix mismerge by 1059
+* volume/driver: implement basic snapshot/clone
+* Host Filtering for Distributed Scheduler (done before weighing)
+* Rebased to trunk rev 1057
+* merge from trunk
+* Simple fix for this issue.  Tries to raise an exception passing in a variable that doesn't exist, which causes an error
+* Merged trunk
+* merge from trunk
+* Sanitize get\_console\_output results. See bug #758054
+* Merged trunk
+* terminology: no more plug-ins or queries. They are host filters and drivers
+* merge prop fixes
+* merge with trunk
+* merge from trunk
+* Merged with current trunk
+* Merged trunk
+* tests and better driver loading
+* Adding OSAPI v1.1 limits resource
+* Adding support for server rebuild to v1.0 and v1.1 of the Openstack API
+* looking for default flagfile
+* merging trunk
+* merging trunk
+* Merged trunk
+* Merged trunk
+* ensure create image conforms to OS API 1.1 spec
+* merge updates from trunk
+* merged from trunk
+* merging trunk; resolving conflicts; fixing issue with ApiError test failing since r1043
+* Implement get\_host\_ip\_addr in the libvirt compute driver
+* merging trunk; resolving conflicts
+* ApiError 'code' arg set to None, and will only display a 'code' as part of the str if specified
+* merging trunk
+* Final cleanup of nova/exceptions.py in my series of refactoring branches
+* Uses memcached to cache roles so that ldap is actually usable
+* Rebased to trunk rev 1035
+* Added more unit-test for multi-nic-nova libvirt
+* further cleanup of nova/exceptions.py
+* merge with trunk and resolve conflicts
+* Refactoring usage of nova.exception.NotFound
+* merging trunk
+* Refactoring the usage of nova.exception.Duplicate
+* Rebased to trunk rev 1030
+* merged from trunk
+* merging trunk
+* Merged trunk and fixed simple exception conflict
+* merging trunk
+* Refactoring nova.exception.Invalid usage
+* Use runtime XML instead of VM creation time XML for createXML() call in order to ensure volumes are attached after RebootInstances as a workaround, and fix bug #747922
+* Rebased to trunk rev 1027, and resolved a conflict in nova/virt/libvirt\_conn.py
+* Rebased to trunk rev 1027
+* clarifies error when trying to add duplicate instance\_type names or flavorids via nova-manage instance\_type
+* merge trunk
+* Rework completed. Added test cases, changed helper method name, etc
+* merge trunk, resolved conflict
+* merge trunk
+* Provide option of auto assigning floating ip to each instance. Depend on auto\_assign\_floating\_ip boolean flag value. False by default
+* Restore volume state on migration failure to fix lp742256
+* Fixes cloudpipe to get the proper ip address
+* merging trunk
+* Fix bug with content-type and small OpenStack API actions refactor
+* merge with trunk
+* merge trunk
+* merged trunk
+* Merged trunk and fixed api servers conflict
+* Addressing exception.NotFound across the project
+* Fixed network\_info creation in libvirt driver. Now creating same dict as in xenapi driver
+* rebase trunk
+* Rebased to trunk rev 1015
+* Utility method reworked, etc
+* Docstring cleanup and formatting (nova dir). Minor style fixes as well
+* merge trunk
+* cleanups per code review
+* docstring cleanup, nova dir
+* merge with trunk
+* Rebased to trunk rev 1005
+* Merged trunk
+* trunk merged
+* merging lp:~rackspace-titan/nova/exceptions-refactor-invalid
+* Round 1 of pylint cleanup
+* Implement quotas for the new v1.1 server metadata controller
+* pep8 fix
+* refactoring usage of exception.Duplicate errors
+* merging lp:~rackspace-titan/nova/exceptions-refactor-invalid
+* one last i18n string
+* Merged trunk
+* multi-line string spacing
+* moving dynamic i18n to static
+* Add support for creating a snapshot of a nova volume with euca-create-snapshot
+* Add support for creating a snapshot of a nova volume with euca-create-snapshot
+* trunk merged
+* use 'is not None' instead of '!= None'
+* Support admin password when specified in server create requests
+* merge lp:nova and resolve conflicts
+* use 'is not None' instead of '!= None'
+* trunk merged
+* Rebased to trunk rev 995
+* Rebased to trunk rev 995
+* merge trunk
+* trunk merged. conflict resolved
+* Add additional logging for WSGI and OpenStack API authentication
+* Merged trunk
+* merging trunk
+* adding documentation & error handling
+* correcting tests; pep8
+* initial roundup of all 'exception.Invalid' cases
+* Updated following to RIck's comments
+* Blushed up a little bit
+* Merged lp:~rackspace-titan/nova/server\_metadata\_quotas as a prereq
+* Merged trunk
+* Merged trunk
+* merge trunk
+* Rebase to trunk rev 937
+* merge trunk
+* Rebased to trunk rev 973
+* merge trunk
+* resolved lazy\_match conflict between bin/nova-manage instance and instance\_type by moving instance subcommand under vm command. documented vm command in man page. removed unused instance\_id from vm list subcommand
+* Rebased to trunk rev 971
+* Reabased to trunk rev 971
+* There is a race condition when a VDI is mounted and the device node is created. Sometimes (depending on the configuration of the Linux distribution) nova loses the race and will try to open the block device before it has been created in /dev
+* merge trunk
+* removes log command from nova-manage as it no longer worked in multi-log setup
+* corrects incorrect openstack api responses for metadata (numeric/string conversion issue) and image format status (not uppercase)
+* Implement a mechanism to enforce a configurable quota limit for image metadata (properties) within the OS API image metadata controller
+* merge trunk
+* merge trunk
+* Fixes issues with describe instances due to improperly set metadata
+* Added support for listing addresses of a server in the openstack api. Now you can GET  \* /servers/1/ips  \* /servers/1/ips/public  \* /servers/1/ips/private Supports v1.0 json and xml. Added corresponding tests
+* This fixes how the metadata and addresses collections are serialized in xml responses
+* merged trunk
+* merged trunk and resolved conflict
+* Update instances table to use instance\_type\_id instead of the old instance\_type column which represented the name (ex: m1.small) of an instance type
+* Remove <addressSet> and <item> from AllocateAddress response, and fix bug #751176
+* Blush up a bit
+* Rebased to trunk rev 949
+* Rebased to trunk rev 949
+* pep8 cleanup
+* ApiError code should default to None, and will only display a code if one exists.  Prior was output an 'ApiError: ApiError: error message' string, which is confusing
+* merged trunk
+* Merged trunk
+* Support providing an XML namespace on the XML output from the OpenStack API
+* Merged with trunk, fixed up test that wasn't checking namespace
+* Enable RightAWS style signing on server\_string without port number portion
+* Improved unit tests Fixed docstring formatting
+* Only create ca\_path directory if it does not already exist
+* merged trunk
+* merged trunk
+* Moved 'name' from <imageId> to <imageLocation>, corrected <imageType> and fixes bug # 750482
+* Rebased to trunk 942
+* merge trunk
+* merging trunk
+* Declares the flag for vncproxy\_topic in compute.api
+* fixes incorrect case of OpenStack API status response
+* merge trunk
+* Added synchronize\_session parameter to a query in fixed\_ip\_disassociate\_all\_by\_timeout() and fix #735974
+* Rebased to trunk 930
+* merge trunk
+* Add a change password action to /servers in openstack api v1.1, and associated tests
+* merge lp:nova
+* Merged with Waldon
+* adding 'building' power state; testing for 409 from OSAPI when rebuild requested on server being rebuild
+* Rebased to trunk rev 925
+* Merged with trunk (after faults change to return correct content-type)
+* OpenStack API faults have been changed to now return the appropriated Content-Type header
+* Merged with trunk
+* Merged with trunk
+* Merged trunk
+* merge trunk
+* merged trunk
+* The VNC Proxy is an OpenStack component that allows users of Nova to access their instances through a websocket enabled browser (like Google Chrome)
+* Support for volumes in the OpenStack API
+* Merged with trunk
+* This branch adds support for linux containers (LXC) to nova. It uses the libvirt LXC driver to start and stop the instance
+* Glance used to return None when a date field wasn't set, now it returns ''. Glance used to return dates in format "%Y-%m-%dT%H:%M:%S", now it returns "%Y-%m-%dT%H:%M:%S.%f"
+* Adds support for versioned requests on /images through the OpenStack API
+* Merged trunk
+* Added VLAN networking support for XenAPI
+* Merged with trunk
+* Merged trunk
+* merge trunk
+* merged from trunk
+* merge lp:nova
+* merge trunk
+* merge trunk
+* Merged trunk
+* merge with trunk
+* merge lp:nova
+* Mixins for tests confuse pylint no end, and aren't necessary... you can stop the base-class from being run as a test by prefixing the class name with an underscore
+* Merged with trunk
+* merge trunk
+* merge trunk, fixed conflicts
+* merge trunk addressing Trey's comments
+* Merged with trunk, resolved conflicts & code-flicts
+* merged trunk
+* merge trunk
+* merge lp:nova
+* Adding links container to openstack api v1.1 servers entities
+* Merged trunk
+* Merged trunk
+* merging trunk
+* merge trunk
+* Merged trunk and fixed broken/conflicted tests
+* - add a "links" container to versions entities for Openstack API v1.1 - add testing for the openstack api versions resource and create a view builder
+* merging trunk
+* This is basic network injection for XenServer, and includes:
+* merging trunk
+* Implement image metadata controller for the v1.1 OS API
+* merging trunk
+* merging trunk, resolving conflicts
+* Add a "links" container to flavors entities for Openstack API v1.1
+* merge trunk
+* merge trunk
+* merging trunk and resolving conflicts
+* Implement metadata resource for Openstack API v1.1. Includes:       -GET /servers/id/meta       -POST /servers/id/meta       -GET /servers/id/meta/key       -PUT /servers/id/meta/key       -DELETE /servers/id/meta/key
+* merge trunk, add unit test
+* merge trunk
+* merge trunk addressing reviewer's comments
+* Support for markers for pagination as defined in the 1.1 spec
+* merge trunk
+* Ports the Tornado version of an S3 server to eventlet and wsgi, first step in deprecating the twistd-based objectstore
+* Merged with trunk Updated net injection for xenapi reflecting recent changes for libvirt
+* Support for markers for pagination as defined in the 1.1 spec
+* port the objectstore tests to the new tests
+* update test base class to monkey patch wsgi
+* merge trunk
+* Implementation of blueprint hypervisor-vmware-vsphere-support.  (Link to blueprint: https://blueprints.launchpad.net/nova/+spec/hypervisor-vmware-vsphere-support)
+* Adds serverId to OpenStack API image detail per related\_image blueprint
+* Implement API extensions for the Openstack API. Based on the Openstack 1.1 API the following types of extensions are supported:
+* Merging trunk
+* Adds unit test coverage for XenAPI Rescue & Unrescue
+* libvirt driver multi\_nic support. In this phase libvirt can work with and without multi\_nic support, as in multi\_nic support for xenapi: https://code.launchpad.net/~tr3buchet/nova/xs\_multi\_nic/+merge/53458
+* Merging trunk
+* Merged trunk
+* style and spacing  fixed
+* Merged with trunk, fix problem with behaviour of (fake) virt driver when instance doesn't reach scheduling
+* In this branch we are forwarding incoming requests to child zones when the requested resource is not found in the current zone
+* trunk merge
+* Fixes a bug that was causing tests to fail on OS X by ensuring that greenthread sleep is called during retry loops
+* Merged trunk
+* Fix some errors that pylint found in nova/api/openstack/servers.py
+* Merged trunk
+* Pylint 'Undefined variable' E0602 error fixes
+* Merged with trunk
+* Merged trunk and resolved conflict in nova/db/sqlalchemy/api.py
+* Merged with trunk
+* Aggregates capabilities from Compute, Network, Volume to the ZoneManager in Scheduler
+* merged trunk r864
+* merging trunk r864
+* trunk merged. conflicts resolved
+* Merged trunk
+* merge trunk
+* Small refactor
+* merging trunk r863
+* Merged trunk
+* trunk merge
+* merge trunk
+* merge trunk
+* Pass a fake timing source to live\_migration\_pre in every test that expectes it to fail, shaving off a whole minute of test run time
+* merge trunk
+* Poll instance states periodically, so that we can detect when something changes 'behind the scenes'
+* Merged with conflict and resolved conflict (with my own patch, no less)
+* Merged with trunk
+* Added a mechanism for versioned controllers for openstack api versions 1.0/1.1. Create servers in the 1.1 api now supports imageRef/flavorRef instead of imageId/flavorId
+* Merged trunk
+* Offers the ability to run a periodic\_task that sweeps through rescued instances older than 24 hours and forcibly unrescues them
+* Merged trunk
+* merge trunk
+* Merged with lp:nova, fixed conflicts
+* Move all types of locking into utils.synchronize decorator
+* Better method name
+* small fix
+* Added docstring
+* Updates the previously merged xs\_migration functionality to allow upsizing of the RAM and disk quotas for a XenServer instance
+* Fix lp735636 by standardizing the format of image timestamp properties as datetime objects
+* migration gateway\_v6 to network\_info
+* fix utils.execute retries for osx
+* Merged trunk
+* Automatically unrescue instances after a given timeout
+* trunk merge
+* trunk merged
+* Merged trunk
+* Merged trunk
+* merged with trunk Updated xenapi network injection for IPv6 Updated unit tests
+* merge trunk
+* merge trunk
+* Merging trunk
+* Merged with lp:nova
+* Merged with lp:nova
+* Filtering images by user\_id now
+* Added space in between # and TODO in #TODO
+* Enable flat manager support for ipv6
+* Adding a talk bubble to the nova.openstack.org site that points readers to the 2011.1 site and the docs.openstack.org site - similar to the swift.openstack.org site. I believe it helps people see more sites are available, plus they can get to the Bexar site if they want to. Going forward it'll be nice to use this talk bubble to point people to the trunk site from released sites
+* Test the login behavior of the OpenStack API.  Uncovered bug732866
+* trunk merge
+* Renamed check\_instance -> check\_isinstance to make intent clearer
+* Pep8 fix
+* Merging trunk
+* Adding BASE\_IMAGE\_ATTRS to ImageService
+* Resolved conflicts
+* Remove unused global semaphore
+* Addressed reviewer's comments
+* Merged trunk
+* merging trunk r843
+* merging trunk r843
+* merging trunk r843
+* Make synchronized decorator not leak semaphores, at the expense of not being truly thread safe (but safe enough for Eventlet style green threads)
+* merge trunk
+* Make synchronized support both external (file based) locks as well as internal (semaphore based) locks. Attempt to make it native thread safe at the expense of never cleaning up semaphores
+* merge with trunk
+* xenapi support for multi\_nic. This is a phase of multi\_nic which allows xenapi to work as is and with multi\_nic. The other virt driver(s) need to be updated with the same support
+* merge lp:nova
+* wrap and log errors getting image ids from local image store
+* merge lp:nova
+* merging trunk
+* Provide more useful exception messages when unable to load the virtual driver
+* Openstack api 1.0 flavors resource now implemented to match the spec
+* merging trunk r837
+* zones3 and trunk merge
+* trunk merge
+* merge with trunk
+* merge trunk
+* merge trunk
+* merge trunk
+* fixes nova-manage instance\_type compatibility with postgres db
+* Make smoketests' exit code reveal whether they were succesful
+* merge trunk
+* Merged trunk
+* merge lp:nova
+* merge trunk
+* Cleanup of FakeAuthManager
+* Re-implementation (or just implementation in many cases) of Limits in the OpenStack API. Limits is now available through /limits and the concept of a limit has been extended to include arbitrary regex / http verb combinations along with correct XML/JSON serialization. Tests included
+* merge with trunk
+* Merged trunk
+* merge trunk
+* merge trunk
+* merge trunk
+* Make "ApiError" the default error code for ApiError instances, rather than "Unknown."
+* Merged trunk
+* Merged dependant branch lp:~rackspace-titan/nova/openstack-api-versioned-controllers
+* refactored out middleware, now it's a decorator on service.api
+* Fix a couple of things that assume that libvirt == kvm/qemu
+* fix for lp712982, and likely a variety of other dashboard error handling issues.  This fix simply causes the default error code for ApiError to be 'ApiError' rather than 'Unknown', which makes dashboard handle the error gracefully, and makes euca error output slightly prettier
+* Make utils.execute not overwrite std{in,out,err} args to Popen on retries. Make utils.execute reject unknown kwargs
+* merged trunk, merged qos, slight refactor regarding merges
+* - general approach for openstack api versioning - openstack api version now preserved in request context - added view builder classes to handle os api responses - added imageRef and flavorRef to os api v1.1 servers - modified addresses container structure in os api v1.1 servers
+* merge
+* Add support for network QoS (ratelimiting) for XenServer. Rate is pulled from the flavor (instance\_type) when constructing a vm
+* Improved exception handling
+* merging parent branch lp:~bcwaldon/nova/osapi-flavors-1\_1
+* merging parent branch lp:~rackspace-titan/nova/openstack-api-version-split
+* merged trunk
+* merge trunk
+* Merged trunk
+* merge with trunk. moved scheduler\_manager into manager. fixed tests
+* Remerge trunk
+* moved scheduler API check into db.api decorator
+* MErge trunk
+* Log the use of utils.synchronized
+* Fix lp727225 by adding support for personality files to the openstack api
+* merge lp:nova and resolve conflicts
+* Merging trunk
+* Don't generate insecure passwords where it's easy to use urandom instead
+* merge trunk
+* merge trunk
+* added new class Instances for managaging instances added new method list in class Instances:
+* first pass openstack redirect working
+* Merged with trunk (and brian's previous fixes to fake auth)
+* Add logging to lock check
+* Merged trunk
+* Use random.SystemRandom for easy secure randoms, configurable symbol set by default including mixed-case
+* merge lp:nova
+* Fixed bugs in bug fix (plugin call)
+* exception fixup
+* merged with trunk and removed conflicts
+* Merging trunk
+* Merged with trunk.  Had to hold bazaar's hand as it got lost again
+* Clarify the logic in using 32 symbols
+* Don't generate insecure passwords where it's easy to use urandom instead
+* Fixing API per spec, to get unit-tests to pass
+* merge trunk
+* Initial implementation of refresh instance states
+* Adding instance\_id as Glance image\_property
+* removed conflicts and merged with trunk
+* committing to share
+* NTT's live-migration branch, merged with trunk, conflicts resolved, and migrate file renamed
+* merge trunk
+* merge trunk
+* Make nova-dhcpbridge output lease information in dnsmasq's leasesfile format
+* Merged my doc changes with trunk
+* Make utils.execute not overwrite std{in,out,err} args to Popen on retries. Make utils.execute reject unknown kwargs
+* merge trunk
+* Merged with trunk
+* merged with latest trunk and removed unwanted files
+* Use a consistent naming scheme for XenAPI variables
+* fixed conflicts after merging with trunk with 787
+* Replace raw SQL calls through session.execute() with SQLAlchemy code
+* Merged trunk
+* This change adds the ability to boot Windows and Linux instances in XenServer using different sets of vm-params
+* merge trunk
+* Changes the output of status in describe\_volumes from showing the user as the owner of the volume to showing the project as the owner
+* merge trunk
+* Adds in multi-tenant support to openstack api. Allows for multiple accounts (projects) with admin api for creating accounts & users
+* remerge trunk (again). fix issues caused by changes to deserialization calls on controllers
+* merge from trunk..
+* Merged trunk
+* merge trunk
+* merge lp:nova
+* merge trunk
+* Add a new IptablesManager that takes care of all uses of iptables
+* PEP8
+* merge lp:nova
+* merge trunk
+* Introduces the ZoneManager to the Scheduler which polls the child zones and caches their availability and capabilities
+* merge trunk
+* merge lp:nova and add stub image service to quota tests as needed
+* merged to trunk rev781
+* Modifies S3ImageService to wrap LocalImageService or GlanceImageService.  It now pulls the parts out of s3, decrypts them locally, and sends them to the underlying service.  It includes various fixes for image/glance.py, image/local.py and the tests
+* merged trunk
+* Merged trunk
+* merge lp:nova
+* merge, resolve conflicts, and update to reflect new standard deserialization function signature
+* Fixes doc build after execvp patch
+* - Content-Type and Accept headers handled properly - Content-Type added to responses - Query extensions no long cause computeFaults - adding wsgi.Request object - removing request-specific code from wsgi.Serializer
+* Fixes bug 726359. Passes unit tests
+* merge lp:nova, fix conflicts, fix tests
+* merge lp:nova and resolve conflicts
+* Update the create server call in the Openstack API so that it generates an 'adminPass' and calls set\_admin\_password in the compute API. This gets us closer to parity with the Cloud Servers v1.0 spec
+* Merged trunk
+* execvp passes pep8
+* merge trunk
+* Add a decorator that lets you synchronise actions across multiple binaries. Like, say, ensuring that only one worker manipulates iptables at a time
+* merge lp:nova
+* Fixes bug #729400. Invalid values for offset and limit params in http requests now return a 400 response with a useful message in the body. Also added and updated tests
+* Fixes uses of process\_input
+* merged trunk r771
+* remerge trunk
+* merge lp:nova and resolve conflicts
+* merge trunk
+* Merged with trunk Updated exception handling according to spawn refactoring
+* execvp: unit tests pass
+* merged to trunk rev 769
+* execvp: almost passes tests
+* Refactoring nova-api to be a service, so that we can reuse it in unit tests
+* merge trunk
+* Fixes lp730960 - mangled instance creation in virt drivers due to improper merge conflict resolution
+* Use disk\_format and container\_format in place of image type
+* Merging trunk
+* Fix the bug where fakerabbit is doing a sort of prefix matching on the AMQP routing key
+* merge trunk
+* merged trunk
+* Remerged trunk. fixed conflict
+* This fix is an updated version of Todd's lp720157. Adds SignatureVersion checking for Amazon EC2 API requests, and resolves bug #720157
+* execvp
+* Merged trunk
+* Log failed command execution if there are more retry attempts left
+* Implementation for XenServer migrations. There are several places for optimization but I based the current implementation on the chance scheduler just to be safe. Beyond that, a few features are missing, such as ensuring the IP address is transferred along with the migrated instance. This will be added in a subsequent patch. Finally, everything is implemented through the Openstack API resize hooks, but actual resizing of the instance RAM and hard drive space is not yet implemented
+* Merged with current trunk
+* Resolving excess conflicts due to criss-cross in branch history
+* Rebased to nova revision 761
+* \* Updated readme file with installation of suds-0.4 through easy\_install. \* Removed pass functions \* Fixed pep8 errors \* Few bug fixes and other commits
+* merged trunk
+* merge trunk
+* remove ensure\_b64\_encoding
+* Merged to trunk rev 759
+* Merged trunk rev 758
+* merge lp:nova
+* Refactor wsgi.Serializer away from handling Requests directly; now require Content-Type in all requests; fix tests according to new code
+* Merged with Trunk
+* This fix changes a tag contained in the DescribeKeyPairs response from <keypairsSet> to <keySet> so that Amazon EC2 access libraries which does more strict syntax checking can work with Nova
+* Remerged trunk, fixed a few conflicts
+* merged to trunk rev757
+* Merged to rev 757
+* merges dynamic instance types blueprint (http://wiki.openstack.org/ConfigureInstanceTypesDynamically) and bundles blueprint (https://blueprints.launchpad.net/nova/+spec/flavors)
+* merged trunk
+* Very simple change checking for < 0 values in "limit" and "offset" GET parameters. If either are negative, raise a HTTPBadRequest exception. Relevant tests included
+* Fixes Bug #715424: nova-manage : create network crashes when subnet range provided is not enough , if the network range cannot fit the parameters passed, a ValueError is raised
+* Provide the ability to rescue and unrescue a XenServer instance
+* merged trunk
+* merging trunk
+* Merged trunk
+* Fixed pep8 issues, applied jaypipes suggestion
+* Rebased to nova revision 752
+* Use functools.wraps to make sure wrapped method's metadata (docstring and name) doesn't get mangled
+* merge from trunk
+* Merged trunk
+* merged to trunk rev 752
+* Rebased at lp:nova 759
+* 1. merged trunk rev749 2. rpc.call returns '/' as '\/', so nova.compute.manager.mktmpfile, nova.compute.manager.confirm.tmpfile, nova.scheduler.driver.Scheduler.mounted\_on\_same\_shared\_storage are modified followed by this changes. 3. nova.tests.test\_virt.py is modified so that other teams modification is easily detected since other team is using nova.db.sqlalchemy.models.ComputeService
+* This branch implements the openstack-api-hostid blueprint: "Openstack API support for hostId"
+* replaced ugly INSTANCE\_TYPE constant with (slightly less ugly) stubs
+* Add a lock\_path flag for lock files
+* merge trunk
+* Adds VHD build support for XenServer driver
+* Merging trunk to my branch. Fixed a conflict in servers.py
+* Merging trunk
+* 1) merge trunk 2) removed preconfigure\_xenstore 3) added jkey for broadcast address in inject\_network\_info 4) added 2 flags: 	4.1) xenapi\_inject\_image (default True) 	This flag allows for turning off data injection by mounting the image in the VDI 	(agreed with Trey Morris) 	4.2) xenapi\_agent\_path (default /usr/bin/xe-update-networking) 	This flag specifies the path where the agent should be located. It makes sense only 	if the above flag is True. If the agent is found, data injection is not performed
+* merge trunk
+* Add utils.synchronized decorator to allow for synchronising method entrance across multiple workers on the same host
+* execute: shell=True removed
+* Rebased to Nova revision 749
+* merge with zones2 fixes and trunk
+* trunk merge
+* trunk merge, pip-requires and novatools to novaclient changes
+* Fixes FlatDHCP by making it inherit from NetworkManager and moving some methods around
+* merged trunk
+* Merged trunk
+* Merging trunk, conflicts fixed
+* Rebased at lp:nova 740
+* merged with trunk
+* Merging trunk, small fixes
+* Make tests start with a clean database for every test
+* merge trunk
+* merge trunk
+* previous trunk merge
+* merge clean db
+* merged trunk
+* merge trunk
+* Merged trunk
+* Support HP/LeftHand SANs.  We control the SAN by SSHing and issuing CLIQ commands.  Also improved the way iSCSI volumes are mounted: try to store the iSCSI connection info in the volume entity, in preference to doing discovery.  Also CHAP authentication support
+* merge trunk
+* Merged with trunk
+* Adds colors to output of tests and cleans up run\_tests.py
+* Merged with trunk
+* merged upstream
+* merged trunk
+* Helper function that supports XPath style selectors to traverse an object tree e.g
+* Rename minixpath\_select to get\_from\_path
+* Cope when we pass a non-list to xpath\_select - wrap it in a list
+* Fixes existing smoketests and splits out sysadmin tests from netadmin tests
+* Created mini XPath implementation, to simplify mapping logic
+* merged upstream
+* Fixes and optimizes filtering for describe\_security\_groups.  Also adds a unit test
+* merged trunk
+* use flags for sqlite db names and fix flags in dhcpbridge
+* merged trunk
+* merged trunk
+* Initial support for per-instance metadata, though the OpenStack API.  Key/value pairs can be specified at instance creation time and are returned in the details view.  Support limits based on quota system
+* Merged trunk
+* merged trunk
+* move db creation into fixtures and clean db for each test
+* merged trunk
+* Merged with trunk, including manual conflict resolution in nova/virt/disk.py and nova/virt/xenapi/vmops.py
+* Fix DescribeRegion answer by introducing '{ec2,osapi}\_listen' flags instead of overloading {ec2,osapi}\_host. Get rid of paste\_config\_to\_flags, bin/nova-combined. Adds debug FLAGS dump at start of nova-api
+* Merged trunk
+* no, really fix lp721297 this time
+* Fixes various issues regarding verbose logging and logging errors on import
+* merged trunk
+* Some quick test cleanups, first step towards standardizing the way we start services in tests
+* merged to trunk rev709. NEEDS to be fixed based on 3rd reviewer's comment
+* Fixed based on reviewer's comment. 1. DB schema change    vcpu/memory/hdd info were stored into Service table.    but reviewer pointed out to me creating new table is better    since Service table has too much columns
+* update based on prereq branch
+* fixed newline and moved import fake\_flags into run\_tests where it makes more sense
+* Merged with head
+* remove keyword argument, per review
+* add a start\_service method to our test baseclass
+* Merged with trunk
+* switch to explicit call to logging.setup()
+* merged trunk
+* Adds translation catalogs and distutils.extra glue code that automates the process of compiling message catalogs into .mo files
+* Merged trunk
+* PEP-8 fixes
+* merged with nova trunk revision #706
+* get rid of initialized flag
+* move the fake initialized into fake flags
+* fixes for various logging errors and issues
+* Introduce IptablesManager in linux\_net. Port every use of iptables in linux\_net to it
+* Merging trunk to my branch. Fixed conflicts in Authors file and .mailmap
+* Merging trunk
+* fixed based on reviewer's comment. 1. erase wrapper function(remove/exists/mktempfile) from nova.utils. 2. nova-manage service describeresource(->describe\_resource) 3. nova-manage service updateresource(->update\_resource) 4. erase "my mistake print" statement
+* merged trunk
+* Merged with trunk
+* Added support for feature parity with the current Rackspace Cloud Servers practice of "injecting" files into newly-created instances for configuration, etc. However, this is in no way restricted to only writing files to the guest when it is first created
+* Uncommitted changes using the wrong author, and re-committing under the correct author
+* Added http://mynova/v1.0/zones/ api options for add/remove/update/delete zones. child\_zones table added to database and migration. Changed novarc vars from CLOUD\_SERVERS\_\* to NOVA\_\* to work with novatools. See python-novatools on github for help testing this
+* merge with zone phase 1
+* merged lp:~jk0/nova/dynamicinstancetypes
+* changed from 003-004 migration
+* Merged trunk
+* Hi guys
+* Rebased at lp:nova 688
+* Update the Openstack API so that it returns 'addresses'
+* I have a bug fix, additional tests for the \`limiter\` method, and additional commenting for a couple classes in the OpenStack API. Basically I've just tried to jump in somewhere to get my feet wet. Constructive criticism welcome
+* added labels to networks for use in multi-nic added writing network data to xenstore param-list added call to agent to reset network added reset\_network call to openstack api
+* Merged trunk
+* Rebased at lp:nova 687
+* Merging trunk
+* Merged to trunk
+* Use RotatingFileHandler instead of FileHandler
+* Use a threadpool for handling requests coming in through RPC
+* Merged trunk
+* Merging trunk part 1
+* merge with trunk
+* merging trunk back in; updating Authors conflict
+* Merged lp:nova
+* The proposed fix puts a VM which fails to spawn in a (new) 'FAILED' power state. It does not perform a clean-up. This because the user needs to know what has happened to the VM he/she was trying to run. Normally, API users do not have access to log files. In this case, the only way for the user to know what happened to the instance is to query its state (e.g.: doing euca-describe-instances). If we perform a complete clean-up, no information about the instance which failed to spawn will be left
+* Use eventlet.green.subprocess instead of standard subprocess
+* fixed merge conflict
+* better filtering
+* Use eventlet.green.subprocess instead of standard subprocess
+* merged recent version. no conflict, no big/important change to this branch
+* merge jk0 branch (with trunk merge) which added additional columns for instance\_types (which are openstack api specific)
+* merging with trunk
+* Merged trunk
+* Modified S3ImageService to return the format defined in BaseService to allow EC2 API's DescribeImages to work against Glance
+* Merged trunk
+* Merged trunk
+* Merged to trunk and fixed merge conflict in Authors
+* trunk merge
+* 1. Merged to rev654(?) 2. Fixed bug continuous request.    if user continuouslly send live-migration request to same host,    concurrent request to iptables occurs, and iptables complains.    This version add retry for this issue
+* Added support for 'SAN' style volumes.  A SAN's big difference is that the iSCSI target won't normally run on the same host as the volume service
+* Fix PEP8 violations
+* Automates the setup for FlatDHCP regardless of whether the interface has an ip address
+* merge with lp:nova
+* merge source and remove ifconfig
+* Catching all socket errors in \_get\_my\_ip, since any socket error is likely enough to cause a failure in detection
+* added INSTANCE\_TYPES to test for compatibility with current tests
+* Moved ssh\_execute to utils; moved comments to docstring
+* Fixes for Vish & Devin's feedback
+* Fixes https://bugs.launchpad.net/nova/+bug/681417
+* merging
+* Fixed PEP8 test problems, complaining about too many blank lines at line 51
+* Merged trunk
+* 1. Discard nova-manage host list Reason: nova-manage service list can be replacement. Changes: nova-manage
+* Adds security group output to describe\_instances
+* Use firewall\_driver flag as expected with NWFilterFirewall.  This way, either you use NWFilterFirewall directly, or you use IptablesFirewall, which creates its own instance of NWFilterFirewall for the setup\_basic\_filtering command.  This removes the requirement that LibvirtConnection would always need to know about NWFirewallFilter, and cleans up the area where the flag is used for loading the firewall class
+* Added a test that checks for localized strings in the source code that contain position-based string formatting placeholders. If found, an exception message is generated that summarizes the problem, as well as the location of the problematic code. This will prevent future trunk commits from adding localized strings that cannot be properly translated
+* Makes sure all instance and volume commands that raise not found are changed to show the ec2\_id instead of the internal id
+* Fixed formatting issues in current codebase
+* Fixes NotFound messages in api to show the ec2\_id
+* Fix Bug #703037. ra\_server is None
+* merge trunk
+* Changed method signature of create\_network
+* merged r621
+* Merged with http://bazaar.launchpad.net/~vishvananda/nova/lp703037
+* Merged trunk
+* Simple little changes related to openstack api to work better with glance
+* This branch updates docs to reflect the db sync addition.  It additionally adds some useful errors to nova-manage to help people that are using old guides.  It wraps sqlalchemy errors in generic DBError. Finally, it updates nova.sh to use current settings
+* merged trunk
+* Fixes issue with SNATTING chain not getting created or added to POSTROUTING when nova-network starts
+* Fix for bug #702237
+* another trunk merge
+* This patch:
+* Trunk merged
+* merge with trunk
+* Fixes project and role checking when a user's naming attribute is not uid
+* Merged with r606
+* Fixed merge conflict
+* Localized strings that employ formatting should not use positional arguments, as they prevent the translator from re-ordering the translated text; instead, they should use mappings (i.e., dicts). This change replaces all localized formatted strings that use more than one formatting placeholder with a mapping version
+* merged ntt branch
+* merged branch to name net\_manager.create\_networks args
+* Fix describe\_regions by changing renamed flags.  Also added a test to catch future errors
+* Merged trunk
+* merged trunk
+* merged trunk fixed whitespace in rst
+* wrap sqlalchemy exceptions in a generic error
+* Resolved trunk merge conflicts
+* Change default log formats so that:  \* they include a timestamp (necessary to correlate logs)  \* no longer display version on every line (shorter lines)  \* use [-] instead of [N/A] (shorter lines, less scary-looking)  \* show level before logger name (better human-readability)
+* Merged with rev597
+* Fixes issue with describe\_instances requiring an admin context
+* Added changes to make errors and recovery for volumes more graceful:
+* Merged trunk
+* merged trunk changes
+* merged trunk
+* merge vish's changes (which merged trunk and fixed a pep8 problem)
+* merged trunkand fixed conflicts and pep error
+* get\_my\_linklocal raises exception
+* Completed first pass at converting all localized strings with multiple format substitutions
+* Allows moving from the Austin-style db to the Bexar-style
+* merge from upstream and fix small issues
+* merged  to trunk rev572
+* Merged trunk
+* The live\_migration branch ( https://code.launchpad.net/~nttdata/nova/live-migration/+merge/44940 ) was not ready to be merged
+* merge from upstream to fix conflict
+* Trunk merge
+* Merged trunk
+* Implement support for streaming images from Glance when using the XenAPI virtualization backend, as per the bexar-xenapi-support-for-glance blueprint
+* Works around the app-armor problem of requiring disks with backing files to be named appropriately by changing the name of our extra disks
+* merged trunk
+* Add refresh\_security\_group\_\* methods to nova/virt/fake.py, as FakeConnection is the reference for documentation and method signatures that should be implemented by virt connection drivers
+* Merged trunk
+* Risk of Regression: This patch don’t modify existing functionlities, but I have added some.     1. nova.db.service.sqlalchemy.model.Serivce (adding a column to database)     2. nova.service ( nova-compute needes to insert information defined by 1 above)
+* Fixed error message in get\_my\_linklocal
+* Merged trunk
+* Merged with trunk revno 572
+* Change where paste.deploy factories live and how they are called.  They are now in the nova.wsgi.Application/Middleware classes, and call the \_\_init\_\_ method of their class with kwargs of the local configuration of the paste file
+* Further decouple api routing decisions and move into paste.deploy configuration.  This makes paste back the nova-api binary
+* Merged trunk
+* The Openstack API requires image metadata to be returned immediately after an image-create call
+* merge trunk
+* Merging trunk
+* Merged trunk
+* merged trunk rev569
+* Adds a developer interface with direct access to the internal inter-service APIs and a command-line tool based on reflection to interact with them
+* merge from upstream
+* merge from upstream
+* This branch fixes two outstanding bugs in compute.  It also fixes a bad method signature in network and removes an unused method in cloud
+* Re-removes TrialTestCase.  It was accidentally added in by some merges and causing issues with running tests individually
+* merged trial fix again
+* undo accidental removal of fake\_flags
+* merged lp:~vishvananda/nova/lp703012
+* remove TrialTestCase again and fix merge issues
+* Merged trunk
+* Merged with trunk revno 565
+* Implements the blueprint for enabling the setting of the root/admin password on an instance
+* OpenStack Compute (Nova) IPv4/IPv6 dual stack support http://wiki.openstack.org/BexarIpv6supportReadme
+* Merged to rev.563
+* This change introduces support for Sheepdog (distributed block storage system) which is proposed in https://blueprints.launchpad.net/nova/+spec/sheepdog-support
+* merge from upstream:
+* Merged with r562
+* This modifies libvirt to use CoW images instead of raw images.  This is much more efficient and allows us to use the snapshotting capabilities available for qcow2 images.  It also changes local storage to be a separate drive instead of a separate partition
+* merged trunk
+* Merged with r561
+* Merging Trunk
+* Fixed based on the comments from code review. Merged to trunk rev 561
+* Add a new method to firewall drivers to tell them to stop filtering a particular instance. Call it when an instance has been destroyed
+* merged to trunk rev 561
+* merge trunk rev560
+* Get reviewed and fixed based on comments. Merged latest version
+* merged trunk
+* Fixed missing \_(). Fixed to follow logging to LOG changes. Fixed merge miss (get\_fixed\_ip was moved away). Update some missing comments
+* merge from upstream and fix leaks in console tests
+* Merging trunk
+* Merging trunk, small fixes
+* cleaned up prior merge mess
+* Merged with r551
+* Fixed syntax errors
+* Merged with trunk
+* Added support of availability zones for compute. models.Service got additional field availability\_zone and was created ZoneScheduler that make decisions based on this field. Also replaced fake 'nova' zone in EC2 cloud api
+* Had to abandon the other branch (~annegentle/nova/newscript) because the diffs weren't working right for me. This is a fresh branch that should be merged correctly with trunk. Thanks for your patience. :)
+* Merged with 549
+* Change command to get link local address Remove superfluous code
+* This branch adds web based serial console access.  Here is an overview of how it works (for libvirt):
+* Merged with r548
+* Fixed for pep8 Remove temporary debugging
+* changed exception class
+* Changing DN creation to do searches for entries
+* merge trunk, fix conflict
+* Read Full Spec for implementation details and notes on how to boot an instance using OS API. http://etherpad.openstack.org/B2RK0q1CYj
+* Fixed a number of issues with the iptables firewall backend:  \* Port specifications for firewalls come back from the data store as integers, but were compared as strings.  \* --icmp-type was misspelled as --icmp\_type (underscore vs dash)  \* There weren't any unit tests for these issues
+* merged trunk changes
+* Merging trunk
+* Trunk merge and conflcts resolved
+* Implementation of xs-console blueprint (adds support for console proxies like xvp)
+* Changed shared\_ip\_group detail routing
+* Fixes the metadata forwarding to work by default
+* Adds support to nova-manage to modify projects
+* merge trunk
+* re-merged in trunk to correct conflict
+* merged changes from trunk
+* Add a new firewall backend for libvirt, based on iptables
+* Moved get\_my\_ip into flags because that is the only thing it is being used for and use it to set a new flag called my\_ip
+* merged from upstream and made applicable changes
+* merged trunk changes
+* Fixes issue in trunk with downloading s3 images for instance creation
+* Wrap logs so we can: \* use a "context" kwarg to track requests all the way through the system \* use a custom formatter so we get the data we want (configurable with flags) \* allow additional formatting for debug statements for easer debugging \* add an AUDIT level, useful for noticing changes to system components \* use named logs instead of the general logger where it makes sesnse
+* Merged with trunk
+* merged changes from trunk
+* Merging trunk
+* Removing some FIXMEs
+* Reserving image before uploading
+* merge
+* another merge with trunk to remedy instance\_id issues
+* Include date in API action query
+* This branch implements lock functionality. The lock is stored in the compute worker database. Decorators have been added to the openstack API actions which alter instances in any way
+* merged trunk
+* Got the basic 'set admin password' stuff working
+* Merged trunk
+* merged trunk changes
+* Introduces basic support for spawning, rebooting and destroying vms when using Microsoft Hyper-V as the hypervisor. Images need to be in VHD format. Note that although Hyper-V doesn't accept kernel and ramdisk separate from the image, the nova objectstore api still expects an image to have an associated aki and ari. You can use dummy aki and ari images -- the hyper-v driver won't use them or try to download them. Requires Python's WMI module
+* merged trunk changes
+* Fixed trunk merge conflicts as spotted by dubs
+* This addition to the docs clarifies that it is a requirement for contributors to be listed in the Authors file before their commits can be merged to trunk
+* merge trunk
+* another merge from trunk to the latest rev
+* pulled changes from trunk added console api to openstack api
+* This branch contains the internal API cleanup branches I had previously proposed, but combined together and with all the UUID key replacement ripped out. This allows multiple REST interfaces (or other tools) to use the internal API directly, rather than having the logic tied up in the ec2 cloud.py file
+* merged trunk changes
+* Created a XenAPI plugin that will allow nova code to read/write/delete from xenstore records for a given instance. Added the basic methods for working with xenstore data to the vmops script, as well as plugin support to xenapi\_conn.py
+* missing \_()
+* Added xenstore plugin changed
+* merged changes from trunk
+* merged from trunk
+* Merged trunk
+* Merged trunk changes
+* Some Bug Fix
+* Merged and fiexed conflicts with r515
+* Final few log tweaks, i18n, levels, including contexts, etc
+* Apply logging changes as a giant patch to work around the cloudpipe delete + add issue in the original patch
+* Fixing merge conflicts with new branch
+* merged in trunk changes
+* Uses paste.deploy to make application running configurable.  This includes the ability to swap out middlewares, define new endpoints, and generally move away from having code to build wsgi routers and middleware chains into a configurable, extensible method for running wsgi servers
+* Add burnin support.  Services are now by default disabled, but can have instances and volumes run on them using availability\_zone = nova:HOSTNAME.  This lets the hardware be put through its paces without being put in the generally available pool of hardware.  There is a 'service' subcommand for nova-manage where you can enable, disable, and list statuses of services
+* pep8 fixes
+* Several documentation corrections and formatting fixes
+* merge in trunk
+* merged latest trunk
+* merge trunk
+* merge trunk
+* merged in trunk and xenstore-plugin changes
+* Merged trunk
+* Merged trunk
+* Merged trunk
+* Merged trunk
+* 最新バージョンにマージ。変更点は以下の通り。 Authorsに自分の所属を追加 utils.pyのgenerate\_uidがおかしいのでインスタンスIDがオーバーフローしていたが、 その処理を一時撤廃。後で試験しなおしとすることにした。
+* Merged trunk
+* Make InstanceActions and live diagnostics available through the Admin API
+* merge trunk
+* merge trunk
+* Cleans up the output of run\_tests.sh to look closer to Trial
+* Merged trunk
+* This patch is beginning of XenServer snapshots in nova. It adds:
+* merge recent revision(version of 2010/12/28) Change:    1. Use greenthread instead of defer at nova.virt.libvirt\_conn.live\_migration.    2. Move nova.scheduler.manager.live\_migration to nova.scheduler.driver    3. Move nova.scheduler.manager.has\_enough\_resource to nova.scheduler.driver    4. Any check routine in nova-manage.instance.live\_migration is moved to       nova.scheduler.driver.schedule\_live\_migration
+* Merging trunk
+* fixed merge conflict with trunk
+* Merged trunk
+* merge
+* Changes and error fixes to help ensure basic parity with the Rackspace API. Some features are still missing, such as shared ip groups, and will be added in a later patch set
+* Merged with trunk
+* merge trunk
+* merge from trunk
+* This commit introduces scripts to apply XenServer host networking protections
+* merge from upstream and fix conflicts
+* Merging trunk
+* Merged trunk
+* merge trunk
+* I've added suspend along with a few changes to power state as well. I can't imagine suspend will be controversial but I've added a new power state for "suspended" to nova.compute.power\_states which libvirt doesn't use and updated the xenapi power mapping to use it for suspended state. I also updated the mappings in nova.api.openstack.servers to map PAUSED to "error" and SUSPENDED to "suspended". Thoughts there are that we don't currently (openstack API v1.0) use pause, so if somehow an instance were to be paused an error occurred somewhere, or someone did something in error. Either way asking the xenserver host for the status would show "paused". Support for more power states needs to be added to the next version of the openstack API
+* fix bug #lp694311
+* Added stack command-line tool
+* Cleans up nova.api.openstack.images and fix it to work with cloudservers api. Previously "cloudservers image-list" wouldn't work, now it will. There are mappings in place to handle s3 or glance/local image service. In the future when the local image service is working, we can probably drop the s3 mappings
+* Merging trunk
+* Merged trunk
+* Merging trunk, fixing failed tests
+* Merged trunk
+* merge trunk
+* Fixed after Jay's review. Integrated code from Soren (we now use the same 'magic number' for images without kernel & ramdisk
+* logs inner exception in nova/utils.py->import\_class
+* Fix Bug #693963
+* merge trunk
+* Merge
+* Support IPv6
+*     Make nova work even when user has LANG or LC\_ALL configured
+* merged trunk, resolved trivial conflict
+* fixed merge conflict
+* Merged again from trunk
+* fixed a few docstrings, added \_() for gettext
+* Moves implementation specific Openstack API code from the middleware to the drivers. Also cleans up a few areas and ensures all the API tests are passing again
+* Merged trunk
+* Trying to remove twisted dependencies, this gets everything working under nosetests
+* Merged trunk and resolved conflicts
+* merged trunk
+* merged trunk
+* Simplifies and improves ldap schema
+* xenapi iscsi support + unittests
+* Merged trunk
+* merge lp:nova
+* merge trunk
+*  merge trunk, fixed unittests, added i18n strings, cleanups etc etc
+* first merge after i18n
+* added tests to ensure the easy api works as a backend for Compute API
+* merge from trunk
+* Fixes reboot (and rescue) to work even if libvirt doesn't know about the instance and the network doesn't exist
+* merged trunk
+* Fixes reboot (and rescue) to work even if libvirt doesn't know about the instance and the network doesn't exist
+* Adds a flag to use the X-Forwarded-For header to find the ip of the remote server.  This is needed when you have multiple api servers with a load balancing proxy in front.  It is a flag that defaults to False because if you don't have a sanitizing proxy in front, users could masquerade as other ips by passing in the header manually
+* Merged trunk
+* merged trunk
+* Moves the ip allocation requests to the from the api host into calls to the network host made from the compute host
+* merged trunk and fixed conflicts
+* merged trunk
+* Optimize creation of nwfilter rules so they aren't constantly being recreated
+* fixed more conflicts
+* merged trunk again
+* merge trunk and upgrade to cheetah templating
+* Optimize nwfilter creation and project filter
+* Merging trunk
+* fixed conflicts
+* WSGI middleware for lockout after failed authentications of ec2 access key
+* Puts the creation of nova iptables chains into the source code and cleans up rule creation.  This makes nova play more nicely with other iptables rules that may be created on the host
+* Merging trunk
+* merge trunk
+* Fixes per-project vpns (cloudpipe) and adds manage commands and support for certificate revocation
+* merge trunk
+* merged i8n and fixed conflicts
+* after trunk merge
+* Log all XenAPI actions to InstanceActions
+* Merged trunk
+* merging trunk
+* merging trunk
+* All merged with trunk and let's see if a new merge prop (with no pre-req) works.
+* merging in trunk
+* Merged trunk
+* Added InstanceDiagnostics and InstanceActions DB models
+* Merged trunk
+* merge trunk
+* 1) Merged from trunk 2) 'type' parameter in VMHelper.fetch\_image converted in enum 3) Fixed pep8 errors 4) Passed unit tests
+* Merging trunk
+* Add raw disk image support
+* Adds support for Pause and Unpause of xenserver instances
+* Integrated changes from Soren (raw-disk-images). Updated authors file. All tests passed
+* eventlet merge updates
+* first revision after eventlet merge. Currently xenapi-unittests are broken, but everything else seems to be running okay
+* Integrated eventlet\_merge patch
+* First pass at converting run\_tests.py to nosetests. The network and objctstore tests don't yet work. Also, we need to manually remove the sqlite file between runs
+* merged in project-vpns to get flag changes
+* move some flags around
+* merged trunk
+* merged trunk, fixed conflicts and tests
+* This branch removes most of the dependencies on twisted and moves towards the plan described by https://blueprints.launchpad.net/nova/+spec/unified-service-architecture
+* pep8 fixes
+* Merged changes from trunk into the branch
+* merged with trunk. fixed compute.pause test
+* Make sure we properly close the bzr WorkingTree in our Authors up-to-datedness unit test
+* clean up tests and add overriden time method to utils
+* basic conversion of xs-pause to eventlet done
+* Merged from trunk and fixed merge issues. Also fixed pep8 issues
+* updates per review
+* pep8
+* fixup after merge with trunk
+* merge with trey tests
+* First round of i18n-ifying strings in Nova
+* merge-a-tat-tat upstream to this branch
+* \* pylint fixes \* code clean-up \* first cut for xenapi unit tests
+* merged changes from sandy's branch
+* formatting and naming cleanup
+* get service unittests runnning again
+* merge with trey
+* Make XenServer VM diagnostics available through nova.virt.xenapi
+* Merged trunk
+* merging sandy's branch
+* merge with trunk to pull in admin-api branch
+* Flag to define which operations are exposed in the OpenStack API, disabling all others
+* Fixed Authors conflict and re-merged with trunk
+* intermediate commit to checkpoint progress
+* some pylint caught changes to compute
+* merge conflict
+* merged upstream changes
+* Merged trunk
+* merged updates to trunk
+* merge trunk
+* Pushed terminate instance and network manager/topic methods into network.compute.api
+* Merged trunk
+* Moved the reboot/rescue methods into nova.compute.api
+* merged with trunk. All clear!
+* Added a script to use OpenDJ as an LDAP server instead of OpenLDAP. Also modified nova.sh to add an USE\_OPENDJ option, that will be checked when USE\_LDAP is set
+* It looks like Soren fixed the author file, can I hit the commit button?
+* rev439ベースにライブマイグレーションの機能をマージ このバージョンはEBSなし、CPUフラグのチェックなし
+* merge with lp:~armando-migliaccio/nova/xenapi-refactoring
+* merge trunk
+* Merged reboot-rescue into network-manager
+* Merged trunk
+* Consolidated the start instance logic in the two API classes into a single method. This also cleans up a number of small discrepencies between the two
+* Merged trunk and resolved conflicts
+* merge lp:~armando-migliaccio/nova/refactoring
+* merge trunk
+* Moving the openldap schema out of nova.sh into it's own files, and adding sun (opends/opendj/sun directory server/fedora ds) schema files
+* brought latest changes from trunk
+* merged Justin Santa Barbara's raw-disk-image back into the latest trunk
+* merged trunk
+* Add a templating mechanism in the flag parsing
+* brought the xenapi refactoring in plus trunk changes
+* A few more changes:  \* Fixed up some flags  \* Put in an updated nova.sh  \* Broke out metadata forwarding so it will work in flatdhcp mode  \* Added descriptive docstrings explaining the networking modes in more detail
+* small conflict resolution
+* Added a .mailmap that maps addresses in bzr to people's real, preferred e-mail addresses. (I made a few guesses along the way, feel free to adjust according to what is actually the preferred e-mail)
+* merged trunk, added recent nova.sh
+* add vpn ping and optimize vpn list
+* Address pep8 complaints
+* 
+* merged with trunk
+* Ryan\_Lane's code to handle /etc/network not existing when we try to inject /etc/network/interfaces into an image
+* Changed from fine-grained operation control to binary admin on/off setting
+* Lots of documentation and docstring updates
+* The docs are just going to be wrong for now.  I'll file a bug upstream
+* Change how wsgified doc wrapping happens to fix test
+* pep8
+* merge with trunk
+* Added a .mailmap that maps addresses in bzr to people's real, preferred e-mail addresses. (I made a few guesses along the way, feel free to adjust according to what is actually the preferred e-mail)
+* merge in trunk
+* Fix docstrings for wsigfied methods
+* merged trunk
+* Change socket type in nova.utils.get\_my\_ip() to SOCK\_DGRAM. This way, we don't actually have to set up a connection. Also, change the destination host to an IP (chose one of Google's DNS's at random) rather than a hostname, so we avoid doing a DNS lookup
+* Change socket type in nova.utils.get\_my\_ip() to SOCK\_DGRAM. This way, we don't actually have to set up a connection. Also, change the destination host to an IP (chose one of Google's DNS's at random) rather than a hostname, so we avoid doing a DNS lookup
+* ISCSI Volume support
+* merged
+* merge
+* merged trunk
+* basics to get proxied ajaxterm working with virsh
+* merged trunk, just in case
+* Moves db writes into compute manager class. Cleans up sqlalchemy model/api to remove redundant calls for updating what is really a dict
+* Fixes PEP8 violations from the last few merges
+* More PEP8 fixes that were introduced in the last couple commits
+* Fixes service unit tests after tornado excision
+* renamed target\_id to iscsi\_target
+* merged gundlach's excision
+* Delete BaseTestCase and with it the last reference to tornado
+* Removes some cruft from sqlalchemy/models.py like unused imports and the unused str\_id method
+* Adds rescue and unrescue commands
+* actually remove the conditional
+* Remove the last vestigial bits of tornado code still in use
+* Exceptions in the OpenStack API will be converted to Faults as they should be, rather than barfing a stack trace to the user
+* Duplicate the two trivial escaping functions remaining from tornado's code and remove the dependency
+* merge lp:nova
+* merged trunk and fixed conflicts/changes
+* part way through porting the codebase off of twisted
+* Another pep8 cleanup branch for nova/api, should be merged after lp:~eday/nova/pep8-fixes
+* PEP8 and pylint cleanup. There should be no functional changes here, just style changes to get violations down
+* \* Fills out the Parallax/Glance API calls for update/create/delete and adds unit tests for them. \* Modifies the ImageController and GlanceImageService/LocalImageService calls to use index and detail routes to comply perfectly with the RS/OpenStack API
+* This branch converts incoming data to the api into the proper type
+* Fix the --help flag for printing help on twistd-based services
+* Make Redis completely optional:
+* trivial style change
+* prevent leakage of FLAGS changes across tests
+* This branch modifies the fixes all of the deprecation warnings about empty context.  It does this by adding the following fixes/features   \* promotes api/context.py to context.py because it is used by the whole system   \* adds more information to the context object   \* passes the context through rpc   \* adds a helper method for promoting to admin context (elevate())   \* modifies most checks to use context.project\_id instead of context.project.id to avoid     trips to the database
+* Merged with trunk, fixed broken stuff
+* Fixes a few concurrency issues with creating volumes and instances. Most importantly it adds retries to a number of the volume shell commands and it adds a unique constraint on export\_devices and a safe create so that there aren't multiple copies of export devices in the database
+* merged trunk
+* merged concurrency
+* merged trunk
+* cleaned up most of the issues
+* merged trunk
+* Fixes bug 660115
+* Xen support
+* Adds flat networking + dhcpserver mode
+* This patch removes the ugly network\_index that is used by VlanManager and turns network itself into a pool.  It adds support for creating the networks through an api command:     nova-manage network create # creates all of the networks defined by flags or     nova-manage network create 5 # create the first five networks
+* merged upstream
+* cleanup leftover addresses
+* merged trunk
+* merged trunk
+* merged trunk
+* merged trunk
+* Revert the conversion to 64-bit ints stored in a PickleType column, because PickleType is incompatible with having a unique constraint
+* Revert 64 bit storage and use 32 bit again.  I didn't notice that we verify that randomly created uids don't already exist in the DB, so the chance of collision isn't really an issue until we get to tens of thousands of machines.  Even then we should only expect a few retries before finding a free ID
+* This patch adds support for EC2 security groups using libvirt's nwfilter mechanism, which in turn uses iptables and ebtables on the individual compute nodes. This has a number of benefits:  \* Inter-VM network traffic can take the fastest route through the network without our having to worry about getting it through a central firewall.  \* Not relying on a central firewall also removes a potential SPOF.  \* The filtering load is distributed, offering great scalability
+* Change internal\_id from a 32 bit int to a 64 bit int
+* 32 bit internal\_ids become 64 bit.  Since there is no 64 bit native type in SqlAlchemy, we use PickleType which uses the Binary SqlAlchemy type under the hood
+* Adds stubs and tests for GlanceImageService and LocalImageService. Adds basic plumbing for ParallaxClient and TellerClient and hooks that into the GlanceImageService
+* Cleanup around the rackspace API for the ec2 to internal\_id transition
+* Replace model.Instance.ec2\_id with an integer internal\_id so that both APIs can represent the ID to external users
+* merged trunk and fixed tests
+* merge from gundlach ec2 conversion
+* Fix broken unit tests
+* A shiny, new Auth driver backed by SQLAlchemy. Read it and weep. I did
+* Revert r312
+* Fixes to address the following issues:
+* Refactor sqlalchemy api to perform contextual authorization
+* Merged trunk
+* merged remove-network-index
+* Fixed flat network manager with network index gone
+* merged trunk
+* First attempt at a uuid generator -- but we've lost a 'topic' input so i don't know what that did
+* merged trunk, removed extra quotas
+* Adds support for periodic\_tasks on manager that are regularly called by the service and recovers fixed\_ips that didn't get disassociated properly
+* merged trunk
+* Includes changes for creating instances via the Rackspace API. Utilizes much of the existing EC2 functionality to power the Rackspace side of things, at least for now
+* Support the pagination interface in RS API -- the &offset and &limit parameters are now recognized
+* Update from trunk to handle one-line merge conflict
+* Support fault notation in error messages in the RS API
+* merged with soren's branch
+* Add user-editable name & notes/description to volumes, instances, and images
+* merged trunk
+* \* Create an AuthManager#update\_user method to change keys and admin status. \* Refactor the auth\_unittest to not care about test order \* Expose the update\_user method via nova-manage
+* Updates the fix-iptables branch with a number of bugfixes
+* Fix a few errors in api calls related to mistyped database methods for floating\_ips: specifically describe addresses and and associate address
+* Merged Termie's branch that starts tornado removal and fixed rpc test cases for twisted. Nothing is testing the Eventlet version of rpc.call though yet
+* Adds bpython support to nova-manage shell, because it is super sexy
+* merged and removed duplicated methods
+* fixed merge conflicts
+* Implementation of the Rackspace servers API controller
+* merged network-lease-fix
+* merged floating-ips
+* move default group creation to api
+* get rid of network indexes and make networks into a pool
+* merged trunk
+* merged floating-ip-by-project
+* merged network-lease-fix
+* merged trunk
+* Merged Termie's branch and fixed rpc test cases for tesited. Nothing is testing the Eventlet version of rpc.call though yet
+* Put EC2 API -> eventlet back into trunk, fixing the bits that I missed when I put it into trunk on 9/21
+* Implementation of Rackspace token based authentication for the Openstack API
+* Merged gundlach's branch
+* merged trunk
+* merge from trunk
+* merged trunk and fixed errors
+* merged trunk
+* Delete nova.endpoint module, which used Tornado to serve up the Amazon EC2 API. Replace it with nova.api.ec2 module, which serves up the same API via a WSGI app in Eventlet. Convert relevant unit tests from Twisted to eventlet
+* merged trunk
+* merged trunk
+* Implements quotas with overrides for instances, volumes, and floating ips
+* Moves keypairs out of ldap and into the common datastore
+* allows api servers to have a list of regions, allowing multi-cluster support if you have a shared image store and user database
+* merged trunk
+* merged trunk
+* Removes second copy of ProcessExecutionError that creeped in during a bad merge
+* Adds timing fields to instances and volumes to track launch times and schedule times
+* Adds timing fields to instances and volumes to track launch times and schedule times
+* add in support for ajaxterm console access
+* Better error message on the failure of a spawned process, and it's a ProcessExecutionException irrespective of how the process is run (twisted or not)
+* Proposing merge to get feedback on orm refactoring.  I am very interested in feedback to all of these changes
+* Address a couple of the TODO's: We now have half-decent input validation for AuthorizeSecurityGroupIngress and RevokeDitto
+* removed second copy of ProcessExecutionError
+* merged trunk
+* merged instance time and added better concurrency
+* merged trunk
+* merged scheduler
+* merged quotas
+* merged trunk
+* remerged scheduler
+* merged trunk
+* merged trunk
+* merged trunk
+* merged trunk
+* merged orm and put instance in scheduling state
+* merged describe\_speed
+* added scheduled\_at to instances and volumes
+* merged orm
+* merged orm
+* logging for backend is now info instead of error
+* Tests turn things into inlineCallbacks
+* Remove tornado-related code from almost everything
+* updated to the new orm code
+* a few formatting fixes and moved exception
+* Last of cleanup, including removing fake\_storage flage
+* merged orm\_deux
+* Lots of fixes to make the nova commands work properly and make datamodel work with mysql properly
+* more scheduler tests
+* merged trunk
+* Moved API tests into a sub-folder of the tests/ and added a stubbed-out test declarations to mirror existing API tickets
+* merged orm branch
+* merged trunk, fixed a couple errors
+* undo change to get\_my\_ip
+* pylint fixes for /nova/virt/connection.py
+* pylint fixes for nova/objectstore/handler.py
+* ip addresses work now
+* Add Flavors controller supporting
+* Resolve conflicts and merge trunk
+* instance runs
+* split volume into service/manager/driver
+* get to look like trunk
+* Fixes issue with the same ip being assigned to multiple instances
+* merged trunk and fixed tests
+* Initial support for Rackspace API /image requests.  They will eventually be backed by Glance
+* Rework virt.xenapi's concurrency model.  There were many places where we were inadvertently blocking the reactor thread.  The reworking puts all calls to XenAPI on background threads, so that they won't block the reactor thread
+* merged trunk and fixed merge errors
+* Better error message on subprocess spawn fail, and it's a ProcessExecutionException irrespective of how the process is run
+* Check exit codes when spawning processes by default Also pass --fail to curl so that it sets exit code when download fails
+* Added unit tests for WSGI helpers and base WSGI API
+* merged termies abstractions
+* Move deferredToThread into utils, as suggested by termie
+* Data abstraction for compute service
+* Merged with trunk
+* Merged with trunk
+* Merged trunk
+* Since pylint=0.19 is our version, force everyone to use the disable-msg syntax
+* Changed our minds: keep pylint equal to Ubuntu Lucid version, and use disable-msg throughout
+* Newest pylint supports 'disable=', not 'disable-msg='
+* merged trunk
+* merged refresh from sleepsonthefloor
+* See description of change... what's the difference between that message and this message again?
+* Fixes quite a few style issues across the entire nova codebase bringing it much closer to the guide described in HACKING
+* merge from trunk
+* merged trunk and fixed conflicts
+* Added documentation for the nova.virt connection interface, a note about the need to chmod the objectstore script, and a reference for the XenAPI module
+* rather comprehensive style fixes
+* Add new libvirt\_type option "uml" for user-mode-linux.. This switches the libvirt URI to uml:///system and uses a different template for the libvirt xml
+* merge in latedt from vish
+* Catches and logs exceptions for rpc calls and raises a RemoteError exception on the caller side
+* Removes requirement of internet connectivity to run api server
+* merged trunk
+* merged fix-hostname and fixed conflict
+* Improves pep8 compliance and pylint score in network code
+* refactor to have base helper class with shared session and engine
+* got run\_tests.py to run (with many failed tests)
+* Make WSGI routing support routing to WSGI apps or to controller+action
+* Merged with trunk
+* Fix exception in get\_info
+* Merged with trunk
+* Merged with trunk
+* Implement VIF creation in the xenapi module
+* merged trunk
+* 2 changes in doing PEP8 & Pylint cleaning:  \* adding pep8 and pylint to the PIP requirements files for Tools  \* light cleaning work (mostly formatting) on nova/endpoints/cloud.py
+* More changes to volume to fix concurrency issues.  Also testing updates
+* merged trunk, fixed an error with releasing ip
+* pylint fixes for /nova/test.py
+* Fixes pylint issues in /nova/server.py
+* importing merges from hudson branch
+* This branch builds off of Todd and Michael's API branches to rework the Rackspace API endpoint and WSGI layers
+* Fix up variable names instead of disabling pylint naming rule.  Makes variables able to be a single letter in pylintrc
+* Disables warning about TODO in code comments in pylintrc
+* More pylint/pep8 cleanup, this time in bin/\* files
+* pylint fixes for /nova/test.py
+* Pull trunk merge through lp:~ewanmellor/nova/add-contains
+* Pull trunk merge through lp:~ewanmellor/nova/xapi-plugin
+* Merged with trunk again
+* Merged with trunk
+* Greater compliance with pep8/pylint style checks
+* Merged trunk
+* merged with trunk
+* Merged Todd and Michael's changes
+* Make network its own worker! This separates the network logic from the api server, allowing us to have multiple network controllers. There a lot of stuff in networking that is ugly and should be modified with the datamodel changes. I've attempted not to mess with those things too much to keep the changeset small(ha!)
+* merged trunk
+* merged trunk
+* Fix deprecation warning in AuthManager. \_\_new\_\_ isn't allowed to take args
+* Get IP doesn't fail of you not connected to the intetnet
+* Merged with trunk
+* Added --fail argument to curl invocations, so that HTTP request fails get surfaced as non-zero exit codes
+* Merged with trunk
+* Merged with trunk
+* Fixed assertion "Someone released me too many times: too many tokens!"
+* Merged with trunk to resolve merge conflicts
+* oops retry and add extra exception check
+* Implemented admin api for rbac
+* Adds initial support for XenAPI (not yet finished)
+* Allow driver specification in AuthManager creation
+* allow driver to be passed in to auth manager instead of depending solely on flag
+* Merged trunk
+* Create a model for storing session tokens
+* bzr merge lp:nova/trunk
+* Merged trunk
+* Makes the compute and volume daemon workers use a common base class called Service. Adds a NetworkService in preparation for splitting out networking code.  General cleanup and standardizarion of naming
+* merged trunk
+* Makes the objectstore require authorization, checks it properly, and makes nova-compute provide it when fetching images
+* Refactor of auth code
+* Expiry awareness for SessionToken
+* Basic standup of SessionToken model for shortlived auth tokens
+* merged trunk
+* merged trunk
+* Changes nova-volume to use twisted
+* Fixes up Bucket to throw proper NotFound and NotEmpty exceptions in constructor and delete() method, and fixes up objectstore\_unittest to properly use assertRaises() to check for proper exceptions and remove the assert\_ calls
+* Merged with trunk, since a lot of useful things have gone in there recently
+* renamed xxxnode to xxservice
+* Check exit codes when spawning processes by default
+* Merged trunk, fixed extra references to fake\_users
+* Fixes up Bucket to throw proper NotFound and NotEmpty exceptions in constructor and delete() method, and fixes up objectstore\_unittest to properly use assertRaises() to check for proper exceptions and remove the assert\_ calls
+* merge with twisted-volume
+* Locally administered mac addresses have the second least significant bit of the most significant byte set. If this byte is set then udev on ubuntu doesn't set persistent net rules
+* use a locally administered mac address so it isn't saved by udev
+* Merged trunk. Fixed new references to UserManager
+* Fixes to dhcp lease code to use a flagfile
+* merged trunk
+* Replace tornado objectstore with twisted web
+* merged in trunk and fixed import merge errors
+* merge with singleton pool
+* reorder imports spacing
+* remove import of vendor since we have PPA now
+* update copyrights
+* fix merge errors
+* datetime import typo
+* added missing isotime method from utils
+* Fixed the os.environ patch (bogus)
+* Fixes as per Vish review (whitespace, import statements)
+* Got dhcpleasor working, with test ENV for testing, and rpc.cast for real world
+* Capture signals from dnsmasq and use them to update network state
+* Removed trailing whitespace from header
+* Updated licenses
+* removed all references to keeper
+* Fixes based on code review 27001
+* Admin API + Worker Tracking
+* Removed trailing whitespace from header
+* Updated licenses
+* trackback formatting isn't logging correctly
+* use logger to print trace of unhandled exceptions
+* fix fakeldap so it can use redis keeper
+* Refactored Instance to get rid of \_s bits, and fixed some bugs in state management
+* Flush redis db in setup and teardown of tests
+* Update documentation
+* make get\_my\_ip return 127.0.0.1 for testing
+* whitespace fixes for nova/utils.py
+* Merged Vish's work on adding projects to nova
+* initial commit

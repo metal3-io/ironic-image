@@ -1,0 +1,4 @@
+---
+fixes:
+  - Introspection rules (e.g. set-attribute action) now accept 'path'
+    field without leading forward slash as Ironic cli does.

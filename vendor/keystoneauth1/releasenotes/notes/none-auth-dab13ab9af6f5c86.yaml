@@ -1,0 +1,10 @@
+---
+features:
+  - |
+    A new ``none`` auth plugin is added with purpose to simplify loading
+    clients from configuration file options.
+    It does not accept any arguments and sets the token to 'notused'.
+    It does not have any endpoint/url associated with it,
+    and thus must be used together with ``adapter.Adapter``'s
+    ``endpoint_override`` option to instantiate a session for client
+    to a service that is deployed in noauth/standalone mode.

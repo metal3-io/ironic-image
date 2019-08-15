@@ -1,0 +1,13 @@
+---
+features:
+  - |
+    Adds wildcard ignore entry to ``dnsmasq`` PXE filter. When node
+    introspection is active, or if ``node_not_found_hook`` is set in the
+    configuration the ignore is removed from the wildcard entry. This ensures
+    that unknown nodes do not accidentally boot into the introspection image
+    when no node introspection is active.
+
+    This brings ``dnsmasq`` PXE filter driver feature parity with the
+    ``iptables`` PXE filter driver, which uses a firewall rule to block any
+    DHCP request on the interface where Ironic Inspector's DHCP server is
+    listening.

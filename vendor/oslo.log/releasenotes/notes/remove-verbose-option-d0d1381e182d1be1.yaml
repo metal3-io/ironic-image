@@ -1,0 +1,3 @@
+---
+upgrade:
+  - The deprecated 'verbose' option has been removed.

@@ -1,0 +1,150 @@
+#!/bin/bash
+
+# lib/osprofiler
+# Functions to control the configuration and operation of the **OSProfiler**
+
+# Save trace setting
+XTRACE=$(set +o | grep xtrace)
+set +o xtrace
+
+
+# Defaults
+# --------
+
+CONF_FILES=(
+    $CINDER_CONF
+    $HEAT_CONF
+    $KEYSTONE_CONF
+    $NOVA_CONF
+    $NEUTRON_CONF
+    $GLANCE_API_CONF
+    $GLANCE_REGISTRY_CONF
+    $TROVE_CONF
+    $TROVE_CONDUCTOR_CONF
+    $TROVE_GUESTAGENT_CONF
+    $TROVE_TASKMANAGER_CONF
+    $SENLIN_CONF
+    $MAGNUM_CONF
+    $ZUN_CONF
+    $PLACEMENT_CONF
+)
+
+# Add config files of Nova Cells
+NOVA_NUM_CELLS=${NOVA_NUM_CELLS:-1}
+for i in $(seq 1 ${NOVA_NUM_CELLS}); do
+    # call function `conductor_conf` defined in lib/nova to get file name
+    conf=$(conductor_conf $i)
+    CONF_FILES+=(${conf})
+done
+
+
+# Functions
+# ---------
+
+function install_redis() {
+    if is_fedora; then
+        install_package redis
+    elif is_ubuntu; then
+        install_package redis-server
+    elif is_suse; then
+        install_package redis
+    else
+        exit_distro_not_supported "redis installation"
+    fi
+
+    start_service redis
+
+    pip_install_gr redis
+}
+
+function install_jaeger() {
+    if is_ubuntu; then
+        install_package docker.io
+        start_service docker
+        add_user_to_group $STACK_USER docker
+        sg docker -c "docker run -d --name jaeger -p 6831:6831/udp -p 16686:16686 jaegertracing/all-in-one:1.7"
+    else
+        exit_distro_not_supported "docker.io installation"
+    fi
+
+    pip_install jaeger-client
+}
+
+function install_elasticsearch() {
+    if is_ubuntu; then
+        install_package docker.io
+        start_service docker
+        add_user_to_group $STACK_USER docker
+        # https://www.elastic.co/guide/en/elasticsearch/reference/5.6/docker.html#docker-cli-run-dev-mode
+        sg docker -c 'docker run -d --name elasticsearch -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node" docker.elastic.co/elasticsearch/elasticsearch:5.6.14'
+    else
+        exit_distro_not_supported "docker.io installation"
+    fi
+
+    pip_install elasticsearch
+}
+
+function install_mongodb {
+    pip_install pymongo
+    if is_ubuntu; then
+        install_package mongodb-server
+        start_service mongodb
+    elif is_fedora; then
+        install_package mongodb
+        install_package mongodb-server
+        start_service mongod
+    else
+        exit_distro_not_supported "mongodb installation"
+    fi
+}
+
+function install_osprofiler_collector() {
+    if [ -z "$OSPROFILER_COLLECTOR" ]; then
+        OSPROFILER_CONNECTION_STRING=${OSPROFILER_CONNECTION_STRING:-"messaging://"}
+    elif [ "$OSPROFILER_COLLECTOR" == "redis" ]; then
+        install_redis
+        OSPROFILER_CONNECTION_STRING=${OSPROFILER_CONNECTION_STRING:-"redis://localhost:6379"}
+    elif [ "$OSPROFILER_COLLECTOR" == "jaeger" ]; then
+        install_jaeger
+        OSPROFILER_CONNECTION_STRING=${OSPROFILER_CONNECTION_STRING:-"jaeger://localhost:6831"}
+    elif [ "$OSPROFILER_COLLECTOR" == "elasticsearch" ]; then
+        install_elasticsearch
+        OSPROFILER_CONNECTION_STRING=${OSPROFILER_CONNECTION_STRING:-"elasticsearch://elastic:changeme@localhost:9200"}
+    elif [ "$OSPROFILER_COLLECTOR" == "mongodb" ]; then
+        install_mongodb
+        OSPROFILER_CONNECTION_STRING=${OSPROFILER_CONNECTION_STRING:-"mongodb://localhost:27017"}
+    elif [ "$OSPROFILER_COLLECTOR" == "sqlalchemy" ]; then
+        local db=`database_connection_url osprofiler`
+        OSPROFILER_CONNECTION_STRING=${OSPROFILER_CONNECTION_STRING:-${db}}
+        recreate_database osprofiler
+    else
+        die $LINENO "OSProfiler collector $OSPROFILER_COLLECTOR is not supported"
+    fi
+
+    echo ${OSPROFILER_CONNECTION_STRING} > $HOME/.osprofiler_connection_string
+}
+
+function configure_osprofiler() {
+
+    for conf in ${CONF_FILES[@]}; do
+        if [ -f $conf ]
+        then
+            iniset $conf profiler enabled True
+            iniset $conf profiler trace_sqlalchemy $OSPROFILER_TRACE_SQLALCHEMY
+            iniset $conf profiler hmac_keys $OSPROFILER_HMAC_KEYS
+            iniset $conf profiler connection_string $OSPROFILER_CONNECTION_STRING
+        fi
+    done
+
+    # Keystone is already running, should be reloaded to apply osprofiler config
+    reload_service devstack@keystone
+}
+
+function configure_osprofiler_in_tempest() {
+
+    iniset $TEMPEST_CONFIG profiler key $OSPROFILER_HMAC_KEYS
+}
+
+
+# Restore xtrace
+$XTRACE

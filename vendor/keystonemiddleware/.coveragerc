@@ -1,0 +1,7 @@
+[run]
+branch = True
+source = keystonemiddleware
+omit = keystonemiddleware/tests/*
+
+[report]
+ignore_errors = True

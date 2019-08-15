@@ -1,0 +1,7 @@
+---
+features:
+  - |
+    oslo.upgradecheck now supports the command line flag ``--json`` to have
+    the upgrade check results output in a compact, machine readable JSON
+    format. The default output without this flag remains a human readable
+    table of the results.

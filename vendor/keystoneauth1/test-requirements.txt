@@ -1,0 +1,26 @@
+# The order of packages is significant, because pip processes them in the order
+# of appearance. Changing the order has an impact on the overall integration
+# process, which may cause wedges in the gate later.
+
+hacking!=0.13.0,<0.14,>=0.12.0 # Apache-2.0
+flake8-docstrings==0.2.1.post1 # MIT
+flake8-import-order>=0.17.1 #LGPLv3
+
+bandit<1.6.0,>=1.1.0 # Apache-2.0
+coverage!=4.4,>=4.0 # Apache-2.0
+fixtures>=3.0.0 # Apache-2.0/BSD
+mock>=2.0.0 # BSD
+oslo.config>=5.2.0 # Apache-2.0
+openstackdocstheme>=1.18.1 # Apache-2.0
+oslo.utils>=3.33.0 # Apache-2.0
+oslotest>=3.2.0 # Apache-2.0
+betamax>=0.7.0 # Apache-2.0
+reno>=2.5.0 # Apache-2.0
+requests-mock>=1.2.0 # Apache-2.0
+stestr>=1.0.0 # Apache-2.0
+testresources>=2.0.0 # Apache-2.0/BSD
+testtools>=2.2.0 # MIT
+PyYAML>=3.12 # MIT
+requests-kerberos>=0.8.0 # ISC
+lxml!=3.7.0,>=3.4.1 # BSD
+oauthlib>=0.6.2 # BSD

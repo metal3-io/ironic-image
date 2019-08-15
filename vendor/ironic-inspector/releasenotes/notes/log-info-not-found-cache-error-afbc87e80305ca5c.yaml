@@ -1,0 +1,5 @@
+---
+other:
+  - Log level for error when node was not found in Inspector cache was
+    changed from error to info level. It was done because not_found_hook
+    may handle this case, so this wouldn't be error anymore.

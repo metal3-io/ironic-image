@@ -1,0 +1,10 @@
+---
+features:
+  - Added support for the API Working Group recommendations
+    on service and version discovery. New methods on
+    Session and Adapter, "get_endpoint_data" will return
+    endpoint metadata including microversion information.
+    Additionally, versions can be requested with a range
+    and with the string "latest", and interface values
+    can be given as a list in case a user wants to express
+    a 'best available' set of preferences.

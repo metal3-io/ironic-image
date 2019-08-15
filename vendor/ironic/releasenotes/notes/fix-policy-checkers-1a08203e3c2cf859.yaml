@@ -1,0 +1,4 @@
+---
+fixes:
+  - Fixes a bug where some of the API methods were not using the right context
+    values for checking the policy.

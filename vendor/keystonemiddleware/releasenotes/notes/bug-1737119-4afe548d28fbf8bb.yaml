@@ -1,0 +1,6 @@
+---
+fixes:
+  - >
+    [`bug 1737119 <https://bugs.launchpad.net/keystonemiddleware/+bug/1737119>`_]
+    If the application was not using the global cfg.CONF object, the configuration
+    was not read from the configuration file. This have been fixed.

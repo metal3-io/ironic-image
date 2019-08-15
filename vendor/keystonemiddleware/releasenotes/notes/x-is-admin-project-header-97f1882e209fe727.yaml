@@ -1,0 +1,7 @@
+---
+prelude: >
+  - Add the `X_IS_ADMIN_PROJECT` header.
+features:
+  - Added the `X_IS_ADMIN_PROJECT` header to authenticated headers. This has
+    the string value of 'True' or 'False' and can be used to enforce admin
+    project policies.

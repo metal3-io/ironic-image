@@ -1,0 +1,4 @@
+---
+other:
+  - IPA (ironic-python-agent) is now fully supported in the devstack plugin
+    and will become the default ramdisk in the next release.

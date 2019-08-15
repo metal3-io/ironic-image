@@ -1,0 +1,779 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>DDL Internals &#8212; Alembic 1.0.11 documentation</title>
+    <link rel="stylesheet" href="../_static/nature_override.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/changelog.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx_paramlinks.css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Changelog" href="../changelog.html" />
+    <link rel="prev" title="Script Directory" href="script.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../changelog.html" title="Changelog"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="script.html" title="Script Directory"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Alembic 1.0.11 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">API Details</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="ddl-internals">
+<span id="alembic-ddl-toplevel"></span><h1>DDL Internals<a class="headerlink" href="#ddl-internals" title="Permalink to this headline">¶</a></h1>
+<p>These are some of the constructs used to generate migration
+instructions.  The APIs here build off of the <a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/ddl.html#sqlalchemy.schema.DDLElement" title="(in SQLAlchemy v1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">sqlalchemy.schema.DDLElement</span></code></a>
+and <a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/compiler.html#sqlalchemy-ext-compiler-toplevel" title="(in SQLAlchemy v1.3)"><span>Custom SQL Constructs and Compilation Extension</span></a> systems.</p>
+<p>For programmatic usage of Alembic’s migration directives, the easiest
+route is to use the higher level functions given by <a class="reference internal" href="operations.html#alembic-operations-toplevel"><span class="std std-ref">Operation Directives</span></a>.</p>
+<span class="target" id="module-alembic.ddl"></span><span class="target" id="module-alembic.ddl.base"></span><dl class="class">
+<dt id="alembic.ddl.base.AddColumn">
+<em class="property">class </em><code class="sig-prename descclassname">alembic.ddl.base.</code><code class="sig-name descname">AddColumn</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">column</em>, <em class="sig-param">schema=None</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.ddl.base.AddColumn" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="alembic.ddl.base.AlterColumn">
+<em class="property">class </em><code class="sig-prename descclassname">alembic.ddl.base.</code><code class="sig-name descname">AlterColumn</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">column_name</em>, <em class="sig-param">schema=None</em>, <em class="sig-param">existing_type=None</em>, <em class="sig-param">existing_nullable=None</em>, <em class="sig-param">existing_server_default=None</em>, <em class="sig-param">existing_comment=None</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.ddl.base.AlterColumn" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="alembic.ddl.base.AlterTable">
+<em class="property">class </em><code class="sig-prename descclassname">alembic.ddl.base.</code><code class="sig-name descname">AlterTable</code><span class="sig-paren">(</span><em class="sig-param">table_name</em>, <em class="sig-param">schema=None</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.ddl.base.AlterTable" title="Permalink to this definition">¶</a></dt>
+<dd><p>Represent an ALTER TABLE statement.</p>
+<p>Only the string name and optional schema name of the table
+is required, not a full Table object.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="alembic.ddl.base.ColumnComment">
+<em class="property">class </em><code class="sig-prename descclassname">alembic.ddl.base.</code><code class="sig-name descname">ColumnComment</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">column_name</em>, <em class="sig-param">comment</em>, <em class="sig-param">**kw</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.ddl.base.ColumnComment" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="alembic.ddl.base.ColumnDefault">
+<em class="property">class </em><code class="sig-prename descclassname">alembic.ddl.base.</code><code class="sig-name descname">ColumnDefault</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">column_name</em>, <em class="sig-param">default</em>, <em class="sig-param">**kw</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.ddl.base.ColumnDefault" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="alembic.ddl.base.ColumnName">
+<em class="property">class </em><code class="sig-prename descclassname">alembic.ddl.base.</code><code class="sig-name descname">ColumnName</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">column_name</em>, <em class="sig-param">newname</em>, <em class="sig-param">**kw</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.ddl.base.ColumnName" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="alembic.ddl.base.ColumnNullable">
+<em class="property">class </em><code class="sig-prename descclassname">alembic.ddl.base.</code><code class="sig-name descname">ColumnNullable</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">column_name</em>, <em class="sig-param">nullable</em>, <em class="sig-param">**kw</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.ddl.base.ColumnNullable" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="alembic.ddl.base.ColumnType">
+<em class="property">class </em><code class="sig-prename descclassname">alembic.ddl.base.</code><code class="sig-name descname">ColumnType</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">column_name</em>, <em class="sig-param">type_</em>, <em class="sig-param">**kw</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.ddl.base.ColumnType" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="alembic.ddl.base.DropColumn">
+<em class="property">class </em><code class="sig-prename descclassname">alembic.ddl.base.</code><code class="sig-name descname">DropColumn</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">column</em>, <em class="sig-param">schema=None</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.ddl.base.DropColumn" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="alembic.ddl.base.RenameTable">
+<em class="property">class </em><code class="sig-prename descclassname">alembic.ddl.base.</code><code class="sig-name descname">RenameTable</code><span class="sig-paren">(</span><em class="sig-param">old_table_name</em>, <em class="sig-param">new_table_name</em>, <em class="sig-param">schema=None</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.ddl.base.RenameTable" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="alembic.ddl.base.add_column">
+<code class="sig-prename descclassname">alembic.ddl.base.</code><code class="sig-name descname">add_column</code><span class="sig-paren">(</span><em class="sig-param">compiler</em>, <em class="sig-param">column</em>, <em class="sig-param">**kw</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.ddl.base.add_column" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="alembic.ddl.base.alter_column">
+<code class="sig-prename descclassname">alembic.ddl.base.</code><code class="sig-name descname">alter_column</code><span class="sig-paren">(</span><em class="sig-param">compiler</em>, <em class="sig-param">name</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.ddl.base.alter_column" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="alembic.ddl.base.alter_table">
+<code class="sig-prename descclassname">alembic.ddl.base.</code><code class="sig-name descname">alter_table</code><span class="sig-paren">(</span><em class="sig-param">compiler</em>, <em class="sig-param">name</em>, <em class="sig-param">schema</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.ddl.base.alter_table" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="alembic.ddl.base.drop_column">
+<code class="sig-prename descclassname">alembic.ddl.base.</code><code class="sig-name descname">drop_column</code><span class="sig-paren">(</span><em class="sig-param">compiler</em>, <em class="sig-param">name</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.ddl.base.drop_column" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="alembic.ddl.base.format_column_name">
+<code class="sig-prename descclassname">alembic.ddl.base.</code><code class="sig-name descname">format_column_name</code><span class="sig-paren">(</span><em class="sig-param">compiler</em>, <em class="sig-param">name</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.ddl.base.format_column_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="alembic.ddl.base.format_server_default">
+<code class="sig-prename descclassname">alembic.ddl.base.</code><code class="sig-name descname">format_server_default</code><span class="sig-paren">(</span><em class="sig-param">compiler</em>, <em class="sig-param">default</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.ddl.base.format_server_default" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="alembic.ddl.base.format_table_name">
+<code class="sig-prename descclassname">alembic.ddl.base.</code><code class="sig-name descname">format_table_name</code><span class="sig-paren">(</span><em class="sig-param">compiler</em>, <em class="sig-param">name</em>, <em class="sig-param">schema</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.ddl.base.format_table_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="alembic.ddl.base.format_type">
+<code class="sig-prename descclassname">alembic.ddl.base.</code><code class="sig-name descname">format_type</code><span class="sig-paren">(</span><em class="sig-param">compiler</em>, <em class="sig-param">type_</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.ddl.base.format_type" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="alembic.ddl.base.quote_dotted">
+<code class="sig-prename descclassname">alembic.ddl.base.</code><code class="sig-name descname">quote_dotted</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">quote</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.ddl.base.quote_dotted" title="Permalink to this definition">¶</a></dt>
+<dd><p>quote the elements of a dotted name</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="alembic.ddl.base.visit_add_column">
+<code class="sig-prename descclassname">alembic.ddl.base.</code><code class="sig-name descname">visit_add_column</code><span class="sig-paren">(</span><em class="sig-param">element</em>, <em class="sig-param">compiler</em>, <em class="sig-param">**kw</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.ddl.base.visit_add_column" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="alembic.ddl.base.visit_column_default">
+<code class="sig-prename descclassname">alembic.ddl.base.</code><code class="sig-name descname">visit_column_default</code><span class="sig-paren">(</span><em class="sig-param">element</em>, <em class="sig-param">compiler</em>, <em class="sig-param">**kw</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.ddl.base.visit_column_default" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="alembic.ddl.base.visit_column_name">
+<code class="sig-prename descclassname">alembic.ddl.base.</code><code class="sig-name descname">visit_column_name</code><span class="sig-paren">(</span><em class="sig-param">element</em>, <em class="sig-param">compiler</em>, <em class="sig-param">**kw</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.ddl.base.visit_column_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="alembic.ddl.base.visit_column_nullable">
+<code class="sig-prename descclassname">alembic.ddl.base.</code><code class="sig-name descname">visit_column_nullable</code><span class="sig-paren">(</span><em class="sig-param">element</em>, <em class="sig-param">compiler</em>, <em class="sig-param">**kw</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.ddl.base.visit_column_nullable" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="alembic.ddl.base.visit_column_type">
+<code class="sig-prename descclassname">alembic.ddl.base.</code><code class="sig-name descname">visit_column_type</code><span class="sig-paren">(</span><em class="sig-param">element</em>, <em class="sig-param">compiler</em>, <em class="sig-param">**kw</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.ddl.base.visit_column_type" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="alembic.ddl.base.visit_drop_column">
+<code class="sig-prename descclassname">alembic.ddl.base.</code><code class="sig-name descname">visit_drop_column</code><span class="sig-paren">(</span><em class="sig-param">element</em>, <em class="sig-param">compiler</em>, <em class="sig-param">**kw</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.ddl.base.visit_drop_column" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="alembic.ddl.base.visit_rename_table">
+<code class="sig-prename descclassname">alembic.ddl.base.</code><code class="sig-name descname">visit_rename_table</code><span class="sig-paren">(</span><em class="sig-param">element</em>, <em class="sig-param">compiler</em>, <em class="sig-param">**kw</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.ddl.base.visit_rename_table" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<span class="target" id="module-alembic.ddl.impl"></span><dl class="class">
+<dt id="alembic.ddl.impl.DefaultImpl">
+<em class="property">class </em><code class="sig-prename descclassname">alembic.ddl.impl.</code><code class="sig-name descname">DefaultImpl</code><span class="sig-paren">(</span><em class="sig-param">dialect</em>, <em class="sig-param">connection</em>, <em class="sig-param">as_sql</em>, <em class="sig-param">transactional_ddl</em>, <em class="sig-param">output_buffer</em>, <em class="sig-param">context_opts</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.ddl.impl.DefaultImpl" title="Permalink to this definition">¶</a></dt>
+<dd><p>Provide the entrypoint for major migration operations,
+including database-specific behavioral variances.</p>
+<p>While individual SQL/DDL constructs already provide
+for database-specific implementations, variances here
+allow for entirely different sequences of operations
+to take place for a particular migration, such as
+SQL Server’s special ‘IDENTITY INSERT’ step for
+bulk inserts.</p>
+<dl class="method">
+<dt id="alembic.ddl.impl.DefaultImpl.add_column">
+<code class="sig-name descname">add_column</code><span class="sig-paren">(</span><em class="sig-param">table_name</em>, <em class="sig-param">column</em>, <em class="sig-param">schema=None</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.ddl.impl.DefaultImpl.add_column" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="alembic.ddl.impl.DefaultImpl.add_constraint">
+<code class="sig-name descname">add_constraint</code><span class="sig-paren">(</span><em class="sig-param">const</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.ddl.impl.DefaultImpl.add_constraint" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="alembic.ddl.impl.DefaultImpl.alter_column">
+<code class="sig-name descname">alter_column</code><span class="sig-paren">(</span><em class="sig-param">table_name</em>, <em class="sig-param">column_name</em>, <em class="sig-param">nullable=None</em>, <em class="sig-param">server_default=False</em>, <em class="sig-param">name=None</em>, <em class="sig-param">type_=None</em>, <em class="sig-param">schema=None</em>, <em class="sig-param">autoincrement=None</em>, <em class="sig-param">comment=False</em>, <em class="sig-param">existing_comment=None</em>, <em class="sig-param">existing_type=None</em>, <em class="sig-param">existing_server_default=None</em>, <em class="sig-param">existing_nullable=None</em>, <em class="sig-param">existing_autoincrement=None</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.ddl.impl.DefaultImpl.alter_column" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="alembic.ddl.impl.DefaultImpl.autogen_column_reflect">
+<code class="sig-name descname">autogen_column_reflect</code><span class="sig-paren">(</span><em class="sig-param">inspector</em>, <em class="sig-param">table</em>, <em class="sig-param">column_info</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.ddl.impl.DefaultImpl.autogen_column_reflect" title="Permalink to this definition">¶</a></dt>
+<dd><p>A hook that is attached to the ‘column_reflect’ event for when
+a Table is reflected from the database during the autogenerate
+process.</p>
+<p>Dialects can elect to modify the information gathered here.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="alembic.ddl.impl.DefaultImpl.bind">
+<em class="property">property </em><code class="sig-name descname">bind</code><a class="headerlink" href="#alembic.ddl.impl.DefaultImpl.bind" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="alembic.ddl.impl.DefaultImpl.bulk_insert">
+<code class="sig-name descname">bulk_insert</code><span class="sig-paren">(</span><em class="sig-param">table</em>, <em class="sig-param">rows</em>, <em class="sig-param">multiinsert=True</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.ddl.impl.DefaultImpl.bulk_insert" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="alembic.ddl.impl.DefaultImpl.command_terminator">
+<code class="sig-name descname">command_terminator</code><em class="property"> = ';'</em><a class="headerlink" href="#alembic.ddl.impl.DefaultImpl.command_terminator" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="alembic.ddl.impl.DefaultImpl.compare_server_default">
+<code class="sig-name descname">compare_server_default</code><span class="sig-paren">(</span><em class="sig-param">inspector_column</em>, <em class="sig-param">metadata_column</em>, <em class="sig-param">rendered_metadata_default</em>, <em class="sig-param">rendered_inspector_default</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.ddl.impl.DefaultImpl.compare_server_default" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="alembic.ddl.impl.DefaultImpl.compare_type">
+<code class="sig-name descname">compare_type</code><span class="sig-paren">(</span><em class="sig-param">inspector_column</em>, <em class="sig-param">metadata_column</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.ddl.impl.DefaultImpl.compare_type" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="alembic.ddl.impl.DefaultImpl.correct_for_autogen_constraints">
+<code class="sig-name descname">correct_for_autogen_constraints</code><span class="sig-paren">(</span><em class="sig-param">conn_uniques</em>, <em class="sig-param">conn_indexes</em>, <em class="sig-param">metadata_unique_constraints</em>, <em class="sig-param">metadata_indexes</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.ddl.impl.DefaultImpl.correct_for_autogen_constraints" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="alembic.ddl.impl.DefaultImpl.correct_for_autogen_foreignkeys">
+<code class="sig-name descname">correct_for_autogen_foreignkeys</code><span class="sig-paren">(</span><em class="sig-param">conn_fks</em>, <em class="sig-param">metadata_fks</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.ddl.impl.DefaultImpl.correct_for_autogen_foreignkeys" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="alembic.ddl.impl.DefaultImpl.create_column_comment">
+<code class="sig-name descname">create_column_comment</code><span class="sig-paren">(</span><em class="sig-param">column</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.ddl.impl.DefaultImpl.create_column_comment" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="alembic.ddl.impl.DefaultImpl.create_index">
+<code class="sig-name descname">create_index</code><span class="sig-paren">(</span><em class="sig-param">index</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.ddl.impl.DefaultImpl.create_index" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="alembic.ddl.impl.DefaultImpl.create_table">
+<code class="sig-name descname">create_table</code><span class="sig-paren">(</span><em class="sig-param">table</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.ddl.impl.DefaultImpl.create_table" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="alembic.ddl.impl.DefaultImpl.create_table_comment">
+<code class="sig-name descname">create_table_comment</code><span class="sig-paren">(</span><em class="sig-param">table</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.ddl.impl.DefaultImpl.create_table_comment" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="alembic.ddl.impl.DefaultImpl.drop_column">
+<code class="sig-name descname">drop_column</code><span class="sig-paren">(</span><em class="sig-param">table_name</em>, <em class="sig-param">column</em>, <em class="sig-param">schema=None</em>, <em class="sig-param">**kw</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.ddl.impl.DefaultImpl.drop_column" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="alembic.ddl.impl.DefaultImpl.drop_constraint">
+<code class="sig-name descname">drop_constraint</code><span class="sig-paren">(</span><em class="sig-param">const</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.ddl.impl.DefaultImpl.drop_constraint" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="alembic.ddl.impl.DefaultImpl.drop_index">
+<code class="sig-name descname">drop_index</code><span class="sig-paren">(</span><em class="sig-param">index</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.ddl.impl.DefaultImpl.drop_index" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="alembic.ddl.impl.DefaultImpl.drop_table">
+<code class="sig-name descname">drop_table</code><span class="sig-paren">(</span><em class="sig-param">table</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.ddl.impl.DefaultImpl.drop_table" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="alembic.ddl.impl.DefaultImpl.drop_table_comment">
+<code class="sig-name descname">drop_table_comment</code><span class="sig-paren">(</span><em class="sig-param">table</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.ddl.impl.DefaultImpl.drop_table_comment" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="alembic.ddl.impl.DefaultImpl.emit_begin">
+<code class="sig-name descname">emit_begin</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#alembic.ddl.impl.DefaultImpl.emit_begin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Emit the string <code class="docutils literal notranslate"><span class="pre">BEGIN</span></code>, or the backend-specific
+equivalent, on the current connection context.</p>
+<p>This is used in offline mode and typically
+via <a class="reference internal" href="runtime.html#alembic.runtime.environment.EnvironmentContext.begin_transaction" title="alembic.runtime.environment.EnvironmentContext.begin_transaction"><code class="xref py py-meth docutils literal notranslate"><span class="pre">EnvironmentContext.begin_transaction()</span></code></a>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="alembic.ddl.impl.DefaultImpl.emit_commit">
+<code class="sig-name descname">emit_commit</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#alembic.ddl.impl.DefaultImpl.emit_commit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Emit the string <code class="docutils literal notranslate"><span class="pre">COMMIT</span></code>, or the backend-specific
+equivalent, on the current connection context.</p>
+<p>This is used in offline mode and typically
+via <a class="reference internal" href="runtime.html#alembic.runtime.environment.EnvironmentContext.begin_transaction" title="alembic.runtime.environment.EnvironmentContext.begin_transaction"><code class="xref py py-meth docutils literal notranslate"><span class="pre">EnvironmentContext.begin_transaction()</span></code></a>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="alembic.ddl.impl.DefaultImpl.execute">
+<code class="sig-name descname">execute</code><span class="sig-paren">(</span><em class="sig-param">sql</em>, <em class="sig-param">execution_options=None</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.ddl.impl.DefaultImpl.execute" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="alembic.ddl.impl.DefaultImpl.get_by_dialect">
+<em class="property">classmethod </em><code class="sig-name descname">get_by_dialect</code><span class="sig-paren">(</span><em class="sig-param">dialect</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.ddl.impl.DefaultImpl.get_by_dialect" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="alembic.ddl.impl.DefaultImpl.prep_table_for_batch">
+<code class="sig-name descname">prep_table_for_batch</code><span class="sig-paren">(</span><em class="sig-param">table</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.ddl.impl.DefaultImpl.prep_table_for_batch" title="Permalink to this definition">¶</a></dt>
+<dd><p>perform any operations needed on a table before a new
+one is created to replace it in batch mode.</p>
+<p>the PG dialect uses this to drop constraints on the table
+before the new one uses those same names.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="alembic.ddl.impl.DefaultImpl.rename_table">
+<code class="sig-name descname">rename_table</code><span class="sig-paren">(</span><em class="sig-param">old_table_name</em>, <em class="sig-param">new_table_name</em>, <em class="sig-param">schema=None</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.ddl.impl.DefaultImpl.rename_table" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="alembic.ddl.impl.DefaultImpl.render_ddl_sql_expr">
+<code class="sig-name descname">render_ddl_sql_expr</code><span class="sig-paren">(</span><em class="sig-param">expr</em>, <em class="sig-param">is_server_default=False</em>, <em class="sig-param">**kw</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.ddl.impl.DefaultImpl.render_ddl_sql_expr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Render a SQL expression that is typically a server default,
+index expression, etc.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 1.0.11.</span></p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="alembic.ddl.impl.DefaultImpl.render_type">
+<code class="sig-name descname">render_type</code><span class="sig-paren">(</span><em class="sig-param">type_obj</em>, <em class="sig-param">autogen_context</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.ddl.impl.DefaultImpl.render_type" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="alembic.ddl.impl.DefaultImpl.requires_recreate_in_batch">
+<code class="sig-name descname">requires_recreate_in_batch</code><span class="sig-paren">(</span><em class="sig-param">batch_op</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.ddl.impl.DefaultImpl.requires_recreate_in_batch" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return True if the given <code class="xref py py-class docutils literal notranslate"><span class="pre">BatchOperationsImpl</span></code>
+would need the table to be recreated and copied in order to
+proceed.</p>
+<p>Normally, only returns True on SQLite when operations other
+than add_column are present.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="alembic.ddl.impl.DefaultImpl.start_migrations">
+<code class="sig-name descname">start_migrations</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#alembic.ddl.impl.DefaultImpl.start_migrations" title="Permalink to this definition">¶</a></dt>
+<dd><p>A hook called when <a class="reference internal" href="runtime.html#alembic.runtime.environment.EnvironmentContext.run_migrations" title="alembic.runtime.environment.EnvironmentContext.run_migrations"><code class="xref py py-meth docutils literal notranslate"><span class="pre">EnvironmentContext.run_migrations()</span></code></a>
+is called.</p>
+<p>Implementations can set up per-migration-run state here.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="alembic.ddl.impl.DefaultImpl.static_output">
+<code class="sig-name descname">static_output</code><span class="sig-paren">(</span><em class="sig-param">text</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.ddl.impl.DefaultImpl.static_output" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="alembic.ddl.impl.DefaultImpl.transactional_ddl">
+<code class="sig-name descname">transactional_ddl</code><em class="property"> = False</em><a class="headerlink" href="#alembic.ddl.impl.DefaultImpl.transactional_ddl" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="alembic.ddl.impl.ImplMeta">
+<em class="property">class </em><code class="sig-prename descclassname">alembic.ddl.impl.</code><code class="sig-name descname">ImplMeta</code><span class="sig-paren">(</span><em class="sig-param">classname</em>, <em class="sig-param">bases</em>, <em class="sig-param">dict_</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.ddl.impl.ImplMeta" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<div class="section" id="module-alembic.ddl.mysql">
+<span id="mysql"></span><h2>MySQL<a class="headerlink" href="#module-alembic.ddl.mysql" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="alembic.ddl.mysql.MySQLAlterDefault">
+<em class="property">class </em><code class="sig-prename descclassname">alembic.ddl.mysql.</code><code class="sig-name descname">MySQLAlterDefault</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">column_name</em>, <em class="sig-param">default</em>, <em class="sig-param">schema=None</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.ddl.mysql.MySQLAlterDefault" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#alembic.ddl.base.AlterColumn" title="alembic.ddl.base.AlterColumn"><code class="xref py py-class docutils literal notranslate"><span class="pre">alembic.ddl.base.AlterColumn</span></code></a></p>
+</dd></dl>
+
+<dl class="class">
+<dt id="alembic.ddl.mysql.MySQLChangeColumn">
+<em class="property">class </em><code class="sig-prename descclassname">alembic.ddl.mysql.</code><code class="sig-name descname">MySQLChangeColumn</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">column_name</em>, <em class="sig-param">schema=None</em>, <em class="sig-param">newname=None</em>, <em class="sig-param">type_=None</em>, <em class="sig-param">nullable=None</em>, <em class="sig-param">default=False</em>, <em class="sig-param">autoincrement=None</em>, <em class="sig-param">comment=False</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.ddl.mysql.MySQLChangeColumn" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#alembic.ddl.base.AlterColumn" title="alembic.ddl.base.AlterColumn"><code class="xref py py-class docutils literal notranslate"><span class="pre">alembic.ddl.base.AlterColumn</span></code></a></p>
+</dd></dl>
+
+<dl class="class">
+<dt id="alembic.ddl.mysql.MySQLImpl">
+<em class="property">class </em><code class="sig-prename descclassname">alembic.ddl.mysql.</code><code class="sig-name descname">MySQLImpl</code><span class="sig-paren">(</span><em class="sig-param">dialect</em>, <em class="sig-param">connection</em>, <em class="sig-param">as_sql</em>, <em class="sig-param">transactional_ddl</em>, <em class="sig-param">output_buffer</em>, <em class="sig-param">context_opts</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.ddl.mysql.MySQLImpl" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#alembic.ddl.impl.DefaultImpl" title="alembic.ddl.impl.DefaultImpl"><code class="xref py py-class docutils literal notranslate"><span class="pre">alembic.ddl.impl.DefaultImpl</span></code></a></p>
+<dl class="method">
+<dt id="alembic.ddl.mysql.MySQLImpl.alter_column">
+<code class="sig-name descname">alter_column</code><span class="sig-paren">(</span><em class="sig-param">table_name</em>, <em class="sig-param">column_name</em>, <em class="sig-param">nullable=None</em>, <em class="sig-param">server_default=False</em>, <em class="sig-param">name=None</em>, <em class="sig-param">type_=None</em>, <em class="sig-param">schema=None</em>, <em class="sig-param">existing_type=None</em>, <em class="sig-param">existing_server_default=None</em>, <em class="sig-param">existing_nullable=None</em>, <em class="sig-param">autoincrement=None</em>, <em class="sig-param">existing_autoincrement=None</em>, <em class="sig-param">comment=False</em>, <em class="sig-param">existing_comment=None</em>, <em class="sig-param">**kw</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.ddl.mysql.MySQLImpl.alter_column" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="alembic.ddl.mysql.MySQLImpl.compare_server_default">
+<code class="sig-name descname">compare_server_default</code><span class="sig-paren">(</span><em class="sig-param">inspector_column</em>, <em class="sig-param">metadata_column</em>, <em class="sig-param">rendered_metadata_default</em>, <em class="sig-param">rendered_inspector_default</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.ddl.mysql.MySQLImpl.compare_server_default" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="alembic.ddl.mysql.MySQLImpl.correct_for_autogen_constraints">
+<code class="sig-name descname">correct_for_autogen_constraints</code><span class="sig-paren">(</span><em class="sig-param">conn_unique_constraints</em>, <em class="sig-param">conn_indexes</em>, <em class="sig-param">metadata_unique_constraints</em>, <em class="sig-param">metadata_indexes</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.ddl.mysql.MySQLImpl.correct_for_autogen_constraints" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="alembic.ddl.mysql.MySQLImpl.correct_for_autogen_foreignkeys">
+<code class="sig-name descname">correct_for_autogen_foreignkeys</code><span class="sig-paren">(</span><em class="sig-param">conn_fks</em>, <em class="sig-param">metadata_fks</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.ddl.mysql.MySQLImpl.correct_for_autogen_foreignkeys" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="alembic.ddl.mysql.MySQLImpl.drop_constraint">
+<code class="sig-name descname">drop_constraint</code><span class="sig-paren">(</span><em class="sig-param">const</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.ddl.mysql.MySQLImpl.drop_constraint" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="alembic.ddl.mysql.MySQLImpl.transactional_ddl">
+<code class="sig-name descname">transactional_ddl</code><em class="property"> = False</em><a class="headerlink" href="#alembic.ddl.mysql.MySQLImpl.transactional_ddl" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="alembic.ddl.mysql.MySQLModifyColumn">
+<em class="property">class </em><code class="sig-prename descclassname">alembic.ddl.mysql.</code><code class="sig-name descname">MySQLModifyColumn</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">column_name</em>, <em class="sig-param">schema=None</em>, <em class="sig-param">newname=None</em>, <em class="sig-param">type_=None</em>, <em class="sig-param">nullable=None</em>, <em class="sig-param">default=False</em>, <em class="sig-param">autoincrement=None</em>, <em class="sig-param">comment=False</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.ddl.mysql.MySQLModifyColumn" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#alembic.ddl.mysql.MySQLChangeColumn" title="alembic.ddl.mysql.MySQLChangeColumn"><code class="xref py py-class docutils literal notranslate"><span class="pre">alembic.ddl.mysql.MySQLChangeColumn</span></code></a></p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-alembic.ddl.mssql">
+<span id="ms-sql"></span><h2>MS-SQL<a class="headerlink" href="#module-alembic.ddl.mssql" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="alembic.ddl.mssql.MSSQLImpl">
+<em class="property">class </em><code class="sig-prename descclassname">alembic.ddl.mssql.</code><code class="sig-name descname">MSSQLImpl</code><span class="sig-paren">(</span><em class="sig-param">*arg</em>, <em class="sig-param">**kw</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.ddl.mssql.MSSQLImpl" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#alembic.ddl.impl.DefaultImpl" title="alembic.ddl.impl.DefaultImpl"><code class="xref py py-class docutils literal notranslate"><span class="pre">alembic.ddl.impl.DefaultImpl</span></code></a></p>
+<dl class="method">
+<dt id="alembic.ddl.mssql.MSSQLImpl.alter_column">
+<code class="sig-name descname">alter_column</code><span class="sig-paren">(</span><em class="sig-param">table_name</em>, <em class="sig-param">column_name</em>, <em class="sig-param">nullable=None</em>, <em class="sig-param">server_default=False</em>, <em class="sig-param">name=None</em>, <em class="sig-param">type_=None</em>, <em class="sig-param">schema=None</em>, <em class="sig-param">existing_type=None</em>, <em class="sig-param">existing_server_default=None</em>, <em class="sig-param">existing_nullable=None</em>, <em class="sig-param">**kw</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.ddl.mssql.MSSQLImpl.alter_column" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="alembic.ddl.mssql.MSSQLImpl.batch_separator">
+<code class="sig-name descname">batch_separator</code><em class="property"> = 'GO'</em><a class="headerlink" href="#alembic.ddl.mssql.MSSQLImpl.batch_separator" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="alembic.ddl.mssql.MSSQLImpl.bulk_insert">
+<code class="sig-name descname">bulk_insert</code><span class="sig-paren">(</span><em class="sig-param">table</em>, <em class="sig-param">rows</em>, <em class="sig-param">**kw</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.ddl.mssql.MSSQLImpl.bulk_insert" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="alembic.ddl.mssql.MSSQLImpl.create_index">
+<code class="sig-name descname">create_index</code><span class="sig-paren">(</span><em class="sig-param">index</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.ddl.mssql.MSSQLImpl.create_index" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="alembic.ddl.mssql.MSSQLImpl.drop_column">
+<code class="sig-name descname">drop_column</code><span class="sig-paren">(</span><em class="sig-param">table_name</em>, <em class="sig-param">column</em>, <em class="sig-param">**kw</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.ddl.mssql.MSSQLImpl.drop_column" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="alembic.ddl.mssql.MSSQLImpl.emit_begin">
+<code class="sig-name descname">emit_begin</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#alembic.ddl.mssql.MSSQLImpl.emit_begin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Emit the string <code class="docutils literal notranslate"><span class="pre">BEGIN</span></code>, or the backend-specific
+equivalent, on the current connection context.</p>
+<p>This is used in offline mode and typically
+via <a class="reference internal" href="runtime.html#alembic.runtime.environment.EnvironmentContext.begin_transaction" title="alembic.runtime.environment.EnvironmentContext.begin_transaction"><code class="xref py py-meth docutils literal notranslate"><span class="pre">EnvironmentContext.begin_transaction()</span></code></a>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="alembic.ddl.mssql.MSSQLImpl.emit_commit">
+<code class="sig-name descname">emit_commit</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#alembic.ddl.mssql.MSSQLImpl.emit_commit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Emit the string <code class="docutils literal notranslate"><span class="pre">COMMIT</span></code>, or the backend-specific
+equivalent, on the current connection context.</p>
+<p>This is used in offline mode and typically
+via <a class="reference internal" href="runtime.html#alembic.runtime.environment.EnvironmentContext.begin_transaction" title="alembic.runtime.environment.EnvironmentContext.begin_transaction"><code class="xref py py-meth docutils literal notranslate"><span class="pre">EnvironmentContext.begin_transaction()</span></code></a>.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="alembic.ddl.mssql.MSSQLImpl.transactional_ddl">
+<code class="sig-name descname">transactional_ddl</code><em class="property"> = True</em><a class="headerlink" href="#alembic.ddl.mssql.MSSQLImpl.transactional_ddl" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="alembic.ddl.mssql.mssql_add_column">
+<code class="sig-prename descclassname">alembic.ddl.mssql.</code><code class="sig-name descname">mssql_add_column</code><span class="sig-paren">(</span><em class="sig-param">compiler</em>, <em class="sig-param">column</em>, <em class="sig-param">**kw</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.ddl.mssql.mssql_add_column" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="alembic.ddl.mssql.visit_add_column">
+<code class="sig-prename descclassname">alembic.ddl.mssql.</code><code class="sig-name descname">visit_add_column</code><span class="sig-paren">(</span><em class="sig-param">element</em>, <em class="sig-param">compiler</em>, <em class="sig-param">**kw</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.ddl.mssql.visit_add_column" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="alembic.ddl.mssql.visit_column_default">
+<code class="sig-prename descclassname">alembic.ddl.mssql.</code><code class="sig-name descname">visit_column_default</code><span class="sig-paren">(</span><em class="sig-param">element</em>, <em class="sig-param">compiler</em>, <em class="sig-param">**kw</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.ddl.mssql.visit_column_default" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="alembic.ddl.mssql.visit_column_nullable">
+<code class="sig-prename descclassname">alembic.ddl.mssql.</code><code class="sig-name descname">visit_column_nullable</code><span class="sig-paren">(</span><em class="sig-param">element</em>, <em class="sig-param">compiler</em>, <em class="sig-param">**kw</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.ddl.mssql.visit_column_nullable" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="alembic.ddl.mssql.visit_column_type">
+<code class="sig-prename descclassname">alembic.ddl.mssql.</code><code class="sig-name descname">visit_column_type</code><span class="sig-paren">(</span><em class="sig-param">element</em>, <em class="sig-param">compiler</em>, <em class="sig-param">**kw</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.ddl.mssql.visit_column_type" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="alembic.ddl.mssql.visit_rename_column">
+<code class="sig-prename descclassname">alembic.ddl.mssql.</code><code class="sig-name descname">visit_rename_column</code><span class="sig-paren">(</span><em class="sig-param">element</em>, <em class="sig-param">compiler</em>, <em class="sig-param">**kw</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.ddl.mssql.visit_rename_column" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="alembic.ddl.mssql.visit_rename_table">
+<code class="sig-prename descclassname">alembic.ddl.mssql.</code><code class="sig-name descname">visit_rename_table</code><span class="sig-paren">(</span><em class="sig-param">element</em>, <em class="sig-param">compiler</em>, <em class="sig-param">**kw</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.ddl.mssql.visit_rename_table" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-alembic.ddl.postgresql">
+<span id="postgresql"></span><h2>Postgresql<a class="headerlink" href="#module-alembic.ddl.postgresql" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="alembic.ddl.postgresql.CreateExcludeConstraintOp">
+<em class="property">class </em><code class="sig-prename descclassname">alembic.ddl.postgresql.</code><code class="sig-name descname">CreateExcludeConstraintOp</code><span class="sig-paren">(</span><em class="sig-param">constraint_name</em>, <em class="sig-param">table_name</em>, <em class="sig-param">elements</em>, <em class="sig-param">where=None</em>, <em class="sig-param">schema=None</em>, <em class="sig-param">_orig_constraint=None</em>, <em class="sig-param">**kw</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.ddl.postgresql.CreateExcludeConstraintOp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="operations.html#alembic.operations.ops.AddConstraintOp" title="alembic.operations.ops.AddConstraintOp"><code class="xref py py-class docutils literal notranslate"><span class="pre">alembic.operations.ops.AddConstraintOp</span></code></a></p>
+<p>Represent a create exclude constraint operation.</p>
+<dl class="method">
+<dt id="alembic.ddl.postgresql.CreateExcludeConstraintOp.batch_create_exclude_constraint">
+<em class="property">classmethod </em><code class="sig-name descname">batch_create_exclude_constraint</code><span class="sig-paren">(</span><em class="sig-param">operations</em>, <em class="sig-param">constraint_name</em>, <em class="sig-param">*elements</em>, <em class="sig-param">**kw</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.ddl.postgresql.CreateExcludeConstraintOp.batch_create_exclude_constraint" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method is proxied on the <a class="reference internal" href="../ops.html#alembic.operations.BatchOperations" title="alembic.operations.BatchOperations"><code class="xref py py-class docutils literal notranslate"><span class="pre">BatchOperations</span></code></a> class, via the <a class="reference internal" href="../ops.html#alembic.operations.BatchOperations.create_exclude_constraint" title="alembic.operations.BatchOperations.create_exclude_constraint"><code class="xref py py-meth docutils literal notranslate"><span class="pre">BatchOperations.create_exclude_constraint()</span></code></a> method.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="alembic.ddl.postgresql.CreateExcludeConstraintOp.constraint_type">
+<code class="sig-name descname">constraint_type</code><em class="property"> = 'exclude'</em><a class="headerlink" href="#alembic.ddl.postgresql.CreateExcludeConstraintOp.constraint_type" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="alembic.ddl.postgresql.CreateExcludeConstraintOp.create_exclude_constraint">
+<em class="property">classmethod </em><code class="sig-name descname">create_exclude_constraint</code><span class="sig-paren">(</span><em class="sig-param">operations</em>, <em class="sig-param">constraint_name</em>, <em class="sig-param">table_name</em>, <em class="sig-param">*elements</em>, <em class="sig-param">**kw</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.ddl.postgresql.CreateExcludeConstraintOp.create_exclude_constraint" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method is proxied on the <a class="reference internal" href="../ops.html#alembic.operations.Operations" title="alembic.operations.Operations"><code class="xref py py-class docutils literal notranslate"><span class="pre">Operations</span></code></a> class, via the <a class="reference internal" href="../ops.html#alembic.operations.Operations.create_exclude_constraint" title="alembic.operations.Operations.create_exclude_constraint"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Operations.create_exclude_constraint()</span></code></a> method.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="alembic.ddl.postgresql.CreateExcludeConstraintOp.from_constraint">
+<em class="property">classmethod </em><code class="sig-name descname">from_constraint</code><span class="sig-paren">(</span><em class="sig-param">constraint</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.ddl.postgresql.CreateExcludeConstraintOp.from_constraint" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="alembic.ddl.postgresql.CreateExcludeConstraintOp.to_constraint">
+<code class="sig-name descname">to_constraint</code><span class="sig-paren">(</span><em class="sig-param">migration_context=None</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.ddl.postgresql.CreateExcludeConstraintOp.to_constraint" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="alembic.ddl.postgresql.PostgresqlColumnType">
+<em class="property">class </em><code class="sig-prename descclassname">alembic.ddl.postgresql.</code><code class="sig-name descname">PostgresqlColumnType</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">column_name</em>, <em class="sig-param">type_</em>, <em class="sig-param">**kw</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.ddl.postgresql.PostgresqlColumnType" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#alembic.ddl.base.AlterColumn" title="alembic.ddl.base.AlterColumn"><code class="xref py py-class docutils literal notranslate"><span class="pre">alembic.ddl.base.AlterColumn</span></code></a></p>
+</dd></dl>
+
+<dl class="class">
+<dt id="alembic.ddl.postgresql.PostgresqlImpl">
+<em class="property">class </em><code class="sig-prename descclassname">alembic.ddl.postgresql.</code><code class="sig-name descname">PostgresqlImpl</code><span class="sig-paren">(</span><em class="sig-param">dialect</em>, <em class="sig-param">connection</em>, <em class="sig-param">as_sql</em>, <em class="sig-param">transactional_ddl</em>, <em class="sig-param">output_buffer</em>, <em class="sig-param">context_opts</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.ddl.postgresql.PostgresqlImpl" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#alembic.ddl.impl.DefaultImpl" title="alembic.ddl.impl.DefaultImpl"><code class="xref py py-class docutils literal notranslate"><span class="pre">alembic.ddl.impl.DefaultImpl</span></code></a></p>
+<dl class="method">
+<dt id="alembic.ddl.postgresql.PostgresqlImpl.alter_column">
+<code class="sig-name descname">alter_column</code><span class="sig-paren">(</span><em class="sig-param">table_name</em>, <em class="sig-param">column_name</em>, <em class="sig-param">nullable=None</em>, <em class="sig-param">server_default=False</em>, <em class="sig-param">name=None</em>, <em class="sig-param">type_=None</em>, <em class="sig-param">schema=None</em>, <em class="sig-param">autoincrement=None</em>, <em class="sig-param">existing_type=None</em>, <em class="sig-param">existing_server_default=None</em>, <em class="sig-param">existing_nullable=None</em>, <em class="sig-param">existing_autoincrement=None</em>, <em class="sig-param">**kw</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.ddl.postgresql.PostgresqlImpl.alter_column" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="alembic.ddl.postgresql.PostgresqlImpl.autogen_column_reflect">
+<code class="sig-name descname">autogen_column_reflect</code><span class="sig-paren">(</span><em class="sig-param">inspector</em>, <em class="sig-param">table</em>, <em class="sig-param">column_info</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.ddl.postgresql.PostgresqlImpl.autogen_column_reflect" title="Permalink to this definition">¶</a></dt>
+<dd><p>A hook that is attached to the ‘column_reflect’ event for when
+a Table is reflected from the database during the autogenerate
+process.</p>
+<p>Dialects can elect to modify the information gathered here.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="alembic.ddl.postgresql.PostgresqlImpl.compare_server_default">
+<code class="sig-name descname">compare_server_default</code><span class="sig-paren">(</span><em class="sig-param">inspector_column</em>, <em class="sig-param">metadata_column</em>, <em class="sig-param">rendered_metadata_default</em>, <em class="sig-param">rendered_inspector_default</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.ddl.postgresql.PostgresqlImpl.compare_server_default" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="alembic.ddl.postgresql.PostgresqlImpl.correct_for_autogen_constraints">
+<code class="sig-name descname">correct_for_autogen_constraints</code><span class="sig-paren">(</span><em class="sig-param">conn_unique_constraints</em>, <em class="sig-param">conn_indexes</em>, <em class="sig-param">metadata_unique_constraints</em>, <em class="sig-param">metadata_indexes</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.ddl.postgresql.PostgresqlImpl.correct_for_autogen_constraints" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="alembic.ddl.postgresql.PostgresqlImpl.prep_table_for_batch">
+<code class="sig-name descname">prep_table_for_batch</code><span class="sig-paren">(</span><em class="sig-param">table</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.ddl.postgresql.PostgresqlImpl.prep_table_for_batch" title="Permalink to this definition">¶</a></dt>
+<dd><p>perform any operations needed on a table before a new
+one is created to replace it in batch mode.</p>
+<p>the PG dialect uses this to drop constraints on the table
+before the new one uses those same names.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="alembic.ddl.postgresql.PostgresqlImpl.render_type">
+<code class="sig-name descname">render_type</code><span class="sig-paren">(</span><em class="sig-param">type_</em>, <em class="sig-param">autogen_context</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.ddl.postgresql.PostgresqlImpl.render_type" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="alembic.ddl.postgresql.PostgresqlImpl.transactional_ddl">
+<code class="sig-name descname">transactional_ddl</code><em class="property"> = True</em><a class="headerlink" href="#alembic.ddl.postgresql.PostgresqlImpl.transactional_ddl" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="alembic.ddl.postgresql.visit_column_comment">
+<code class="sig-prename descclassname">alembic.ddl.postgresql.</code><code class="sig-name descname">visit_column_comment</code><span class="sig-paren">(</span><em class="sig-param">element</em>, <em class="sig-param">compiler</em>, <em class="sig-param">**kw</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.ddl.postgresql.visit_column_comment" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="alembic.ddl.postgresql.visit_column_type">
+<code class="sig-prename descclassname">alembic.ddl.postgresql.</code><code class="sig-name descname">visit_column_type</code><span class="sig-paren">(</span><em class="sig-param">element</em>, <em class="sig-param">compiler</em>, <em class="sig-param">**kw</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.ddl.postgresql.visit_column_type" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="alembic.ddl.postgresql.visit_rename_table">
+<code class="sig-prename descclassname">alembic.ddl.postgresql.</code><code class="sig-name descname">visit_rename_table</code><span class="sig-paren">(</span><em class="sig-param">element</em>, <em class="sig-param">compiler</em>, <em class="sig-param">**kw</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.ddl.postgresql.visit_rename_table" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-alembic.ddl.sqlite">
+<span id="sqlite"></span><h2>SQLite<a class="headerlink" href="#module-alembic.ddl.sqlite" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="alembic.ddl.sqlite.SQLiteImpl">
+<em class="property">class </em><code class="sig-prename descclassname">alembic.ddl.sqlite.</code><code class="sig-name descname">SQLiteImpl</code><span class="sig-paren">(</span><em class="sig-param">dialect</em>, <em class="sig-param">connection</em>, <em class="sig-param">as_sql</em>, <em class="sig-param">transactional_ddl</em>, <em class="sig-param">output_buffer</em>, <em class="sig-param">context_opts</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.ddl.sqlite.SQLiteImpl" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#alembic.ddl.impl.DefaultImpl" title="alembic.ddl.impl.DefaultImpl"><code class="xref py py-class docutils literal notranslate"><span class="pre">alembic.ddl.impl.DefaultImpl</span></code></a></p>
+<dl class="method">
+<dt id="alembic.ddl.sqlite.SQLiteImpl.add_constraint">
+<code class="sig-name descname">add_constraint</code><span class="sig-paren">(</span><em class="sig-param">const</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.ddl.sqlite.SQLiteImpl.add_constraint" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="alembic.ddl.sqlite.SQLiteImpl.autogen_column_reflect">
+<code class="sig-name descname">autogen_column_reflect</code><span class="sig-paren">(</span><em class="sig-param">inspector</em>, <em class="sig-param">table</em>, <em class="sig-param">column_info</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.ddl.sqlite.SQLiteImpl.autogen_column_reflect" title="Permalink to this definition">¶</a></dt>
+<dd><p>A hook that is attached to the ‘column_reflect’ event for when
+a Table is reflected from the database during the autogenerate
+process.</p>
+<p>Dialects can elect to modify the information gathered here.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="alembic.ddl.sqlite.SQLiteImpl.compare_server_default">
+<code class="sig-name descname">compare_server_default</code><span class="sig-paren">(</span><em class="sig-param">inspector_column</em>, <em class="sig-param">metadata_column</em>, <em class="sig-param">rendered_metadata_default</em>, <em class="sig-param">rendered_inspector_default</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.ddl.sqlite.SQLiteImpl.compare_server_default" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="alembic.ddl.sqlite.SQLiteImpl.correct_for_autogen_constraints">
+<code class="sig-name descname">correct_for_autogen_constraints</code><span class="sig-paren">(</span><em class="sig-param">conn_unique_constraints</em>, <em class="sig-param">conn_indexes</em>, <em class="sig-param">metadata_unique_constraints</em>, <em class="sig-param">metadata_indexes</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.ddl.sqlite.SQLiteImpl.correct_for_autogen_constraints" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="alembic.ddl.sqlite.SQLiteImpl.drop_constraint">
+<code class="sig-name descname">drop_constraint</code><span class="sig-paren">(</span><em class="sig-param">const</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.ddl.sqlite.SQLiteImpl.drop_constraint" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="alembic.ddl.sqlite.SQLiteImpl.render_ddl_sql_expr">
+<code class="sig-name descname">render_ddl_sql_expr</code><span class="sig-paren">(</span><em class="sig-param">expr</em>, <em class="sig-param">is_server_default=False</em>, <em class="sig-param">**kw</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.ddl.sqlite.SQLiteImpl.render_ddl_sql_expr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Render a SQL expression that is typically a server default,
+index expression, etc.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 1.0.11.</span></p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="alembic.ddl.sqlite.SQLiteImpl.requires_recreate_in_batch">
+<code class="sig-name descname">requires_recreate_in_batch</code><span class="sig-paren">(</span><em class="sig-param">batch_op</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.ddl.sqlite.SQLiteImpl.requires_recreate_in_batch" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return True if the given <code class="xref py py-class docutils literal notranslate"><span class="pre">BatchOperationsImpl</span></code>
+would need the table to be recreated and copied in order to
+proceed.</p>
+<p>Normally, only returns True on SQLite when operations other
+than add_column are present.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="alembic.ddl.sqlite.SQLiteImpl.transactional_ddl">
+<code class="sig-name descname">transactional_ddl</code><em class="property"> = False</em><a class="headerlink" href="#alembic.ddl.sqlite.SQLiteImpl.transactional_ddl" title="Permalink to this definition">¶</a></dt>
+<dd><p>SQLite supports transactional DDL, but pysqlite does not:
+see: <a class="reference external" href="http://bugs.python.org/issue10740">http://bugs.python.org/issue10740</a></p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">DDL Internals</a><ul>
+<li><a class="reference internal" href="#module-alembic.ddl.mysql">MySQL</a></li>
+<li><a class="reference internal" href="#module-alembic.ddl.mssql">MS-SQL</a></li>
+<li><a class="reference internal" href="#module-alembic.ddl.postgresql">Postgresql</a></li>
+<li><a class="reference internal" href="#module-alembic.ddl.sqlite">SQLite</a></li>
+</ul>
+</li>
+</ul>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="script.html"
+                        title="previous chapter">Script Directory</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="../changelog.html"
+                        title="next chapter">Changelog</a></p>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../changelog.html" title="Changelog"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="script.html" title="Script Directory"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Alembic 1.0.11 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >API Details</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2010-2019, Mike Bayer.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.1.2.
+    </div>
+  </body>
+</html>

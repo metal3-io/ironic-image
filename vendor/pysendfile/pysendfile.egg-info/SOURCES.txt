@@ -1,0 +1,14 @@
+.travis.yml
+HISTORY.rst
+LICENSE
+MANIFEST.in
+Makefile
+README.rst
+sendfilemodule.c
+setup.py
+pysendfile.egg-info/PKG-INFO
+pysendfile.egg-info/SOURCES.txt
+pysendfile.egg-info/dependency_links.txt
+pysendfile.egg-info/top_level.txt
+test/benchmark.py
+test/test_sendfile.py

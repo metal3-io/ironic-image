@@ -1,0 +1,792 @@
+CHANGES
+=======
+
+1.66.1
+------
+
+* Fix wrong log level during heartbeat
+
+1.66.0
+------
+
+* Move grpcio from requirements.txt to extras
+* Blacklist sphinx 2.1.0
+
+1.65.0
+------
+
+* Move test deps to test-requirements.txt
+* Remove unused requirements
+* Update Sphinx requirement and uncap grpcio
+* Referencing testenv deps now works
+* Update master for stable/stein
+* Replace git.openstack.org URLs with opendev.org URLs
+* Remove py35, add py37 classifiers
+* Unblock tooz gate
+* OpenDev Migration Patch
+* add python 3.7 unit test job
+
+1.64.2
+------
+
+
+1.64.1
+------
+
+* Fixed UnicodeEncodeError for Python2 unicode objects
+
+1.64.0
+------
+
+* More explicitly document driver connection strings
+* Unblock tooz gate
+* Change openstack-dev to openstack-discuss
+
+1.63.1
+------
+
+
+1.63.0
+------
+
+* coordination: do not retry the whole heartbeat on fail
+* Use templates for cover
+* Migrate to stestr
+* Fix coverage tests
+* Switch to autodoc\_default\_options
+* Ensure consistent encoding of strings for ID
+* add lib-forward-testing-python3 test job
+* add python 3.6 unit test job
+* import zuul job settings from project-config
+* Update reno for stable/rocky
+* Add release note link in README
+* fix tox python3 overrides
+
+1.62.0
+------
+
+* Trivial: Update pypi url to new url
+* set default python to python3
+* Implement group support for etcd3gw
+
+1.61.0
+------
+
+* Zuul: Remove project name
+* Zuul: Remove project name
+* Update reno for stable/queens
+* partitioner: do not use hash() to determine object identity
+* msgpack-python has been renamed to msgpack
+* Follow the new PTI for document build
+* Remove tox\_install.sh
+* Use native Zuul v3 tox jobs
+* Add doc/requirements.txt
+* Remove setting of version/release from releasenotes
+* Zuul: add file extension to playbook path
+* Move legacy jobs to project
+
+1.59.0
+------
+
+* Acquire fails with "ToozError: Not found"
+* redis: always remove lock from acquired lock when release()ing
+* redis: log an error on release failure
+* Use the same default timeout for async result
+* Update reno for stable/pike
+
+1.58.0
+------
+
+* Update URLs in documents according to document migration
+* doc: use list-table for driver support tables
+* rearrange existing documentation to fit the new standard layout
+
+1.57.4
+------
+
+* Switch from oslosphinx to openstackdocstheme
+* Turn on warning-is-error in doc build
+* Add etcd3 group support
+
+1.57.3
+------
+
+* Make sure Lock.heartbeat() returns True/False
+* etcd3: skip ProcessPool based test
+* etcd3: replace custom lock code by more recent etcd3 lock code
+* pgsql: fix self.\_conn.close() being called without connection
+* test: leverage existing helper method in test\_partitioner
+* coordination: remove double serialization of capabilities
+* tests: fix missing .get() on some group operations
+* Mutualize executor code in a mixin class
+* coordination: fix reversed fiels for \_\_repr\_\_ for events
+* Fix docstring for group and member id
+
+1.57.2
+------
+
+* {my,pg}sql: close connections when out of retry
+* Disable test\_get\_lock\_serial\_locking\_two\_lock\_process for etcd3
+* Simplify env list and test running
+* Factorize tox envlist for better readability
+
+1.57.1
+------
+
+* consul: remove unused executor
+
+1.57.0
+------
+
+* Separate etcd3gw driver that uses the etcd3 grpc gateway
+* etcd3: use discard() rather than remove()
+* etcd: fix blocking argument
+* etcd: fix acquire(blocking=True) on request exception
+* etcd3: fix test run
+* coordination: factorize common async result futures code
+
+1.56.1
+------
+
+* Fix psycopg2 connection argument
+
+1.56.0
+------
+
+* doc: update heartbeat doc to use start\_heart=True
+* sql: close connection for lock if not used
+* http->https for security
+* etcd3: add etcd3 coordination driver
+
+1.55.0
+------
+
+* Implement heartbeat for FileDriver
+* simplify hashring node lookup
+
+1.54.0
+------
+
+* redis: fix concurrent access on acquire()
+* tests: tests fail if no URL is set + run partitioner tests on basic drivers
+* tests: fix etcd and consul test run
+* add weight tests for add\_nodes
+* get weight of existing members
+* coordination: do not get member list if not needed
+* Add shared filelock
+
+1.53.0
+------
+
+* Enhance heartbeat sleep timer
+
+1.52.0
+------
+
+* FileDriver:Support multiple processes
+* Switch tests to use latest etcd - 3.1.3
+
+1.51.0
+------
+
+* pass on partitions
+* hashring: allow to use bytes as node name
+
+1.50.0
+------
+
+* postgresql: only pass username and password if they are set
+* Rewrite heartbeat runner with event
+* Adds authentication support for zookeeperDriver
+
+1.49.0
+------
+
+* support unicode node name
+* Update reno for stable/ocata
+
+1.48.0
+------
+
+* Fix test function name with two underscores to have only one
+
+1.47.0
+------
+
+* Add partitioner implementation
+* Stop making tooz.utils depending on tooz.coordination
+* [doc] Note lack of constraints is a choice
+* The 'moves.moved\_class' function creates a new class
+* Add weight support to the hashring
+* coordination: allow to pass capabilities in join\_group\_create()
+* coordination: fix moved\_class usage for ToozError
+* zookeeper: switch to standard group membership watching
+* Add a hashring implementation
+* Move ToozError to root module
+* Fixup concurrent modification
+* Replaces uuid.uuid4 with uuidutils.generate\_uuid()
+
+1.46.0
+------
+
+* Do not re-set the members cache for watchers by default
+* coordination: add \_\_repr\_\_ for join/leave events
+* coordination: renforce event based testing
+* Factorize member\_id in the base coordinator class
+* Use the internal group of list rather than listing the groups
+* Move the cached-based watcher implementation into its own class
+
+1.45.0
+------
+
+* Factorize group quit on stop()
+* coordination: make get\_members() return a set
+* Replace 'assertTrue(a (not)in b)' with 'assert(Not)In(a, b)'
+* Changed author and author-email
+* redis: make sure we don't release and heartbeat a lock at the same time
+* coordinator: add join\_group\_create
+* Replace retrying with tenacity
+* Add CONTRIBUTING.rst
+* Replace 'assertTrue(a in b)' with 'assertIn(a, b)' and 'assertFalse(a in b)' with 'assertNotIn(a, b)'
+* Using assertIsNone() instead of assertEqual(None, ...)
+* tox: use pretty tox output
+* tox: install docs dependency in docs target and reno
+* Bump hacking to 0.12
+* Add reno for release notes management
+
+1.44.0
+------
+
+* Changed the home-page link
+* file: update .metadata atomically
+* file: return converted voluptuous data
+* file: move \_load\_and\_validate to a method
+* file: move \_read\_{group,member}\_id to staticmethod-s
+* etcd: run tests in clustering mode too
+* Use method ensure\_tree from oslo.utils
+* Switch from Python 3.4 to Python 3.5
+* Install only needed packages
+* Fix a typo in file.py
+* Update etcd version in tests
+
+1.43.0
+------
+
+* Makedirs only throws oserror, so only catch that
+
+1.42.0
+------
+
+* etcd: don't run heartbeat() concurrently
+* Raise tooz error when unexpected last entries found
+* etcd: properly block when using 'wait'
+* Share \_get\_random\_uuid() among all tests
+* Updated from global requirements
+* Clean leave group hooks when unwatching
+* Fix the test test\_unwatch\_elected\_as\_leader
+* Updated from global requirements
+
+1.41.0
+------
+
+* File driver: properly handle Windows paths
+* Updated from global requirements
+* Updated from global requirements
+
+1.40.0
+------
+
+* Add docs for new consul driver
+* Change dependency to use flavors
+* Run doc8 only in pep8 target
+* Move pep8 requirements in their own target
+* zookeeper: do not hard depend on eventlet
+* Remove unused iso8601 dependency
+* tests: remove testscenario usage
+* file: set no timeout by default
+* tests: move bad\_url from scenarios to static test
+* Expose timeout capabilities and use them for tests
+* Use pifpaf to setup daemons
+
+1.39.0
+------
+
+* Updated from global requirements
+
+1.38.0
+------
+
+* Using LOG.warning instead of LOG.warn
+* Updated from global requirements
+* redis: do not force LuaLock
+* Fix coordinator typo
+* Updated from global requirements
+* Ensure etcd is in developer and driver docs
+
+1.37.0
+------
+
+* Remove unused consul future result
+* Updated from global requirements
+* Add a consul based driver
+* file: make python2 payload readable from python3
+
+1.36.0
+------
+
+* Updated from global requirements
+
+1.35.0
+------
+
+* Drop babel as requirement since its not used
+* Updated from global requirements
+* Updated from global requirements
+* Updated from global requirements
+* Updated from global requirements
+* coordination: expose a heartbeat loop method
+
+1.34.0
+------
+
+
+1.33.0
+------
+
+* Updated from global requirements
+* Compute requires\_beating
+* Fix calling acquire(blocking=False) twice leads to a deadlock
+
+1.32.0
+------
+
+* Raises proper error when unwatching a group
+
+1.31.0
+------
+
+* Updated from global requirements
+* Updated from global requirements
+* Add .tox, \*.pyo and \*.egg to .gitignore
+* Enable OS\_LOG\_CAPTURE so that logs can be seen (on error)
+
+1.30.0
+------
+
+* Updated from global requirements
+* Add lock breaking
+* pgsql: fix hostname parsing
+* Updated from global requirements
+* Updated from global requirements
+* Update voluptuous requirement
+* Updated from global requirements
+* Updated from global requirements
+* Have zookeeper heartbeat perform basic get
+* Add desired characteristics strict subset validation
+* Add base64 key encoder (and validations)
+* Use voluptuous instead of jsonschema
+* Add programatic introspection of drivers characteristic(s)
+* Updated from global requirements
+* pep8: fix remaining errors and enable all checks
+* Use utils.convert\_blocking to convert blocking argument
+* Adjust some of the zookeeper exception message
+* Fix etcd env setup
+* tests: do not hardcode /tmp
+* utils: replace exception\_message by exception\_to\_unicode
+* Add a default port and default host
+* etcd: driver with lock support
+* Use utils.to\_binary instead of using redis module equivalent
+* Remove tested under 2.6 from docs
+
+1.29.0
+------
+
+* Updated from global requirements
+* Add basic file content schema validation
+* Spice up the driver summary/info page
+* Make all locks operate the same when fetched from different coordinators
+* Add noted driver weaknesses onto the drivers docs
+* Updated from global requirements
+* File: read member id from file with suffix ".raw"
+* Reduce duplication of code in handling multi-type blocking argument
+* Updated from global requirements
+* Add comment in memcache explaining the current situation with lock release
+
+1.28.0
+------
+
+* Add 'requires\_beating' property to coordination driver
+* {pg,my}sql: fix AttributeError on connection failure
+* tests: allow ipc to bypass blocking=False test
+* pgsql: remove unused left-over code
+* Add 'is\_still\_owner' lock test function
+
+1.27.0
+------
+
+* Updated from global requirements
+* Updated from global requirements
+* Remove python 2.6 and cleanup tox.ini
+
+1.26.0
+------
+
+* Updated from global requirements
+* Allow specifying a kazoo async handler 'kind'
+* Updated from global requirements
+
+1.25.0
+------
+
+* Updated from global requirements
+* Add standard code coverage configuration file
+* docs - Set pbr 'warnerrors' option for doc build
+* Include changelog/history in docs
+* Updated from global requirements
+* Expose Znode Stats and Capabilities
+* Allow more kazoo specific client options to be proxied through
+
+1.24.0
+------
+
+* Updated from global requirements
+
+1.23.0
+------
+
+* Changes to add driver list to the documentation
+* Updated from global requirements
+
+1.22.0
+------
+
+* Updated from global requirements
+* Accept blocking argument in lock's context manager
+* Make RedisLock's init consistent with other locks
+* Updated from global requirements
+
+1.21.0
+------
+
+* Raise exception on failed lock's CM acquire fail
+* Be more restrictive on the executors users can provide
+
+1.20.0
+------
+
+* Updated from global requirements
+* Updated from global requirements
+* Use futurist to allow for executor providing and unifying
+* Use a lua script(s) instead of transactions
+
+1.19.0
+------
+
+* Updated from global requirements
+* Change Lock.name to a property
+* Update .gitignore
+* Updated from global requirements
+* Fixup dependencies
+* Expose started state of coordinator to external
+* Updated from global requirements
+* Updated from global requirements
+
+1.18.0
+------
+
+* Remove tooz/openstack as it is empty and not used
+* Fix sp 'seonds' -> 'seconds'
+* Ensure run\_watchers called from mixin, not base class
+* Updated from global requirements
+* Update compatibility matrix due to file drivers new abilities
+
+0.17.0
+------
+
+* No longer need kazoo lock custom retry code
+* Ensure unwatch\_elected\_as\_leader correctly clears hooks
+
+0.16.0
+------
+
+* Updated from global requirements
+* Updated from global requirements
+* Ensure lock(s) acquire/release returns boolean values
+* Expose 'run\_elect\_coordinator' and call it from 'run\_watchers'
+* Share most of the \`run\_watchers\` code via a common mixin
+* Remove 2.6 classifier
+* Remove file-driver special no-async abilities
+* Delay interpolating the LOG string
+* Use \`encodeutils.exception\_to\_unicode\` for exception -> string function
+* Use the \`excutils.raise\_with\_cause\` after doing our type check
+* Updated from global requirements
+* Use the 'driver\_lock' around read operations
+* Updated from global requirements
+* Switch badges from 'pypip.in' to 'shields.io'
+* Updated from global requirements
+* Add watch file driver support
+* Make the file driver more capable (with regard to groups)
+* Ensure locks can not be created outside of the root file driver directory
+* Updated from global requirements
+* Use MySQL default port when not set explicitly
+* Use fasteners library for interprocess locks
+* Implement watch/unwatch elected\_as\_leader for redis driver
+* Updated from global requirements
+* Use lua locks instead of pipeline locks
+* Move more string constants to class constants with docstrings
+* Updated from global requirements
+* Updated from global requirements
+* Remove support for redis < 2.6.0
+* Expose Zookeeper client class constants
+* Expose redis client class constants
+* Use a serialization/deserialization specific exception
+* Expose memcache coord. class constants
+* Explicitly start and execute most transactions
+* Provide and use a options collapsing function
+* Add zookeeper tag in setup.cfg
+* Use pymemcache pooled client
+* Use oslo.serialization msgpackutils
+* Provide ability for namespace customization for Zookeeper and Zake drivers
+* Typo in Locking doc
+* Move optional driver requirements to test-requirements.txt
+* Have run\_watchers take a timeout and respect it
+* Heartbeat on acquired locks copy
+* Avoid using a thread local token storage
+
+0.15.0
+------
+
+* Fix param name to be its right name
+* Replace more instance(s) of exception chaining with helper
+* Just use staticmethod functions to create \_dumps/\_loads
+* Uncap library requirements for liberty
+* Link AOF to redis persistence docs
+* Add exception docs to developer docs
+* Add + use helper to raise + chain exceptions
+* Allow the acquired file to be closed manually
+* Updated from global requirements
+* Silence logs + errors when stopping and group membership lost
+* Make and use a thread safe pymemcache client subclass
+* Handle errors that come out of pymemcache better
+* Use rst inline code structure + link to sentinel
+
+0.14.0
+------
+
+* Beef up the docstrings on the various drivers
+* fix lock concurrency issues with certain drivers
+* Add pypi download + version badges
+* Denote that 2.6 testing is still happening
+* Updated from global requirements
+* Use a sentinel connection pool to manage failover
+* fix mysql driver url parsing
+
+0.13.1
+------
+
+* Switch to non-namespaced module imports
+* Add a driver feature compatibility matrix
+* Remove support for 3.3
+
+0.13.0
+------
+
+* Two locks acquired from one coord must works
+* Updated from global requirements
+* Releases locks in tests
+* Allow coordinator non-string options and use them
+* Since we use msgpack this can be more than a str
+* Updated from global requirements
+* Avoid re-using the same timeout for further watcher ops
+
+0.12
+----
+
+* retry: fix decorator
+* file: fix typo in errno.EACCES
+
+0.11
+----
+
+* Add a file based driver
+* Upgrade to hacking 0.10
+* Update sentinel support to allow multiple sentinel hosts
+* Allow to pass arguments to retry()
+* IPC simplification
+
+0.10
+----
+
+* Add support for an optional redis-sentinel
+* README.rst tweaks
+* A few more documentation tweaks
+* Sync requirements to global requirements
+* Add create/join/leave group support in IPC driver
+* Add driver autogenerated docs
+* Update links + python version supported
+* zookeeper: add support for delete group
+* redis: add support for group deletion
+* tests: minor code simplification
+* memcached: add support for group deletion
+* memcached: add support for \_destroy\_group
+* Switch to using oslosphinx
+* Add doc on how transaction is itself retrying internally
+* Fix .gitreview after rename/transfer
+* tests: use scenarios attributes for timeout capability
+* tests: check for leave group events on dead members cleanup
+* memcached: delete stale/dead group members on get\_members()
+* tests: remove check\_port
+* tests: do not skip test on connection error
+
+0.9
+---
+
+* doc: add missing new drivers
+* doc: switch examples to Zake
+* doc: add locking
+* Fix tox envlist
+* Drop Python 3.3 tests in tox
+* Allow tox with py34 and MySQL
+* Test connection error scenarios on more drivers
+* Translate psycopg2 errors/exceptions into tooz exceptions
+* Ensure 'leave\_group' result gotten before further work
+* watch\_leave\_group not triggering callback on expired members
+* Add MySQL driver
+* Discard 'self' from '\_joined\_groups' if we got booted out
+* Implement non-blocking locks with PostgreSQL
+* More retry code out of memcached
+* Add a PostgreSQL driver
+* Fix gate
+* Handle when a group used to exist but no longer does
+* tox: split redis/memcached env
+* Fix memcached heartbeat on start()
+* tox: splits test scenarios
+* Add a minimum redis version check while starting
+* Make requirement on redis 2.10.x explicit
+* Try to use PSETEX when possible
+* Use hdel with many keys where supported
+* Avoid logging warnings when group deleted or member gone
+* Ensure that we correctly expire (and cleanup) redis members
+* Various fixes for locks and version compatibility
+* Move sysv\_ipc deps to test-requirements
+
+0.8
+---
+
+* test: try to stop() first
+* Convert the rest of memcached driver functions to futures
+* Add a assertRaisesAny helper method
+* Allow zake to be tested
+* Add a redis driver
+* Ensure groups leaving returns are gotten
+* Raise the new OperationTimedOut when futures don't finish
+* Start to add a catch and reraise of timed out exceptions
+* Adjust the timeout to reflect the repeated retries
+* ipc: do not delete the lock if we never acquired it
+* Add home-page field
+
+0.7
+---
+
+* Split up the requirements for py2.x and py3.x
+* ipc: Fix acquire lock loop logic
+
+0.6
+---
+
+* Make lock blocking with no time out by default
+
+0.5
+---
+
+* coordination: remove destroy() from the lock protocol
+* IPC: fix a potential race condition at init
+* Fix IPC driver on OS X
+* Switch to oslo.utils
+* Blacklist retrying 1.3.0
+* Use futures to make parts of the memcached driver async
+* Have examples run in the py27 environment and make them work
+
+0.4
+---
+
+* Standardize the async result subclasses
+* Fix the comment which was borrowed from the IPC driver
+* Be more tolerant of unicode exceptions
+* Standardize on the same lock acquire method definition
+* Standardize on hiding the lock implementation
+* On lock removal validate that they key was actually deleted
+* Use a thread safe deque instead of a queue
+* Change inline docs about class fake storage variable
+* LOG a warning if the heartbeat can not be validated
+* Add doc8 to the py27 test running
+* Use the more reliable sysv\_ipc instead of posix\_ipc+lockutils
+* Only start zookeeper/memcached when not already running
+* Let zake act as a in-memory fully functional driver
+* Switch to a custom NotImplemented error
+* Ensure lock list isn't mutated while iterating
+* Move Zake driver code to separated Python module
+* Work toward Python 3.4 support and testing
+* Unlock the kazoo version
+* Bump up zake to be using the newer 0.1 or greater
+* Fix zake driver with latest release
+* memcached: switch leader election implementation to a lock
+* Add the generation of the documentation in tox.ini
+* Add coverage report
+
+0.3
+---
+
+* Switch to URL for loading backends
+* Import network\_utils from Oslo
+* coordination: add IPC driver
+* coordination: raise NotImplementedError as default
+* Add documentation
+* Upgrade hacking requirement
+* memcached: use retrying rather than sleeping
+* Use retrying instead of our custom code
+* Update requirements file matching global requ
+
+0.2
+---
+
+* memcached: implement leader election
+* Fix a race condition in one of the test
+
+0.1
+---
+
+* memcached: add locking
+* coordination: implement lock mechanism in ZK
+* coordination, zookeeper: add get\_leader()
+* coordination, zookeeper: implement leader election
+* coordination: remove wrong comment in tests
+* memcached: add support for leave events
+* memcached: implement {un,}watch\_join\_group()
+* coordination: raise GroupNotCreated when watching uncreated group
+* coordination, zookeeper: add {un,}watch\_leave\_group
+* coordination, zookeeper: add watch\_join\_group
+* tests: skip test if function is not implemented
+* coordination: add hooks system
+* Add memcached driver
+* zookeeper: use bytes as input/output type
+* tests: test client disconnection
+* coordination: add heartbeat method
+* Add pbr generated and testr files to gitignore
+* coordination: enhance MemberAlreadyExist exception
+* coordination: enhance GroupNotCreated exception
+* coordination: enhance MemberNotJoined
+* coordination: enhance GroupAlreadyExist exception
+* tests: test capabilities on non existent group/member
+* tests: add a test for group already existing
+* tests: fix variable name
+* Fix the default prototype for join\_group
+* Adds basic tests which deals with exceptions
+* Fixes TypeError in \_leave\_group\_handler
+* Remove \_wrap\_call\_kazoo
+* Add asynchronous API
+* Delete models.py and clean get\_members()
+* Add a fake ZooKeeper driver
+* Allow passing in a handler
+* First commit of Tooz
+* Added .gitreview

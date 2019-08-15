@@ -1,0 +1,59 @@
+- job:
+    name: swiftclient-swift-functional
+    parent: swift-dsvm-functional
+    description: |
+      Run swift's functional tests with python-swiftclient
+      installed from source instead as package from PyPI.
+    # Ensure that we install python-swiftclient from git and
+    # do not install from pypi. This is needed since the parent
+    # job sets zuul_work_dir to the swift directory and uses tox
+    # for installation.
+    required-projects:
+      - opendev.org/openstack/python-swiftclient
+
+- job:
+    name: swiftclient-functional
+    parent: swift-dsvm-functional
+    description: |
+      Run functional tests of python-swiftclient with
+      python-swiftclient installed from source instead as package from
+      PyPI.
+    required-projects:
+      - opendev.org/openstack/python-swiftclient
+    vars:
+      # Override value from parent job to use swiftclient tests
+      zuul_work_dir: "{{ zuul.projects['opendev.org/openstack/python-swiftclient'].src_dir }}"
+
+- job:
+    name: swiftclient-functional-py2
+    parent: swiftclient-functional
+    description: |
+      Run functional tests of python-swiftclient under Python 2
+    vars:
+      tox_envlist: py2func
+
+- project:
+    templates:
+      - check-requirements
+      - lib-forward-testing
+      - openstack-lower-constraints-jobs
+      - openstack-pypy-jobs-nonvoting
+      - openstack-python-jobs
+      - openstack-python35-jobs
+      - openstack-python36-jobs
+      - openstack-python37-jobs
+      - publish-openstack-docs-pti
+      - release-notes-jobs-python3
+    check:
+      jobs:
+        - swiftclient-swift-functional
+        - swiftclient-functional
+        - swiftclient-functional-py2
+    gate:
+      jobs:
+        - swiftclient-swift-functional
+        - swiftclient-functional
+        - swiftclient-functional-py2
+    post:
+      jobs:
+        - openstack-tox-cover

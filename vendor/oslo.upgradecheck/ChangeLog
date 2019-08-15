@@ -1,0 +1,74 @@
+CHANGES
+=======
+
+0.3.1
+-----
+
+
+0.3.0
+-----
+
+* Address nits from json change
+* Enable JSON results output
+* Sync Sphinx requirement
+* Replace git.openstack.org URLs with opendev.org URLs
+* OpenDev Migration Patch
+* Dropping the py35 testing
+* Update master for stable/stein
+
+0.2.1
+-----
+
+
+0.2.0
+-----
+
+* Change python3.5 job to python3.7 job on Stein+
+* Add doc params to run and register\_cli\_opts
+* Move displayed checker title to be in variable
+* Separate opt registration from command running
+* Update py33,py34 to py35,py36
+* doc: Switch to openstackdocstheme
+* doc: Remove crud from conf.py file
+* Change openstack-dev to openstack-discuss
+
+0.1.1
+-----
+
+* Force translation of table header
+
+0.1.0
+-----
+
+* Use template for lower-constraints zuul job
+* Move example implementation to docs
+* Add reno support
+* Don't run tempest jobs on changes
+* Add database access details to UpgradeCommands docstring
+* enable debug output for tests
+* tighten API for main()
+* Improve config handling
+* Modernize tox.ini
+* Use sphinx-build for all docs venvs
+* Add lower-constraints job
+* Shorten UpgradeCheck class names
+* Add proper documentation
+* Use python3 by default
+* Flesh out readme
+* Add .zuul.yaml and .stestr.conf
+* Flesh out readme
+* Add success test case
+* Handle exceptions from checks
+* Propagate return code
+* Add more unit tests
+* Test \_get\_details
+* Get coverage job working
+* Remove history file from docs
+* Migrate to stestr
+* Add docstring to main()
+* Fix pep8 failures
+* Proper requirements specification
+* Add \_i18n module
+* Add i18n support
+* Initial implementation
+* Initial commit

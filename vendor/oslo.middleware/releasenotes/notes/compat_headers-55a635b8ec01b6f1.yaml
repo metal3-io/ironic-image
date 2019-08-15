@@ -1,0 +1,7 @@
+---
+features:
+  - |
+    This adds a new ``compat_headers`` class attribute to the
+    ``RequestId`` middleware. That allows projects like Nova that have
+    API contracts on alternative request-id headers to adopt the oslo
+    ``RequestId`` middleware but still retain their API contract.

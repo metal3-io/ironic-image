@@ -1,0 +1,8 @@
+---
+fixes:
+  - >
+    [`bug 1527131 <https://bugs.launchpad.net/keystoneauth/+bug/1527131>`_]
+    Do not provide socket values for OSX and Windows.
+other:
+  - Added a betamax fixture for keystoneauth sessions.
+  - Added a RFC 7231 compliant user agent string.

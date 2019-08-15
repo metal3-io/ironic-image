@@ -1,0 +1,8 @@
+---
+features:
+  - Improve get_optimal_thread_count() function for
+    choosing a new default value which is 5 * cpu_count()
+    for max_workers used by ThreadPoolExecutor.
+  - Add a new get_optimal_process_count() function
+    for choosing default value which is same as
+    cpu_count() used by ProcessPoolExecutor.

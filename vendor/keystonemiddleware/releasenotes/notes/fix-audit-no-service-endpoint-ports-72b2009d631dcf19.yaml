@@ -1,0 +1,6 @@
+---
+fixes:
+  - |
+    [`bug 1797584 <https://bugs.launchpad.net/keystonemiddleware/+bug/1797584>`_]
+    Fixed a bug where the audit code would select the wrong target service
+    if the OpenStack service endpoints were not using unique TCP ports.

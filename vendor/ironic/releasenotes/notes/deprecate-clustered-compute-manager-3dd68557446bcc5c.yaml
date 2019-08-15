@@ -1,0 +1,10 @@
+---
+deprecations:
+  - |
+    The ClusteredComputeManager is now deprecated.
+
+    The Newton version of Nova adds functionality to the ironic virt driver to
+    support multiple compute hosts without using the hack we call
+    ClusteredComputeManager. As such, we are marking this unsupported
+    component as deprecated, and plan to remove it before the end of the Ocata
+    development cycle.

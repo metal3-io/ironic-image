@@ -1,0 +1,5 @@
+---
+deprecations:
+  - |
+    The configuration option ``[swift]max_retries`` is deprecated. It has been
+    doing nothing for a few releases already.

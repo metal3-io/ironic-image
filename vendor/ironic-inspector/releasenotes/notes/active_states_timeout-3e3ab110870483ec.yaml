@@ -1,0 +1,6 @@
+---
+fixes:
+  - |
+    Timeout in an active state led to an
+    `undefined transition error <https://bugs.launchpad.net/ironic-inspector/+bug/1662494>`_.
+    This is fixed and an introspection finishes now with ``Timeout`` error.

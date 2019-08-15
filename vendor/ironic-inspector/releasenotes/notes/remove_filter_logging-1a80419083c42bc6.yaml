@@ -1,0 +1,4 @@
+---
+fixes:
+  - Remove debug logging for PXE filter driver which tends to fill up
+    inspector logs when debug is enabled.

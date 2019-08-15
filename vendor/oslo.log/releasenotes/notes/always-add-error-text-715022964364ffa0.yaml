@@ -1,0 +1,9 @@
+---
+features:
+  - |
+    If the log format string includes ``%(error_summary)s``, it will
+    be replaced with a summary of the current error when there is one
+    and with "``-``" when there is no error.  If the log format string
+    does not include ``%(error_summary)s`` the error summary will be
+    appended to the end of the line automatically, only if there is an
+    error.

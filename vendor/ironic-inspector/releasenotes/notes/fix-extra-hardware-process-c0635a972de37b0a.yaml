@@ -1,0 +1,6 @@
+---
+fixes:
+  - |
+    Fixes an issue when extra_hardware plugin failed to save extra hardware
+    information to Swift, the collected information is not processed and
+    consumed.

@@ -1,0 +1,62 @@
+- job:
+    name: oslo.log-src-grenade-devstack
+    parent: legacy-dsvm-base
+    voting: false
+    irrelevant-files:
+      - ^(test-|)requirements.txt$
+      - ^setup.cfg$
+    post-run: playbooks/legacy/oslo.log-src-grenade-devstack/post.yaml
+    required-projects:
+      - openstack/grenade
+      - openstack/devstack-gate
+      - openstack/oslo.log
+    run: playbooks/legacy/oslo.log-src-grenade-devstack/run.yaml
+    timeout: 10800
+
+- job:
+    name: oslo.log-jsonformatter
+    parent: devstack-tempest
+    timeout: 10800
+    vars:
+      devstack_local_conf:
+        post-config:
+          $NOVA_CONF:
+            DEFAULT:
+              use_json: True
+          $NEUTRON_CONF:
+            DEFAULT:
+              use_json: True
+          $GLANCE_CONF:
+            DEFAULT:
+              use_json: True
+          $CINDER_CONF:
+            DEFAULT:
+              use_json: True
+          $KEYSTONE_CONF:
+            DEFAULT:
+              use_json: True
+    irrelevant-files:
+      - ^.*\.rst$
+      - ^api-ref/.*$
+      - ^doc/.*$
+      - ^releasenotes/.*$
+
+
+- project:
+    check:
+      jobs:
+        - oslo.log-src-grenade-devstack
+        - oslo.log-jsonformatter
+    gate:
+      jobs:
+        - oslo.log-jsonformatter
+    templates:
+      - check-requirements
+      - lib-forward-testing
+      - lib-forward-testing-python3
+      - openstack-lower-constraints-jobs
+      - openstack-python-jobs
+      - openstack-python36-jobs
+      - periodic-stable-jobs
+      - publish-openstack-docs-pti
+      - release-notes-jobs-python3

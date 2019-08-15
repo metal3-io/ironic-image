@@ -1,0 +1,9 @@
+---
+fixes:
+  - |
+    When ``delay_auth_decision`` is enabled and a Keystone failure prevents
+    a final decision about whether a token is valid or invalid, it will be
+    marked invalid and the application will be responsible for a final auth
+    decision. This is similar to what happens when a token is confirmed *not*
+    valid. This allows a Keystone outage to only affect Keystone users in a
+    multi-auth system.

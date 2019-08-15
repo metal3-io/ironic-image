@@ -1,0 +1,814 @@
+CHANGES
+=======
+
+0.9.3
+-----
+
+* Improve handling of :module: in wsme documenters
+* Change flask restful module name
+* fix a typo in documentation
+* Fix (some) tests for modern flask and pep8
+
+0.9.2
+-----
+
+* Remove white space between print ()
+* Fix: Sphinx extension on Python3
+
+0.9.1
+-----
+
+* Fix the setup.cfg metadata
+
+0.9.0
+-----
+
+* Print exceptions raised from from\_param methods
+* Fix pep8 issues and switch to py35 in tox.ini
+* [doc] Complete doc requirements
+* Add the 0.8.0 changes list
+* wsattr.\_\_set\_\_() catchs TypeError
+* Fix jenkins failure
+* Port test\_cornice to Python 3
+* Change the repositories from stackforge to openstack
+* Update .gitreview for new namespace
+
+0.8.0
+-----
+
+* Return 400, if the query string is not a dict
+* rest: return 415 when content-type is invalid
+* json: raise ValueError invalid list or dict
+* Fixes exception path with the datatype is a Object
+* Update README formatting for release tools
+* Set up dependencies for cross-tests
+
+0.7.0
+-----
+
+* Add instructions to configure cornice with WSME
+* Move ipaddr to netaddr
+* Add pytz as a dependency
+* Fix wrong reference to status argument in the docs
+* Added timezone support to parse\_isodatetime
+* Complex types should check unexpected attributes
+* Replace deprecated assertEquals with assertEqual
+* Update changes doc
+* Ensure UserType objects are converted to basetype
+* Convert built-in types when passed as strings
+* Enable real testing of python 3.4
+* Multiple protocol accept or content-type matching
+* Raise an InvalidInput if you get a ValueError from JSON data
+* Return a 400 status code on invalid JSON input
+* Remove unsupported python versions from setup.cfg
+* Clean up setup.py and add requirements.txt
+* Remove tab character from setup.cfg
+* Add full MIT license
+* Fix i18n when formatting exception
+* Converts prints to logging.debug calls
+* Change client-side error logging to debug
+* Pecan: Make it possible to use the Response to return a non-default return type
+* Fixing spelling error on MIME Type Errors and PEP8
+* Improve Accept and Content-Type handling
+* Fix pep8 w503 errors
+* Correct pep8 errors from imports in weird places
+* several fixes for SOAP protocol
+* [doc] Update changes list
+
+0.6.4
+-----
+
+* Include tests in the source distribution (so pecan can download and run them)
+
+0.6.3
+-----
+
+* Disable universal wheels
+
+0.6.2
+-----
+
+* Fix passing Dict/Array based UserType as params
+* Document next version changes
+* Allow non-auto-registered complex type
+* Make the flask adapter working with flask.ext.restful
+* Avoid Sphinx 1.3x in the tests
+* Doc: status= -> status\_code=
+* Minor documentation edits
+* Fix tox configuration
+* Add support for manually specifying supported content types in @wsmeexpose
+* Fix broken sphinx tests
+* fix errors/warnings in tests
+* Fix validation of IPv{4,6}AddressType
+* Fix printing object reference on StringType
+* Use APIPATH\_MAXLEN from the right module
+
+0.6.1
+-----
+
+* one more update for 0.6.1 change list
+* Fix error: variable 'kw' referenced before assignment
+* Fix pep8 errors
+* Update change list for 0.6.1 release
+* Fix default handling for zero values
+* Fixing spelling mistakes
+* A proper check of UuidType
+* pecan: cleanup, use global vars and staticmethod
+* args\_from\_args() to work with an instance of UserType
+
+0.6
+---
+
+* Add 'readonly' parameter to wsattr
+* Fix typos in documents and comments
+* Support dynamic types
+* Support building wheels (PEP-427)
+* Fix a typo in the types documentation
+* Add IntegerType and some classes for validation
+* Use assertRaises() for negative tests
+* Remove the duplicated error message from Enum
+* Drop description from 403 flask test case
+* Fix SyntaxWarning under Python 3
+
+0.5b6
+-----
+
+* Add changes entry for 0.5b6
+* json: convert value to string before encoding
+* Run Flask tests by default
+* Validate body when using Pecan
+* Remove MANIFEST.in
+* Return a ClientSideError if unable to convert data
+* Add custom error code to ClientSideError
+* doc: remove useless validate import
+* Enable and fix Sphinx tests
+* Handle [] {} for body in rest protocols
+* types: fix error return when None is in Enum
+* Add a test environment against pecan's development (master) branch
+* pecantest: remove useless config.py
+* Include Pecan tests in default Python environment
+* Add a test case for wsattr default
+* Handle mandatory attributes
+* Remove various usage of sys.exc\_info()
+* Minor code cleanups
+
+0.5b5
+-----
+
+* update the b5 release date
+* Add improved support for HTTP response codes in cornice apps
+* Remove version number from setup.cfg
+
+0.5b4
+-----
+
+* Update tox config to allow packaging jobs to work
+
+0.5b3
+-----
+
+* The cornice adapter will not make it in 0.5b3
+* Completed Changelog
+* Add improved support for HTTP response codes in TG 1.x apps
+* Add improved support for HTTP response codes in flask apps
+* Require the ordereddict package for py26
+* pep8 fixes, including a declaration in tox.ini for running flake8
+* Remove py25 and add 26 support to tox
+* Remove a deprecated flag from tox.ini
+* Changelog for version 0.5b3
+* Fix BaseMeta with six >= 1.4.0
+* Fix for returned status code and .gitignore
+* Add a py33 tox target
+* Fix attributes sorting based on source code
+* Sort set in type exception
+* Switch to pbr
+* Setup a .gitignore file
+* Fix a little syntax error
+* Update README and package metadata to reflect gerrit review process
+* Add .gitreview file
+* Merged in sileht/wsme/sileht/unicode-clientsideerror (pull request #16)
+* Support unicode message in ClientSideError
+* Fix issue #11 in the pecan adapter
+* Add a unittest to reproduce issue #11
+* Require a python2.5 compatible version of Jinja2
+* The Response object can now carry error details. Not sure about this though, it needs refinements
+* Fix inner null objects in the extdirect protocol
+* Fix returning objects with object attributes set to 'None'
+* More --nologcapture to run tests so that suds does not get in the way
+* use --nologcapture to avoid a nasty failure when suds do some logging
+* Use assertEquals so we see what is the wrong value if any
+* Merged in asalkeld/wsme-2 (pull request #15)
+* Test changing the default status\_code in pecan
+* Add a test to make sure we can use the Response from pecan
+* Change version to 0.5b3 (may change to 0.5 directly)
+* pecan: Make it possible to use the Response to return non-default status codes
+* Added tag 0.5b2 for changeset d3e5eee0b150
+
+0.5b2
+-----
+
+* Prepare next release
+* Install mini-doc now use pip
+* wsmeext.cornice now handle errors properly
+* Tests cornice resource
+* Include missing files
+* wsmeext.cornice.signature can now decorate resource class methods
+* Pecan adapter: Debug mode (which returns the exception tracebacks to the client) can be enabled by the pecan application configuration
+* Explicitely ignore the routines when scanning a class
+* Fix a problem when a complex type has a 'attr' attribute, due to the DataHolder \_\_slots\_\_ list construction, which leads to a DataHolder having a wsattr
+* Please flake8
+* Changed the way datas of complex types are stored. In previous versions, an attribute was added to the type for each attribute, its name being the attribute name prefixed with '\_'
+* Allow a wsme.types.Base child class to override the default 'wsattr' class by having a \_\_wsattrclass\_\_ class attribute
+* If dateutil is present, dateutil.parser is used to aparse the iso dates
+* The rest encodings now use the parse\_iso[date|time] functions of wsme.utils
+* Fix ClientSideError constructor
+* The cornice adapter now handle the url matched parameters
+* Fix the ClientSideError constructor so that it is propertly displayed in the backtrace
+* Small documentation improvements
+* Use a cyrilic unicode sample in the demo instead of japanese so that the pdf build is easier
+* Add a chapter on the use of HostRequest
+* Improve the documentation
+* Add the last change to the changelog
+* Move the missing argument verification in a wsme.runtime module so that it can be used in all adapters
+* Move the function documentation code to a separate function
+* A new HostRequest type can be used to have the host framework request object passed to the exposed functions
+* Create some (incomplete) tests for the cornice adapter and fix it
+* Add tests and fix check ordering in flask.py
+* Backed out changeset d6facd75c051
+* Fix typo
+* Fix typo
+* Re-iterate status\_code code
+* Merged cdevienne/wsme into default
+* Document the Flask adapter
+* Fix array parameters support in the Flask adapter
+* Fixup support for content types in other places then Headers
+* Support override of response format via request.dataformat
+* Add support for passing status\_code or getting it from request
+* Fix the way the TG adapter calls wsme.rest.args.get\_args
+* Fix the way the pecan adapter calls wsme.rest.args.get\_args
+* Various fixes for the flask adapter
+* Add more tests
+* Downgrade webtest for tg11 and tg15 tests that are python2.5 based
+* Readd webtest for python 3
+* More python2.5 workaround
+* Workaround issues with python2.5 environment tests
+* Fix the serverside error test
+* flask is now part of the default test suite
+* Test & fix Server-side errors
+* Flask simple call now works
+* Remove ipdb
+* New flask adapter + test (run "tox -e flask" to test)
+* update the Changelog for next version + update version number
+* Fix a bug when the only parameter of a function is a 'body' parameter
+* Add a test to reproduce the bug reported by Endre Karlson
+* Add a test for the body= parameter of wsexpose
+* Re add the dev and build tags on version
+* Don't use the validate decorator in the first-page example
+* Remove the WSME-Soap dependency
+* Add missing modules to the packages list
+* Made the summary shorter (see issue #6)
+* Add a google analytics id
+* Added tag 0.5b1 for changeset 359199eb4e09
+
+0.5b1
+-----
+
+* Merging a dead branch (messed up with 'amend')
+* Merging a dead branch (messed up with 'amend')
+* Merging a dead branch (messed up with 'amend')
+* Merging a dead branch (messed up with 'amend')
+* Merging a dead branch (messed up with 'amend')
+* Merging a dead branch (messed up with 'amend')
+* Update the changelog and add a requirements file to give readthedoc a try
+* amends 9c4e1f9a0c129cbb690bdd0459530c793aa3273b
+* Document the tg1x and cornice adapters
+* Document the tg1x and cornice adapters
+* Start documenting the new integration approach
+* Rewrite a bit the introduction text
+* Now use the awesome 'Cloud' sphinx theme
+* Do not test py25 with std json
+* Do not test py32 with sqlalchemy 0.5 anymore
+* Update the dependencies in the documentation
+* Don't install wsme-sqlalchemy and wsme-extdirect to build the doc anymore
+* Fix a python3 w/o lxml issue with binary serialization in the soap protocol
+* Merged in wsme-sqlalchemy
+* Add missing dependencies
+* Now use toxgen to produce the tox.ini file
+* Add missing \_\_init\_\_.py in wsmeext.tests
+* add tests for file property of File
+* fix binary type tests for python 3
+* add tests for file types and fix a python 3 issue with handling files coming from fieldstorage objects
+* add tests for weakref conversions for type references
+* test invalid float values
+* add tests for binary encoding and decoding
+* add tests for ArrayType validation
+* amends a32bd89f8984b13f22a9fe5b66b881c91308e459
+* tox -e doc now produce the zipped html documentation too
+* tox -e doc now produce the zipped html documentation too
+* Tell about the \_\_body\_\_ parameter in the changelog
+* Fix the wsmeext.sphinxext module name
+* Fix the wsmeext.sphinxext module name
+* Add a 'doc' testenv that builds the documentation
+* Add a 'doc' testenv that builds the documentation
+* Complete the changelog for version 0.5b1
+* Complete the changelog for version 0.5b1
+* Set version to 0.5b1
+* Set version to 0.5b1
+* Use nosetests --with-coverage instead of coverage run for testenv that tests wsmeext submodules (I have issues with the namespace module)
+* Simplify \_\_body\_\_ extraction from params
+* Fix unicode values read from json input on python 2.5
+* Don't read the body if content\_length is 0-like
+* Choose float values that have no rounding issue on python 2.5 for the float multiplication test
+* Python 3 compatibility
+* Rename the body argument to \_\_body\_\_ in tests + now tests for request body single argument
+* Now rely on wsme.rest.args to parse the parameters, which avoids a lot of code duplication
+* Now handle \_\_body\_\_ parameter, which needed to add a mimetype parameter to the different args\_from\_\* functions
+* amends 1ea5bc68101a7f4075553df49fe58ba0b250316b
+* Add a test for multiply exposed functions
+* Add a test for multiply exposed functions
+* Don't use assertIn as it is supported from python 2.7 only
+* Use assertEquals(a, b) instead of assert a == b
+* Moved non-core features to the wsmeext namespace package
+* Pecan adapter is now at 100% of code coverage
+* Fix code coverage for pecan tests
+* Improve code coverage for the TG 1.5 adapter
+* Code cleaning + better code coverage of the TG1.1 adapter
+* Show missing lines in coverage reports
+* Now generate coverage reports for individual testenv
+* Fix the tg 1.x tests
+* Ignore all the tests reports
+* Merged in cmcdaniel/wsme/empty\_strings3 (pull request #11: restxml empty string fixes)
+* Fix Python 3 compatibility
+* restxml empty string fixes
+* Merged in cmcdaniel/wsme/json\_strictness (pull request #8: rest protocol detection: test Accept header first; use startswith for Content-Type match)
+* rest protocol detection: test Accept header first; use startswith for Content-Type match
+* Merged in cmcdaniel/wsme/bool\_fromsoap (pull request #7: Handle bool from xml properly; add setbool and getbool unit tests.)
+* Handle bool from xml properly; add setbool and getbool unit tests
+* Add a new parameter 'ignore\_extra\_args' to the @signature decorator (and its frontends @wsexpose)
+* Fix the TG 1.x adapters, the resquest.params are now needed by the get\_args function
+* Now supports non-indexed arrays of objects as GET parameters
+* Fix array as input GET parameters in the pecan adapter
+* Update the changelog
+* Mention the additional protocols in the intro
+* Better mentionning of the framework independance
+* Merged in dhellmann/wsme-sphinx (pull request #5)
+* Move the check for an empty body up
+* Add samples\_slot option to TypeDocumenter
+* Fixes for sphinxext
+* Add sample() method to ArrayType and DictType
+* Roll back previous change to the root XML tag name for sample data
+* Copy properties to decorator
+* Fix error handling tests for pecan
+* Add a test for client-side errors
+* Allow adapters to use the format\_exception function, and use it in the Pecan adapter. /\!\ the response status is not properly changed by the decorator yet
+* Allow the method autodocumenter (.. autofunction) to work without a Service parent (ie without a WSRoot). Added the path & method parameters that NOT considered for now
+* PEP8
+* Update datetypename() to work with DictType and ArrayType instances
+* Merged in dhellmann/wsme-validate (pull request #2)
+* show the docstring for a type before the formatted sample values
+* use tag name 'result' for sample data to match data returned by services
+* tighten up validate\_value logic and allow string promotion to integers
+* ignore all coverage output files
+* restrict the types that can be promoted to float
+* ignore emacs temporary files
+* Fix samples for functions parameters and return types
+* Fix xml & json samples by autotype
+* resolve types in pecan.wsexpose. It is a temporary solution
+* resolve types in pecan.wsexpose. It is a temporary solution
+* Merged in dhellmann/wsme-validate (pull request #1)
+* Fix the encode\_result call
+* allow type promotion to float
+* Use the new encode\_result functions of the rest encoding modules
+* Add unittests for returning array and dict of objects as attributes
+* Add unittests for returning array and dict of objects as attributes
+* Fix the \_\_eq\_\_ operator for ArrayType
+* Fix the \_\_eq\_\_ operator for ArrayType
+* Remove useless imports
+* Remove useless imports
+* Adapter for turbogears 1.1
+* Adding a tg 2.1 test case (not enabled for now)
+* Reorganise the tg1x adapters, and make the tg 1.5 adapter able to handle multiprotocol on 'native' rest
+* The tg1 adapter can now expose rest functions outside the WSRoot \_and\_ enable other other protocols. Soap is tested
+* Change the scan\_api interface. It now yield the original function and static args (typically the 'self' attribute). Thanks to that the lookup\_function method of WSRoot can access functions outside the WSRoot
+* Fix the module names
+* args\_from\_body now ignore empty bodies
+* Python <2.7 compat
+* Python 3 compat
+* Remove the parse\_arg tests (parse\_arg does not exist anymore), fix the json nest\_result option handling, and fix the encode\_sample tests and implementations
+* Rework the rest implementation. We now have a single protocol that can manupulate different dataformat thanks to the helpers provided by the xml, json and args modules (which will be used by the adapters too). Some corner cases still don't pass the unittest, and some code cleaning is required
+* Add a test for the pecan adapter
+* Move around the REST implementation : wsme.protocols.commons -> wsme.rest.args, wsme.protocols.rest -> wsme.rest.protocol, wsme.protocols.restxml/json -> wsme.rest.xml/json, wsme.protocols.\_\_init\_\_ -> wsme.protocol
+* Start working on a better tg 1.1 integration. Need to rework the rest implementation to make it easier (especially the body parsing)
+* Don't use wsme.release anymore
+* Change version to avoid dependencies problems in the CI
+* Make DummyProtocol inherit from Protocol because it now needs a 'iter\_routes' function
+* wsme.protocols.expose now accept templated paths, and can expose a single function several times
+* Introduce a new decoratore wsme.protocol.expose, which replaces the clumsy former pexpose
+* Reorganise the decorators. expose and validate are now in wsme.rest, and ws.api.signature becomes the raw decorator to declare a function signature. Got rid of the 'pexpose' decorator, which will be replaced later by a better way
+* The pecan adapter is now tested
+* Make json the default format
+* Rename WSRoot.scan\_api to WSRoot.\_scan\_api to avoid infinite recursion by scan\_api
+* Start working on adding protocols when used as a cornice complement
+* Cornice extension: Fix function args preparation, and choose the renderer based on the 'Accept' header
+* Adapter for cornice
+* Split get\_args in several functions to make adapters implementation easier
+* Add a paramter 'multiple\_expose' to the expose decorator
+* merge
+* Added tag 0.4 for changeset f06e004ca8e4
+
+0.4
+---
+
+* Add a test for one item long text arrays
+* Get WSME version from the package, not wsme.release
+* Update the changelog
+* Fix the sample include line numbers
+* Remove the b1 tag, 0.4 is about to be released
+* Move the imports to avoid cross-import problems (all this needs some rework)
+* Add a default value to FunctionDefinition.body\_type
+* Rest protocols can now take parameters from url + a parameter from the body by adding a parameter body= to expose()
+* Add an adapter for pecan
+* Add a helper function for adapters that need to convert a function arguments
+* Get rid of the function wrapper. The only case it was needed is for exposing a function several times, but this case can be handled differently. I may reintroduce it as an option
+* Introduce a new decorator: 'sig', which combines expose and validate in a single decorator
+* Now use six.with\_metaclass to create the Base type in a python 2/3 compatible way
+* spore.getdesc does not take a request anymore but only the host url (it makes the tests simplier)
+* Add a little demo of a SPORE client to call a function of the demo program
+* Fix the spore 'base\_url' attribute
+* Fix the request headers log
+* Test SPORE crud function descriptions
+* Python 3 compat
+* Fix the spore test, as some functions were added by restjson
+* Initial implementation of SPORE description of the api (fetch /api.spore to get it)
+* Fix test\_default\_usertype
+* Test text to bytes auto-conversion
+* text and bytes attributes now convert values from/to bytes/text when needed (ascii only conversion)
+* Remove the now useless test\_release (the release module was removed)
+* Still need to specify the requires int the setup.py, as d2to1 does not seem to handle python\_version dependant metadata
+* Now using d2to1, which simplifies a lot the setup.py
+* Added tag 0.4b1 for changeset 5ad01afed877
+
+0.4b1
+-----
+
+* Update the change log (preparing release 0.4b1
+* To avoid any array or dict duplication, use set() instead of list() for the registry array\_types and dict\_types attributes
+* Fix ArrayType \_\_eq\_\_ operator so that array types are not duplicated in the registry
+* Add more list corner cases to test the soap behavior with empty arrays
+* Allow 'None' to be set on an Array attribute
+* Mention the new wsme.types.Base type in the changelog
+* Fix the demo so that we can use the soap client again, and changed the function names in the client (the soap function naming scheme just changed)
+* Fix the array and dict registering. The register() function has to be rethought, as resolve\_type is doing more, and the ArrayType and DictType are in the game
+* Mention the wsme.wsgi replacement by wsme.WSRoot.wsgiapp in the changelog
+* Python 3 compatibility
+* Fix the Enum constructor, and document the change
+* Documents the File type
+* Rename FileType to File, and make it a complex type instead of a native one
+* Rest protocols should now accept multipart/form-data posts (see issue #4)
+* New type: FileType. Supports file inputs in forms + documents and demonstrate it in the demo. Should solve issue #4
+* Mention wsme.types.Base
+* The Base type for complex types now has a constructor that takes attribute values as kwargs
+* Now use WSRoot.wsgiapp() instead of wsme.wsgi.adapt()
+* Change the wsgi example to match the new way of obtaining a wsgi app from a WSRoot. Add a bottle integration example
+* completing the wsgiapp docstring
+* funcproxy now copy the function name
+* Remove the wsgi adapter, it is now a function on WSRoot
+* Fix a problem with protocol specific paths
+* Rest protocols now make use of the http method to select the function is needed
+* Use request.content\_lenght to check for a request.body existence before accessing it
+* Little english mistake fix
+* resolve\_type now always returns regular datatypes, never weak refs. Generally speaking weakrefs should remain inside the registry
+* Registry.lookup does not return weakrefs anymore. resolve\_type does it instead
+* Python 3 compatibility
+* Adapt tests and fix remaining issues with the list/dict handling changes
+* Fix various bugs revealed by the soap unit tests
+* Improve dict and array types handling by introducing DictType and ArrayType. Nested structures should have a better behavior
+* Fix the list of complex types handling (dicts are not ok yet, and lists still not complet imo)
+* Test attributes which are lists of complex types
+* Got lost in metaclass \_\_new\_\_/\_\_init\_\_ choice. Yet another attempt using both (needed by wsme-sqlalchemy)
+* My last commit was a mistake : it is better to use \_\_new\_\_, so that the class registering is done the later
+* Use the metaclass \_\_init\_\_ instead of \_\_new\_\_ so that the class inspection occurs later, making it possible to add attributes in a sub-metaclass \_\_new\_\_ of \_\_init\_\_
+* Use py2 & py3 compatible metaclass
+* Attempting a on-demand resolution of datatypes references, so we don't need to call resolve\_references anymore. It works with python 2, but not yet python 3 (some weakref issues)
+* Add a type Registry. It mainly allow to have easy cross-referenced types by setting the attribute datatype to the class name instead of the class instance. It may allow to have separate registry for different apis in the future
+* Update the demo to reproduce issue #3
+* Completing the Changelog
+* Add a test for unset attributes
+* Add tests for the sphinx extension, raising the total coverage over 95%
+* Fix Unset attributes serialisation
+* Reproduce a bug with unset attributes serialisation to xml
+* Introduce an adapter for tg 1.5 + unittest. It needs more realistic tests though
+* Add a b1 version tag
+* Now test the tg1 adapter
+* Improve code coverage
+* Simplifie the tox steps (no need for an initial clean)
+* Now cover wsme.protocols.\_\_init\_\_
+* Now tests wsme.release
+* restjson is now 100% covered by tests
+* Add --show-missing to the coverage report
+* Add wsme.tests to the egg dist
+* merge
+* Set version to 0.4, and update the documentation
+* tox now combine code coverage results
+* Point to the jenkins general dashboard instead of the wsme job
+* Make the webob requirements more precise depending on the python version Add Python 3.2 to the classifiers
+* webob 1.2b4 is not out yet..
+* Require the latest WebOb for python 3
+* Completed the python 3 port
+* Python 3 port in progress
+* Remove debug print statement
+* Fix the binary type decoding
+* Clarified the bytes/text types handling. Now all the restjson tests pass on python 2 and 3
+* The syntax is now python 3.2 compliant. A lot of tests still fail, I need to rethink how unicode / non-unicode are handled
+* Remove a debug print statement
+* Porting restjson to Python 3.2 (in progress)
+* Python 3.2 port
+* Python 3.2 port
+* Python 3.2 compat
+* Python 3.2 compat
+* Reduce the default envlist
+* test\_types unit tests now successfully pass under python 3.2
+* Added a tox configuration file to ease the python 3 port
+* Fix the README.rst filename
+* Correct a sentence
+* Change a bit the short description to make it more explicit
+* Add a link to the Changelog in the main description
+* Update the TODO list
+* Adding the precise Python versions and implementation classifiers
+* Add a missing indent
+* Make the examples more compact
+* Remove the .. highlight:: directives to remains plain-rst compatible
+* Attempt a rename of README to README.rst to force bb rendering
+* Add a small code sample at the very beginning of the documentation
+* Added tag 0.3 for changeset 603c8586b076
+
+0.3
+---
+
+* Preparing the 0.3 release
+* Update the changelog
+* The function documenter now add parameters and return value samples
+* Reached 100% test coverage of wsme.utils, which makes an overall coverage of 98% for the wsme module
+* wsme.types is now 100% covered by unit tests
+* Slightly improve wsme.root coverage
+* Fixed nil date/time decoding from xml
+* restxml now has a decent code coverage
+* simplejson and native json dumps formated output behave differently. Adapting the unittest that depends on it
+* More tests and coverage
+* Now check for unknown arguments in request params
+* Enable code coverage by default
+* Improve wsme.protocols.rest code coverage
+* 100% test coverage for wsme.protocols.commons
+* Improve detection of double-exposed functions + added a unittest
+* Improve documentation on types
+* Mention toggle.css and toggle.js installation in the documentation
+* Change version
+* Update the sentense about Sphinx integration features
+* handle\_signature should return a value
+* Start implementing xref on types
+* Remove debug print statements
+* Implements webpath and namespace detection
+* The service directive now handle a namespace
+* Now auto document the function parameters
+* Document a bit the sphinx extension
+* The sphinx ext is now able to basicaly autodocument the functions (just retrivieve the docstrings for now
+* load wsme/release.py in a python 3 friendly way
+* Now add data samples for the wanted protocols on the data types
+* Introduce a Protocol base class, and add a method to render a sample data (used by the documentation tool)
+* Use the agogo theme options instead of overloading the css
+* Re-put the agogo theme (sphinxdoc was just a test
+* Start working on the sphinx extension
+* Add the release dates
+* Added tag 0.3b2 for changeset d5eab01bf491
+
+0.3b2
+-----
+
+* Prepare the next release
+* TG1 server.webpath mechanics makes it impossible to use a filter on the controller itself. So we put it on the root controller and carrefully change the WSRoot webpath so that everything works properly
+* BugFix: if no Content-Type header is present, read\_arguments would fail
+* Completing the changelog
+* Better handling of errors on protocol selection
+* Don't stop if the body is application/x-www-form-urlencoded encoded and the request has params (for other encoding it would mean both params and a body were provided)
+* Add a cherrypy filter in the tg1 adapter so that the body is not parsed by cherrypy. This makes Webob happier when reading itself the body
+* Fix response status code transmission in the TG1 adapter
+* :class:\`wsattr\` now takes a 'default' parameter
+* Fix nested dict/list structures
+* Change version number
+* Update the documentation
+* handle dict and UserType as input from forms
+* Added tag 0.3b1 for changeset ebe2c6f228ad
+
+0.3b1
+-----
+
+* Avoid using a weakref.proxy for CallContext.request because we need to get a real ref to the request at some point in the tests
+* Test the 'division by zero' message in a smarter way so it adapts itself to the python version
+* Fix the test\_enum test (the error message now contains the attribute name
+* Rename WSRoot.transaction to WSRoot.\_transaction to avoid scan\_api failure in some cases
+* Add a per-call transaction management
+* Remove an empty file
+* Make the int and long types validation interchangeable
+* Fix dictionnary values validation
+* Fix: the dict attributes were not registered correctly
+* Now supports dictionnaries in addition to arrays
+* Mention the doc in the changes
+* Document a bit
+* Preparing next release
+* The restjson return values are not nested in the result attribute of an object. The former behavior can be obtained with the nest\_result protocol option
+* Code cleaning (thanks to flake8)
+* Add a setperson function to test complex function arguments
+* Better handling of function arguments as params (POST or GET)
+* Don't output Unset values
+* Fix the named attributes dump in restxml tests
+* Fix the test\_setnamedattrsobj test
+* Code cleaning
+* Implement and test the named attributes in the rest protocols
+* Add a 'name' attribute on wsattr and wsproperty
+* Unset now evaluate as False when converted to bool
+* Add the ShinningPanda jenkins URL
+* Fix user types, str and None values encoding/decoding
+* Fix registering of class inheriting from an already registerd class
+* Reproduce a bug when a Child complex type is registered after its Parent (it's not actually)
+* Fix Unset values validation
+* Add 'Unset' to the wsme module
+* Fix parse\_[date][time] that were using the Invalid exception from formencode
+* Fix array attributes validation
+* updated the todo list
+* Added tag 0.2.0 for changeset cfb5efc624f5
+
+0.2.0
+-----
+
+* Time for a 0.2.0
+* Documented REST+XML and a bit SOAP
+* Document REST+Json
+* More documentation for the next release
+* Enum now takes values as args instead of a list
+* binary is now a UserType, which simplify most of the protocols implementation
+* Now supports user types (non-complex types that are base on native types), the first on being Enum
+* Documented the ExtDirect protocol
+* Completed the change list
+* Add type validation on complex type attributes assignment
+* pep8 now likes wsme
+* Split the controller module into api, protocols and root
+* Improved the complex type handling by using python Descriptors for attributes. They also carry the attribute name, so that the \_wsme\_attributes is now a list of wsattr/wsproperty instead of a list of (name, wsattr/wsproperty)
+* Bugfix: a complex type used only in validate and never in expose was not registered
+* The decorators now wrap the exposed function so that children classes can expose the parent functions with different signatures
+* Fix DummyProtocol
+* Fix: Complex types normal properties were not ignored
+* Completed the change list
+* Completed the change list. version -> 0.2.0
+* Protocols can now implement batch-calls
+* Add a function to retrieve an attribute definition of a complex type
+* Fix self reference complex type registration
+* Add a pyramid integration example
+* Add a link to the documentation
+* Move the links to the README file
+* Move the titles to the README file
+* Now read the long\_description and the doc introduction from the README file
+* Fix inspection of classes with inheritance
+* The complex types attribute are now reset to 'Unset' when inspected
+* Add the authentication question to the todo list
+* Update to todo list
+* The ziphtml target now zip the doc in \_build instead of \_build/html
+* Added tag 0.1.1 for changeset c17de432c185
+
+0.1.1
+-----
+
+* Prepare the 0.1.1 release
+* Include the soap client example in the documentation
+* Completed the soap client example now that wsme-soap seems to work
+* Add a dependency on WSME-Soap
+* Add misc test functions
+* Test nested controllers
+* The function path now contains the function name
+* Remove the path attribute of FunctionDefinition, since a same FunctionDefinition could appears at different paths in an api tree
+* Rename list\_calls to iter\_calls and makes it an iterator
+* Prepare next release (should be soon)
+* Fix the little demo
+* Use addprotocol to that the protocol tests can pass options at instanciation
+* We now have a CallContext that follows a function execution from the path extraction to the result encoding
+* Fix the mandatory/default argument properties detection, and make the content-type detection more permissive
+* array attributes were potentially not registered
+* Rectify the integration examples
+* More test coverage + code cleaning
+* Fix a test
+* add WSRoot members doc
+* Update change list
+* Added tag 0.1.0 for changeset b0019e486c80
+
+0.1.0
+-----
+
+* Going 0.1.0 now that at least 1 application is runnging wsme. We are still in alpha state though
+* Protocols are now stored in a list so that the order is considered when selecting the right protocol for a request
+* expose now takes extra options that can be used by the protocols
+* getprotocol now takes the options as named arguments, which make it easier to use from outside
+* Remove the soap protocol (I am moving it to wsme-soap
+* Fix doc
+* WSRoot.addprotocol now takes keywords parameters and transmit them to getprotocol for instanciating the protocol
+* Update the change list and clean the demo
+* Added tag 0.1.0a4 for changeset b38c56a2b913
+
+0.1.0a4
+-------
+
+* Update the doc and the version number
+* Protocols are now found through entry points
+* Change the way framework adapters works. Now the adapter modules have a simple adapt function that adapt a :class:\`wsme.WSRoot\` instance. This way a same root can be integrated in several framework
+* Add the todo page to the index
+* Completing the changes list for 0.1.0a3
+* Add a little 'Install' section
+* Add a ziphtml target for preparing the documentation to be uploaded to pypi
+* Added tag 0.1.0a3 for changeset 86466da44f44
+
+0.1.0a3
+-------
+
+* Add links to the source code and issue tracker
+* Make the feature-list clearer and add the mailing list address
+* Update the contact mail and version
+* Documented most of the api
+* Improve code coverage of restjson
+* Improve ClientSideError interface + raise wsme.exc coverage to 100%
+* wswe.controller code coverage is back to 100%
+* More code coverage, and fixed a bug with wsme.wsgi.WSRoot.clone
+* More documentation
+* Add a WSGI adapter
+* Added an adapter for TG1
+* Added tag 0.1.0a2 for changeset 0eae00db9384
+
+0.1.0a2
+-------
+
+* Prepare a new release
+* Cleaning my test
+* Add arrays support in soap
+* Add array support to restxml
+* Add array support to restjson
+* Added tag 0.1.0a1 for changeset 2bd203a084dc
+
+0.1.0a1
+-------
+
+* Going 0.1.0a1
+* Fix README filename
+* Add a reame file
+* Completed the packaging, we should now be able to do an alpha release
+* Documenting
+* Add a setup.cfg
+* Completing setup.py
+* Initial documentation
+* Move the protocols to a dedicated module, and their activation more explicit
+* completed the setup informations
+* Made the demo work with suds
+* Add a complex type to the demo
+* Add a small soap client for the demo app, so that we can see the wsdl generation is \_not\_ working properly... to be continued
+* Adapt the rest xml tests
+* Adapted the restjson tests to the changes I made for the soap tests
+* The soap test case now fully pass. We are getting closer to a working implementation, but I think I messed up the namespaces
+* Start implementing a 'fromsoap' set of functions
+* A few more fixes on tests and return values in soap before diving into arguments feeding
+* Missing arguments are now detected by the controller
+* Fix a few tests
+* A few utility functions
+* Most of the return types now works with soap
+* Making progress on the soap implementation. Will have to choose between Genshi and ElementTree though, it is getting anoying to juggle with both
+* Adapt the rest protocol implementation to the changes I did for the soap protocol
+* Working on the soap protocol
+* Fix a few dummy errors
+* Worked on the wsdl generation. It looks like it should although it lacks the basic types handling and arrays definitions
+* Embedded the wsdl genshi template from tgws + start testing the soap protocol
+* Start working on the soap protocol
+* PEP8fying
+* Move as much as possible the request handling code out of the protocol
+* One can now test the rest api with a web browser
+* Share more code between restjson and restxml
+* Fix some issues with encoding
+* Add a small demo, and fix a few problems
+* PEP8 compliance
+* Most of the types now works as argument and return type in rest+xml and rest+json
+* PEP8 compliance
+* Handle binary and decimal return types
+* Use generic to prepare the json output so that non-structured custom types can be added
+* rest+xml now handle the basic return types
+* Add unittests for rest+xml
+* Continue working on the rest-xml tests and implementation +  changed the RestProtocol interface
+* Start working on the rest-xml tests and implementation
+* better testing (+ fixes) of sort\_attributes
+* test & fix the forced attribute order feature
+* pep8
+* Structured types basically work with rest+json
+* Rename AttrDef to wsattr, and introduce wsproperty
+* Implementing the structured types inspection
+* Start working on the non-trivial types handling
+* rename WSRoot.debug to WSRoot.\_debug to avoid an infinite recursion when scanning the api (which will need a better implementation anyway)
+* Continuing the rest+json implementation
+* the rest+json protocol starts to work with basic return types
+* Lowercased the project name
+* Start implementing the rest json proto
+* Completed the register test so we have 100% of test coverage
+* Renamed EWS to WSME because ews is already taken on pypi
+* A first working implemetation for the core controller code

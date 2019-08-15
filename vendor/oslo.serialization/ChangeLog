@@ -1,0 +1,438 @@
+CHANGES
+=======
+
+2.29.1
+------
+
+* Replace git.openstack.org URLs with opendev.org URLs
+* Explicitly set default\_flow\_style to False
+
+2.29.0
+------
+
+* OpenDev Migration Patch
+* Update master for stable/stein
+* Introduce a base yaml parser for all openstack components
+
+2.28.2
+------
+
+* add python 3.7 unit test job
+* Update hacking version
+* Fix README
+* Use template for lower-constraints
+* Update mailinglist from dev to discuss
+* Clean up .gitignore references to personal tools
+* Update the home-page to latest
+
+2.28.1
+------
+
+* add lib-forward-testing-python3 test job
+* add python 3.6 unit test job
+* import zuul job settings from project-config
+* import zuul job settings from project-config
+* py37: deal with Exception repr changes
+* Update reno for stable/rocky
+* Switch to stestr
+* Add release notes link to README
+
+2.27.0
+------
+
+* fix tox python3 overrides
+* Stop using encoding='utf-8' with msgpack
+
+2.26.0
+------
+
+* Unblock requirements changes
+* Remove stale pip-missing-reqs tox test
+* Trivial: Update pypi url to new url
+* set default python to python3
+* add lower-constraints job
+* Updated from global requirements
+
+2.25.0
+------
+
+* Follow the new PTI for document build
+* Update links in README
+* Update reno for stable/queens
+* Updated from global requirements
+* Updated from global requirements
+* Updated from global requirements
+* Updated from global requirements
+* msgpack-python has been renamed to msgpack
+
+2.23.0
+------
+
+* Updated from global requirements
+* Add bandit to pep8 job
+
+2.22.0
+------
+
+* Remove -U from pip install
+* Avoid tox\_install.sh for constraints support
+* Remove setting of version/release from releasenotes
+* Updated from global requirements
+* Updated from global requirements
+
+2.21.2
+------
+
+* When serializing an exception return its 'repr'
+
+2.21.1
+------
+
+* jsonutils.to\_primitive(): add fallback parameter
+
+2.21.0
+------
+
+* Updated from global requirements
+* warn developers when can't convert value into primitive
+* Updated from global requirements
+* Updated from global requirements
+* Update reno for stable/pike
+* Updated from global requirements
+
+2.20.0
+------
+
+* Revert "Explicitly raise ValueError in to\_primitive"
+* Update URLs in documents according to document migration
+* rearrange existing documentation to fit the new standard layout
+* switch from oslosphinx to openstackdocstheme
+
+2.19.1
+------
+
+
+2.19.0
+------
+
+* Updated from global requirements
+* Don't iterate through addresses in netaddr.IPNetwork
+* Updated from global requirements
+* Updated from global requirements
+* Explicitly raise ValueError in to\_primitive
+* Updated from global requirements
+* Updated from global requirements
+
+2.18.0
+------
+
+* Use Sphinx 1.5 warning-is-error
+
+2.17.0
+------
+
+* Updated from global requirements
+* [Fix gate]Update test requirement
+* Updated from global requirements
+* Update reno for stable/ocata
+* Remove references to Python 3.4
+
+2.16.0
+------
+
+* Prefer raising the python2.x type error for b64 decode errors
+* Add Constraints support
+* Don't raise TypeError for invalid b64
+* Replace six.iteritems() with .items()
+* Replaces uuid.uuid4 with uuidutils.generate\_uuid()
+* Show team and repo badges on README
+
+2.15.0
+------
+
+* Updated from global requirements
+* Updated from global requirements
+* Add reno for release notes management
+* Updated from global requirements
+
+2.14.0
+------
+
+* Add a title to the API Documentation page
+* Updated from global requirements
+* modify the home-page info with the developer documentation
+
+2.13.0
+------
+
+* Drop H803 in flake8 ignore list
+* Fix serialization of binary strings in Python3
+
+2.12.0
+------
+
+* Updated from global requirements
+* Fix parameters of assertEqual are misplaced
+* Add Python 3.5 classifier and venv
+
+2.11.0
+------
+
+* Updated from global requirements
+* Updated from global requirements
+* Use {} instead of dict()
+
+2.10.0
+------
+
+* Updated from global requirements
+
+2.9.0
+-----
+
+
+2.8.0
+-----
+
+* Replace TypeError by ValueError in msgpackutils
+* Support serializing ipaddress objs with jsonutils
+* Updated from global requirements
+* Updated from global requirements
+* Updated from global requirements
+
+2.7.0
+-----
+
+* Trivial: ignore openstack/common in flake8 exclude list
+
+2.6.0
+-----
+
+* [Trivial] Remove executable privilege of doc/source/conf.py
+
+2.5.0
+-----
+
+* Drop babel as requirement since its not used
+* Updated from global requirements
+* Unified and simplified API for all serializers
+* Make msgpack registries copyable (and add \_\_contains\_\_)
+* msgpack: fix datetime serialization
+
+2.4.0
+-----
+
+* Updated from global requirements
+
+2.3.0
+-----
+
+* Updated from global requirements
+* Updated from global requirements
+* Updated from global requirements
+* Remove fallback to simplejson in jsonutils
+
+2.2.0
+-----
+
+* Remove iso8601 dependency
+* Updated from global requirements
+* Updated from global requirements
+* Trival: Remove 'MANIFEST.in'
+
+2.1.0
+-----
+
+* msgpackutils: drop Python 2.6 support
+
+2.0.0
+-----
+
+* Updated from global requirements
+* Updated from global requirements
+* Remove python 2.6 classifier
+* Fix bug track URL
+* Remove python 2.6 and cleanup tox.ini
+* Updated from global requirements
+
+1.11.0
+------
+
+* Updated from global requirements
+* Use versionadded and versionchanged in doc
+* Fix coverage configuration and execution
+
+1.10.0
+------
+
+* Add utilities for base64
+* Also check for the existence of \`items\` in to\_primitive()
+* Move 'history' -> release notes section
+* Add jsonutils.dump\_as\_bytes() function for py3
+* Change ignore-errors to ignore\_errors
+* Updated from global requirements
+
+1.9.0
+-----
+
+* Updated from global requirements
+* Updated from global requirements
+* Updated from global requirements
+* Updated from global requirements
+* Updated from global requirements
+
+1.8.0
+-----
+
+* Updated from global requirements
+* Updated from global requirements
+* Updated from global requirements
+* Updated from global requirements
+* Updated from global requirements
+* Drop stale test - test\_jsonutils
+
+1.7.0
+-----
+
+* Stop using deprecated oslo\_utils.timeutils.strtime
+* Add tox target to find missing requirements
+* Remove oslo namespace package
+* Do not use oslo namespace for oslo.i18n lib
+* Updated from global requirements
+* Updated from global requirements
+* Switch badges from 'pypip.in' to 'shields.io'
+
+1.6.0
+-----
+
+* Revert "jsonutils: replace strtime() usage with isoformat()"
+* jsonutils: encode dict keys
+* jsonutils: simplify simple value handling
+* jsonutils: replace strtime() usage with isoformat()
+* Advertise support for Python3.4 / Remove support for Python 3.3
+* Do not sync run\_cross\_tests.sh
+* Updated from global requirements
+* Remove run\_cross\_tests.sh
+* Fixes wrong folder for listing tests
+
+1.5.0
+-----
+
+* Expose base msgpack exceptions so users don't need to import
+* Uncap library requirements for liberty
+* More docstring cleanups/tweaks
+* Add docstring(s) to handler registry(s)
+* Add pypi download + version badges
+* Cleanup README.rst and setup.cfg
+* Make the msgpackutils handlers more extendable
+* Updated from global requirements
+
+1.4.0
+-----
+
+* Updated from global requirements
+
+1.3.0
+-----
+
+* add dependency warning to requirements.txt
+* Correctly load and dump items with datetime.date(s)
+* Avoid using strtime for serializing datetimes
+* jsonutils: add set() tests and simplify recursive code
+* jsonutils: support UUID encoding
+* Use default in dumps()
+* Updated from global requirements
+* Update Oslo imports to remove namespace package
+* Add a messagepack utils helper module
+* Bump to hacking 0.10
+* Updated from global requirements
+* fix bug tracker link in README.rst
+
+1.2.0
+-----
+
+* Move files out of the namespace package
+* Activate pep8 check that \_ is imported
+* Updated from global requirements
+* Workflow documentation is now in infra-manual
+
+1.1.0
+-----
+
+* Add pbr to installation requirements
+* Updated from global requirements
+* Fix pep8, docs, requirements issues in jsonutils and tests
+* Remove extraneous vim editor configuration comments
+* Support building wheels (PEP-427)
+* Fix coverage testing
+* Updated from global requirements
+* Support 'built-in' datetime module
+
+1.0.0
+-----
+
+* Updated from global requirements
+* Add history/changelog to docs
+
+0.2.0
+-----
+
+* Check for namedtuple\_as\_object support before using it
+* Work toward Python 3.4 support and testing
+
+0.1.0
+-----
+
+* Updated from global requirements
+* Clean up docs before first release
+* Updated from global requirements
+* Added JSONEncoder and JSONDecoder
+* Add some basic docstring(s)
+* Fix docs build to run properly
+* Use oslo libraries - i18n and utils
+* Specify namedtuple\_as\_object=False when using simplejson
+* Get unit tests passing
+* exported from oslo-incubator by graduate.sh
+* Added missing jsonutils.dump() function
+* pep8: fixed multiple violations
+* Add kwargs to jsonutils.load(s) functions
+* Enforce unicode json output for jsonutils.load[s]()
+* jsonutils.load() accepts file pointer, not string
+* On Python <= 2.6, use simplejson if available
+* Use oslotest instead of common test module
+* Python3: enable test\_jsonutils.py
+* Use six.moves.xmlrpc\_client instead of xmlrpclib
+* Translation Message improvements
+* Python3 support for xmlrpclib
+* Use six.iteritems to make dict work on Python2/3
+* Remove vim header
+* Ensure that Message objects will be sent via RPC in unicode format
+* jsonutils: make types py3 compatible
+* jsonutils: do not require xmlrpclib
+* Make dependency on netaddr optional
+* Bump hacking to 0.7.0
+* Replace using tests.utils with openstack.common.test
+* Enable H302 hacking check
+* Add netaddr.IPAddress support to to\_primitive()
+* python3: python3 binary/text data compatbility
+* Convert unicode for python3 portability
+* Optimise to\_primitive common cases
+* Update to use flake8
+* Fix Copyright Headers - Rename LLC to Foundation
+* Don't LOG.error on max\_depth (by default)
+* to\_primitive imposes what seems to be an arbitary data structure depth of 3, but there is at least on case in Nova (Security group Rules) which requires a depth beyond this
+* Allow to\_primitive to ignore datetimes
+* Replace direct use of testtools BaseTestCase
+* Use testtools as test base class
+* Fixes import order errors
+* Make project pyflakes clean
+* Add missing convert\_instances arg
+* Track to\_primitive() depth after iteritems()
+* Update iteritems test case to actually test iteritems
+* Use strtime() in to\_primitive() for datetime objs
+* Add 'filedecoder' method to the jsonutils wrapper module
+* Make jsonutils.dumps more general
+* Handle xmlrpclib.DateTime types when serializing to JSON
+* Revert "Add a load function wrapper to jsonutils"
+* Add a load function wrapper to jsonutils
+* Create openstack.common.jsonutils

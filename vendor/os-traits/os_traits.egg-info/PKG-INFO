@@ -1,0 +1,38 @@
+Metadata-Version: 1.1
+Name: os-traits
+Version: 0.16.0
+Summary: A library containing standardized trait strings
+Home-page: https://docs.openstack.org/os-traits/latest/
+Author: OpenStack
+Author-email: openstack-discuss@lists.openstack.org
+License: UNKNOWN
+Description: =========
+        os-traits
+        =========
+        
+        `os-traits` is a library containing standardized trait strings.
+        
+        Traits are strings that represent a feature of some resource provider. This
+        library contains the catalog of constants that have been standardized in the
+        OpenStack community to refer to a particular hardware, virtualization, storage,
+        network, or device trait.
+        
+        * Free software: Apache license
+        * Documentation: https://docs.openstack.org/os-traits/latest/
+        * Source: http://opendev.org/openstack/os-traits
+        * Bugs: https://storyboard.openstack.org/#!/project/openstack/os-traits
+        * Release Notes: https://docs.openstack.org/releasenotes/os-traits
+        
+        
+Platform: UNKNOWN
+Classifier: Environment :: OpenStack
+Classifier: Intended Audience :: Information Technology
+Classifier: Intended Audience :: System Administrators
+Classifier: License :: OSI Approved :: Apache Software License
+Classifier: Operating System :: POSIX :: Linux
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 2
+Classifier: Programming Language :: Python :: 2.7
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Programming Language :: Python :: 3.7

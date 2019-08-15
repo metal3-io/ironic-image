@@ -1,0 +1,36 @@
+{
+  "actions": [
+    {
+      "action": "set-attribute",
+      "path": "driver_info/deploy_kernel",
+      "value": "8fd65-c97b-4d00-aa8b-7ed166a60971"
+    },
+    {
+      "action": "set-attribute",
+      "path": "driver_info/deploy_ramdisk",
+      "value": "09e5420c-6932-4199-996e-9485c56b3394"
+    }
+  ],
+  "conditions": [
+    {
+      "field": "node://driver_info.deploy_ramdisk",
+      "invert": false,
+      "multiple": "any",
+      "op": "is-empty"
+    },
+    {
+      "field": "node://driver_info.deploy_kernel",
+      "invert": false,
+      "multiple": "any",
+      "op": "is-empty"
+    }
+  ],
+  "description": "Set deploy info if not already set on node",
+  "links": [
+    {
+      "href": "/v1/rules/7459bf7c-9ff9-43a8-ba9f-48542ecda66c",
+      "rel": "self"
+    }
+  ],
+  "uuid": "7459bf7c-9ff9-43a8-ba9f-48542ecda66c"
+}

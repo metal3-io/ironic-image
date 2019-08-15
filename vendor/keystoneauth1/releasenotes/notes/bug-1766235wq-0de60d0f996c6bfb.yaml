@@ -1,0 +1,6 @@
+---
+fixes:
+  - |
+    [`bug 1766235 <https://bugs.launchpad.net/keystoneauth/+bug/1766235>`_]
+    Fixed an issue where passing headers in as bytes rather than strings
+    would cause a sorting issue.

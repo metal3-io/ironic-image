@@ -1,0 +1,4 @@
+---
+features:
+  - Fix handling of HTTP error payloads that conform to the API SIG
+    formatting guidelines.

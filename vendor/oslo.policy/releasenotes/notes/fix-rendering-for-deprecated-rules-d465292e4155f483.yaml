@@ -1,0 +1,6 @@
+---
+fixes:
+  - |
+    [`bug 1771442 <https://bugs.launchpad.net/oslo.policy/+bug/1771442>`_]
+    Policy rules that are deprecated for removal are now properly formatted
+    when rendering sample policy files for documentation.

@@ -1,0 +1,6 @@
+[run]
+branch = True
+source = glanceclient
+
+[report]
+ignore_errors = True

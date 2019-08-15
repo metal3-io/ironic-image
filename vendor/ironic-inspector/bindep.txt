@@ -1,0 +1,6 @@
+# needed for mysql
+mysql-client [platform:dpkg]
+mysql-server [platform:dpkg]
+# needed for psql
+postgresql
+postgresql-client [platform:dpkg]

@@ -1,0 +1,3 @@
+---
+fixes:
+  - Acquire a lock on a node UUID when handling it.

@@ -1,0 +1,11 @@
+---
+features:
+  - |
+    Added the option to define a more descriptive policy rule by using
+    `policy.DocumentedRuleDefault` class. When using this class it is required
+    that the description and operations parameters are defined, unlike
+    `policy.RuleDefault`. The operations parameter is a list of dictionaries
+    that must contain the two keys 'path' and 'method' which represent the API
+    URL and the HTTP REQUEST METHOD. More information can be
+    found in the `policy usage documentation
+    <https://docs.openstack.org/developer/oslo.policy/usage.html>`_.

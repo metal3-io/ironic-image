@@ -1,0 +1,4 @@
+---
+features:
+  - New condition plugins "contains" and "matches" allow to match value against
+    regular expressions.

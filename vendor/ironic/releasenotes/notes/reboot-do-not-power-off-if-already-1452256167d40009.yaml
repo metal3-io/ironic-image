@@ -1,0 +1,8 @@
+---
+fixes:
+  - |
+    Fixes a problem when rebooting a node using the ``ipmitool`` power
+    interface could cause a deploy to fail. Now it no longer tries to power off
+    nodes that are already off, because some BMCs will error in these cases.
+    See `bug 1718794 <https://bugs.launchpad.net/ironic/+bug/1718794>`_
+    for details.

@@ -1,0 +1,50 @@
+Metadata-Version: 1.1
+Name: oslo.rootwrap
+Version: 5.16.0
+Summary: Oslo Rootwrap
+Home-page: https://docs.openstack.org/oslo.rootwrap/latest/
+Author: OpenStack
+Author-email: openstack-discuss@lists.openstack.org
+License: UNKNOWN
+Description: ========================
+        Team and repository tags
+        ========================
+        
+        .. image:: https://governance.openstack.org/tc/badges/oslo.rootwrap.svg
+            :target: https://governance.openstack.org/tc/reference/tags/index.html
+        
+        .. Change things from this point on
+        
+        ===============================================
+         oslo.rootwrap -- Escalated Permission Control
+        ===============================================
+        
+        .. image:: https://img.shields.io/pypi/v/oslo.rootwrap.svg
+            :target: https://pypi.org/project/oslo.rootwrap/
+            :alt: Latest Version
+        
+        .. image:: https://img.shields.io/pypi/dm/oslo.rootwrap.svg
+            :target: https://pypi.org/project/oslo.rootwrap/
+            :alt: Downloads
+        
+        oslo.rootwrap allows fine-grained filtering of shell commands to run
+        as `root` from OpenStack services.
+        
+        * License: Apache License, Version 2.0
+        * Documentation: https://docs.openstack.org/oslo.rootwrap/latest/
+        * Source: https://opendev.org/openstack/oslo.rootwrap
+        * Bugs: https://bugs.launchpad.net/oslo.rootwrap
+        * Release notes: https://docs.openstack.org/releasenotes/oslo.rootwrap/
+        
+        
+Platform: UNKNOWN
+Classifier: Development Status :: 4 - Beta
+Classifier: Environment :: OpenStack
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: Information Technology
+Classifier: License :: OSI Approved :: Apache Software License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 2.7
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.6

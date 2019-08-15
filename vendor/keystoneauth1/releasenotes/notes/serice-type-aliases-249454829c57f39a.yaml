@@ -1,0 +1,5 @@
+---
+features:
+  - |
+    Added support for service-type aliases as defined in the Service Types
+    Authority when doing catalog lookups.

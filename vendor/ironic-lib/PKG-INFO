@@ -1,0 +1,50 @@
+Metadata-Version: 1.1
+Name: ironic-lib
+Version: 2.19.0
+Summary: Ironic common library
+Home-page: https://docs.openstack.org/ironic-lib/
+Author: OpenStack Ironic
+Author-email: openstack-discuss@lists.openstack.org
+License: UNKNOWN
+Description: ==========
+        ironic-lib
+        ==========
+        
+        Team and repository tags
+        ------------------------
+        
+        .. image:: https://governance.openstack.org/tc/badges/ironic-lib.svg
+            :target: https://governance.openstack.org/tc/reference/tags/index.html
+        
+        Overview
+        --------
+        
+        A common library to be used **exclusively** by projects under the `Ironic
+        governance <https://governance.openstack.org/tc/reference/projects/ironic.html>`_.
+        
+        Running Tests
+        -------------
+        
+        To run tests in virtualenvs (preferred)::
+        
+          $ sudo pip install tox
+          $ tox
+        
+        To run tests in the current environment::
+        
+          $ sudo pip install -r requirements.txt -r test-requirements.txt
+          $ stestr run
+        
+        
+Platform: UNKNOWN
+Classifier: Environment :: OpenStack
+Classifier: Intended Audience :: Information Technology
+Classifier: Intended Audience :: System Administrators
+Classifier: License :: OSI Approved :: Apache Software License
+Classifier: Operating System :: POSIX :: Linux
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 2
+Classifier: Programming Language :: Python :: 2.7
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Programming Language :: Python :: 3.7

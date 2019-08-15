@@ -1,0 +1,5 @@
+---
+fixes:
+  - |
+    ``0.0.0.0`` and an empty string in the ``bmc_address`` inventory field
+    are now correctly treated as missing BMC address.

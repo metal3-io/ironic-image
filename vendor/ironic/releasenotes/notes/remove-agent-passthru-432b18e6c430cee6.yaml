@@ -1,0 +1,36 @@
+---
+features:
+  - |
+    Agent lookup/heartbeat as vendor passthru is removed from most of
+    in-tree ironic drivers. Affected drivers are
+
+    * agent_ipmitool
+    * agent_ipmitool_socat
+    * agent_ipminative
+    * agent_irmc
+    * agent_ssh
+    * agent_vbox
+    * agent_ucs
+    * pxe_agent_cimc
+    * pxe_ipmitool
+    * pxe_ipmitool_socat
+    * pxe_ssh
+    * pxe_ipminative
+    * pxe_seamicro
+    * pxe_snmp
+    * pxe_irmc
+    * pxe_vbox
+    * pxe_msftocs
+    * pxe_ucs
+    * pxe_iscsi_cimc
+    * pxe_drac
+    * pxe_drac_inspector
+    * iscsi_irmc
+    * agent_ilo
+    * iscsi_ilo
+    * pxe_ilo
+    * agent_pxe_oneview
+    * iscsi_pxe_oneview
+
+    All the other vendor passthru methods are left in place if the
+    driver had them.

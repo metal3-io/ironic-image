@@ -1,0 +1,41 @@
+{
+  "actions": [
+    {
+      "action": "set-attribute",
+      "path": "driver",
+      "value": "agent_ipmitool"
+    },
+    {
+      "action": "set-attribute",
+      "path": "driver_info/ipmi_username",
+      "value": "username"
+    },
+    {
+      "action": "set-attribute",
+      "path": "driver_info/ipmi_password",
+      "value": "password"
+    }
+  ],
+  "conditions": [
+    {
+      "field": "node://driver_info.ipmi_password",
+      "invert": false,
+      "multiple": "any",
+      "op": "is-empty"
+    },
+    {
+      "field": "node://driver_info.ipmi_username",
+      "invert": false,
+      "multiple": "any",
+      "op": "is-empty"
+    }
+  ],
+  "description": "Set IPMI driver_info if no credentials",
+  "links": [
+    {
+      "href": "/v1/rules/b0ea6361-03cd-467c-859c-7230547dcb9a",
+      "rel": "self"
+    }
+  ],
+  "uuid": "b0ea6361-03cd-467c-859c-7230547dcb9a"
+}

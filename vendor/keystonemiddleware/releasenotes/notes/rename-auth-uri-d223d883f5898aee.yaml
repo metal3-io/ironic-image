@@ -1,0 +1,9 @@
+---
+deprecations:
+  - |
+    The auth_uri parameter of keystone_authtoken is deprecated in favor of
+    www_authenticate_uri. The auth_uri option was often confused with the
+    auth_url parameter of the keystoneauth plugin, which was also effectively
+    always required. The parameter refers to the WWW-Authenticate header that is
+    returned when the user needs to be redirected to the Identity service for
+    authentication.

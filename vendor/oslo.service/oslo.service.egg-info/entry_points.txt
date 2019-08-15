@@ -1,0 +1,6 @@
+[oslo.config.opts]
+oslo.service.periodic_task = oslo_service.periodic_task:list_opts
+oslo.service.service = oslo_service.service:list_opts
+oslo.service.sslutils = oslo_service.sslutils:list_opts
+oslo.service.wsgi = oslo_service.wsgi:list_opts
+

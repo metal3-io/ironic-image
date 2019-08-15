@@ -1,0 +1,60 @@
+Metadata-Version: 2.1
+Name: tooz
+Version: 1.66.1
+Summary: Coordination library for distributed systems.
+Home-page: https://docs.openstack.org/tooz/latest/
+Author: OpenStack
+Author-email: openstack-discuss@lists.openstack.org
+License: Apache-2
+Description: Tooz
+        ====
+        
+        .. image:: https://img.shields.io/pypi/v/tooz.svg
+            :target: https://pypi.org/project/tooz/
+            :alt: Latest Version
+        
+        .. image:: https://img.shields.io/pypi/dm/tooz.svg
+            :target: https://pypi.org/project/tooz/
+            :alt: Downloads
+        
+        The Tooz project aims at centralizing the most common distributed primitives
+        like group membership protocol, lock service and leader election by providing
+        a coordination API helping developers to build distributed applications.
+        
+        * Free software: Apache license
+        * Documentation: https://docs.openstack.org/tooz/latest/
+        * Source: https://opendev.org/openstack/tooz
+        * Bugs: https://bugs.launchpad.net/python-tooz/
+        * Release notes: https://docs.openstack.org/releasenotes/tooz
+        
+        Join us
+        -------
+        
+        - https://launchpad.net/python-tooz
+        
+        
+Platform: UNKNOWN
+Classifier: Environment :: OpenStack
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: Information Technology
+Classifier: License :: OSI Approved :: Apache Software License
+Classifier: Operating System :: POSIX :: Linux
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 2
+Classifier: Programming Language :: Python :: 2.7
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Topic :: System :: Distributed Computing
+Provides-Extra: memcached
+Provides-Extra: etcd3gw
+Provides-Extra: consul
+Provides-Extra: etcd
+Provides-Extra: etcd3
+Provides-Extra: mysql
+Provides-Extra: ipc
+Provides-Extra: test
+Provides-Extra: zookeeper
+Provides-Extra: redis
+Provides-Extra: postgresql
+Provides-Extra: zake

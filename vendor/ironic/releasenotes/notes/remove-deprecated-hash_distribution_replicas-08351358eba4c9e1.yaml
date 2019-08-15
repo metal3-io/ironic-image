@@ -1,0 +1,5 @@
+---
+upgrade:
+  - |
+    Removes the configuration option ``[DEFAULT]/hash_distribution_replicas``
+    which was deprecated in the Stein cycle.

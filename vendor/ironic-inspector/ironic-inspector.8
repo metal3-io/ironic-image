@@ -1,0 +1,20 @@
+.\" Manpage for ironic-inspector.
+.TH man 8 "08 Oct 2014" "1.0" "ironic-inspector man page"
+.SH NAME
+ironic-inspector \- hardware introspection daemon for OpenStack Ironic.
+.SH SYNOPSIS
+ironic-inspector CONFFILE
+.SH DESCRIPTION
+This command starts ironic-inspector service, which starts and finishes
+hardware discovery and maintains firewall rules for nodes accessing PXE
+boot service (usually dnsmasq).
+.SH OPTIONS
+The ironic-inspector does not take any options. However, you should supply
+path to the configuration file.
+.SH SEE ALSO
+README page located at https://docs.openstack.org/ironic-inspector/latest/
+provides some information about how to configure and use the service.
+.SH BUGS
+No known bugs.
+.SH AUTHOR
+Dmitry Tantsur (divius.inside@gmail.com)

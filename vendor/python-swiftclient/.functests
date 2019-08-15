@@ -1,0 +1,14 @@
+#!/bin/bash
+set -e
+
+export OS_TEST_PATH='tests.functional'
+export PYTHON='coverage run --source swiftclient --parallel-mode'
+stestr run --concurrency=1
+
+RET=$?
+coverage combine
+coverage html -d cover
+coverage xml -o cover/coverage.xml
+coverage report -m
+rm -f .coverage
+exit $RET

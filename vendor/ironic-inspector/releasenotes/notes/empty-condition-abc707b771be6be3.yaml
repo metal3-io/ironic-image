@@ -1,0 +1,4 @@
+---
+features:
+  -  Added new condition plugin "is-empty", which allows to match
+     empty string, list, dictionary or None.

@@ -1,0 +1,8 @@
+---
+features:
+  - A new configuration option for the s3token middleware called auth_uri can
+    be used to set the URI to be used for authentication. This replaces
+    auth_host, auth_port, and auth_protocol.
+deprecations:
+  - The auth_host, auth_port, and auth_protocol configuration options to the
+    s3token middleware are now deprecated.

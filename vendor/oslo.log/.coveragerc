@@ -1,0 +1,7 @@
+[run]
+branch = True
+source = oslo_log
+omit = oslo_log/tests/*
+
+[report]
+ignore_errors = True

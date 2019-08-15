@@ -1,0 +1,4 @@
+---
+fixes:
+  - Fixed "/v1/continue" to return HTTP 500 on unexpected exceptions, not
+    HTTP 400.

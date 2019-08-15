@@ -1,0 +1,4 @@
+---
+fixes:
+  - Use only single quotes for strings inside SQL statements. Fixes a crash
+    when PostgreSQL is used as a database backend.

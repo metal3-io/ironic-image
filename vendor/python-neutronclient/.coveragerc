@@ -1,0 +1,7 @@
+[run]
+branch = True
+source = neutronclient
+omit = neutronclient/tests/*
+
+[report]
+ignore_errors = True

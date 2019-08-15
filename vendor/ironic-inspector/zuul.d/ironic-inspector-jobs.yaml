@@ -1,0 +1,86 @@
+- job:
+    name: ironic-inspector-base
+    description: Base job for devstack/tempest based ironic-inspector jobs.
+    parent: ironic-base
+    timeout: 10800
+    required-projects:
+      - openstack/ironic-inspector
+    irrelevant-files:
+      - ^.*\.rst$
+      - ^api-ref/.*$
+      - ^doc/.*$
+      - ^ironic_inspector/test/(?!.*tempest).*$
+      - ^ironic_inspector/locale/.*$
+      - ^releasenotes/.*$
+      - ^tools/.*$
+      - ^test-requirements.txt$
+      - ^setup.cfg$
+      - ^tox.ini$
+    vars:
+      tox_envlist: all
+      tempest_test_regex: Inspector
+      tempest_concurrency: 1
+      devstack_localrc:
+        IRONIC_VM_EPHEMERAL_DISK: 0
+        IRONIC_AUTOMATED_CLEAN_ENABLED: False
+        IRONIC_INSPECTOR_NODE_NOT_FOUND_HOOK: enroll
+        IRONIC_INSPECTOR_CLEAN_UP_PERIOD: 5
+        IRONIC_INSPECTOR_DHCP_FILTER: iptables
+        SWIFT_ENABLE_TEMPURLS: True
+        SWIFT_TEMPURL_KEY: secretkey
+        USE_PYTHON3: False
+      devstack_plugins:
+        ironic-inspector: https://opendev.org/openstack/ironic-inspector
+      devstack_services:
+        s-account: True
+        s-container: True
+        s-object: True
+        s-proxy: True
+        ir-api: True
+        ir-cond: True
+        ironic-inspector: True
+        ironic-inspector-dhcp: True
+
+- job:
+    name: ironic-inspector-tempest-python3
+    description: ironic-inspector-tempest-python3
+    parent: ironic-inspector-base
+    vars:
+      devstack_localrc:
+        USE_PYTHON3: True
+
+- job:
+    name: ironic-inspector-tempest-discovery
+    description: ironic-inspector-tempest-discovery
+    parent: ironic-inspector-base
+    vars:
+      tempest_test_regex: InspectorDiscoveryTest
+      devstack_localrc:
+        IRONIC_DEPLOY_DRIVER_ISCSI_WITH_IPA: True
+        IRONIC_DEFAULT_DEPLOY_INTERFACE: direct
+        IRONIC_TEMPEST_WHOLE_DISK_IMAGE: True
+        IRONIC_IPXE_ENABLED: True
+        IRONIC_INSPECTOR_RAMDISK_ELEMENT: ironic-agent
+        IRONIC_INSPECTOR_DHCP_FILTER: dnsmasq
+        IRONIC_INSPECTOR_INTROSPECTION_DATA_STORE: database
+
+- job:
+    # Security testing for known issues
+    name: ironic-inspector-tox-bandit
+    parent: openstack-tox
+    timeout: 2400
+    vars:
+      tox_envlist: bandit
+    required-projects:
+      - openstack/ironic-inspector
+    irrelevant-files:
+      - ^.*\.rst$
+      - ^api-ref/.*$
+      - ^doc/.*$
+      - ^ironic_inspector/test/(?!.*tempest).*$
+      - ^ironic_inspector/locale/.*$
+      - ^releasenotes/.*$
+      - ^tools/(?!bandit\.yml).*$
+      - ^test-requirements.txt$
+      - ^setup.cfg$
+      - ^tox.ini$

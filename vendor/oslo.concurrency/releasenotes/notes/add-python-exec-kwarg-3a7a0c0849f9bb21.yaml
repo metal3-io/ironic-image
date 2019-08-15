@@ -1,0 +1,5 @@
+---
+features:
+  - A new kwarg, ``python_exec`` is added to the execute() function in the
+    processutils module. This option is used to specify the path to the python
+    executable to use for prlimits enforcement.

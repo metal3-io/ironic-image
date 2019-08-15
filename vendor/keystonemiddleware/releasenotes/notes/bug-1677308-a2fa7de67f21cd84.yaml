@@ -1,0 +1,15 @@
+---
+fixes:
+  - |
+    [`bug 1677308 <https://bugs.launchpad.net/keystonemiddleware/+bug/1677308>`_]
+    Removes ``pycrypto`` dependency as the library is unmaintained, and
+    replaces it with the ``cryptography`` library.
+upgrade:
+  - |
+    [`bug 1677308 <https://bugs.launchpad.net/keystonemiddleware/+bug/1677308>`_]
+    There is no upgrade impact when switching from ``pycrypto`` to
+    ``cryptography``.  All data will be encrypted and decrypted using identical
+    blocksize, padding, algorithm (AES) and mode (CBC). Data previously
+    encrypted using ``pycrypto`` can be decrypted using both ``pycrypto`` and
+    ``cryptography``.  The same is true of data encrypted using
+    ``cryptography``.

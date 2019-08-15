@@ -1,0 +1,20 @@
+{
+  "bmc_reset": {
+    "async": true,
+    "attach": false,
+    "description": "",
+    "http_methods": [
+      "POST"
+    ],
+    "require_exclusive_lock": true
+  },
+  "send_raw": {
+    "async": true,
+    "attach": false,
+    "description": "",
+    "http_methods": [
+      "POST"
+    ],
+    "require_exclusive_lock": true
+  }
+}

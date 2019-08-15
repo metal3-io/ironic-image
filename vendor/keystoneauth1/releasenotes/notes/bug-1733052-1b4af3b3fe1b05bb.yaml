@@ -1,0 +1,7 @@
+---
+fixes:
+  - >
+    [`bug 1733052 <https://bugs.launchpad.net/keystoneauth/+bug/1733052>`_]
+    Now the version discovery mechanism only fetches the version info from
+    server side if the versioned url has been overrode. So that the request
+    url's path won't be changed completely.

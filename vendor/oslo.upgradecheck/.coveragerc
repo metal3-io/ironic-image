@@ -1,0 +1,7 @@
+[run]
+branch = True
+source = oslo_upgradecheck
+omit = oslo_upgradecheck/tests/*
+
+[report]
+ignore_errors = True

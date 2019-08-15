@@ -1,0 +1,7 @@
+---
+prelude: >
+    Starting with this release only ironic-python-agent (IPA) is supported
+    as an introspection ramdisk.
+upgrade:
+  - Support for the old bash-based ramdisk was removed. Please switch to IPA
+    before upgrading.

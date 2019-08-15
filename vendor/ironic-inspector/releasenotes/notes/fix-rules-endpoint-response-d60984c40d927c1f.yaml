@@ -1,0 +1,10 @@
+---
+upgrade:
+  - API "POST /v1/rules" returns 201 response code instead of
+    200 on creating success. API version was bumped to 1.6.
+    API less than 1.6 continues to return 200.
+  - Default API version was changed from minimum to maximum
+    which Inspector can support.
+fixes:
+  - Fix response return code for rule creating endpoint, it
+    returns 201 now instead of 200 on success.

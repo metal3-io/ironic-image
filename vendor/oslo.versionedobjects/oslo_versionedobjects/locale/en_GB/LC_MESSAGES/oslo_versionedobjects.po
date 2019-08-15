@@ -1,0 +1,169 @@
+# Translations template for oslo.versionedobjects.
+# Copyright (C) 2015 ORGANIZATION
+# This file is distributed under the same license as the
+# oslo.versionedobjects project.
+#
+# Translators:
+# Andi Chandler <andi@gowling.com>, 2015
+# Andi Chandler <andi@gowling.com>, 2016. #zanata
+# Andreas Jaeger <jaegerandi@gmail.com>, 2016. #zanata
+# Andi Chandler <andi@gowling.com>, 2017. #zanata
+# Andi Chandler <andi@gowling.com>, 2018. #zanata
+msgid ""
+msgstr ""
+"Project-Id-Version: oslo.versionedobjects VERSION\n"
+"Report-Msgid-Bugs-To: https://bugs.launchpad.net/openstack-i18n/\n"
+"POT-Creation-Date: 2018-08-13 06:45+0000\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2018-08-08 07:53+0000\n"
+"Last-Translator: Andi Chandler <andi@gowling.com>\n"
+"Language: en_GB\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Generated-By: Babel 2.0\n"
+"X-Generator: Zanata 4.3.3\n"
+"Language-Team: English (United Kingdom)\n"
+
+#, python-format
+msgid "%(fieldname)s missing field type"
+msgstr "%(fieldname)s missing field type"
+
+#, python-format
+msgid "%(object)s.%(name)s is not allowed to transition out of %(value)s state"
+msgstr ""
+"%(object)s.%(name)s is not allowed to transition out of %(value)s state"
+
+#, python-format
+msgid ""
+"%(object)s.%(name)s is not allowed to transition out of '%(current_value)s' "
+"state to '%(value)s' state, choose from %(options)r"
+msgstr ""
+"%(object)s.%(name)s is not allowed to transition out of '%(current_value)s' "
+"state to '%(value)s' state, choose from %(options)r"
+
+#, python-format
+msgid "%(objname)s object has no attribute '%(attrname)s'"
+msgstr "%(objname)s object has no attribute '%(attrname)s'"
+
+#, python-format
+msgid "%(typename)s in %(fieldname)s is not an instance of Enum"
+msgstr "%(typename)s in %(fieldname)s is not an instance of Enum"
+
+#, python-format
+msgid "%s has no pattern"
+msgstr "%s has no pattern"
+
+#, python-format
+msgid "A datetime.datetime is required in field %(attr)s, not a %(type)s"
+msgstr "A datetime.datetime is required in field %(attr)s, not a %(type)s"
+
+#, python-format
+msgid "A dict is required in field %(attr)s, not a %(type)s"
+msgstr "A dict is required in field %(attr)s, not a %(type)s"
+
+#, python-format
+msgid "A list is required in field %(attr)s, not a %(type)s"
+msgstr "A list is required in field %(attr)s, not a %(type)s"
+
+#, python-format
+msgid "A set is required in field %(attr)s, not a %(type)s"
+msgstr "A set is required in field %(attr)s, not a %(type)s"
+
+#, python-format
+msgid "A string is required in field %(attr)s, not a %(type)s"
+msgstr "A string is required in field %(attr)s, not a %(type)s"
+
+#, python-format
+msgid ""
+"An object of type %(type)s is required in field %(attr)s, not a %(valtype)s"
+msgstr ""
+"An object of type %(type)s is required in field %(attr)s, not a %(valtype)s"
+
+msgid "An unknown exception occurred."
+msgstr "An unknown exception occurred."
+
+#, python-format
+msgid "Cannot call %(method)s on orphaned %(objtype)s object"
+msgstr "Cannot call %(method)s on orphaned %(objtype)s object"
+
+#, python-format
+msgid "Cannot load '%s' in the base class"
+msgstr "Cannot load '%s' in the base class"
+
+#, python-format
+msgid "Cannot modify readonly field %(field)s"
+msgstr "Cannot modify readonly field %(field)s"
+
+msgid "Cannot save anything in the base class"
+msgstr "Cannot save anything in the base class"
+
+#, python-format
+msgid "Element %(key)s:%(val)s must be of type %(expected)s not %(actual)s"
+msgstr "Element %(key)s:%(val)s must be of type %(expected)s not %(actual)s"
+
+msgid "Enum fields require a list of valid_values"
+msgstr "Enum fields require a list of valid_values"
+
+msgid "Enum valid values are not valid"
+msgstr "Enum valid values are not valid"
+
+#, python-format
+msgid "Field %(field)s of %(objname)s is not an instance of Field"
+msgstr "Field %(field)s of %(objname)s is not an instance of Field"
+
+#, python-format
+msgid "Field `%s' cannot be None"
+msgstr "Field `%s' cannot be None"
+
+#, python-format
+msgid "Field value %s is invalid"
+msgstr "Field value %s is invalid"
+
+#, python-format
+msgid "Invalid target version %(version)s"
+msgstr "Invalid target version %(version)s"
+
+#, python-format
+msgid "Key %(key)s must be of type %(expected)s not %(actual)s"
+msgstr "Key %(key)s must be of type %(expected)s not %(actual)s"
+
+#, python-format
+msgid "Malformed MAC %s"
+msgstr "Malformed MAC %s"
+
+#, python-format
+msgid "Malformed PCI address %s"
+msgstr "Malformed PCI address %s"
+
+#, python-format
+msgid "Network \"%(val)s\" is not valid in field %(attr)s"
+msgstr "Network \"%(val)s\" is not valid in field %(attr)s"
+
+#, python-format
+msgid "No subobject existed at version %(target_version)s"
+msgstr "No subobject existed at version %(target_version)s"
+
+#, python-format
+msgid "Object action %(action)s failed because: %(reason)s"
+msgstr "Object action %(action)s failed because: %(reason)s"
+
+#, python-format
+msgid "Unsupported object type %(objtype)s"
+msgstr "Unsupported object type %(objtype)s"
+
+#, python-format
+msgid "Value must be >= 0 for field %s"
+msgstr "Value must be >= 0 for field %s"
+
+#, python-format
+msgid ""
+"Version %(objver)s of %(objname)s is not supported, supported version is "
+"%(supported)s"
+msgstr ""
+"Version %(objver)s of %(objname)s is not supported, supported version is "
+"%(supported)s"
+
+#, python-format
+msgid "Version %(val)s is not a valid predicate in field %(attr)s"
+msgstr "Version %(val)s is not a valid predicate in field %(attr)s"

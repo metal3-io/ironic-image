@@ -1,0 +1,6 @@
+---
+fixes:
+  - |
+    Fixes an issue where the incorrect partition naming was used for metadisk (md)
+    devices. See `Story 2006154 <https://storyboard.openstack.org/#!/story/2006154>`_
+    for details.

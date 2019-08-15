@@ -1,0 +1,7 @@
+---
+fixes:
+  - |
+    Do not fail the whole introspection due to a value formatting error during
+    introspection rules rollback. See `bug 1686942
+    <https://bugs.launchpad.net/ironic-inspector/+bug/1686942>`_ for an example
+    and detailed investigation.

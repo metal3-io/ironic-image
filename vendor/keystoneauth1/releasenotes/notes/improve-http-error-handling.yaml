@@ -1,0 +1,4 @@
+---
+fixes:
+  - Add logic to handle HTTP error responses that do not conform to a known
+    schema.

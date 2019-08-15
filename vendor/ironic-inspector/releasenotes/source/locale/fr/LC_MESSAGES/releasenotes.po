@@ -1,0 +1,110 @@
+# Gérald LONLAS <g.lonlas@gmail.com>, 2016. #zanata
+msgid ""
+msgstr ""
+"Project-Id-Version: Ironic Inspector Release Notes\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-02-03 16:43+0000\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2016-10-22 05:07+0000\n"
+"Last-Translator: Gérald LONLAS <g.lonlas@gmail.com>\n"
+"Language-Team: French\n"
+"Language: fr\n"
+"X-Generator: Zanata 3.9.6\n"
+"Plural-Forms: nplurals=2; plural=(n > 1)\n"
+
+msgid "2.2.3"
+msgstr "2.2.3"
+
+msgid "2.2.4"
+msgstr "2.2.4"
+
+msgid "2.2.5"
+msgstr "2.2.5"
+
+msgid "2.2.6"
+msgstr "2.2.6"
+
+msgid "2.3.0"
+msgstr "2.3.0"
+
+msgid "3.0.0"
+msgstr "3.0.0"
+
+msgid "3.1.0"
+msgstr "3.1.0"
+
+msgid "3.2.0"
+msgstr "3.2.0"
+
+msgid "3.2.1"
+msgstr "3.2.1"
+
+msgid "3.2.2"
+msgstr "3.2.2"
+
+msgid "3.2.2-7"
+msgstr "3.2.2-7"
+
+msgid "3.3.0"
+msgstr "3.3.0"
+
+msgid "4.0.0"
+msgstr "4.0.0"
+
+msgid "4.1.0"
+msgstr "4.1.0"
+
+msgid "4.2.0"
+msgstr "4.2.0"
+
+msgid "Bug Fixes"
+msgstr "Corrections de bugs"
+
+msgid "Critical Issues"
+msgstr "Erreurs critiques"
+
+msgid "Current Series Release Notes"
+msgstr "Note de la release actuelle"
+
+msgid "Deprecation Notes"
+msgstr "Notes dépréciées "
+
+msgid "Ironic Inspector Release Notes"
+msgstr "Note de release d'Ironic Inspector"
+
+msgid "New Features"
+msgstr "Nouvelles fonctionnalités"
+
+msgid "Other Notes"
+msgstr "Autres notes"
+
+msgid "Security Issues"
+msgstr "Problèmes de sécurités"
+
+msgid "Start using reno to manage release notes."
+msgstr "Commence à utiliser reno pour la gestion des notes de release"
+
+msgid "Upgrade Notes"
+msgstr "Notes de mises à jours"
+
+msgid "`Openstack Theme <https://github.com/openstack/oslosphinx>`_ support"
+msgstr "`Openstack Theme <https://github.com/openstack/oslosphinx>`_ support"
+
+msgid "http://docs.openstack.org/admin-guide-cloud/cross_project_cors.html"
+msgstr "http://docs.openstack.org/admin-guide-cloud/cross_project_cors.html"
+
+msgid "http://docs.openstack.org/developer/oslo.middleware/cors.html"
+msgstr "http://docs.openstack.org/developer/oslo.middleware/cors.html"
+
+msgid ""
+"http://specs.openstack.org/openstack/openstack-specs/specs/cors-support.html"
+msgstr ""
+"http://specs.openstack.org/openstack/openstack-specs/specs/cors-support.html"
+
+msgid "https://bugs.launchpad.net/bugs/1501746"
+msgstr "https://bugs.launchpad.net/bugs/1501746"
+
+msgid "https://bugs.launchpad.net/bugs/1506160"
+msgstr "https://bugs.launchpad.net/bugs/1506160"

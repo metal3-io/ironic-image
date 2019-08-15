@@ -1,0 +1,307 @@
+CHANGES
+=======
+
+1.8.1
+-----
+
+* Use template for lower-constraints
+* Change openstack-dev to openstack-discuss
+
+1.8.0
+-----
+
+* Only install monotonic on python2
+* Don't quote {posargs} in tox.ini
+* Remove the duplicated word
+* add lib-forward-testing-python3 test job
+* add python 3.6 unit test job
+* import zuul job settings from project-config
+* Update reno for stable/rocky
+* Switch to stestr
+* Follow the new PTI for document build
+* Add blueprints notes link to README
+* fix tox python3 overrides
+* Trivial: Update pypi url to new url
+
+1.7.0
+-----
+
+* clean up test job configuration
+* set default python to python3
+* fix lower constraints and uncap eventlet
+* Update links in README
+* add lower-constraints job
+* Updated from global requirements
+* Update reno for stable/queens
+* Updated from global requirements
+* Updated from global requirements
+* Updated from global requirements
+
+1.6.0
+-----
+
+* Improve get optimal count of max\_worker for pool
+
+1.5.0
+-----
+
+* Avoid tox\_install.sh for constraints support
+* Remove setting of version/release from releasenotes
+* Updated from global requirements
+* Updated from global requirements
+
+1.4.0
+-----
+
+* Updated from global requirements
+* Updated from global requirements
+* Update reno for stable/pike
+* Updated from global requirements
+
+1.3.0
+-----
+
+* Update URLs in documents according to document migration
+* Improve doctest and doc8 test
+* turn on warning-is-error in doc build
+* Update .gitignore
+* Improving cover and docs testenv
+* rearrange existing documentation to fit the new standard layout
+* Switch from oslosphinx to openstackdocstheme
+
+1.2.0
+-----
+
+* Updated from global requirements
+* Updated from global requirements
+* Updated from global requirements
+* Updated from global requirements
+
+1.1.0
+-----
+
+* Updated from global requirements
+* Expose underlying timeout error
+
+1.0.0
+-----
+
+* Do not check spacing if periodic disabled
+
+0.23.0
+------
+
+* The python 3.4 support is removed
+
+0.22.0
+------
+
+* Updated from global requirements
+* Updated from global requirements
+* Typo fix: arbitary => arbitrary
+* Remove link to modindex
+* Introducing NeverAgain functionality for periodics
+* Update reno for stable/ocata
+* Add re-raising SystemExit exception
+
+0.21.0
+------
+
+* Removes unnecessary utf-8 coding
+* Add Constraints support
+* Show team and repo badges on README
+
+0.20.0
+------
+
+* replace \_callables by \_works
+* Updated from global requirements
+* Updated from global requirements
+* Add reno for release notes management
+* Updated from global requirements
+
+0.19.0
+------
+
+* Updated from global requirements
+* Updated from global requirements
+* Update homepage with developer documentation page
+
+0.18.0
+------
+
+* Eliminate unneccessary patching in GreenFuture
+
+0.17.0
+------
+
+* Remove discover from test-requirements
+
+0.16.0
+------
+
+* Remove 'smart' idleness check
+* Add Python 3.5 classifier and venv
+
+0.15.0
+------
+
+* Don't include openstack/common in flake8 exclude list
+* Updated from global requirements
+* Begin adding our own thread pool executor
+* Add what the watcher watches to the watcher as a property
+
+0.14.0
+------
+
+* Updated from global requirements
+* Fix 'on\_failure' param not be used
+* Use prettytable to show pretty schedule/active/planned time table
+* Fix time related check in rejection test
+* Reduce/remove duplication in run functions
+* Fix jitter strategies
+
+0.13.0
+------
+
+* Single quote the callables name (when submission errors)
+* Updated from global requirements
+* Reschedule failed periodic tasks after a short delay
+* Fix wrong comparison in reject\_when\_reached
+
+0.12.0
+------
+
+* Updated from global requirements
+* Ensure all futures have completed before run returns
+
+0.11.0
+------
+
+* Updated from global requirements
+* Allow PeriodicWorker to skip executor shutdown in case of a preexisting executor
+
+0.10.0
+------
+
+* Expose underlying futures.CancelledError
+* Updated from global requirements
+* Updated from global requirements
+* Modification of the example code
+* PeriodicWorker.create to accept arguments for periodic tasks
+* Handle exceptions from executor.submit in PeriodicWorker
+* Add periodics.is\_periodic to check if object is a periodic task
+* py26/py33 are no longer supported by Infra's CI
+
+0.9.0
+-----
+
+* Updated from global requirements
+* Allow for providing different run work sync functions
+
+0.8.0
+-----
+
+* Have the executor stats object repr look like the watcher repr
+
+0.7.0
+-----
+
+* Add useful watcher '\_\_repr\_\_' function
+* Some minor refactoring and comment/note addition
+* Remove tests output from code coverage
+* No need for Oslo Incubator Sync
+* Move most of green helper classes -> '\_green.py'
+
+0.6.0
+-----
+
+* Add 'enabled' parameter to @periodic decorator
+* docs - Set pbr warnerrors option for doc build
+* Remove dummy/placeholder 'ChangeLog' as its not needed
+* Enhance the README
+* Remove green worker reference to its executor
+* Change ignore-errors to ignore\_errors
+* Updated from global requirements
+* Activate pep8 check that \_ is imported
+* Handle the case where 0.199 is provided as runtime
+* Just use a deque vs reverse pushing/popping
+* Ensure new entry in immediates gets processed during wait(s)
+
+0.5.0
+-----
+
+* Updated from global requirements
+
+0.4.0
+-----
+
+* Updated from global requirements
+* Updated from global requirements
+* Provide a thread differentiation attribute on executors
+
+0.3.0
+-----
+
+* Updated from global requirements
+* Allow providing a callback to certain executors to reject new work
+* Disallow running 'start' twice
+* Allow for providing custom 'on\_failure' callbacks
+* Delegate failure capturing to a object that is returned on run
+
+0.2.0
+-----
+
+* Move doc8 to being a normal test requirement in test-requirements.txt
+* Ensure doctesting and doc8 testing done in py27 env
+* Updated from global requirements
+
+0.1.2
+-----
+
+* Add future waiting helper module
+* Remove 3.3 & 2.6 classifier
+* Ensure we check callback '\_is\_periodic' on add
+* Add tests for the other basic strategies
+* Add a 'aligned last finished' strategy
+* Updated from global requirements
+* Move the periodic '\_get\_callback\_name' to '\_utils'
+* Add badge support to README.rst
+* Add periodics to doc features section
+
+0.1.1
+-----
+
+* Ensure universal wheels are built
+
+0.1.0
+-----
+
+* Updated from global requirements
+* Allow adding periodic callables at runtime
+* Show a prettier callback name
+* Allow providing customized scheduling strategies
+* Add history.rst that uses generated 'ChangeLog' file
+* Updated from global requirements
+* Add some basic periodic worker activation examples
+* Use monotonic lib. to avoid finding monotonic time function
+* Allow providing customized event + condition classes/factories
+* Allow providing a executor to be able to run in parallel
+* Add a periodics module that runs functions periodically
+* Add basic doctest(ed) executor examples
+* Allow synchronous executors to run in green compat. mode
+* Add some basic tests to ensure executors work
+* Attempt to use the monotonic pypi module if it's installed
+* Capital letters for futurist in HACKING.rst
+* Vastly improve the docs
+* Put features into the README.rst
+* Remove dependency on oslo.utils (replace with small util code)
+* Rename futures.py -> \_futures.py and expose at futurist module
+* Updated from global requirements
+* Add initial .gitreview file and cookie-cutter template
+* Use the ability to save the exception traceback with newer futures
+* Rename utils to \_utils
+* Add something to the README.rst
+* Fix missing comma
+* Add base files to get something working
+* Initial commit

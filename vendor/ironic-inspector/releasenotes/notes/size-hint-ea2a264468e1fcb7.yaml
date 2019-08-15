@@ -1,0 +1,4 @@
+---
+fixes:
+  - The "size" root device hint is now always converted to an integer for
+    consistency with IPA.

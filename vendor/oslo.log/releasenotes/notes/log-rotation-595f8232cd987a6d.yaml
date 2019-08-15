@@ -1,0 +1,10 @@
+---
+features:
+  - |
+    The following new config options will allow rotating log files,
+    especially useful on Windows:
+    * ``log_rotate_interval``
+    * ``log_rotate_interval_type``
+    * ``max_logfile_count``
+    * ``max_logfile_size_mb``
+    * ``log_rotation_type``

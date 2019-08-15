@@ -1,0 +1,7 @@
+dnspython>=1.15.0
+greenlet>=0.3
+monotonic>=1.4
+six>=1.10.0
+
+[:python_version < "3.4"]
+enum34

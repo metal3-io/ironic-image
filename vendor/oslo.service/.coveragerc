@@ -1,0 +1,8 @@
+[run]
+branch = True
+source = oslo_service
+omit = oslo_service/tests/*
+
+[report]
+ignore_errors = True
+precision = 2

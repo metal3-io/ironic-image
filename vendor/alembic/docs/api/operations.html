@@ -1,0 +1,681 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Operation Directives &#8212; Alembic 1.0.11 documentation</title>
+    <link rel="stylesheet" href="../_static/nature_override.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/changelog.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx_paramlinks.css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Autogeneration" href="autogenerate.html" />
+    <link rel="prev" title="Commands" href="commands.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="autogenerate.html" title="Autogeneration"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="commands.html" title="Commands"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Alembic 1.0.11 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">API Details</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="operation-directives">
+<span id="alembic-operations-toplevel"></span><h1>Operation Directives<a class="headerlink" href="#operation-directives" title="Permalink to this headline">¶</a></h1>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>this section discusses the <strong>internal API of Alembic</strong> as regards
+the internal system of defining migration operation directives.
+This section is only useful for developers who wish to extend the
+capabilities of Alembic.  For end-user guidance on Alembic migration
+operations, please see <a class="reference internal" href="../ops.html#ops"><span class="std std-ref">Operation Reference</span></a>.</p>
+</div>
+<p>Within migration scripts, actual database migration operations are handled
+via an instance of <a class="reference internal" href="../ops.html#alembic.operations.Operations" title="alembic.operations.Operations"><code class="xref py py-class docutils literal notranslate"><span class="pre">Operations</span></code></a>.   The <a class="reference internal" href="../ops.html#alembic.operations.Operations" title="alembic.operations.Operations"><code class="xref py py-class docutils literal notranslate"><span class="pre">Operations</span></code></a> class
+lists out available migration operations that are linked to a
+<a class="reference internal" href="runtime.html#alembic.runtime.migration.MigrationContext" title="alembic.runtime.migration.MigrationContext"><code class="xref py py-class docutils literal notranslate"><span class="pre">MigrationContext</span></code></a>, which communicates instructions originated
+by the <a class="reference internal" href="../ops.html#alembic.operations.Operations" title="alembic.operations.Operations"><code class="xref py py-class docutils literal notranslate"><span class="pre">Operations</span></code></a> object into SQL that is sent to a database or SQL
+output stream.</p>
+<p>Most methods on the <a class="reference internal" href="../ops.html#alembic.operations.Operations" title="alembic.operations.Operations"><code class="xref py py-class docutils literal notranslate"><span class="pre">Operations</span></code></a> class are generated dynamically
+using a “plugin” system, described in the next section
+<a class="reference internal" href="#operation-plugins"><span class="std std-ref">Operation Plugins</span></a>.   Additionally, when Alembic migration scripts
+actually run, the methods on the current <a class="reference internal" href="../ops.html#alembic.operations.Operations" title="alembic.operations.Operations"><code class="xref py py-class docutils literal notranslate"><span class="pre">Operations</span></code></a> object are
+proxied out to the <code class="docutils literal notranslate"><span class="pre">alembic.op</span></code> module, so that they are available
+using module-style access.</p>
+<p>For an overview of how to use an <a class="reference internal" href="../ops.html#alembic.operations.Operations" title="alembic.operations.Operations"><code class="xref py py-class docutils literal notranslate"><span class="pre">Operations</span></code></a> object directly
+in programs, as well as for reference to the standard operation methods
+as well as “batch” methods, see <a class="reference internal" href="../ops.html#ops"><span class="std std-ref">Operation Reference</span></a>.</p>
+<div class="section" id="operation-plugins">
+<span id="id1"></span><h2>Operation Plugins<a class="headerlink" href="#operation-plugins" title="Permalink to this headline">¶</a></h2>
+<p>The Operations object is extensible using a plugin system.   This system
+allows one to add new <code class="docutils literal notranslate"><span class="pre">op.&lt;some_operation&gt;</span></code> methods at runtime.  The
+steps to use this system are to first create a subclass of
+<a class="reference internal" href="#alembic.operations.ops.MigrateOperation" title="alembic.operations.ops.MigrateOperation"><code class="xref py py-class docutils literal notranslate"><span class="pre">MigrateOperation</span></code></a>, register it using the <a class="reference internal" href="../ops.html#alembic.operations.Operations.register_operation" title="alembic.operations.Operations.register_operation"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Operations.register_operation()</span></code></a>
+class decorator, then build a default “implementation” function which is
+established using the <a class="reference internal" href="../ops.html#alembic.operations.Operations.implementation_for" title="alembic.operations.Operations.implementation_for"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Operations.implementation_for()</span></code></a> decorator.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 0.8.0: </span>- the <a class="reference internal" href="../ops.html#alembic.operations.Operations" title="alembic.operations.Operations"><code class="xref py py-class docutils literal notranslate"><span class="pre">Operations</span></code></a> class is now an
+open namespace that is extensible via the creation of new
+<a class="reference internal" href="#alembic.operations.ops.MigrateOperation" title="alembic.operations.ops.MigrateOperation"><code class="xref py py-class docutils literal notranslate"><span class="pre">MigrateOperation</span></code></a> subclasses.</p>
+</div>
+<p>Below we illustrate a very simple operation <code class="docutils literal notranslate"><span class="pre">CreateSequenceOp</span></code> which
+will implement a new method <code class="docutils literal notranslate"><span class="pre">op.create_sequence()</span></code> for use in
+migration scripts:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">alembic.operations</span> <span class="k">import</span> <span class="n">Operations</span><span class="p">,</span> <span class="n">MigrateOperation</span>
+
+<span class="nd">@Operations</span><span class="o">.</span><span class="n">register_operation</span><span class="p">(</span><span class="s2">&quot;create_sequence&quot;</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">CreateSequenceOp</span><span class="p">(</span><span class="n">MigrateOperation</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Create a SEQUENCE.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sequence_name</span><span class="p">,</span> <span class="n">schema</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sequence_name</span> <span class="o">=</span> <span class="n">sequence_name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">schema</span> <span class="o">=</span> <span class="n">schema</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">create_sequence</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">operations</span><span class="p">,</span> <span class="n">sequence_name</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Issue a &quot;CREATE SEQUENCE&quot; instruction.&quot;&quot;&quot;</span>
+
+        <span class="n">op</span> <span class="o">=</span> <span class="n">CreateSequenceOp</span><span class="p">(</span><span class="n">sequence_name</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">operations</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span><span class="n">op</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">reverse</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># only needed to support autogenerate</span>
+        <span class="k">return</span> <span class="n">DropSequenceOp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sequence_name</span><span class="p">,</span> <span class="n">schema</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">schema</span><span class="p">)</span>
+
+<span class="nd">@Operations</span><span class="o">.</span><span class="n">register_operation</span><span class="p">(</span><span class="s2">&quot;drop_sequence&quot;</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">DropSequenceOp</span><span class="p">(</span><span class="n">MigrateOperation</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Drop a SEQUENCE.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sequence_name</span><span class="p">,</span> <span class="n">schema</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sequence_name</span> <span class="o">=</span> <span class="n">sequence_name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">schema</span> <span class="o">=</span> <span class="n">schema</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">drop_sequence</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">operations</span><span class="p">,</span> <span class="n">sequence_name</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Issue a &quot;DROP SEQUENCE&quot; instruction.&quot;&quot;&quot;</span>
+
+        <span class="n">op</span> <span class="o">=</span> <span class="n">DropSequenceOp</span><span class="p">(</span><span class="n">sequence_name</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">operations</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span><span class="n">op</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">reverse</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># only needed to support autogenerate</span>
+        <span class="k">return</span> <span class="n">CreateSequenceOp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sequence_name</span><span class="p">,</span> <span class="n">schema</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">schema</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Above, the <code class="docutils literal notranslate"><span class="pre">CreateSequenceOp</span></code> and <code class="docutils literal notranslate"><span class="pre">DropSequenceOp</span></code> classes represent
+new operations that will
+be available as <code class="docutils literal notranslate"><span class="pre">op.create_sequence()</span></code> and <code class="docutils literal notranslate"><span class="pre">op.drop_sequence()</span></code>.
+The reason the operations
+are represented as stateful classes is so that an operation and a specific
+set of arguments can be represented generically; the state can then correspond
+to different kinds of operations, such as invoking the instruction against
+a database, or autogenerating Python code for the operation into a
+script.</p>
+<p>In order to establish the migrate-script behavior of the new operations,
+we use the <a class="reference internal" href="../ops.html#alembic.operations.Operations.implementation_for" title="alembic.operations.Operations.implementation_for"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Operations.implementation_for()</span></code></a> decorator:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@Operations</span><span class="o">.</span><span class="n">implementation_for</span><span class="p">(</span><span class="n">CreateSequenceOp</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">create_sequence</span><span class="p">(</span><span class="n">operations</span><span class="p">,</span> <span class="n">operation</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">operation</span><span class="o">.</span><span class="n">schema</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2">.</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">operation</span><span class="o">.</span><span class="n">schema</span><span class="p">,</span> <span class="n">operation</span><span class="o">.</span><span class="n">sequence_name</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">operation</span><span class="o">.</span><span class="n">sequence_name</span>
+    <span class="n">operations</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;CREATE SEQUENCE </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">name</span><span class="p">)</span>
+
+
+<span class="nd">@Operations</span><span class="o">.</span><span class="n">implementation_for</span><span class="p">(</span><span class="n">DropSequenceOp</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">drop_sequence</span><span class="p">(</span><span class="n">operations</span><span class="p">,</span> <span class="n">operation</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">operation</span><span class="o">.</span><span class="n">schema</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2">.</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">operation</span><span class="o">.</span><span class="n">schema</span><span class="p">,</span> <span class="n">operation</span><span class="o">.</span><span class="n">sequence_name</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">operation</span><span class="o">.</span><span class="n">sequence_name</span>
+    <span class="n">operations</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;DROP SEQUENCE </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">name</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Above, we use the simplest possible technique of invoking our DDL, which
+is just to call <a class="reference internal" href="../ops.html#alembic.operations.Operations.execute" title="alembic.operations.Operations.execute"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Operations.execute()</span></code></a> with literal SQL.  If this is
+all a custom operation needs, then this is fine.  However, options for
+more comprehensive support include building out a custom SQL construct,
+as documented at <a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/compiler.html#sqlalchemy-ext-compiler-toplevel" title="(in SQLAlchemy v1.3)"><span>Custom SQL Constructs and Compilation Extension</span></a>.</p>
+<p>With the above two steps, a migration script can now use new methods
+<code class="docutils literal notranslate"><span class="pre">op.create_sequence()</span></code> and <code class="docutils literal notranslate"><span class="pre">op.drop_sequence()</span></code> that will proxy to
+our object as a classmethod:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">upgrade</span><span class="p">():</span>
+    <span class="n">op</span><span class="o">.</span><span class="n">create_sequence</span><span class="p">(</span><span class="s2">&quot;my_sequence&quot;</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">downgrade</span><span class="p">():</span>
+    <span class="n">op</span><span class="o">.</span><span class="n">drop_sequence</span><span class="p">(</span><span class="s2">&quot;my_sequence&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The registration of new operations only needs to occur in time for the
+<code class="docutils literal notranslate"><span class="pre">env.py</span></code> script to invoke <a class="reference internal" href="runtime.html#alembic.runtime.migration.MigrationContext.run_migrations" title="alembic.runtime.migration.MigrationContext.run_migrations"><code class="xref py py-meth docutils literal notranslate"><span class="pre">MigrationContext.run_migrations()</span></code></a>;
+within the module level of the <code class="docutils literal notranslate"><span class="pre">env.py</span></code> script is sufficient.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="autogenerate.html#autogen-custom-ops"><span class="std std-ref">Autogenerating Custom Operation Directives</span></a> - how to add autogenerate support to
+custom operations.</p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 0.8: </span>- the migration operations available via the
+<a class="reference internal" href="../ops.html#alembic.operations.Operations" title="alembic.operations.Operations"><code class="xref py py-class docutils literal notranslate"><span class="pre">Operations</span></code></a> class as well as the <code class="docutils literal notranslate"><span class="pre">alembic.op</span></code> namespace
+is now extensible using a plugin system.</p>
+</div>
+</div>
+<div class="section" id="built-in-operation-objects">
+<span id="alembic-operations-ops-toplevel"></span><span id="operation-objects"></span><h2>Built-in Operation Objects<a class="headerlink" href="#built-in-operation-objects" title="Permalink to this headline">¶</a></h2>
+<p>The migration operations present on <a class="reference internal" href="../ops.html#alembic.operations.Operations" title="alembic.operations.Operations"><code class="xref py py-class docutils literal notranslate"><span class="pre">Operations</span></code></a> are themselves
+delivered via operation objects that represent an operation and its
+arguments.   All operations descend from the <a class="reference internal" href="#alembic.operations.ops.MigrateOperation" title="alembic.operations.ops.MigrateOperation"><code class="xref py py-class docutils literal notranslate"><span class="pre">MigrateOperation</span></code></a>
+class, and are registered with the <a class="reference internal" href="../ops.html#alembic.operations.Operations" title="alembic.operations.Operations"><code class="xref py py-class docutils literal notranslate"><span class="pre">Operations</span></code></a> class using
+the <a class="reference internal" href="../ops.html#alembic.operations.Operations.register_operation" title="alembic.operations.Operations.register_operation"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Operations.register_operation()</span></code></a> class decorator.  The
+<a class="reference internal" href="#alembic.operations.ops.MigrateOperation" title="alembic.operations.ops.MigrateOperation"><code class="xref py py-class docutils literal notranslate"><span class="pre">MigrateOperation</span></code></a> objects also serve as the basis for how the
+autogenerate system renders new migration scripts.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#operation-plugins"><span class="std std-ref">Operation Plugins</span></a></p>
+<p><a class="reference internal" href="autogenerate.html#customizing-revision"><span class="std std-ref">Customizing Revision Generation</span></a></p>
+</div>
+<p>The built-in operation objects are listed below.</p>
+<span class="target" id="module-alembic.operations.ops"></span><dl class="class">
+<dt id="alembic.operations.ops.AddColumnOp">
+<em class="property">class </em><code class="sig-prename descclassname">alembic.operations.ops.</code><code class="sig-name descname">AddColumnOp</code><span class="sig-paren">(</span><em class="sig-param">table_name</em>, <em class="sig-param">column</em>, <em class="sig-param">schema=None</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.operations.ops.AddColumnOp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Represent an add column operation.</p>
+<dl class="method">
+<dt id="alembic.operations.ops.AddColumnOp.add_column">
+<em class="property">classmethod </em><code class="sig-name descname">add_column</code><span class="sig-paren">(</span><em class="sig-param">operations</em>, <em class="sig-param">table_name</em>, <em class="sig-param">column</em>, <em class="sig-param">schema=None</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.operations.ops.AddColumnOp.add_column" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method is proxied on the <a class="reference internal" href="../ops.html#alembic.operations.Operations" title="alembic.operations.Operations"><code class="xref py py-class docutils literal notranslate"><span class="pre">Operations</span></code></a> class, via the <a class="reference internal" href="../ops.html#alembic.operations.Operations.add_column" title="alembic.operations.Operations.add_column"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Operations.add_column()</span></code></a> method.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="alembic.operations.ops.AddColumnOp.batch_add_column">
+<em class="property">classmethod </em><code class="sig-name descname">batch_add_column</code><span class="sig-paren">(</span><em class="sig-param">operations</em>, <em class="sig-param">column</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.operations.ops.AddColumnOp.batch_add_column" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method is proxied on the <a class="reference internal" href="../ops.html#alembic.operations.BatchOperations" title="alembic.operations.BatchOperations"><code class="xref py py-class docutils literal notranslate"><span class="pre">BatchOperations</span></code></a> class, via the <a class="reference internal" href="../ops.html#alembic.operations.BatchOperations.add_column" title="alembic.operations.BatchOperations.add_column"><code class="xref py py-meth docutils literal notranslate"><span class="pre">BatchOperations.add_column()</span></code></a> method.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="alembic.operations.ops.AddConstraintOp">
+<em class="property">class </em><code class="sig-prename descclassname">alembic.operations.ops.</code><code class="sig-name descname">AddConstraintOp</code><a class="headerlink" href="#alembic.operations.ops.AddConstraintOp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Represent an add constraint operation.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="alembic.operations.ops.AlterColumnOp">
+<em class="property">class </em><code class="sig-prename descclassname">alembic.operations.ops.</code><code class="sig-name descname">AlterColumnOp</code><span class="sig-paren">(</span><em class="sig-param">table_name</em>, <em class="sig-param">column_name</em>, <em class="sig-param">schema=None</em>, <em class="sig-param">existing_type=None</em>, <em class="sig-param">existing_server_default=False</em>, <em class="sig-param">existing_nullable=None</em>, <em class="sig-param">existing_comment=None</em>, <em class="sig-param">modify_nullable=None</em>, <em class="sig-param">modify_comment=False</em>, <em class="sig-param">modify_server_default=False</em>, <em class="sig-param">modify_name=None</em>, <em class="sig-param">modify_type=None</em>, <em class="sig-param">**kw</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.operations.ops.AlterColumnOp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Represent an alter column operation.</p>
+<dl class="method">
+<dt id="alembic.operations.ops.AlterColumnOp.alter_column">
+<em class="property">classmethod </em><code class="sig-name descname">alter_column</code><span class="sig-paren">(</span><em class="sig-param">operations</em>, <em class="sig-param">table_name</em>, <em class="sig-param">column_name</em>, <em class="sig-param">nullable=None</em>, <em class="sig-param">comment=False</em>, <em class="sig-param">server_default=False</em>, <em class="sig-param">new_column_name=None</em>, <em class="sig-param">type_=None</em>, <em class="sig-param">existing_type=None</em>, <em class="sig-param">existing_server_default=False</em>, <em class="sig-param">existing_nullable=None</em>, <em class="sig-param">existing_comment=None</em>, <em class="sig-param">schema=None</em>, <em class="sig-param">**kw</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.operations.ops.AlterColumnOp.alter_column" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method is proxied on the <a class="reference internal" href="../ops.html#alembic.operations.Operations" title="alembic.operations.Operations"><code class="xref py py-class docutils literal notranslate"><span class="pre">Operations</span></code></a> class, via the <a class="reference internal" href="../ops.html#alembic.operations.Operations.alter_column" title="alembic.operations.Operations.alter_column"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Operations.alter_column()</span></code></a> method.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="alembic.operations.ops.AlterColumnOp.batch_alter_column">
+<em class="property">classmethod </em><code class="sig-name descname">batch_alter_column</code><span class="sig-paren">(</span><em class="sig-param">operations</em>, <em class="sig-param">column_name</em>, <em class="sig-param">nullable=None</em>, <em class="sig-param">comment=False</em>, <em class="sig-param">server_default=False</em>, <em class="sig-param">new_column_name=None</em>, <em class="sig-param">type_=None</em>, <em class="sig-param">existing_type=None</em>, <em class="sig-param">existing_server_default=False</em>, <em class="sig-param">existing_nullable=None</em>, <em class="sig-param">existing_comment=None</em>, <em class="sig-param">**kw</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.operations.ops.AlterColumnOp.batch_alter_column" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method is proxied on the <a class="reference internal" href="../ops.html#alembic.operations.BatchOperations" title="alembic.operations.BatchOperations"><code class="xref py py-class docutils literal notranslate"><span class="pre">BatchOperations</span></code></a> class, via the <a class="reference internal" href="../ops.html#alembic.operations.BatchOperations.alter_column" title="alembic.operations.BatchOperations.alter_column"><code class="xref py py-meth docutils literal notranslate"><span class="pre">BatchOperations.alter_column()</span></code></a> method.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="alembic.operations.ops.AlterTableOp">
+<em class="property">class </em><code class="sig-prename descclassname">alembic.operations.ops.</code><code class="sig-name descname">AlterTableOp</code><span class="sig-paren">(</span><em class="sig-param">table_name</em>, <em class="sig-param">schema=None</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.operations.ops.AlterTableOp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Represent an alter table operation.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="alembic.operations.ops.BulkInsertOp">
+<em class="property">class </em><code class="sig-prename descclassname">alembic.operations.ops.</code><code class="sig-name descname">BulkInsertOp</code><span class="sig-paren">(</span><em class="sig-param">table</em>, <em class="sig-param">rows</em>, <em class="sig-param">multiinsert=True</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.operations.ops.BulkInsertOp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Represent a bulk insert operation.</p>
+<dl class="method">
+<dt id="alembic.operations.ops.BulkInsertOp.bulk_insert">
+<em class="property">classmethod </em><code class="sig-name descname">bulk_insert</code><span class="sig-paren">(</span><em class="sig-param">operations</em>, <em class="sig-param">table</em>, <em class="sig-param">rows</em>, <em class="sig-param">multiinsert=True</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.operations.ops.BulkInsertOp.bulk_insert" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method is proxied on the <a class="reference internal" href="../ops.html#alembic.operations.Operations" title="alembic.operations.Operations"><code class="xref py py-class docutils literal notranslate"><span class="pre">Operations</span></code></a> class, via the <a class="reference internal" href="../ops.html#alembic.operations.Operations.bulk_insert" title="alembic.operations.Operations.bulk_insert"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Operations.bulk_insert()</span></code></a> method.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="alembic.operations.ops.CreateCheckConstraintOp">
+<em class="property">class </em><code class="sig-prename descclassname">alembic.operations.ops.</code><code class="sig-name descname">CreateCheckConstraintOp</code><span class="sig-paren">(</span><em class="sig-param">constraint_name</em>, <em class="sig-param">table_name</em>, <em class="sig-param">condition</em>, <em class="sig-param">schema=None</em>, <em class="sig-param">_orig_constraint=None</em>, <em class="sig-param">**kw</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.operations.ops.CreateCheckConstraintOp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Represent a create check constraint operation.</p>
+<dl class="method">
+<dt id="alembic.operations.ops.CreateCheckConstraintOp.batch_create_check_constraint">
+<em class="property">classmethod </em><code class="sig-name descname">batch_create_check_constraint</code><span class="sig-paren">(</span><em class="sig-param">operations</em>, <em class="sig-param">constraint_name</em>, <em class="sig-param">condition</em>, <em class="sig-param">**kw</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.operations.ops.CreateCheckConstraintOp.batch_create_check_constraint" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method is proxied on the <a class="reference internal" href="../ops.html#alembic.operations.BatchOperations" title="alembic.operations.BatchOperations"><code class="xref py py-class docutils literal notranslate"><span class="pre">BatchOperations</span></code></a> class, via the <a class="reference internal" href="../ops.html#alembic.operations.BatchOperations.create_check_constraint" title="alembic.operations.BatchOperations.create_check_constraint"><code class="xref py py-meth docutils literal notranslate"><span class="pre">BatchOperations.create_check_constraint()</span></code></a> method.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="alembic.operations.ops.CreateCheckConstraintOp.create_check_constraint">
+<em class="property">classmethod </em><code class="sig-name descname">create_check_constraint</code><span class="sig-paren">(</span><em class="sig-param">operations</em>, <em class="sig-param">constraint_name</em>, <em class="sig-param">table_name</em>, <em class="sig-param">condition</em>, <em class="sig-param">schema=None</em>, <em class="sig-param">**kw</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.operations.ops.CreateCheckConstraintOp.create_check_constraint" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method is proxied on the <a class="reference internal" href="../ops.html#alembic.operations.Operations" title="alembic.operations.Operations"><code class="xref py py-class docutils literal notranslate"><span class="pre">Operations</span></code></a> class, via the <a class="reference internal" href="../ops.html#alembic.operations.Operations.create_check_constraint" title="alembic.operations.Operations.create_check_constraint"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Operations.create_check_constraint()</span></code></a> method.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="alembic.operations.ops.CreateForeignKeyOp">
+<em class="property">class </em><code class="sig-prename descclassname">alembic.operations.ops.</code><code class="sig-name descname">CreateForeignKeyOp</code><span class="sig-paren">(</span><em class="sig-param">constraint_name</em>, <em class="sig-param">source_table</em>, <em class="sig-param">referent_table</em>, <em class="sig-param">local_cols</em>, <em class="sig-param">remote_cols</em>, <em class="sig-param">_orig_constraint=None</em>, <em class="sig-param">**kw</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.operations.ops.CreateForeignKeyOp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Represent a create foreign key constraint operation.</p>
+<dl class="method">
+<dt id="alembic.operations.ops.CreateForeignKeyOp.batch_create_foreign_key">
+<em class="property">classmethod </em><code class="sig-name descname">batch_create_foreign_key</code><span class="sig-paren">(</span><em class="sig-param">operations</em>, <em class="sig-param">constraint_name</em>, <em class="sig-param">referent_table</em>, <em class="sig-param">local_cols</em>, <em class="sig-param">remote_cols</em>, <em class="sig-param">referent_schema=None</em>, <em class="sig-param">onupdate=None</em>, <em class="sig-param">ondelete=None</em>, <em class="sig-param">deferrable=None</em>, <em class="sig-param">initially=None</em>, <em class="sig-param">match=None</em>, <em class="sig-param">**dialect_kw</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.operations.ops.CreateForeignKeyOp.batch_create_foreign_key" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method is proxied on the <a class="reference internal" href="../ops.html#alembic.operations.BatchOperations" title="alembic.operations.BatchOperations"><code class="xref py py-class docutils literal notranslate"><span class="pre">BatchOperations</span></code></a> class, via the <a class="reference internal" href="../ops.html#alembic.operations.BatchOperations.create_foreign_key" title="alembic.operations.BatchOperations.create_foreign_key"><code class="xref py py-meth docutils literal notranslate"><span class="pre">BatchOperations.create_foreign_key()</span></code></a> method.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="alembic.operations.ops.CreateForeignKeyOp.create_foreign_key">
+<em class="property">classmethod </em><code class="sig-name descname">create_foreign_key</code><span class="sig-paren">(</span><em class="sig-param">operations</em>, <em class="sig-param">constraint_name</em>, <em class="sig-param">source_table</em>, <em class="sig-param">referent_table</em>, <em class="sig-param">local_cols</em>, <em class="sig-param">remote_cols</em>, <em class="sig-param">onupdate=None</em>, <em class="sig-param">ondelete=None</em>, <em class="sig-param">deferrable=None</em>, <em class="sig-param">initially=None</em>, <em class="sig-param">match=None</em>, <em class="sig-param">source_schema=None</em>, <em class="sig-param">referent_schema=None</em>, <em class="sig-param">**dialect_kw</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.operations.ops.CreateForeignKeyOp.create_foreign_key" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method is proxied on the <a class="reference internal" href="../ops.html#alembic.operations.Operations" title="alembic.operations.Operations"><code class="xref py py-class docutils literal notranslate"><span class="pre">Operations</span></code></a> class, via the <a class="reference internal" href="../ops.html#alembic.operations.Operations.create_foreign_key" title="alembic.operations.Operations.create_foreign_key"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Operations.create_foreign_key()</span></code></a> method.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="alembic.operations.ops.CreateIndexOp">
+<em class="property">class </em><code class="sig-prename descclassname">alembic.operations.ops.</code><code class="sig-name descname">CreateIndexOp</code><span class="sig-paren">(</span><em class="sig-param">index_name</em>, <em class="sig-param">table_name</em>, <em class="sig-param">columns</em>, <em class="sig-param">schema=None</em>, <em class="sig-param">unique=False</em>, <em class="sig-param">_orig_index=None</em>, <em class="sig-param">**kw</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.operations.ops.CreateIndexOp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Represent a create index operation.</p>
+<dl class="method">
+<dt id="alembic.operations.ops.CreateIndexOp.batch_create_index">
+<em class="property">classmethod </em><code class="sig-name descname">batch_create_index</code><span class="sig-paren">(</span><em class="sig-param">operations</em>, <em class="sig-param">index_name</em>, <em class="sig-param">columns</em>, <em class="sig-param">**kw</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.operations.ops.CreateIndexOp.batch_create_index" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method is proxied on the <a class="reference internal" href="../ops.html#alembic.operations.BatchOperations" title="alembic.operations.BatchOperations"><code class="xref py py-class docutils literal notranslate"><span class="pre">BatchOperations</span></code></a> class, via the <a class="reference internal" href="../ops.html#alembic.operations.BatchOperations.create_index" title="alembic.operations.BatchOperations.create_index"><code class="xref py py-meth docutils literal notranslate"><span class="pre">BatchOperations.create_index()</span></code></a> method.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="alembic.operations.ops.CreateIndexOp.create_index">
+<em class="property">classmethod </em><code class="sig-name descname">create_index</code><span class="sig-paren">(</span><em class="sig-param">operations</em>, <em class="sig-param">index_name</em>, <em class="sig-param">table_name</em>, <em class="sig-param">columns</em>, <em class="sig-param">schema=None</em>, <em class="sig-param">unique=False</em>, <em class="sig-param">**kw</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.operations.ops.CreateIndexOp.create_index" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method is proxied on the <a class="reference internal" href="../ops.html#alembic.operations.Operations" title="alembic.operations.Operations"><code class="xref py py-class docutils literal notranslate"><span class="pre">Operations</span></code></a> class, via the <a class="reference internal" href="../ops.html#alembic.operations.Operations.create_index" title="alembic.operations.Operations.create_index"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Operations.create_index()</span></code></a> method.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="alembic.operations.ops.CreatePrimaryKeyOp">
+<em class="property">class </em><code class="sig-prename descclassname">alembic.operations.ops.</code><code class="sig-name descname">CreatePrimaryKeyOp</code><span class="sig-paren">(</span><em class="sig-param">constraint_name</em>, <em class="sig-param">table_name</em>, <em class="sig-param">columns</em>, <em class="sig-param">schema=None</em>, <em class="sig-param">_orig_constraint=None</em>, <em class="sig-param">**kw</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.operations.ops.CreatePrimaryKeyOp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Represent a create primary key operation.</p>
+<dl class="method">
+<dt id="alembic.operations.ops.CreatePrimaryKeyOp.batch_create_primary_key">
+<em class="property">classmethod </em><code class="sig-name descname">batch_create_primary_key</code><span class="sig-paren">(</span><em class="sig-param">operations</em>, <em class="sig-param">constraint_name</em>, <em class="sig-param">columns</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.operations.ops.CreatePrimaryKeyOp.batch_create_primary_key" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method is proxied on the <a class="reference internal" href="../ops.html#alembic.operations.BatchOperations" title="alembic.operations.BatchOperations"><code class="xref py py-class docutils literal notranslate"><span class="pre">BatchOperations</span></code></a> class, via the <a class="reference internal" href="../ops.html#alembic.operations.BatchOperations.create_primary_key" title="alembic.operations.BatchOperations.create_primary_key"><code class="xref py py-meth docutils literal notranslate"><span class="pre">BatchOperations.create_primary_key()</span></code></a> method.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="alembic.operations.ops.CreatePrimaryKeyOp.create_primary_key">
+<em class="property">classmethod </em><code class="sig-name descname">create_primary_key</code><span class="sig-paren">(</span><em class="sig-param">operations</em>, <em class="sig-param">constraint_name</em>, <em class="sig-param">table_name</em>, <em class="sig-param">columns</em>, <em class="sig-param">schema=None</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.operations.ops.CreatePrimaryKeyOp.create_primary_key" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method is proxied on the <a class="reference internal" href="../ops.html#alembic.operations.Operations" title="alembic.operations.Operations"><code class="xref py py-class docutils literal notranslate"><span class="pre">Operations</span></code></a> class, via the <a class="reference internal" href="../ops.html#alembic.operations.Operations.create_primary_key" title="alembic.operations.Operations.create_primary_key"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Operations.create_primary_key()</span></code></a> method.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="alembic.operations.ops.CreateTableCommentOp">
+<em class="property">class </em><code class="sig-prename descclassname">alembic.operations.ops.</code><code class="sig-name descname">CreateTableCommentOp</code><span class="sig-paren">(</span><em class="sig-param">table_name</em>, <em class="sig-param">comment</em>, <em class="sig-param">schema=None</em>, <em class="sig-param">existing_comment=None</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.operations.ops.CreateTableCommentOp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Represent a COMMENT ON <cite>table</cite> operation.</p>
+<dl class="method">
+<dt id="alembic.operations.ops.CreateTableCommentOp.create_table_comment">
+<em class="property">classmethod </em><code class="sig-name descname">create_table_comment</code><span class="sig-paren">(</span><em class="sig-param">operations</em>, <em class="sig-param">table_name</em>, <em class="sig-param">comment</em>, <em class="sig-param">existing_comment=None</em>, <em class="sig-param">schema=None</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.operations.ops.CreateTableCommentOp.create_table_comment" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method is proxied on the <a class="reference internal" href="../ops.html#alembic.operations.Operations" title="alembic.operations.Operations"><code class="xref py py-class docutils literal notranslate"><span class="pre">Operations</span></code></a> class, via the <a class="reference internal" href="../ops.html#alembic.operations.Operations.create_table_comment" title="alembic.operations.Operations.create_table_comment"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Operations.create_table_comment()</span></code></a> method.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="alembic.operations.ops.CreateTableCommentOp.reverse">
+<code class="sig-name descname">reverse</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#alembic.operations.ops.CreateTableCommentOp.reverse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reverses the COMMENT ON operation against a table.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="alembic.operations.ops.CreateTableOp">
+<em class="property">class </em><code class="sig-prename descclassname">alembic.operations.ops.</code><code class="sig-name descname">CreateTableOp</code><span class="sig-paren">(</span><em class="sig-param">table_name</em>, <em class="sig-param">columns</em>, <em class="sig-param">schema=None</em>, <em class="sig-param">_orig_table=None</em>, <em class="sig-param">**kw</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.operations.ops.CreateTableOp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Represent a create table operation.</p>
+<dl class="method">
+<dt id="alembic.operations.ops.CreateTableOp.create_table">
+<em class="property">classmethod </em><code class="sig-name descname">create_table</code><span class="sig-paren">(</span><em class="sig-param">operations</em>, <em class="sig-param">table_name</em>, <em class="sig-param">*columns</em>, <em class="sig-param">**kw</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.operations.ops.CreateTableOp.create_table" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method is proxied on the <a class="reference internal" href="../ops.html#alembic.operations.Operations" title="alembic.operations.Operations"><code class="xref py py-class docutils literal notranslate"><span class="pre">Operations</span></code></a> class, via the <a class="reference internal" href="../ops.html#alembic.operations.Operations.create_table" title="alembic.operations.Operations.create_table"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Operations.create_table()</span></code></a> method.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="alembic.operations.ops.CreateUniqueConstraintOp">
+<em class="property">class </em><code class="sig-prename descclassname">alembic.operations.ops.</code><code class="sig-name descname">CreateUniqueConstraintOp</code><span class="sig-paren">(</span><em class="sig-param">constraint_name</em>, <em class="sig-param">table_name</em>, <em class="sig-param">columns</em>, <em class="sig-param">schema=None</em>, <em class="sig-param">_orig_constraint=None</em>, <em class="sig-param">**kw</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.operations.ops.CreateUniqueConstraintOp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Represent a create unique constraint operation.</p>
+<dl class="method">
+<dt id="alembic.operations.ops.CreateUniqueConstraintOp.batch_create_unique_constraint">
+<em class="property">classmethod </em><code class="sig-name descname">batch_create_unique_constraint</code><span class="sig-paren">(</span><em class="sig-param">operations</em>, <em class="sig-param">constraint_name</em>, <em class="sig-param">columns</em>, <em class="sig-param">**kw</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.operations.ops.CreateUniqueConstraintOp.batch_create_unique_constraint" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method is proxied on the <a class="reference internal" href="../ops.html#alembic.operations.BatchOperations" title="alembic.operations.BatchOperations"><code class="xref py py-class docutils literal notranslate"><span class="pre">BatchOperations</span></code></a> class, via the <a class="reference internal" href="../ops.html#alembic.operations.BatchOperations.create_unique_constraint" title="alembic.operations.BatchOperations.create_unique_constraint"><code class="xref py py-meth docutils literal notranslate"><span class="pre">BatchOperations.create_unique_constraint()</span></code></a> method.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="alembic.operations.ops.CreateUniqueConstraintOp.create_unique_constraint">
+<em class="property">classmethod </em><code class="sig-name descname">create_unique_constraint</code><span class="sig-paren">(</span><em class="sig-param">operations</em>, <em class="sig-param">constraint_name</em>, <em class="sig-param">table_name</em>, <em class="sig-param">columns</em>, <em class="sig-param">schema=None</em>, <em class="sig-param">**kw</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.operations.ops.CreateUniqueConstraintOp.create_unique_constraint" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method is proxied on the <a class="reference internal" href="../ops.html#alembic.operations.Operations" title="alembic.operations.Operations"><code class="xref py py-class docutils literal notranslate"><span class="pre">Operations</span></code></a> class, via the <a class="reference internal" href="../ops.html#alembic.operations.Operations.create_unique_constraint" title="alembic.operations.Operations.create_unique_constraint"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Operations.create_unique_constraint()</span></code></a> method.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="alembic.operations.ops.DowngradeOps">
+<em class="property">class </em><code class="sig-prename descclassname">alembic.operations.ops.</code><code class="sig-name descname">DowngradeOps</code><span class="sig-paren">(</span><em class="sig-param">ops=()</em>, <em class="sig-param">downgrade_token='downgrades'</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.operations.ops.DowngradeOps" title="Permalink to this definition">¶</a></dt>
+<dd><p>contains a sequence of operations that would apply to the
+‘downgrade’ stream of a script.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="autogenerate.html#customizing-revision"><span class="std std-ref">Customizing Revision Generation</span></a></p>
+</div>
+</dd></dl>
+
+<dl class="class">
+<dt id="alembic.operations.ops.DropColumnOp">
+<em class="property">class </em><code class="sig-prename descclassname">alembic.operations.ops.</code><code class="sig-name descname">DropColumnOp</code><span class="sig-paren">(</span><em class="sig-param">table_name</em>, <em class="sig-param">column_name</em>, <em class="sig-param">schema=None</em>, <em class="sig-param">_orig_column=None</em>, <em class="sig-param">**kw</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.operations.ops.DropColumnOp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Represent a drop column operation.</p>
+<dl class="method">
+<dt id="alembic.operations.ops.DropColumnOp.batch_drop_column">
+<em class="property">classmethod </em><code class="sig-name descname">batch_drop_column</code><span class="sig-paren">(</span><em class="sig-param">operations</em>, <em class="sig-param">column_name</em>, <em class="sig-param">**kw</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.operations.ops.DropColumnOp.batch_drop_column" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method is proxied on the <a class="reference internal" href="../ops.html#alembic.operations.BatchOperations" title="alembic.operations.BatchOperations"><code class="xref py py-class docutils literal notranslate"><span class="pre">BatchOperations</span></code></a> class, via the <a class="reference internal" href="../ops.html#alembic.operations.BatchOperations.drop_column" title="alembic.operations.BatchOperations.drop_column"><code class="xref py py-meth docutils literal notranslate"><span class="pre">BatchOperations.drop_column()</span></code></a> method.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="alembic.operations.ops.DropColumnOp.drop_column">
+<em class="property">classmethod </em><code class="sig-name descname">drop_column</code><span class="sig-paren">(</span><em class="sig-param">operations</em>, <em class="sig-param">table_name</em>, <em class="sig-param">column_name</em>, <em class="sig-param">schema=None</em>, <em class="sig-param">**kw</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.operations.ops.DropColumnOp.drop_column" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method is proxied on the <a class="reference internal" href="../ops.html#alembic.operations.Operations" title="alembic.operations.Operations"><code class="xref py py-class docutils literal notranslate"><span class="pre">Operations</span></code></a> class, via the <a class="reference internal" href="../ops.html#alembic.operations.Operations.drop_column" title="alembic.operations.Operations.drop_column"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Operations.drop_column()</span></code></a> method.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="alembic.operations.ops.DropConstraintOp">
+<em class="property">class </em><code class="sig-prename descclassname">alembic.operations.ops.</code><code class="sig-name descname">DropConstraintOp</code><span class="sig-paren">(</span><em class="sig-param">constraint_name</em>, <em class="sig-param">table_name</em>, <em class="sig-param">type_=None</em>, <em class="sig-param">schema=None</em>, <em class="sig-param">_orig_constraint=None</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.operations.ops.DropConstraintOp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Represent a drop constraint operation.</p>
+<dl class="method">
+<dt id="alembic.operations.ops.DropConstraintOp.batch_drop_constraint">
+<em class="property">classmethod </em><code class="sig-name descname">batch_drop_constraint</code><span class="sig-paren">(</span><em class="sig-param">operations</em>, <em class="sig-param">constraint_name</em>, <em class="sig-param">type_=None</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.operations.ops.DropConstraintOp.batch_drop_constraint" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method is proxied on the <a class="reference internal" href="../ops.html#alembic.operations.BatchOperations" title="alembic.operations.BatchOperations"><code class="xref py py-class docutils literal notranslate"><span class="pre">BatchOperations</span></code></a> class, via the <a class="reference internal" href="../ops.html#alembic.operations.BatchOperations.drop_constraint" title="alembic.operations.BatchOperations.drop_constraint"><code class="xref py py-meth docutils literal notranslate"><span class="pre">BatchOperations.drop_constraint()</span></code></a> method.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="alembic.operations.ops.DropConstraintOp.drop_constraint">
+<em class="property">classmethod </em><code class="sig-name descname">drop_constraint</code><span class="sig-paren">(</span><em class="sig-param">operations</em>, <em class="sig-param">constraint_name</em>, <em class="sig-param">table_name</em>, <em class="sig-param">type_=None</em>, <em class="sig-param">schema=None</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.operations.ops.DropConstraintOp.drop_constraint" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method is proxied on the <a class="reference internal" href="../ops.html#alembic.operations.Operations" title="alembic.operations.Operations"><code class="xref py py-class docutils literal notranslate"><span class="pre">Operations</span></code></a> class, via the <a class="reference internal" href="../ops.html#alembic.operations.Operations.drop_constraint" title="alembic.operations.Operations.drop_constraint"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Operations.drop_constraint()</span></code></a> method.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="alembic.operations.ops.DropIndexOp">
+<em class="property">class </em><code class="sig-prename descclassname">alembic.operations.ops.</code><code class="sig-name descname">DropIndexOp</code><span class="sig-paren">(</span><em class="sig-param">index_name</em>, <em class="sig-param">table_name=None</em>, <em class="sig-param">schema=None</em>, <em class="sig-param">_orig_index=None</em>, <em class="sig-param">**kw</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.operations.ops.DropIndexOp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Represent a drop index operation.</p>
+<dl class="method">
+<dt id="alembic.operations.ops.DropIndexOp.batch_drop_index">
+<em class="property">classmethod </em><code class="sig-name descname">batch_drop_index</code><span class="sig-paren">(</span><em class="sig-param">operations</em>, <em class="sig-param">index_name</em>, <em class="sig-param">**kw</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.operations.ops.DropIndexOp.batch_drop_index" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method is proxied on the <a class="reference internal" href="../ops.html#alembic.operations.BatchOperations" title="alembic.operations.BatchOperations"><code class="xref py py-class docutils literal notranslate"><span class="pre">BatchOperations</span></code></a> class, via the <a class="reference internal" href="../ops.html#alembic.operations.BatchOperations.drop_index" title="alembic.operations.BatchOperations.drop_index"><code class="xref py py-meth docutils literal notranslate"><span class="pre">BatchOperations.drop_index()</span></code></a> method.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="alembic.operations.ops.DropIndexOp.drop_index">
+<em class="property">classmethod </em><code class="sig-name descname">drop_index</code><span class="sig-paren">(</span><em class="sig-param">operations</em>, <em class="sig-param">index_name</em>, <em class="sig-param">table_name=None</em>, <em class="sig-param">schema=None</em>, <em class="sig-param">**kw</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.operations.ops.DropIndexOp.drop_index" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method is proxied on the <a class="reference internal" href="../ops.html#alembic.operations.Operations" title="alembic.operations.Operations"><code class="xref py py-class docutils literal notranslate"><span class="pre">Operations</span></code></a> class, via the <a class="reference internal" href="../ops.html#alembic.operations.Operations.drop_index" title="alembic.operations.Operations.drop_index"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Operations.drop_index()</span></code></a> method.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="alembic.operations.ops.DropTableCommentOp">
+<em class="property">class </em><code class="sig-prename descclassname">alembic.operations.ops.</code><code class="sig-name descname">DropTableCommentOp</code><span class="sig-paren">(</span><em class="sig-param">table_name</em>, <em class="sig-param">schema=None</em>, <em class="sig-param">existing_comment=None</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.operations.ops.DropTableCommentOp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Represent an operation to remove the comment from a table.</p>
+<dl class="method">
+<dt id="alembic.operations.ops.DropTableCommentOp.drop_table_comment">
+<em class="property">classmethod </em><code class="sig-name descname">drop_table_comment</code><span class="sig-paren">(</span><em class="sig-param">operations</em>, <em class="sig-param">table_name</em>, <em class="sig-param">existing_comment=None</em>, <em class="sig-param">schema=None</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.operations.ops.DropTableCommentOp.drop_table_comment" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method is proxied on the <a class="reference internal" href="../ops.html#alembic.operations.Operations" title="alembic.operations.Operations"><code class="xref py py-class docutils literal notranslate"><span class="pre">Operations</span></code></a> class, via the <a class="reference internal" href="../ops.html#alembic.operations.Operations.drop_table_comment" title="alembic.operations.Operations.drop_table_comment"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Operations.drop_table_comment()</span></code></a> method.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="alembic.operations.ops.DropTableCommentOp.reverse">
+<code class="sig-name descname">reverse</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#alembic.operations.ops.DropTableCommentOp.reverse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reverses the COMMENT ON operation against a table.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="alembic.operations.ops.DropTableOp">
+<em class="property">class </em><code class="sig-prename descclassname">alembic.operations.ops.</code><code class="sig-name descname">DropTableOp</code><span class="sig-paren">(</span><em class="sig-param">table_name</em>, <em class="sig-param">schema=None</em>, <em class="sig-param">table_kw=None</em>, <em class="sig-param">_orig_table=None</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.operations.ops.DropTableOp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Represent a drop table operation.</p>
+<dl class="method">
+<dt id="alembic.operations.ops.DropTableOp.drop_table">
+<em class="property">classmethod </em><code class="sig-name descname">drop_table</code><span class="sig-paren">(</span><em class="sig-param">operations</em>, <em class="sig-param">table_name</em>, <em class="sig-param">schema=None</em>, <em class="sig-param">**kw</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.operations.ops.DropTableOp.drop_table" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method is proxied on the <a class="reference internal" href="../ops.html#alembic.operations.Operations" title="alembic.operations.Operations"><code class="xref py py-class docutils literal notranslate"><span class="pre">Operations</span></code></a> class, via the <a class="reference internal" href="../ops.html#alembic.operations.Operations.drop_table" title="alembic.operations.Operations.drop_table"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Operations.drop_table()</span></code></a> method.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="alembic.operations.ops.ExecuteSQLOp">
+<em class="property">class </em><code class="sig-prename descclassname">alembic.operations.ops.</code><code class="sig-name descname">ExecuteSQLOp</code><span class="sig-paren">(</span><em class="sig-param">sqltext</em>, <em class="sig-param">execution_options=None</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.operations.ops.ExecuteSQLOp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Represent an execute SQL operation.</p>
+<dl class="method">
+<dt id="alembic.operations.ops.ExecuteSQLOp.execute">
+<em class="property">classmethod </em><code class="sig-name descname">execute</code><span class="sig-paren">(</span><em class="sig-param">operations</em>, <em class="sig-param">sqltext</em>, <em class="sig-param">execution_options=None</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.operations.ops.ExecuteSQLOp.execute" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method is proxied on the <a class="reference internal" href="../ops.html#alembic.operations.Operations" title="alembic.operations.Operations"><code class="xref py py-class docutils literal notranslate"><span class="pre">Operations</span></code></a> class, via the <a class="reference internal" href="../ops.html#alembic.operations.Operations.execute" title="alembic.operations.Operations.execute"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Operations.execute()</span></code></a> method.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="alembic.operations.ops.MigrateOperation">
+<em class="property">class </em><code class="sig-prename descclassname">alembic.operations.ops.</code><code class="sig-name descname">MigrateOperation</code><a class="headerlink" href="#alembic.operations.ops.MigrateOperation" title="Permalink to this definition">¶</a></dt>
+<dd><p>base class for migration command and organization objects.</p>
+<p>This system is part of the operation extensibility API.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 0.8.0.</span></p>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#operation-objects"><span class="std std-ref">Built-in Operation Objects</span></a></p>
+<p><a class="reference internal" href="#operation-plugins"><span class="std std-ref">Operation Plugins</span></a></p>
+<p><a class="reference internal" href="autogenerate.html#customizing-revision"><span class="std std-ref">Customizing Revision Generation</span></a></p>
+</div>
+<dl class="attribute">
+<dt id="alembic.operations.ops.MigrateOperation.info">
+<code class="sig-name descname">info</code><a class="headerlink" href="#alembic.operations.ops.MigrateOperation.info" title="Permalink to this definition">¶</a></dt>
+<dd><p>A dictionary that may be used to store arbitrary information
+along with this <a class="reference internal" href="#alembic.operations.ops.MigrateOperation" title="alembic.operations.ops.MigrateOperation"><code class="xref py py-class docutils literal notranslate"><span class="pre">MigrateOperation</span></code></a> object.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="alembic.operations.ops.MigrationScript">
+<em class="property">class </em><code class="sig-prename descclassname">alembic.operations.ops.</code><code class="sig-name descname">MigrationScript</code><span class="sig-paren">(</span><em class="sig-param">rev_id</em>, <em class="sig-param">upgrade_ops</em>, <em class="sig-param">downgrade_ops</em>, <em class="sig-param">message=None</em>, <em class="sig-param">imports={}</em>, <em class="sig-param">head=None</em>, <em class="sig-param">splice=None</em>, <em class="sig-param">branch_label=None</em>, <em class="sig-param">version_path=None</em>, <em class="sig-param">depends_on=None</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.operations.ops.MigrationScript" title="Permalink to this definition">¶</a></dt>
+<dd><p>represents a migration script.</p>
+<p>E.g. when autogenerate encounters this object, this corresponds to the
+production of an actual script file.</p>
+<p>A normal <a class="reference internal" href="#alembic.operations.ops.MigrationScript" title="alembic.operations.ops.MigrationScript"><code class="xref py py-class docutils literal notranslate"><span class="pre">MigrationScript</span></code></a> object would contain a single
+<a class="reference internal" href="#alembic.operations.ops.UpgradeOps" title="alembic.operations.ops.UpgradeOps"><code class="xref py py-class docutils literal notranslate"><span class="pre">UpgradeOps</span></code></a> and a single <a class="reference internal" href="#alembic.operations.ops.DowngradeOps" title="alembic.operations.ops.DowngradeOps"><code class="xref py py-class docutils literal notranslate"><span class="pre">DowngradeOps</span></code></a> directive.
+These are accessible via the <code class="docutils literal notranslate"><span class="pre">.upgrade_ops</span></code> and <code class="docutils literal notranslate"><span class="pre">.downgrade_ops</span></code>
+attributes.</p>
+<p>In the case of an autogenerate operation that runs multiple times,
+such as the multiple database example in the “multidb” template,
+the <code class="docutils literal notranslate"><span class="pre">.upgrade_ops</span></code> and <code class="docutils literal notranslate"><span class="pre">.downgrade_ops</span></code> attributes are disabled,
+and instead these objects should be accessed via the <code class="docutils literal notranslate"><span class="pre">.upgrade_ops_list</span></code>
+and <code class="docutils literal notranslate"><span class="pre">.downgrade_ops_list</span></code> list-based attributes.  These latter
+attributes are always available at the very least as single-element lists.</p>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 0.8.1: </span>the <code class="docutils literal notranslate"><span class="pre">.upgrade_ops</span></code> and <code class="docutils literal notranslate"><span class="pre">.downgrade_ops</span></code>
+attributes should be accessed via the <code class="docutils literal notranslate"><span class="pre">.upgrade_ops_list</span></code>
+and <code class="docutils literal notranslate"><span class="pre">.downgrade_ops_list</span></code> attributes if multiple autogenerate
+passes proceed on the same <a class="reference internal" href="#alembic.operations.ops.MigrationScript" title="alembic.operations.ops.MigrationScript"><code class="xref py py-class docutils literal notranslate"><span class="pre">MigrationScript</span></code></a> object.</p>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="autogenerate.html#customizing-revision"><span class="std std-ref">Customizing Revision Generation</span></a></p>
+</div>
+<dl class="method">
+<dt id="alembic.operations.ops.MigrationScript.downgrade_ops">
+<em class="property">property </em><code class="sig-name descname">downgrade_ops</code><a class="headerlink" href="#alembic.operations.ops.MigrationScript.downgrade_ops" title="Permalink to this definition">¶</a></dt>
+<dd><p>An instance of <a class="reference internal" href="#alembic.operations.ops.DowngradeOps" title="alembic.operations.ops.DowngradeOps"><code class="xref py py-class docutils literal notranslate"><span class="pre">DowngradeOps</span></code></a>.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><code class="xref py py-attr docutils literal notranslate"><span class="pre">MigrationScript.downgrade_ops_list</span></code></p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="alembic.operations.ops.MigrationScript.downgrade_ops_list">
+<em class="property">property </em><code class="sig-name descname">downgrade_ops_list</code><a class="headerlink" href="#alembic.operations.ops.MigrationScript.downgrade_ops_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>A list of <a class="reference internal" href="#alembic.operations.ops.DowngradeOps" title="alembic.operations.ops.DowngradeOps"><code class="xref py py-class docutils literal notranslate"><span class="pre">DowngradeOps</span></code></a> instances.</p>
+<p>This is used in place of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">MigrationScript.downgrade_ops</span></code>
+attribute when dealing with a revision operation that does
+multiple autogenerate passes.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 0.8.1.</span></p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="alembic.operations.ops.MigrationScript.upgrade_ops">
+<em class="property">property </em><code class="sig-name descname">upgrade_ops</code><a class="headerlink" href="#alembic.operations.ops.MigrationScript.upgrade_ops" title="Permalink to this definition">¶</a></dt>
+<dd><p>An instance of <a class="reference internal" href="#alembic.operations.ops.UpgradeOps" title="alembic.operations.ops.UpgradeOps"><code class="xref py py-class docutils literal notranslate"><span class="pre">UpgradeOps</span></code></a>.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><code class="xref py py-attr docutils literal notranslate"><span class="pre">MigrationScript.upgrade_ops_list</span></code></p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="alembic.operations.ops.MigrationScript.upgrade_ops_list">
+<em class="property">property </em><code class="sig-name descname">upgrade_ops_list</code><a class="headerlink" href="#alembic.operations.ops.MigrationScript.upgrade_ops_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>A list of <a class="reference internal" href="#alembic.operations.ops.UpgradeOps" title="alembic.operations.ops.UpgradeOps"><code class="xref py py-class docutils literal notranslate"><span class="pre">UpgradeOps</span></code></a> instances.</p>
+<p>This is used in place of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">MigrationScript.upgrade_ops</span></code>
+attribute when dealing with a revision operation that does
+multiple autogenerate passes.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 0.8.1.</span></p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="alembic.operations.ops.ModifyTableOps">
+<em class="property">class </em><code class="sig-prename descclassname">alembic.operations.ops.</code><code class="sig-name descname">ModifyTableOps</code><span class="sig-paren">(</span><em class="sig-param">table_name</em>, <em class="sig-param">ops</em>, <em class="sig-param">schema=None</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.operations.ops.ModifyTableOps" title="Permalink to this definition">¶</a></dt>
+<dd><p>Contains a sequence of operations that all apply to a single Table.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="alembic.operations.ops.OpContainer">
+<em class="property">class </em><code class="sig-prename descclassname">alembic.operations.ops.</code><code class="sig-name descname">OpContainer</code><span class="sig-paren">(</span><em class="sig-param">ops=()</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.operations.ops.OpContainer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Represent a sequence of operations operation.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="alembic.operations.ops.RenameTableOp">
+<em class="property">class </em><code class="sig-prename descclassname">alembic.operations.ops.</code><code class="sig-name descname">RenameTableOp</code><span class="sig-paren">(</span><em class="sig-param">old_table_name</em>, <em class="sig-param">new_table_name</em>, <em class="sig-param">schema=None</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.operations.ops.RenameTableOp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Represent a rename table operation.</p>
+<dl class="method">
+<dt id="alembic.operations.ops.RenameTableOp.rename_table">
+<em class="property">classmethod </em><code class="sig-name descname">rename_table</code><span class="sig-paren">(</span><em class="sig-param">operations</em>, <em class="sig-param">old_table_name</em>, <em class="sig-param">new_table_name</em>, <em class="sig-param">schema=None</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.operations.ops.RenameTableOp.rename_table" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method is proxied on the <a class="reference internal" href="../ops.html#alembic.operations.Operations" title="alembic.operations.Operations"><code class="xref py py-class docutils literal notranslate"><span class="pre">Operations</span></code></a> class, via the <a class="reference internal" href="../ops.html#alembic.operations.Operations.rename_table" title="alembic.operations.Operations.rename_table"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Operations.rename_table()</span></code></a> method.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="alembic.operations.ops.UpgradeOps">
+<em class="property">class </em><code class="sig-prename descclassname">alembic.operations.ops.</code><code class="sig-name descname">UpgradeOps</code><span class="sig-paren">(</span><em class="sig-param">ops=()</em>, <em class="sig-param">upgrade_token='upgrades'</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.operations.ops.UpgradeOps" title="Permalink to this definition">¶</a></dt>
+<dd><p>contains a sequence of operations that would apply to the
+‘upgrade’ stream of a script.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="autogenerate.html#customizing-revision"><span class="std std-ref">Customizing Revision Generation</span></a></p>
+</div>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Operation Directives</a><ul>
+<li><a class="reference internal" href="#operation-plugins">Operation Plugins</a></li>
+<li><a class="reference internal" href="#built-in-operation-objects">Built-in Operation Objects</a></li>
+</ul>
+</li>
+</ul>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="commands.html"
+                        title="previous chapter">Commands</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="autogenerate.html"
+                        title="next chapter">Autogeneration</a></p>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="autogenerate.html" title="Autogeneration"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="commands.html" title="Commands"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Alembic 1.0.11 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >API Details</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2010-2019, Mike Bayer.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.1.2.
+    </div>
+  </body>
+</html>

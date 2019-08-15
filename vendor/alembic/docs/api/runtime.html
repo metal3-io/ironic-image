@@ -1,0 +1,1241 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Runtime Objects &#8212; Alembic 1.0.11 documentation</title>
+    <link rel="stylesheet" href="../_static/nature_override.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/changelog.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx_paramlinks.css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Configuration" href="config.html" />
+    <link rel="prev" title="Overview" href="overview.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="config.html" title="Configuration"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="overview.html" title="Overview"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Alembic 1.0.11 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">API Details</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="runtime-objects">
+<span id="alembic-runtime-environment-toplevel"></span><h1>Runtime Objects<a class="headerlink" href="#runtime-objects" title="Permalink to this headline">¶</a></h1>
+<p>The “runtime” of Alembic involves the <a class="reference internal" href="#alembic.runtime.environment.EnvironmentContext" title="alembic.runtime.environment.EnvironmentContext"><code class="xref py py-class docutils literal notranslate"><span class="pre">EnvironmentContext</span></code></a>
+and <a class="reference internal" href="#alembic.runtime.migration.MigrationContext" title="alembic.runtime.migration.MigrationContext"><code class="xref py py-class docutils literal notranslate"><span class="pre">MigrationContext</span></code></a> objects.   These are the objects that are
+in play once the <code class="docutils literal notranslate"><span class="pre">env.py</span></code> script is loaded up by a command and
+a migration operation proceeds.</p>
+<div class="section" id="the-environment-context">
+<h2>The Environment Context<a class="headerlink" href="#the-environment-context" title="Permalink to this headline">¶</a></h2>
+<p>The <a class="reference internal" href="#alembic.runtime.environment.EnvironmentContext" title="alembic.runtime.environment.EnvironmentContext"><code class="xref py py-class docutils literal notranslate"><span class="pre">EnvironmentContext</span></code></a> class provides most of the
+API used within an <code class="docutils literal notranslate"><span class="pre">env.py</span></code> script.  Within <code class="docutils literal notranslate"><span class="pre">env.py</span></code>,
+the instantated <a class="reference internal" href="#alembic.runtime.environment.EnvironmentContext" title="alembic.runtime.environment.EnvironmentContext"><code class="xref py py-class docutils literal notranslate"><span class="pre">EnvironmentContext</span></code></a> is made available
+via a special <em>proxy module</em> called <code class="docutils literal notranslate"><span class="pre">alembic.context</span></code>.   That is,
+you can import <code class="docutils literal notranslate"><span class="pre">alembic.context</span></code> like a regular Python module,
+and each name you call upon it is ultimately routed towards the
+current <a class="reference internal" href="#alembic.runtime.environment.EnvironmentContext" title="alembic.runtime.environment.EnvironmentContext"><code class="xref py py-class docutils literal notranslate"><span class="pre">EnvironmentContext</span></code></a> in use.</p>
+<p>In particular, the key method used within <code class="docutils literal notranslate"><span class="pre">env.py</span></code> is <a class="reference internal" href="#alembic.runtime.environment.EnvironmentContext.configure" title="alembic.runtime.environment.EnvironmentContext.configure"><code class="xref py py-meth docutils literal notranslate"><span class="pre">EnvironmentContext.configure()</span></code></a>,
+which establishes all the details about how the database will be accessed.</p>
+<span class="target" id="module-alembic.runtime.environment"></span><dl class="class">
+<dt id="alembic.runtime.environment.EnvironmentContext">
+<em class="property">class </em><code class="sig-prename descclassname">alembic.runtime.environment.</code><code class="sig-name descname">EnvironmentContext</code><span class="sig-paren">(</span><em class="sig-param">config</em>, <em class="sig-param">script</em>, <em class="sig-param">**kw</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.runtime.environment.EnvironmentContext" title="Permalink to this definition">¶</a></dt>
+<dd><p>A configurational facade made available in an <code class="docutils literal notranslate"><span class="pre">env.py</span></code> script.</p>
+<p>The <a class="reference internal" href="#alembic.runtime.environment.EnvironmentContext" title="alembic.runtime.environment.EnvironmentContext"><code class="xref py py-class docutils literal notranslate"><span class="pre">EnvironmentContext</span></code></a> acts as a <em>facade</em> to the more
+nuts-and-bolts objects of <a class="reference internal" href="#alembic.runtime.migration.MigrationContext" title="alembic.runtime.migration.MigrationContext"><code class="xref py py-class docutils literal notranslate"><span class="pre">MigrationContext</span></code></a> as well as certain
+aspects of <a class="reference internal" href="config.html#alembic.config.Config" title="alembic.config.Config"><code class="xref py py-class docutils literal notranslate"><span class="pre">Config</span></code></a>,
+within the context of the <code class="docutils literal notranslate"><span class="pre">env.py</span></code> script that is invoked by
+most Alembic commands.</p>
+<p><a class="reference internal" href="#alembic.runtime.environment.EnvironmentContext" title="alembic.runtime.environment.EnvironmentContext"><code class="xref py py-class docutils literal notranslate"><span class="pre">EnvironmentContext</span></code></a> is normally instantiated
+when a command in <a class="reference internal" href="commands.html#module-alembic.command" title="alembic.command"><code class="xref py py-mod docutils literal notranslate"><span class="pre">alembic.command</span></code></a> is run.  It then makes
+itself available in the <code class="docutils literal notranslate"><span class="pre">alembic.context</span></code> module for the scope
+of the command.   From within an <code class="docutils literal notranslate"><span class="pre">env.py</span></code> script, the current
+<a class="reference internal" href="#alembic.runtime.environment.EnvironmentContext" title="alembic.runtime.environment.EnvironmentContext"><code class="xref py py-class docutils literal notranslate"><span class="pre">EnvironmentContext</span></code></a> is available by importing this module.</p>
+<p><a class="reference internal" href="#alembic.runtime.environment.EnvironmentContext" title="alembic.runtime.environment.EnvironmentContext"><code class="xref py py-class docutils literal notranslate"><span class="pre">EnvironmentContext</span></code></a> also supports programmatic usage.
+At this level, it acts as a Python context manager, that is, is
+intended to be used using the
+<code class="docutils literal notranslate"><span class="pre">with:</span></code> statement.  A typical use of <a class="reference internal" href="#alembic.runtime.environment.EnvironmentContext" title="alembic.runtime.environment.EnvironmentContext"><code class="xref py py-class docutils literal notranslate"><span class="pre">EnvironmentContext</span></code></a>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">alembic.config</span> <span class="k">import</span> <span class="n">Config</span>
+<span class="kn">from</span> <span class="nn">alembic.script</span> <span class="k">import</span> <span class="n">ScriptDirectory</span>
+
+<span class="n">config</span> <span class="o">=</span> <span class="n">Config</span><span class="p">()</span>
+<span class="n">config</span><span class="o">.</span><span class="n">set_main_option</span><span class="p">(</span><span class="s2">&quot;script_location&quot;</span><span class="p">,</span> <span class="s2">&quot;myapp:migrations&quot;</span><span class="p">)</span>
+<span class="n">script</span> <span class="o">=</span> <span class="n">ScriptDirectory</span><span class="o">.</span><span class="n">from_config</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">my_function</span><span class="p">(</span><span class="n">rev</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;do something with revision &quot;rev&quot;, which</span>
+<span class="sd">    will be the current database revision,</span>
+<span class="sd">    and &quot;context&quot;, which is the MigrationContext</span>
+<span class="sd">    that the env.py will create&#39;&#39;&#39;</span>
+
+<span class="k">with</span> <span class="n">EnvironmentContext</span><span class="p">(</span>
+    <span class="n">config</span><span class="p">,</span>
+    <span class="n">script</span><span class="p">,</span>
+    <span class="n">fn</span> <span class="o">=</span> <span class="n">my_function</span><span class="p">,</span>
+    <span class="n">as_sql</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">starting_rev</span> <span class="o">=</span> <span class="s1">&#39;base&#39;</span><span class="p">,</span>
+    <span class="n">destination_rev</span> <span class="o">=</span> <span class="s1">&#39;head&#39;</span><span class="p">,</span>
+    <span class="n">tag</span> <span class="o">=</span> <span class="s2">&quot;sometag&quot;</span>
+<span class="p">):</span>
+    <span class="n">script</span><span class="o">.</span><span class="n">run_env</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>The above script will invoke the <code class="docutils literal notranslate"><span class="pre">env.py</span></code> script
+within the migration environment.  If and when <code class="docutils literal notranslate"><span class="pre">env.py</span></code>
+calls <a class="reference internal" href="#alembic.runtime.migration.MigrationContext.run_migrations" title="alembic.runtime.migration.MigrationContext.run_migrations"><code class="xref py py-meth docutils literal notranslate"><span class="pre">MigrationContext.run_migrations()</span></code></a>, the
+<code class="docutils literal notranslate"><span class="pre">my_function()</span></code> function above will be called
+by the <a class="reference internal" href="#alembic.runtime.migration.MigrationContext" title="alembic.runtime.migration.MigrationContext"><code class="xref py py-class docutils literal notranslate"><span class="pre">MigrationContext</span></code></a>, given the context
+itself as well as the current revision in the database.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>For most API usages other than full blown
+invocation of migration scripts, the <a class="reference internal" href="#alembic.runtime.migration.MigrationContext" title="alembic.runtime.migration.MigrationContext"><code class="xref py py-class docutils literal notranslate"><span class="pre">MigrationContext</span></code></a>
+and <a class="reference internal" href="script.html#alembic.script.ScriptDirectory" title="alembic.script.ScriptDirectory"><code class="xref py py-class docutils literal notranslate"><span class="pre">ScriptDirectory</span></code></a> objects can be created and
+used directly.  The <a class="reference internal" href="#alembic.runtime.environment.EnvironmentContext" title="alembic.runtime.environment.EnvironmentContext"><code class="xref py py-class docutils literal notranslate"><span class="pre">EnvironmentContext</span></code></a> object
+is <em>only</em> needed when you need to actually invoke the
+<code class="docutils literal notranslate"><span class="pre">env.py</span></code> module present in the migration environment.</p>
+</div>
+<p>Construct a new <a class="reference internal" href="#alembic.runtime.environment.EnvironmentContext" title="alembic.runtime.environment.EnvironmentContext"><code class="xref py py-class docutils literal notranslate"><span class="pre">EnvironmentContext</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span class="target" id="alembic.runtime.environment.EnvironmentContext.params.config"></span><strong>config</strong><a class="paramlink headerlink reference internal" href="#alembic.runtime.environment.EnvironmentContext.params.config">¶</a> – a <a class="reference internal" href="config.html#alembic.config.Config" title="alembic.config.Config"><code class="xref py py-class docutils literal notranslate"><span class="pre">Config</span></code></a> instance.</p></li>
+<li><p><span class="target" id="alembic.runtime.environment.EnvironmentContext.params.script"></span><strong>script</strong><a class="paramlink headerlink reference internal" href="#alembic.runtime.environment.EnvironmentContext.params.script">¶</a> – a <a class="reference internal" href="script.html#alembic.script.ScriptDirectory" title="alembic.script.ScriptDirectory"><code class="xref py py-class docutils literal notranslate"><span class="pre">ScriptDirectory</span></code></a> instance.</p></li>
+<li><p><span class="target" id="alembic.runtime.environment.EnvironmentContext.params.**kw"></span><strong>**kw</strong><a class="paramlink headerlink reference internal" href="#alembic.runtime.environment.EnvironmentContext.params.**kw">¶</a> – keyword options that will be ultimately
+passed along to the <a class="reference internal" href="#alembic.runtime.migration.MigrationContext" title="alembic.runtime.migration.MigrationContext"><code class="xref py py-class docutils literal notranslate"><span class="pre">MigrationContext</span></code></a> when
+<a class="reference internal" href="#alembic.runtime.environment.EnvironmentContext.configure" title="alembic.runtime.environment.EnvironmentContext.configure"><code class="xref py py-meth docutils literal notranslate"><span class="pre">EnvironmentContext.configure()</span></code></a> is called.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="method">
+<dt id="alembic.runtime.environment.EnvironmentContext.begin_transaction">
+<code class="sig-name descname">begin_transaction</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#alembic.runtime.environment.EnvironmentContext.begin_transaction" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a context manager that will
+enclose an operation within a “transaction”,
+as defined by the environment’s offline
+and transactional DDL settings.</p>
+<p>e.g.:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">context</span><span class="o">.</span><span class="n">begin_transaction</span><span class="p">():</span>
+    <span class="n">context</span><span class="o">.</span><span class="n">run_migrations</span><span class="p">()</span>
+</pre></div>
+</div>
+<p><a class="reference internal" href="#alembic.runtime.environment.EnvironmentContext.begin_transaction" title="alembic.runtime.environment.EnvironmentContext.begin_transaction"><code class="xref py py-meth docutils literal notranslate"><span class="pre">begin_transaction()</span></code></a> is intended to
+“do the right thing” regardless of
+calling context:</p>
+<ul class="simple">
+<li><p>If <a class="reference internal" href="#alembic.runtime.environment.EnvironmentContext.is_transactional_ddl" title="alembic.runtime.environment.EnvironmentContext.is_transactional_ddl"><code class="xref py py-meth docutils literal notranslate"><span class="pre">is_transactional_ddl()</span></code></a> is <code class="docutils literal notranslate"><span class="pre">False</span></code>,
+returns a “do nothing” context manager
+which otherwise produces no transactional
+state or directives.</p></li>
+<li><p>If <a class="reference internal" href="#alembic.runtime.environment.EnvironmentContext.is_offline_mode" title="alembic.runtime.environment.EnvironmentContext.is_offline_mode"><code class="xref py py-meth docutils literal notranslate"><span class="pre">is_offline_mode()</span></code></a> is <code class="docutils literal notranslate"><span class="pre">True</span></code>,
+returns a context manager that will
+invoke the <a class="reference internal" href="ddl.html#alembic.ddl.impl.DefaultImpl.emit_begin" title="alembic.ddl.impl.DefaultImpl.emit_begin"><code class="xref py py-meth docutils literal notranslate"><span class="pre">DefaultImpl.emit_begin()</span></code></a>
+and <a class="reference internal" href="ddl.html#alembic.ddl.impl.DefaultImpl.emit_commit" title="alembic.ddl.impl.DefaultImpl.emit_commit"><code class="xref py py-meth docutils literal notranslate"><span class="pre">DefaultImpl.emit_commit()</span></code></a>
+methods, which will produce the string
+directives <code class="docutils literal notranslate"><span class="pre">BEGIN</span></code> and <code class="docutils literal notranslate"><span class="pre">COMMIT</span></code> on
+the output stream, as rendered by the
+target backend (e.g. SQL Server would
+emit <code class="docutils literal notranslate"><span class="pre">BEGIN</span> <span class="pre">TRANSACTION</span></code>).</p></li>
+<li><p>Otherwise, calls <a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/connections.html#sqlalchemy.engine.Connection.begin" title="(in SQLAlchemy v1.3)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">sqlalchemy.engine.Connection.begin()</span></code></a>
+on the current online connection, which
+returns a <a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/connections.html#sqlalchemy.engine.Transaction" title="(in SQLAlchemy v1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">sqlalchemy.engine.Transaction</span></code></a>
+object.  This object demarcates a real
+transaction and is itself a context manager,
+which will roll back if an exception
+is raised.</p></li>
+</ul>
+<p>Note that a custom <code class="docutils literal notranslate"><span class="pre">env.py</span></code> script which
+has more specific transactional needs can of course
+manipulate the <a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/connections.html#sqlalchemy.engine.Connection" title="(in SQLAlchemy v1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Connection</span></code></a>
+directly to produce transactional state in “online”
+mode.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="alembic.runtime.environment.EnvironmentContext.config">
+<code class="sig-name descname">config</code><em class="property"> = None</em><a class="headerlink" href="#alembic.runtime.environment.EnvironmentContext.config" title="Permalink to this definition">¶</a></dt>
+<dd><p>An instance of <a class="reference internal" href="config.html#alembic.config.Config" title="alembic.config.Config"><code class="xref py py-class docutils literal notranslate"><span class="pre">Config</span></code></a> representing the
+configuration file contents as well as other variables
+set programmatically within it.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="alembic.runtime.environment.EnvironmentContext.configure">
+<code class="sig-name descname">configure</code><span class="sig-paren">(</span><em class="sig-param">connection=None</em>, <em class="sig-param">url=None</em>, <em class="sig-param">dialect_name=None</em>, <em class="sig-param">transactional_ddl=None</em>, <em class="sig-param">transaction_per_migration=False</em>, <em class="sig-param">output_buffer=None</em>, <em class="sig-param">starting_rev=None</em>, <em class="sig-param">tag=None</em>, <em class="sig-param">template_args=None</em>, <em class="sig-param">render_as_batch=False</em>, <em class="sig-param">target_metadata=None</em>, <em class="sig-param">include_symbol=None</em>, <em class="sig-param">include_object=None</em>, <em class="sig-param">include_schemas=False</em>, <em class="sig-param">process_revision_directives=None</em>, <em class="sig-param">compare_type=False</em>, <em class="sig-param">compare_server_default=False</em>, <em class="sig-param">render_item=None</em>, <em class="sig-param">literal_binds=False</em>, <em class="sig-param">upgrade_token='upgrades'</em>, <em class="sig-param">downgrade_token='downgrades'</em>, <em class="sig-param">alembic_module_prefix='op.'</em>, <em class="sig-param">sqlalchemy_module_prefix='sa.'</em>, <em class="sig-param">user_module_prefix=None</em>, <em class="sig-param">on_version_apply=None</em>, <em class="sig-param">**kw</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.runtime.environment.EnvironmentContext.configure" title="Permalink to this definition">¶</a></dt>
+<dd><p>Configure a <a class="reference internal" href="#alembic.runtime.migration.MigrationContext" title="alembic.runtime.migration.MigrationContext"><code class="xref py py-class docutils literal notranslate"><span class="pre">MigrationContext</span></code></a> within this
+<a class="reference internal" href="#alembic.runtime.environment.EnvironmentContext" title="alembic.runtime.environment.EnvironmentContext"><code class="xref py py-class docutils literal notranslate"><span class="pre">EnvironmentContext</span></code></a> which will provide database
+connectivity and other configuration to a series of
+migration scripts.</p>
+<p>Many methods on <a class="reference internal" href="#alembic.runtime.environment.EnvironmentContext" title="alembic.runtime.environment.EnvironmentContext"><code class="xref py py-class docutils literal notranslate"><span class="pre">EnvironmentContext</span></code></a> require that
+this method has been called in order to function, as they
+ultimately need to have database access or at least access
+to the dialect in use.  Those which do are documented as such.</p>
+<p>The important thing needed by <a class="reference internal" href="#alembic.runtime.environment.EnvironmentContext.configure" title="alembic.runtime.environment.EnvironmentContext.configure"><code class="xref py py-meth docutils literal notranslate"><span class="pre">configure()</span></code></a> is a
+means to determine what kind of database dialect is in use.
+An actual connection to that database is needed only if
+the <a class="reference internal" href="#alembic.runtime.migration.MigrationContext" title="alembic.runtime.migration.MigrationContext"><code class="xref py py-class docutils literal notranslate"><span class="pre">MigrationContext</span></code></a> is to be used in
+“online” mode.</p>
+<p>If the <a class="reference internal" href="#alembic.runtime.environment.EnvironmentContext.is_offline_mode" title="alembic.runtime.environment.EnvironmentContext.is_offline_mode"><code class="xref py py-meth docutils literal notranslate"><span class="pre">is_offline_mode()</span></code></a> function returns <code class="docutils literal notranslate"><span class="pre">True</span></code>,
+then no connection is needed here.  Otherwise, the
+<code class="docutils literal notranslate"><span class="pre">connection</span></code> parameter should be present as an
+instance of <a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/connections.html#sqlalchemy.engine.Connection" title="(in SQLAlchemy v1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">sqlalchemy.engine.Connection</span></code></a>.</p>
+<p>This function is typically called from the <code class="docutils literal notranslate"><span class="pre">env.py</span></code>
+script within a migration environment.  It can be called
+multiple times for an invocation.  The most recent
+<a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/connections.html#sqlalchemy.engine.Connection" title="(in SQLAlchemy v1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Connection</span></code></a>
+for which it was called is the one that will be operated upon
+by the next call to <a class="reference internal" href="#alembic.runtime.environment.EnvironmentContext.run_migrations" title="alembic.runtime.environment.EnvironmentContext.run_migrations"><code class="xref py py-meth docutils literal notranslate"><span class="pre">run_migrations()</span></code></a>.</p>
+<p>General parameters:</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span class="target" id="alembic.runtime.environment.EnvironmentContext.configure.params.connection"></span><strong>connection</strong><a class="paramlink headerlink reference internal" href="#alembic.runtime.environment.EnvironmentContext.configure.params.connection">¶</a> – a <a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/connections.html#sqlalchemy.engine.Connection" title="(in SQLAlchemy v1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Connection</span></code></a>
+to use
+for SQL execution in “online” mode.  When present, is also
+used to determine the type of dialect in use.</p></li>
+<li><p><span class="target" id="alembic.runtime.environment.EnvironmentContext.configure.params.url"></span><strong>url</strong><a class="paramlink headerlink reference internal" href="#alembic.runtime.environment.EnvironmentContext.configure.params.url">¶</a> – a string database url, or a
+<a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/engines.html#sqlalchemy.engine.url.URL" title="(in SQLAlchemy v1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">sqlalchemy.engine.url.URL</span></code></a> object.
+The type of dialect to be used will be derived from this if
+<code class="docutils literal notranslate"><span class="pre">connection</span></code> is not passed.</p></li>
+<li><p><span class="target" id="alembic.runtime.environment.EnvironmentContext.configure.params.dialect_name"></span><strong>dialect_name</strong><a class="paramlink headerlink reference internal" href="#alembic.runtime.environment.EnvironmentContext.configure.params.dialect_name">¶</a> – string name of a dialect, such as
+“postgresql”, “mssql”, etc.
+The type of dialect to be used will be derived from this if
+<code class="docutils literal notranslate"><span class="pre">connection</span></code> and <code class="docutils literal notranslate"><span class="pre">url</span></code> are not passed.</p></li>
+<li><p><span class="target" id="alembic.runtime.environment.EnvironmentContext.configure.params.transactional_ddl"></span><strong>transactional_ddl</strong><a class="paramlink headerlink reference internal" href="#alembic.runtime.environment.EnvironmentContext.configure.params.transactional_ddl">¶</a> – Force the usage of “transactional”
+DDL on or off;
+this otherwise defaults to whether or not the dialect in
+use supports it.</p></li>
+<li><p><span class="target" id="alembic.runtime.environment.EnvironmentContext.configure.params.transaction_per_migration"></span><strong>transaction_per_migration</strong><a class="paramlink headerlink reference internal" href="#alembic.runtime.environment.EnvironmentContext.configure.params.transaction_per_migration">¶</a> – <p>if True, nest each migration script
+in a transaction rather than the full series of migrations to
+run.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 0.6.5.</span></p>
+</div>
+</p></li>
+<li><p><span class="target" id="alembic.runtime.environment.EnvironmentContext.configure.params.output_buffer"></span><strong>output_buffer</strong><a class="paramlink headerlink reference internal" href="#alembic.runtime.environment.EnvironmentContext.configure.params.output_buffer">¶</a> – a file-like object that will be used
+for textual output
+when the <code class="docutils literal notranslate"><span class="pre">--sql</span></code> option is used to generate SQL scripts.
+Defaults to
+<code class="docutils literal notranslate"><span class="pre">sys.stdout</span></code> if not passed here and also not present on
+the <a class="reference internal" href="config.html#alembic.config.Config" title="alembic.config.Config"><code class="xref py py-class docutils literal notranslate"><span class="pre">Config</span></code></a>
+object.  The value here overrides that of the <a class="reference internal" href="config.html#alembic.config.Config" title="alembic.config.Config"><code class="xref py py-class docutils literal notranslate"><span class="pre">Config</span></code></a>
+object.</p></li>
+<li><p><span class="target" id="alembic.runtime.environment.EnvironmentContext.configure.params.output_encoding"></span><strong>output_encoding</strong><a class="paramlink headerlink reference internal" href="#alembic.runtime.environment.EnvironmentContext.configure.params.output_encoding">¶</a> – when using <code class="docutils literal notranslate"><span class="pre">--sql</span></code> to generate SQL
+scripts, apply this encoding to the string output.</p></li>
+<li><p><span class="target" id="alembic.runtime.environment.EnvironmentContext.configure.params.literal_binds"></span><strong>literal_binds</strong><a class="paramlink headerlink reference internal" href="#alembic.runtime.environment.EnvironmentContext.configure.params.literal_binds">¶</a> – <p>when using <code class="docutils literal notranslate"><span class="pre">--sql</span></code> to generate SQL
+scripts, pass through the <code class="docutils literal notranslate"><span class="pre">literal_binds</span></code> flag to the compiler
+so that any literal values that would ordinarily be bound
+parameters are converted to plain strings.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Dialects can typically only handle simple datatypes
+like strings and numbers for auto-literal generation.  Datatypes
+like dates, intervals, and others may still require manual
+formatting, typically using <a class="reference internal" href="../ops.html#alembic.operations.Operations.inline_literal" title="alembic.operations.Operations.inline_literal"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Operations.inline_literal()</span></code></a>.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>the <code class="docutils literal notranslate"><span class="pre">literal_binds</span></code> flag is ignored on SQLAlchemy
+versions prior to 0.8 where this feature is not supported.</p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 0.7.6.</span></p>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="../ops.html#alembic.operations.Operations.inline_literal" title="alembic.operations.Operations.inline_literal"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Operations.inline_literal()</span></code></a></p>
+</div>
+</p></li>
+<li><p><span class="target" id="alembic.runtime.environment.EnvironmentContext.configure.params.starting_rev"></span><strong>starting_rev</strong><a class="paramlink headerlink reference internal" href="#alembic.runtime.environment.EnvironmentContext.configure.params.starting_rev">¶</a> – Override the “starting revision” argument
+when using <code class="docutils literal notranslate"><span class="pre">--sql</span></code> mode.</p></li>
+<li><p><span class="target" id="alembic.runtime.environment.EnvironmentContext.configure.params.tag"></span><strong>tag</strong><a class="paramlink headerlink reference internal" href="#alembic.runtime.environment.EnvironmentContext.configure.params.tag">¶</a> – a string tag for usage by custom <code class="docutils literal notranslate"><span class="pre">env.py</span></code> scripts.
+Set via the <code class="docutils literal notranslate"><span class="pre">--tag</span></code> option, can be overridden here.</p></li>
+<li><p><span class="target" id="alembic.runtime.environment.EnvironmentContext.configure.params.template_args"></span><strong>template_args</strong><a class="paramlink headerlink reference internal" href="#alembic.runtime.environment.EnvironmentContext.configure.params.template_args">¶</a> – dictionary of template arguments which
+will be added to the template argument environment when
+running the “revision” command.   Note that the script environment
+is only run within the “revision” command if the –autogenerate
+option is used, or if the option “revision_environment=true”
+is present in the alembic.ini file.</p></li>
+<li><p><span class="target" id="alembic.runtime.environment.EnvironmentContext.configure.params.version_table"></span><strong>version_table</strong><a class="paramlink headerlink reference internal" href="#alembic.runtime.environment.EnvironmentContext.configure.params.version_table">¶</a> – The name of the Alembic version table.
+The default is <code class="docutils literal notranslate"><span class="pre">'alembic_version'</span></code>.</p></li>
+<li><p><span class="target" id="alembic.runtime.environment.EnvironmentContext.configure.params.version_table_schema"></span><strong>version_table_schema</strong><a class="paramlink headerlink reference internal" href="#alembic.runtime.environment.EnvironmentContext.configure.params.version_table_schema">¶</a> – Optional schema to place version
+table within.</p></li>
+<li><p><span class="target" id="alembic.runtime.environment.EnvironmentContext.configure.params.version_table_pk"></span><strong>version_table_pk</strong><a class="paramlink headerlink reference internal" href="#alembic.runtime.environment.EnvironmentContext.configure.params.version_table_pk">¶</a> – <p>boolean, whether the Alembic version table
+should use a primary key constraint for the “value” column; this
+only takes effect when the table is first created.
+Defaults to True; setting to False should not be necessary and is
+here for backwards compatibility reasons.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 0.8.10: </span>Added the
+<a class="reference internal" href="#alembic.runtime.environment.EnvironmentContext.configure.params.version_table_pk" title="alembic.runtime.environment.EnvironmentContext.configure"><code class="xref py py-paramref docutils literal notranslate"><span class="pre">EnvironmentContext.configure.version_table_pk</span></code></a>
+flag and additionally established that the Alembic version table
+has a primary key constraint by default.</p>
+</div>
+</p></li>
+<li><p><span class="target" id="alembic.runtime.environment.EnvironmentContext.configure.params.on_version_apply"></span><strong>on_version_apply</strong><a class="paramlink headerlink reference internal" href="#alembic.runtime.environment.EnvironmentContext.configure.params.on_version_apply">¶</a> – <p>a callable or collection of callables to be
+run for each migration step.
+The callables will be run in the order they are given, once for
+each migration step, after the respective operation has been
+applied but before its transaction is finalized.
+Each callable accepts no positional arguments and the following
+keyword arguments:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">ctx</span></code>: the <a class="reference internal" href="#alembic.runtime.migration.MigrationContext" title="alembic.runtime.migration.MigrationContext"><code class="xref py py-class docutils literal notranslate"><span class="pre">MigrationContext</span></code></a> running the migration,</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">step</span></code>: a <a class="reference internal" href="#alembic.runtime.migration.MigrationInfo" title="alembic.runtime.migration.MigrationInfo"><code class="xref py py-class docutils literal notranslate"><span class="pre">MigrationInfo</span></code></a> representing the
+step currently being applied,</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">heads</span></code>: a collection of version strings representing the
+current heads,</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">run_args</span></code>: the <code class="docutils literal notranslate"><span class="pre">**kwargs</span></code> passed to <a class="reference internal" href="#alembic.runtime.environment.EnvironmentContext.run_migrations" title="alembic.runtime.environment.EnvironmentContext.run_migrations"><code class="xref py py-meth docutils literal notranslate"><span class="pre">run_migrations()</span></code></a>.</p></li>
+</ul>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 0.9.3.</span></p>
+</div>
+</p></li>
+</ul>
+</dd>
+</dl>
+<p>Parameters specific to the autogenerate feature, when
+<code class="docutils literal notranslate"><span class="pre">alembic</span> <span class="pre">revision</span></code> is run with the <code class="docutils literal notranslate"><span class="pre">--autogenerate</span></code> feature:</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span class="target" id="alembic.runtime.environment.EnvironmentContext.configure.params.target_metadata"></span><strong>target_metadata</strong><a class="paramlink headerlink reference internal" href="#alembic.runtime.environment.EnvironmentContext.configure.params.target_metadata">¶</a> – <p>a <a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/metadata.html#sqlalchemy.schema.MetaData" title="(in SQLAlchemy v1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">sqlalchemy.schema.MetaData</span></code></a>
+object, or a sequence of <a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/metadata.html#sqlalchemy.schema.MetaData" title="(in SQLAlchemy v1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">MetaData</span></code></a>
+objects, that will be consulted during autogeneration.
+The tables present in each <a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/metadata.html#sqlalchemy.schema.MetaData" title="(in SQLAlchemy v1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">MetaData</span></code></a>
+will be compared against
+what is locally available on the target
+<a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/connections.html#sqlalchemy.engine.Connection" title="(in SQLAlchemy v1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Connection</span></code></a>
+to produce candidate upgrade/downgrade operations.</p>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 0.9.0: </span>the
+<a class="reference internal" href="#alembic.runtime.environment.EnvironmentContext.configure.params.target_metadata" title="alembic.runtime.environment.EnvironmentContext.configure"><code class="xref py py-paramref docutils literal notranslate"><span class="pre">EnvironmentContext.configure.target_metadata</span></code></a>
+parameter may now be passed a sequence of
+<a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/metadata.html#sqlalchemy.schema.MetaData" title="(in SQLAlchemy v1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">MetaData</span></code></a> objects to support
+autogeneration of multiple <a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/metadata.html#sqlalchemy.schema.MetaData" title="(in SQLAlchemy v1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">MetaData</span></code></a>
+collections.</p>
+</div>
+</p></li>
+<li><p><span class="target" id="alembic.runtime.environment.EnvironmentContext.configure.params.compare_type"></span><strong>compare_type</strong><a class="paramlink headerlink reference internal" href="#alembic.runtime.environment.EnvironmentContext.configure.params.compare_type">¶</a> – <p>Indicates type comparison behavior during
+an autogenerate
+operation.  Defaults to <code class="docutils literal notranslate"><span class="pre">False</span></code> which disables type
+comparison.  Set to
+<code class="docutils literal notranslate"><span class="pre">True</span></code> to turn on default type comparison, which has varied
+accuracy depending on backend.   See <a class="reference internal" href="../autogenerate.html#compare-types"><span class="std std-ref">Comparing Types</span></a>
+for an example as well as information on other type
+comparison options.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="../autogenerate.html#compare-types"><span class="std std-ref">Comparing Types</span></a></p>
+<p><a class="reference internal" href="#alembic.runtime.environment.EnvironmentContext.configure.params.compare_server_default" title="alembic.runtime.environment.EnvironmentContext.configure"><code class="xref py py-paramref docutils literal notranslate"><span class="pre">EnvironmentContext.configure.compare_server_default</span></code></a></p>
+</div>
+</p></li>
+<li><p><span class="target" id="alembic.runtime.environment.EnvironmentContext.configure.params.compare_server_default"></span><strong>compare_server_default</strong><a class="paramlink headerlink reference internal" href="#alembic.runtime.environment.EnvironmentContext.configure.params.compare_server_default">¶</a> – <p>Indicates server default comparison
+behavior during
+an autogenerate operation.  Defaults to <code class="docutils literal notranslate"><span class="pre">False</span></code> which disables
+server default
+comparison.  Set to  <code class="docutils literal notranslate"><span class="pre">True</span></code> to turn on server default comparison,
+which has
+varied accuracy depending on backend.</p>
+<p>To customize server default comparison behavior, a callable may
+be specified
+which can filter server default comparisons during an
+autogenerate operation.
+defaults during an autogenerate operation.   The format of this
+callable is:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">my_compare_server_default</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">inspected_column</span><span class="p">,</span>
+            <span class="n">metadata_column</span><span class="p">,</span> <span class="n">inspected_default</span><span class="p">,</span> <span class="n">metadata_default</span><span class="p">,</span>
+            <span class="n">rendered_metadata_default</span><span class="p">):</span>
+    <span class="c1"># return True if the defaults are different,</span>
+    <span class="c1"># False if not, or None to allow the default implementation</span>
+    <span class="c1"># to compare these defaults</span>
+    <span class="k">return</span> <span class="kc">None</span>
+
+<span class="n">context</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span>
+    <span class="c1"># ...</span>
+    <span class="n">compare_server_default</span> <span class="o">=</span> <span class="n">my_compare_server_default</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">inspected_column</span></code> is a dictionary structure as returned by
+<a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/reflection.html#sqlalchemy.engine.reflection.Inspector.get_columns" title="(in SQLAlchemy v1.3)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">sqlalchemy.engine.reflection.Inspector.get_columns()</span></code></a>, whereas
+<code class="docutils literal notranslate"><span class="pre">metadata_column</span></code> is a <a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/metadata.html#sqlalchemy.schema.Column" title="(in SQLAlchemy v1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">sqlalchemy.schema.Column</span></code></a> from
+the local model environment.</p>
+<p>A return value of <code class="docutils literal notranslate"><span class="pre">None</span></code> indicates to allow default server default
+comparison
+to proceed.  Note that some backends such as Postgresql actually
+execute
+the two defaults on the database side to compare for equivalence.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#alembic.runtime.environment.EnvironmentContext.configure.params.compare_type" title="alembic.runtime.environment.EnvironmentContext.configure"><code class="xref py py-paramref docutils literal notranslate"><span class="pre">EnvironmentContext.configure.compare_type</span></code></a></p>
+</div>
+</p></li>
+<li><p><span class="target" id="alembic.runtime.environment.EnvironmentContext.configure.params.include_object"></span><strong>include_object</strong><a class="paramlink headerlink reference internal" href="#alembic.runtime.environment.EnvironmentContext.configure.params.include_object">¶</a> – <p>A callable function which is given
+the chance to return <code class="docutils literal notranslate"><span class="pre">True</span></code> or <code class="docutils literal notranslate"><span class="pre">False</span></code> for any object,
+indicating if the given object should be considered in the
+autogenerate sweep.</p>
+<p>The function accepts the following positional arguments:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">object</span></code>: a <a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/metadata.html#sqlalchemy.schema.SchemaItem" title="(in SQLAlchemy v1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">SchemaItem</span></code></a> object such
+as a <a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/metadata.html#sqlalchemy.schema.Table" title="(in SQLAlchemy v1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Table</span></code></a>,
+<a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/metadata.html#sqlalchemy.schema.Column" title="(in SQLAlchemy v1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Column</span></code></a>,
+<a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/constraints.html#sqlalchemy.schema.Index" title="(in SQLAlchemy v1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Index</span></code></a>
+<a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/constraints.html#sqlalchemy.schema.UniqueConstraint" title="(in SQLAlchemy v1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">UniqueConstraint</span></code></a>,
+or <a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/constraints.html#sqlalchemy.schema.ForeignKeyConstraint" title="(in SQLAlchemy v1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ForeignKeyConstraint</span></code></a> object</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">name</span></code>: the name of the object. This is typically available
+via <code class="docutils literal notranslate"><span class="pre">object.name</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">type</span></code>: a string describing the type of object; currently
+<code class="docutils literal notranslate"><span class="pre">&quot;table&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;column&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;index&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;unique_constraint&quot;</span></code>,
+or <code class="docutils literal notranslate"><span class="pre">&quot;foreign_key_constraint&quot;</span></code></p>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 0.7.0: </span>Support for indexes and unique constraints
+within the
+<a class="reference internal" href="#alembic.runtime.environment.EnvironmentContext.configure.params.include_object" title="alembic.runtime.environment.EnvironmentContext.configure"><code class="xref py py-paramref docutils literal notranslate"><span class="pre">include_object</span></code></a> hook.</p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 0.7.1: </span>Support for foreign keys within the
+<a class="reference internal" href="#alembic.runtime.environment.EnvironmentContext.configure.params.include_object" title="alembic.runtime.environment.EnvironmentContext.configure"><code class="xref py py-paramref docutils literal notranslate"><span class="pre">include_object</span></code></a> hook.</p>
+</div>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">reflected</span></code>: <code class="docutils literal notranslate"><span class="pre">True</span></code> if the given object was produced based on
+table reflection, <code class="docutils literal notranslate"><span class="pre">False</span></code> if it’s from a local <code class="xref py py-class docutils literal notranslate"><span class="pre">MetaData</span></code>
+object.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">compare_to</span></code>: the object being compared against, if available,
+else <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
+</ul>
+<p>E.g.:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">include_object</span><span class="p">(</span><span class="nb">object</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">type_</span><span class="p">,</span> <span class="n">reflected</span><span class="p">,</span> <span class="n">compare_to</span><span class="p">):</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">type_</span> <span class="o">==</span> <span class="s2">&quot;column&quot;</span> <span class="ow">and</span>
+        <span class="ow">not</span> <span class="n">reflected</span> <span class="ow">and</span>
+        <span class="nb">object</span><span class="o">.</span><span class="n">info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;skip_autogenerate&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)):</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">True</span>
+
+<span class="n">context</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span>
+    <span class="c1"># ...</span>
+    <span class="n">include_object</span> <span class="o">=</span> <span class="n">include_object</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p><a class="reference internal" href="#alembic.runtime.environment.EnvironmentContext.configure.params.include_object" title="alembic.runtime.environment.EnvironmentContext.configure"><code class="xref py py-paramref docutils literal notranslate"><span class="pre">EnvironmentContext.configure.include_object</span></code></a> can also
+be used to filter on specific schemas to include or omit, when
+the <a class="reference internal" href="#alembic.runtime.environment.EnvironmentContext.configure.params.include_schemas" title="alembic.runtime.environment.EnvironmentContext.configure"><code class="xref py py-paramref docutils literal notranslate"><span class="pre">EnvironmentContext.configure.include_schemas</span></code></a>
+flag is set to <code class="docutils literal notranslate"><span class="pre">True</span></code>.   The <code class="xref py py-attr docutils literal notranslate"><span class="pre">Table.schema</span></code> attribute
+on each <code class="xref py py-class docutils literal notranslate"><span class="pre">Table</span></code> object reflected will indicate the name of the
+schema from which the <code class="xref py py-class docutils literal notranslate"><span class="pre">Table</span></code> originates.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 0.6.0.</span></p>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#alembic.runtime.environment.EnvironmentContext.configure.params.include_schemas" title="alembic.runtime.environment.EnvironmentContext.configure"><code class="xref py py-paramref docutils literal notranslate"><span class="pre">EnvironmentContext.configure.include_schemas</span></code></a></p>
+</div>
+</p></li>
+<li><p><span class="target" id="alembic.runtime.environment.EnvironmentContext.configure.params.include_symbol"></span><strong>include_symbol</strong><a class="paramlink headerlink reference internal" href="#alembic.runtime.environment.EnvironmentContext.configure.params.include_symbol">¶</a> – <p>A callable function which, given a table name
+and schema name (may be <code class="docutils literal notranslate"><span class="pre">None</span></code>), returns <code class="docutils literal notranslate"><span class="pre">True</span></code> or <code class="docutils literal notranslate"><span class="pre">False</span></code>,
+indicating if the given table should be considered in the
+autogenerate sweep.</p>
+<div class="deprecated">
+<p><span class="versionmodified deprecated">Deprecated since version 0.6.0: </span><a class="reference internal" href="#alembic.runtime.environment.EnvironmentContext.configure.params.include_symbol" title="alembic.runtime.environment.EnvironmentContext.configure"><code class="xref py py-paramref docutils literal notranslate"><span class="pre">EnvironmentContext.configure.include_symbol</span></code></a>
+is superceded by the more generic
+<a class="reference internal" href="#alembic.runtime.environment.EnvironmentContext.configure.params.include_object" title="alembic.runtime.environment.EnvironmentContext.configure"><code class="xref py py-paramref docutils literal notranslate"><span class="pre">EnvironmentContext.configure.include_object</span></code></a>
+parameter.</p>
+</div>
+<p>E.g.:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">include_symbol</span><span class="p">(</span><span class="n">tablename</span><span class="p">,</span> <span class="n">schema</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">tablename</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;skip_table_one&quot;</span><span class="p">,</span> <span class="s2">&quot;skip_table_two&quot;</span><span class="p">)</span>
+
+<span class="n">context</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span>
+    <span class="c1"># ...</span>
+    <span class="n">include_symbol</span> <span class="o">=</span> <span class="n">include_symbol</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#alembic.runtime.environment.EnvironmentContext.configure.params.include_schemas" title="alembic.runtime.environment.EnvironmentContext.configure"><code class="xref py py-paramref docutils literal notranslate"><span class="pre">EnvironmentContext.configure.include_schemas</span></code></a></p>
+<p><a class="reference internal" href="#alembic.runtime.environment.EnvironmentContext.configure.params.include_object" title="alembic.runtime.environment.EnvironmentContext.configure"><code class="xref py py-paramref docutils literal notranslate"><span class="pre">EnvironmentContext.configure.include_object</span></code></a></p>
+</div>
+</p></li>
+<li><p><span class="target" id="alembic.runtime.environment.EnvironmentContext.configure.params.render_as_batch"></span><strong>render_as_batch</strong><a class="paramlink headerlink reference internal" href="#alembic.runtime.environment.EnvironmentContext.configure.params.render_as_batch">¶</a> – <p>if True, commands which alter elements
+within a table will be placed under a <code class="docutils literal notranslate"><span class="pre">with</span> <span class="pre">batch_alter_table():</span></code>
+directive, so that batch migrations will take place.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 0.7.0.</span></p>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="../batch.html#batch-migrations"><span class="std std-ref">Running “Batch” Migrations for SQLite and Other Databases</span></a></p>
+</div>
+</p></li>
+<li><p><span class="target" id="alembic.runtime.environment.EnvironmentContext.configure.params.include_schemas"></span><strong>include_schemas</strong><a class="paramlink headerlink reference internal" href="#alembic.runtime.environment.EnvironmentContext.configure.params.include_schemas">¶</a> – <p>If True, autogenerate will scan across
+all schemas located by the SQLAlchemy
+<a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/reflection.html#sqlalchemy.engine.reflection.Inspector.get_schema_names" title="(in SQLAlchemy v1.3)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_schema_names()</span></code></a>
+method, and include all differences in tables found across all
+those schemas.  When using this option, you may want to also
+use the <a class="reference internal" href="#alembic.runtime.environment.EnvironmentContext.configure.params.include_object" title="alembic.runtime.environment.EnvironmentContext.configure"><code class="xref py py-paramref docutils literal notranslate"><span class="pre">EnvironmentContext.configure.include_object</span></code></a>
+option to specify a callable which
+can filter the tables/schemas that get included.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#alembic.runtime.environment.EnvironmentContext.configure.params.include_object" title="alembic.runtime.environment.EnvironmentContext.configure"><code class="xref py py-paramref docutils literal notranslate"><span class="pre">EnvironmentContext.configure.include_object</span></code></a></p>
+</div>
+</p></li>
+<li><p><span class="target" id="alembic.runtime.environment.EnvironmentContext.configure.params.render_item"></span><strong>render_item</strong><a class="paramlink headerlink reference internal" href="#alembic.runtime.environment.EnvironmentContext.configure.params.render_item">¶</a> – <p>Callable that can be used to override how
+any schema item, i.e. column, constraint, type,
+etc., is rendered for autogenerate.  The callable receives a
+string describing the type of object, the object, and
+the autogen context.  If it returns False, the
+default rendering method will be used.  If it returns None,
+the item will not be rendered in the context of a Table
+construct, that is, can be used to skip columns or constraints
+within op.create_table():</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">my_render_column</span><span class="p">(</span><span class="n">type_</span><span class="p">,</span> <span class="n">col</span><span class="p">,</span> <span class="n">autogen_context</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">type_</span> <span class="o">==</span> <span class="s2">&quot;column&quot;</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">col</span><span class="p">,</span> <span class="n">MySpecialCol</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">repr</span><span class="p">(</span><span class="n">col</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+<span class="n">context</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span>
+    <span class="c1"># ...</span>
+    <span class="n">render_item</span> <span class="o">=</span> <span class="n">my_render_column</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>Available values for the type string include: <code class="docutils literal notranslate"><span class="pre">&quot;column&quot;</span></code>,
+<code class="docutils literal notranslate"><span class="pre">&quot;primary_key&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;foreign_key&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;unique&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;check&quot;</span></code>,
+<code class="docutils literal notranslate"><span class="pre">&quot;type&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;server_default&quot;</span></code>.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="../autogenerate.html#autogen-render-types"><span class="std std-ref">Affecting the Rendering of Types Themselves</span></a></p>
+</div>
+</p></li>
+<li><p><span class="target" id="alembic.runtime.environment.EnvironmentContext.configure.params.upgrade_token"></span><strong>upgrade_token</strong><a class="paramlink headerlink reference internal" href="#alembic.runtime.environment.EnvironmentContext.configure.params.upgrade_token">¶</a> – When autogenerate completes, the text of the
+candidate upgrade operations will be present in this template
+variable when <code class="docutils literal notranslate"><span class="pre">script.py.mako</span></code> is rendered.  Defaults to
+<code class="docutils literal notranslate"><span class="pre">upgrades</span></code>.</p></li>
+<li><p><span class="target" id="alembic.runtime.environment.EnvironmentContext.configure.params.downgrade_token"></span><strong>downgrade_token</strong><a class="paramlink headerlink reference internal" href="#alembic.runtime.environment.EnvironmentContext.configure.params.downgrade_token">¶</a> – When autogenerate completes, the text of the
+candidate downgrade operations will be present in this
+template variable when <code class="docutils literal notranslate"><span class="pre">script.py.mako</span></code> is rendered.  Defaults to
+<code class="docutils literal notranslate"><span class="pre">downgrades</span></code>.</p></li>
+<li><p><span class="target" id="alembic.runtime.environment.EnvironmentContext.configure.params.alembic_module_prefix"></span><strong>alembic_module_prefix</strong><a class="paramlink headerlink reference internal" href="#alembic.runtime.environment.EnvironmentContext.configure.params.alembic_module_prefix">¶</a> – When autogenerate refers to Alembic
+<a class="reference internal" href="../ops.html#module-alembic.operations" title="alembic.operations"><code class="xref py py-mod docutils literal notranslate"><span class="pre">alembic.operations</span></code></a> constructs, this prefix will be used
+(i.e. <code class="docutils literal notranslate"><span class="pre">op.create_table</span></code>)  Defaults to “<code class="docutils literal notranslate"><span class="pre">op.</span></code>”.
+Can be <code class="docutils literal notranslate"><span class="pre">None</span></code> to indicate no prefix.</p></li>
+<li><p><span class="target" id="alembic.runtime.environment.EnvironmentContext.configure.params.sqlalchemy_module_prefix"></span><strong>sqlalchemy_module_prefix</strong><a class="paramlink headerlink reference internal" href="#alembic.runtime.environment.EnvironmentContext.configure.params.sqlalchemy_module_prefix">¶</a> – When autogenerate refers to
+SQLAlchemy
+<a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/metadata.html#sqlalchemy.schema.Column" title="(in SQLAlchemy v1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Column</span></code></a> or type classes, this prefix
+will be used
+(i.e. <code class="docutils literal notranslate"><span class="pre">sa.Column(&quot;somename&quot;,</span> <span class="pre">sa.Integer)</span></code>)  Defaults to “<code class="docutils literal notranslate"><span class="pre">sa.</span></code>”.
+Can be <code class="docutils literal notranslate"><span class="pre">None</span></code> to indicate no prefix.
+Note that when dialect-specific types are rendered, autogenerate
+will render them using the dialect module name, i.e. <code class="docutils literal notranslate"><span class="pre">mssql.BIT()</span></code>,
+<code class="docutils literal notranslate"><span class="pre">postgresql.UUID()</span></code>.</p></li>
+<li><p><span class="target" id="alembic.runtime.environment.EnvironmentContext.configure.params.user_module_prefix"></span><strong>user_module_prefix</strong><a class="paramlink headerlink reference internal" href="#alembic.runtime.environment.EnvironmentContext.configure.params.user_module_prefix">¶</a> – <p>When autogenerate refers to a SQLAlchemy
+type (e.g. <code class="xref py py-class docutils literal notranslate"><span class="pre">TypeEngine</span></code>) where the module name is not
+under the <code class="docutils literal notranslate"><span class="pre">sqlalchemy</span></code> namespace, this prefix will be used
+within autogenerate.  If left at its default of
+<code class="docutils literal notranslate"><span class="pre">None</span></code>, the <code class="docutils literal notranslate"><span class="pre">__module__</span></code> attribute of the type is used to
+render the import module.   It’s a good practice to set this
+and to have all custom types be available from a fixed module space,
+in order to future-proof migration files against reorganizations
+in modules.</p>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 0.7.0: </span><a class="reference internal" href="#alembic.runtime.environment.EnvironmentContext.configure.params.user_module_prefix" title="alembic.runtime.environment.EnvironmentContext.configure"><code class="xref py py-paramref docutils literal notranslate"><span class="pre">EnvironmentContext.configure.user_module_prefix</span></code></a>
+no longer defaults to the value of
+<a class="reference internal" href="#alembic.runtime.environment.EnvironmentContext.configure.params.sqlalchemy_module_prefix" title="alembic.runtime.environment.EnvironmentContext.configure"><code class="xref py py-paramref docutils literal notranslate"><span class="pre">EnvironmentContext.configure.sqlalchemy_module_prefix</span></code></a>
+when left at <code class="docutils literal notranslate"><span class="pre">None</span></code>; the <code class="docutils literal notranslate"><span class="pre">__module__</span></code> attribute is now used.</p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 0.6.3: </span>added
+<a class="reference internal" href="#alembic.runtime.environment.EnvironmentContext.configure.params.user_module_prefix" title="alembic.runtime.environment.EnvironmentContext.configure"><code class="xref py py-paramref docutils literal notranslate"><span class="pre">EnvironmentContext.configure.user_module_prefix</span></code></a></p>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="../autogenerate.html#autogen-module-prefix"><span class="std std-ref">Controlling the Module Prefix</span></a></p>
+</div>
+</p></li>
+<li><p><span class="target" id="alembic.runtime.environment.EnvironmentContext.configure.params.process_revision_directives"></span><strong>process_revision_directives</strong><a class="paramlink headerlink reference internal" href="#alembic.runtime.environment.EnvironmentContext.configure.params.process_revision_directives">¶</a> – <p>a callable function that will
+be passed a structure representing the end result of an autogenerate
+or plain “revision” operation, which can be manipulated to affect
+how the <code class="docutils literal notranslate"><span class="pre">alembic</span> <span class="pre">revision</span></code> command ultimately outputs new
+revision scripts.   The structure of the callable is:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">process_revision_directives</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">revision</span><span class="p">,</span> <span class="n">directives</span><span class="p">):</span>
+    <span class="k">pass</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">directives</span></code> parameter is a Python list containing
+a single <a class="reference internal" href="operations.html#alembic.operations.ops.MigrationScript" title="alembic.operations.ops.MigrationScript"><code class="xref py py-class docutils literal notranslate"><span class="pre">MigrationScript</span></code></a> directive, which represents
+the revision file to be generated.    This list as well as its
+contents may be freely modified to produce any set of commands.
+The section <a class="reference internal" href="autogenerate.html#customizing-revision"><span class="std std-ref">Customizing Revision Generation</span></a> shows an example of
+doing this.  The <code class="docutils literal notranslate"><span class="pre">context</span></code> parameter is the
+<a class="reference internal" href="#alembic.runtime.migration.MigrationContext" title="alembic.runtime.migration.MigrationContext"><code class="xref py py-class docutils literal notranslate"><span class="pre">MigrationContext</span></code></a> in use,
+and <code class="docutils literal notranslate"><span class="pre">revision</span></code> is a tuple of revision identifiers representing the
+current revision of the database.</p>
+<p>The callable is invoked at all times when the <code class="docutils literal notranslate"><span class="pre">--autogenerate</span></code>
+option is passed to <code class="docutils literal notranslate"><span class="pre">alembic</span> <span class="pre">revision</span></code>.  If <code class="docutils literal notranslate"><span class="pre">--autogenerate</span></code>
+is not passed, the callable is invoked only if the
+<code class="docutils literal notranslate"><span class="pre">revision_environment</span></code> variable is set to True in the Alembic
+configuration, in which case the given <code class="docutils literal notranslate"><span class="pre">directives</span></code> collection
+will contain empty <a class="reference internal" href="operations.html#alembic.operations.ops.UpgradeOps" title="alembic.operations.ops.UpgradeOps"><code class="xref py py-class docutils literal notranslate"><span class="pre">UpgradeOps</span></code></a> and <a class="reference internal" href="operations.html#alembic.operations.ops.DowngradeOps" title="alembic.operations.ops.DowngradeOps"><code class="xref py py-class docutils literal notranslate"><span class="pre">DowngradeOps</span></code></a>
+collections for <code class="docutils literal notranslate"><span class="pre">.upgrade_ops</span></code> and <code class="docutils literal notranslate"><span class="pre">.downgrade_ops</span></code>.  The
+<code class="docutils literal notranslate"><span class="pre">--autogenerate</span></code> option itself can be inferred by inspecting
+<code class="docutils literal notranslate"><span class="pre">context.config.cmd_opts.autogenerate</span></code>.</p>
+<p>The callable function may optionally be an instance of
+a <a class="reference internal" href="autogenerate.html#alembic.autogenerate.rewriter.Rewriter" title="alembic.autogenerate.rewriter.Rewriter"><code class="xref py py-class docutils literal notranslate"><span class="pre">Rewriter</span></code></a> object.  This is a helper object that
+assists in the production of autogenerate-stream rewriter functions.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 0.8.0.</span></p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 0.8.1: </span>- The
+<a class="reference internal" href="#alembic.runtime.environment.EnvironmentContext.configure.params.process_revision_directives" title="alembic.runtime.environment.EnvironmentContext.configure"><code class="xref py py-paramref docutils literal notranslate"><span class="pre">EnvironmentContext.configure.process_revision_directives</span></code></a>
+hook can append op directives into <a class="reference internal" href="operations.html#alembic.operations.ops.UpgradeOps" title="alembic.operations.ops.UpgradeOps"><code class="xref py py-class docutils literal notranslate"><span class="pre">UpgradeOps</span></code></a> and
+<a class="reference internal" href="operations.html#alembic.operations.ops.DowngradeOps" title="alembic.operations.ops.DowngradeOps"><code class="xref py py-class docutils literal notranslate"><span class="pre">DowngradeOps</span></code></a> which will be rendered in Python regardless
+of whether the <code class="docutils literal notranslate"><span class="pre">--autogenerate</span></code> option is in use or not;
+the <code class="docutils literal notranslate"><span class="pre">revision_environment</span></code> configuration variable should be
+set to “true” in the config to enable this.</p>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="autogenerate.html#customizing-revision"><span class="std std-ref">Customizing Revision Generation</span></a></p>
+<p><a class="reference internal" href="autogenerate.html#autogen-rewriter"><span class="std std-ref">Fine-Grained Autogenerate Generation with Rewriters</span></a></p>
+<p><a class="reference internal" href="commands.html#alembic.command.revision.params.process_revision_directives" title="alembic.command.revision"><code class="xref py py-paramref docutils literal notranslate"><span class="pre">command.revision.process_revision_directives</span></code></a></p>
+</div>
+</p></li>
+</ul>
+</dd>
+</dl>
+<p>Parameters specific to individual backends:</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span class="target" id="alembic.runtime.environment.EnvironmentContext.configure.params.mssql_batch_separator"></span><strong>mssql_batch_separator</strong><a class="paramlink headerlink reference internal" href="#alembic.runtime.environment.EnvironmentContext.configure.params.mssql_batch_separator">¶</a> – The “batch separator” which will
+be placed between each statement when generating offline SQL Server
+migrations.  Defaults to <code class="docutils literal notranslate"><span class="pre">GO</span></code>.  Note this is in addition to the
+customary semicolon <code class="docutils literal notranslate"><span class="pre">;</span></code> at the end of each statement; SQL Server
+considers the “batch separator” to denote the end of an
+individual statement execution, and cannot group certain
+dependent operations in one step.</p></li>
+<li><p><span class="target" id="alembic.runtime.environment.EnvironmentContext.configure.params.oracle_batch_separator"></span><strong>oracle_batch_separator</strong><a class="paramlink headerlink reference internal" href="#alembic.runtime.environment.EnvironmentContext.configure.params.oracle_batch_separator">¶</a> – The “batch separator” which will
+be placed between each statement when generating offline
+Oracle migrations.  Defaults to <code class="docutils literal notranslate"><span class="pre">/</span></code>.  Oracle doesn’t add a
+semicolon between statements like most other backends.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="alembic.runtime.environment.EnvironmentContext.execute">
+<code class="sig-name descname">execute</code><span class="sig-paren">(</span><em class="sig-param">sql</em>, <em class="sig-param">execution_options=None</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.runtime.environment.EnvironmentContext.execute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Execute the given SQL using the current change context.</p>
+<p>The behavior of <a class="reference internal" href="#alembic.runtime.environment.EnvironmentContext.execute" title="alembic.runtime.environment.EnvironmentContext.execute"><code class="xref py py-meth docutils literal notranslate"><span class="pre">execute()</span></code></a> is the same
+as that of <a class="reference internal" href="../ops.html#alembic.operations.Operations.execute" title="alembic.operations.Operations.execute"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Operations.execute()</span></code></a>.  Please see that
+function’s documentation for full detail including
+caveats and limitations.</p>
+<p>This function requires that a <a class="reference internal" href="#alembic.runtime.migration.MigrationContext" title="alembic.runtime.migration.MigrationContext"><code class="xref py py-class docutils literal notranslate"><span class="pre">MigrationContext</span></code></a> has
+first been made available via <a class="reference internal" href="#alembic.runtime.environment.EnvironmentContext.configure" title="alembic.runtime.environment.EnvironmentContext.configure"><code class="xref py py-meth docutils literal notranslate"><span class="pre">configure()</span></code></a>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="alembic.runtime.environment.EnvironmentContext.get_bind">
+<code class="sig-name descname">get_bind</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#alembic.runtime.environment.EnvironmentContext.get_bind" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the current ‘bind’.</p>
+<p>In “online” mode, this is the
+<a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/connections.html#sqlalchemy.engine.Connection" title="(in SQLAlchemy v1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">sqlalchemy.engine.Connection</span></code></a> currently being used
+to emit SQL to the database.</p>
+<p>This function requires that a <a class="reference internal" href="#alembic.runtime.migration.MigrationContext" title="alembic.runtime.migration.MigrationContext"><code class="xref py py-class docutils literal notranslate"><span class="pre">MigrationContext</span></code></a>
+has first been made available via <a class="reference internal" href="#alembic.runtime.environment.EnvironmentContext.configure" title="alembic.runtime.environment.EnvironmentContext.configure"><code class="xref py py-meth docutils literal notranslate"><span class="pre">configure()</span></code></a>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="alembic.runtime.environment.EnvironmentContext.get_context">
+<code class="sig-name descname">get_context</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#alembic.runtime.environment.EnvironmentContext.get_context" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the current <a class="reference internal" href="#alembic.runtime.migration.MigrationContext" title="alembic.runtime.migration.MigrationContext"><code class="xref py py-class docutils literal notranslate"><span class="pre">MigrationContext</span></code></a> object.</p>
+<p>If <a class="reference internal" href="#alembic.runtime.environment.EnvironmentContext.configure" title="alembic.runtime.environment.EnvironmentContext.configure"><code class="xref py py-meth docutils literal notranslate"><span class="pre">EnvironmentContext.configure()</span></code></a> has not been
+called yet, raises an exception.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="alembic.runtime.environment.EnvironmentContext.get_head_revision">
+<code class="sig-name descname">get_head_revision</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#alembic.runtime.environment.EnvironmentContext.get_head_revision" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the hex identifier of the ‘head’ script revision.</p>
+<p>If the script directory has multiple heads, this
+method raises a <code class="xref py py-class docutils literal notranslate"><span class="pre">CommandError</span></code>;
+<a class="reference internal" href="#alembic.runtime.environment.EnvironmentContext.get_head_revisions" title="alembic.runtime.environment.EnvironmentContext.get_head_revisions"><code class="xref py py-meth docutils literal notranslate"><span class="pre">EnvironmentContext.get_head_revisions()</span></code></a> should be preferred.</p>
+<p>This function does not require that the <a class="reference internal" href="#alembic.runtime.migration.MigrationContext" title="alembic.runtime.migration.MigrationContext"><code class="xref py py-class docutils literal notranslate"><span class="pre">MigrationContext</span></code></a>
+has been configured.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#alembic.runtime.environment.EnvironmentContext.get_head_revisions" title="alembic.runtime.environment.EnvironmentContext.get_head_revisions"><code class="xref py py-meth docutils literal notranslate"><span class="pre">EnvironmentContext.get_head_revisions()</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="alembic.runtime.environment.EnvironmentContext.get_head_revisions">
+<code class="sig-name descname">get_head_revisions</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#alembic.runtime.environment.EnvironmentContext.get_head_revisions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the hex identifier of the ‘heads’ script revision(s).</p>
+<p>This returns a tuple containing the version number of all
+heads in the script directory.</p>
+<p>This function does not require that the <a class="reference internal" href="#alembic.runtime.migration.MigrationContext" title="alembic.runtime.migration.MigrationContext"><code class="xref py py-class docutils literal notranslate"><span class="pre">MigrationContext</span></code></a>
+has been configured.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 0.7.0.</span></p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="alembic.runtime.environment.EnvironmentContext.get_revision_argument">
+<code class="sig-name descname">get_revision_argument</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#alembic.runtime.environment.EnvironmentContext.get_revision_argument" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the ‘destination’ revision argument.</p>
+<p>This is typically the argument passed to the
+<code class="docutils literal notranslate"><span class="pre">upgrade</span></code> or <code class="docutils literal notranslate"><span class="pre">downgrade</span></code> command.</p>
+<p>If it was specified as <code class="docutils literal notranslate"><span class="pre">head</span></code>, the actual
+version number is returned; if specified
+as <code class="docutils literal notranslate"><span class="pre">base</span></code>, <code class="docutils literal notranslate"><span class="pre">None</span></code> is returned.</p>
+<p>This function does not require that the <a class="reference internal" href="#alembic.runtime.migration.MigrationContext" title="alembic.runtime.migration.MigrationContext"><code class="xref py py-class docutils literal notranslate"><span class="pre">MigrationContext</span></code></a>
+has been configured.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="alembic.runtime.environment.EnvironmentContext.get_starting_revision_argument">
+<code class="sig-name descname">get_starting_revision_argument</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#alembic.runtime.environment.EnvironmentContext.get_starting_revision_argument" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the ‘starting revision’ argument,
+if the revision was passed using <code class="docutils literal notranslate"><span class="pre">start:end</span></code>.</p>
+<p>This is only meaningful in “offline” mode.
+Returns <code class="docutils literal notranslate"><span class="pre">None</span></code> if no value is available
+or was configured.</p>
+<p>This function does not require that the <a class="reference internal" href="#alembic.runtime.migration.MigrationContext" title="alembic.runtime.migration.MigrationContext"><code class="xref py py-class docutils literal notranslate"><span class="pre">MigrationContext</span></code></a>
+has been configured.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="alembic.runtime.environment.EnvironmentContext.get_tag_argument">
+<code class="sig-name descname">get_tag_argument</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#alembic.runtime.environment.EnvironmentContext.get_tag_argument" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the value passed for the <code class="docutils literal notranslate"><span class="pre">--tag</span></code> argument, if any.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">--tag</span></code> argument is not used directly by Alembic,
+but is available for custom <code class="docutils literal notranslate"><span class="pre">env.py</span></code> configurations that
+wish to use it; particularly for offline generation scripts
+that wish to generate tagged filenames.</p>
+<p>This function does not require that the <a class="reference internal" href="#alembic.runtime.migration.MigrationContext" title="alembic.runtime.migration.MigrationContext"><code class="xref py py-class docutils literal notranslate"><span class="pre">MigrationContext</span></code></a>
+has been configured.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#alembic.runtime.environment.EnvironmentContext.get_x_argument" title="alembic.runtime.environment.EnvironmentContext.get_x_argument"><code class="xref py py-meth docutils literal notranslate"><span class="pre">EnvironmentContext.get_x_argument()</span></code></a> - a newer and more
+open ended system of extending <code class="docutils literal notranslate"><span class="pre">env.py</span></code> scripts via the command
+line.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="alembic.runtime.environment.EnvironmentContext.get_x_argument">
+<code class="sig-name descname">get_x_argument</code><span class="sig-paren">(</span><em class="sig-param">as_dictionary=False</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.runtime.environment.EnvironmentContext.get_x_argument" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the value(s) passed for the <code class="docutils literal notranslate"><span class="pre">-x</span></code> argument, if any.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">-x</span></code> argument is an open ended flag that allows any user-defined
+value or values to be passed on the command line, then available
+here for consumption by a custom <code class="docutils literal notranslate"><span class="pre">env.py</span></code> script.</p>
+<p>The return value is a list, returned directly from the <code class="docutils literal notranslate"><span class="pre">argparse</span></code>
+structure.  If <code class="docutils literal notranslate"><span class="pre">as_dictionary=True</span></code> is passed, the <code class="docutils literal notranslate"><span class="pre">x</span></code> arguments
+are parsed using <code class="docutils literal notranslate"><span class="pre">key=value</span></code> format into a dictionary that is
+then returned.</p>
+<p>For example, to support passing a database URL on the command line,
+the standard <code class="docutils literal notranslate"><span class="pre">env.py</span></code> script can be modified like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cmd_line_url</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">get_x_argument</span><span class="p">(</span>
+    <span class="n">as_dictionary</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;dbname&#39;</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">cmd_line_url</span><span class="p">:</span>
+    <span class="n">engine</span> <span class="o">=</span> <span class="n">create_engine</span><span class="p">(</span><span class="n">cmd_line_url</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">engine</span> <span class="o">=</span> <span class="n">engine_from_config</span><span class="p">(</span>
+            <span class="n">config</span><span class="o">.</span><span class="n">get_section</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">config_ini_section</span><span class="p">),</span>
+            <span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;sqlalchemy.&#39;</span><span class="p">,</span>
+            <span class="n">poolclass</span><span class="o">=</span><span class="n">pool</span><span class="o">.</span><span class="n">NullPool</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This then takes effect by running the <code class="docutils literal notranslate"><span class="pre">alembic</span></code> script as:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">alembic</span> <span class="o">-</span><span class="n">x</span> <span class="n">dbname</span><span class="o">=</span><span class="n">postgresql</span><span class="p">:</span><span class="o">//</span><span class="n">user</span><span class="p">:</span><span class="k">pass</span><span class="nd">@host</span><span class="o">/</span><span class="n">dbname</span> <span class="n">upgrade</span> <span class="n">head</span>
+</pre></div>
+</div>
+<p>This function does not require that the <a class="reference internal" href="#alembic.runtime.migration.MigrationContext" title="alembic.runtime.migration.MigrationContext"><code class="xref py py-class docutils literal notranslate"><span class="pre">MigrationContext</span></code></a>
+has been configured.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 0.6.0.</span></p>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#alembic.runtime.environment.EnvironmentContext.get_tag_argument" title="alembic.runtime.environment.EnvironmentContext.get_tag_argument"><code class="xref py py-meth docutils literal notranslate"><span class="pre">EnvironmentContext.get_tag_argument()</span></code></a></p>
+<p><a class="reference internal" href="config.html#alembic.config.Config.cmd_opts" title="alembic.config.Config.cmd_opts"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Config.cmd_opts</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="alembic.runtime.environment.EnvironmentContext.is_offline_mode">
+<code class="sig-name descname">is_offline_mode</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#alembic.runtime.environment.EnvironmentContext.is_offline_mode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return True if the current migrations environment
+is running in “offline mode”.</p>
+<p>This is <code class="docutils literal notranslate"><span class="pre">True</span></code> or <code class="docutils literal notranslate"><span class="pre">False</span></code> depending
+on the the <code class="docutils literal notranslate"><span class="pre">--sql</span></code> flag passed.</p>
+<p>This function does not require that the <a class="reference internal" href="#alembic.runtime.migration.MigrationContext" title="alembic.runtime.migration.MigrationContext"><code class="xref py py-class docutils literal notranslate"><span class="pre">MigrationContext</span></code></a>
+has been configured.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="alembic.runtime.environment.EnvironmentContext.is_transactional_ddl">
+<code class="sig-name descname">is_transactional_ddl</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#alembic.runtime.environment.EnvironmentContext.is_transactional_ddl" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return True if the context is configured to expect a
+transactional DDL capable backend.</p>
+<p>This defaults to the type of database in use, and
+can be overridden by the <code class="docutils literal notranslate"><span class="pre">transactional_ddl</span></code> argument
+to <a class="reference internal" href="#alembic.runtime.environment.EnvironmentContext.configure" title="alembic.runtime.environment.EnvironmentContext.configure"><code class="xref py py-meth docutils literal notranslate"><span class="pre">configure()</span></code></a></p>
+<p>This function requires that a <a class="reference internal" href="#alembic.runtime.migration.MigrationContext" title="alembic.runtime.migration.MigrationContext"><code class="xref py py-class docutils literal notranslate"><span class="pre">MigrationContext</span></code></a>
+has first been made available via <a class="reference internal" href="#alembic.runtime.environment.EnvironmentContext.configure" title="alembic.runtime.environment.EnvironmentContext.configure"><code class="xref py py-meth docutils literal notranslate"><span class="pre">configure()</span></code></a>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="alembic.runtime.environment.EnvironmentContext.run_migrations">
+<code class="sig-name descname">run_migrations</code><span class="sig-paren">(</span><em class="sig-param">**kw</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.runtime.environment.EnvironmentContext.run_migrations" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run migrations as determined by the current command line
+configuration
+as well as versioning information present (or not) in the current
+database connection (if one is present).</p>
+<p>The function accepts optional <code class="docutils literal notranslate"><span class="pre">**kw</span></code> arguments.   If these are
+passed, they are sent directly to the <code class="docutils literal notranslate"><span class="pre">upgrade()</span></code> and
+<code class="docutils literal notranslate"><span class="pre">downgrade()</span></code>
+functions within each target revision file.   By modifying the
+<code class="docutils literal notranslate"><span class="pre">script.py.mako</span></code> file so that the <code class="docutils literal notranslate"><span class="pre">upgrade()</span></code> and <code class="docutils literal notranslate"><span class="pre">downgrade()</span></code>
+functions accept arguments, parameters can be passed here so that
+contextual information, usually information to identify a particular
+database in use, can be passed from a custom <code class="docutils literal notranslate"><span class="pre">env.py</span></code> script
+to the migration functions.</p>
+<p>This function requires that a <a class="reference internal" href="#alembic.runtime.migration.MigrationContext" title="alembic.runtime.migration.MigrationContext"><code class="xref py py-class docutils literal notranslate"><span class="pre">MigrationContext</span></code></a> has
+first been made available via <a class="reference internal" href="#alembic.runtime.environment.EnvironmentContext.configure" title="alembic.runtime.environment.EnvironmentContext.configure"><code class="xref py py-meth docutils literal notranslate"><span class="pre">configure()</span></code></a>.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="alembic.runtime.environment.EnvironmentContext.script">
+<code class="sig-name descname">script</code><em class="property"> = None</em><a class="headerlink" href="#alembic.runtime.environment.EnvironmentContext.script" title="Permalink to this definition">¶</a></dt>
+<dd><p>An instance of <a class="reference internal" href="script.html#alembic.script.ScriptDirectory" title="alembic.script.ScriptDirectory"><code class="xref py py-class docutils literal notranslate"><span class="pre">ScriptDirectory</span></code></a> which provides
+programmatic access to version files within the <code class="docutils literal notranslate"><span class="pre">versions/</span></code>
+directory.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="alembic.runtime.environment.EnvironmentContext.static_output">
+<code class="sig-name descname">static_output</code><span class="sig-paren">(</span><em class="sig-param">text</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.runtime.environment.EnvironmentContext.static_output" title="Permalink to this definition">¶</a></dt>
+<dd><p>Emit text directly to the “offline” SQL stream.</p>
+<p>Typically this is for emitting comments that
+start with –.  The statement is not treated
+as a SQL execution, no ; or batch separator
+is added, etc.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="the-migration-context">
+<span id="alembic-runtime-migration-toplevel"></span><h2>The Migration Context<a class="headerlink" href="#the-migration-context" title="Permalink to this headline">¶</a></h2>
+<p>The <a class="reference internal" href="#alembic.runtime.migration.MigrationContext" title="alembic.runtime.migration.MigrationContext"><code class="xref py py-class docutils literal notranslate"><span class="pre">MigrationContext</span></code></a> handles the actual work to be performed
+against a database backend as migration operations proceed.  It is generally
+not exposed to the end-user, except when the
+<a class="reference internal" href="#alembic.runtime.environment.EnvironmentContext.configure.params.on_version_apply" title="alembic.runtime.environment.EnvironmentContext.configure"><code class="xref py py-paramref docutils literal notranslate"><span class="pre">on_version_apply</span></code></a> callback hook is used.</p>
+<span class="target" id="module-alembic.runtime.migration"></span><dl class="class">
+<dt id="alembic.runtime.migration.MigrationContext">
+<em class="property">class </em><code class="sig-prename descclassname">alembic.runtime.migration.</code><code class="sig-name descname">MigrationContext</code><span class="sig-paren">(</span><em class="sig-param">dialect</em>, <em class="sig-param">connection</em>, <em class="sig-param">opts</em>, <em class="sig-param">environment_context=None</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.runtime.migration.MigrationContext" title="Permalink to this definition">¶</a></dt>
+<dd><p>Represent the database state made available to a migration
+script.</p>
+<p><a class="reference internal" href="#alembic.runtime.migration.MigrationContext" title="alembic.runtime.migration.MigrationContext"><code class="xref py py-class docutils literal notranslate"><span class="pre">MigrationContext</span></code></a> is the front end to an actual
+database connection, or alternatively a string output
+stream given a particular database dialect,
+from an Alembic perspective.</p>
+<p>When inside the <code class="docutils literal notranslate"><span class="pre">env.py</span></code> script, the <a class="reference internal" href="#alembic.runtime.migration.MigrationContext" title="alembic.runtime.migration.MigrationContext"><code class="xref py py-class docutils literal notranslate"><span class="pre">MigrationContext</span></code></a>
+is available via the
+<a class="reference internal" href="#alembic.runtime.environment.EnvironmentContext.get_context" title="alembic.runtime.environment.EnvironmentContext.get_context"><code class="xref py py-meth docutils literal notranslate"><span class="pre">EnvironmentContext.get_context()</span></code></a> method,
+which is available at <code class="docutils literal notranslate"><span class="pre">alembic.context</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># from within env.py script</span>
+<span class="kn">from</span> <span class="nn">alembic</span> <span class="k">import</span> <span class="n">context</span>
+<span class="n">migration_context</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">get_context</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>For usage outside of an <code class="docutils literal notranslate"><span class="pre">env.py</span></code> script, such as for
+utility routines that want to check the current version
+in the database, the <a class="reference internal" href="#alembic.runtime.migration.MigrationContext.configure" title="alembic.runtime.migration.MigrationContext.configure"><code class="xref py py-meth docutils literal notranslate"><span class="pre">MigrationContext.configure()</span></code></a>
+method to create new <a class="reference internal" href="#alembic.runtime.migration.MigrationContext" title="alembic.runtime.migration.MigrationContext"><code class="xref py py-class docutils literal notranslate"><span class="pre">MigrationContext</span></code></a> objects.
+For example, to get at the current revision in the
+database using <a class="reference internal" href="#alembic.runtime.migration.MigrationContext.get_current_revision" title="alembic.runtime.migration.MigrationContext.get_current_revision"><code class="xref py py-meth docutils literal notranslate"><span class="pre">MigrationContext.get_current_revision()</span></code></a>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># in any application, outside of an env.py script</span>
+<span class="kn">from</span> <span class="nn">alembic.migration</span> <span class="k">import</span> <span class="n">MigrationContext</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy</span> <span class="k">import</span> <span class="n">create_engine</span>
+
+<span class="n">engine</span> <span class="o">=</span> <span class="n">create_engine</span><span class="p">(</span><span class="s2">&quot;postgresql://mydatabase&quot;</span><span class="p">)</span>
+<span class="n">conn</span> <span class="o">=</span> <span class="n">engine</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span>
+
+<span class="n">context</span> <span class="o">=</span> <span class="n">MigrationContext</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">conn</span><span class="p">)</span>
+<span class="n">current_rev</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">get_current_revision</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>The above context can also be used to produce
+Alembic migration operations with an <a class="reference internal" href="../ops.html#alembic.operations.Operations" title="alembic.operations.Operations"><code class="xref py py-class docutils literal notranslate"><span class="pre">Operations</span></code></a>
+instance:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># in any application, outside of the normal Alembic environment</span>
+<span class="kn">from</span> <span class="nn">alembic.operations</span> <span class="k">import</span> <span class="n">Operations</span>
+<span class="n">op</span> <span class="o">=</span> <span class="n">Operations</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+<span class="n">op</span><span class="o">.</span><span class="n">alter_column</span><span class="p">(</span><span class="s2">&quot;mytable&quot;</span><span class="p">,</span> <span class="s2">&quot;somecolumn&quot;</span><span class="p">,</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="method">
+<dt id="alembic.runtime.migration.MigrationContext.bind">
+<em class="property">property </em><code class="sig-name descname">bind</code><a class="headerlink" href="#alembic.runtime.migration.MigrationContext.bind" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the current “bind”.</p>
+<p>In online mode, this is an instance of
+<a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/connections.html#sqlalchemy.engine.Connection" title="(in SQLAlchemy v1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">sqlalchemy.engine.Connection</span></code></a>, and is suitable
+for ad-hoc execution of any kind of usage described
+in <a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/tutorial.html#sqlexpression-toplevel" title="(in SQLAlchemy v1.3)"><span>SQL Expression Language Tutorial</span></a> as well as
+for usage with the <a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/metadata.html#sqlalchemy.schema.Table.create" title="(in SQLAlchemy v1.3)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">sqlalchemy.schema.Table.create()</span></code></a>
+and <a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/metadata.html#sqlalchemy.schema.MetaData.create_all" title="(in SQLAlchemy v1.3)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">sqlalchemy.schema.MetaData.create_all()</span></code></a> methods
+of <a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/metadata.html#sqlalchemy.schema.Table" title="(in SQLAlchemy v1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Table</span></code></a>,
+<a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/metadata.html#sqlalchemy.schema.MetaData" title="(in SQLAlchemy v1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">MetaData</span></code></a>.</p>
+<p>Note that when “standard output” mode is enabled,
+this bind will be a “mock” connection handler that cannot
+return results and is only appropriate for a very limited
+subset of commands.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="alembic.runtime.migration.MigrationContext.config">
+<em class="property">property </em><code class="sig-name descname">config</code><a class="headerlink" href="#alembic.runtime.migration.MigrationContext.config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the <a class="reference internal" href="config.html#alembic.config.Config" title="alembic.config.Config"><code class="xref py py-class docutils literal notranslate"><span class="pre">Config</span></code></a> used by the current environment, if any.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 0.6.6.</span></p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="alembic.runtime.migration.MigrationContext.configure">
+<em class="property">classmethod </em><code class="sig-name descname">configure</code><span class="sig-paren">(</span><em class="sig-param">connection=None</em>, <em class="sig-param">url=None</em>, <em class="sig-param">dialect_name=None</em>, <em class="sig-param">dialect=None</em>, <em class="sig-param">environment_context=None</em>, <em class="sig-param">opts=None</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.runtime.migration.MigrationContext.configure" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a new <a class="reference internal" href="#alembic.runtime.migration.MigrationContext" title="alembic.runtime.migration.MigrationContext"><code class="xref py py-class docutils literal notranslate"><span class="pre">MigrationContext</span></code></a>.</p>
+<p>This is a factory method usually called
+by <a class="reference internal" href="#alembic.runtime.environment.EnvironmentContext.configure" title="alembic.runtime.environment.EnvironmentContext.configure"><code class="xref py py-meth docutils literal notranslate"><span class="pre">EnvironmentContext.configure()</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span class="target" id="alembic.runtime.migration.MigrationContext.configure.params.connection"></span><strong>connection</strong><a class="paramlink headerlink reference internal" href="#alembic.runtime.migration.MigrationContext.configure.params.connection">¶</a> – a <a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/connections.html#sqlalchemy.engine.Connection" title="(in SQLAlchemy v1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Connection</span></code></a>
+to use for SQL execution in “online” mode.  When present,
+is also used to determine the type of dialect in use.</p></li>
+<li><p><span class="target" id="alembic.runtime.migration.MigrationContext.configure.params.url"></span><strong>url</strong><a class="paramlink headerlink reference internal" href="#alembic.runtime.migration.MigrationContext.configure.params.url">¶</a> – a string database url, or a
+<a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/engines.html#sqlalchemy.engine.url.URL" title="(in SQLAlchemy v1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">sqlalchemy.engine.url.URL</span></code></a> object.
+The type of dialect to be used will be derived from this if
+<code class="docutils literal notranslate"><span class="pre">connection</span></code> is not passed.</p></li>
+<li><p><span class="target" id="alembic.runtime.migration.MigrationContext.configure.params.dialect_name"></span><strong>dialect_name</strong><a class="paramlink headerlink reference internal" href="#alembic.runtime.migration.MigrationContext.configure.params.dialect_name">¶</a> – string name of a dialect, such as
+“postgresql”, “mssql”, etc.  The type of dialect to be used will be
+derived from this if <code class="docutils literal notranslate"><span class="pre">connection</span></code> and <code class="docutils literal notranslate"><span class="pre">url</span></code> are not passed.</p></li>
+<li><p><span class="target" id="alembic.runtime.migration.MigrationContext.configure.params.opts"></span><strong>opts</strong><a class="paramlink headerlink reference internal" href="#alembic.runtime.migration.MigrationContext.configure.params.opts">¶</a> – dictionary of options.  Most other options
+accepted by <a class="reference internal" href="#alembic.runtime.environment.EnvironmentContext.configure" title="alembic.runtime.environment.EnvironmentContext.configure"><code class="xref py py-meth docutils literal notranslate"><span class="pre">EnvironmentContext.configure()</span></code></a> are passed via
+this dictionary.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="alembic.runtime.migration.MigrationContext.execute">
+<code class="sig-name descname">execute</code><span class="sig-paren">(</span><em class="sig-param">sql</em>, <em class="sig-param">execution_options=None</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.runtime.migration.MigrationContext.execute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Execute a SQL construct or string statement.</p>
+<p>The underlying execution mechanics are used, that is
+if this is “offline mode” the SQL is written to the
+output buffer, otherwise the SQL is emitted on
+the current SQLAlchemy connection.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="alembic.runtime.migration.MigrationContext.get_current_heads">
+<code class="sig-name descname">get_current_heads</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#alembic.runtime.migration.MigrationContext.get_current_heads" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a tuple of the current ‘head versions’ that are represented
+in the target database.</p>
+<p>For a migration stream without branches, this will be a single
+value, synonymous with that of
+<a class="reference internal" href="#alembic.runtime.migration.MigrationContext.get_current_revision" title="alembic.runtime.migration.MigrationContext.get_current_revision"><code class="xref py py-meth docutils literal notranslate"><span class="pre">MigrationContext.get_current_revision()</span></code></a>.   However when multiple
+unmerged branches exist within the target database, the returned tuple
+will contain a value for each head.</p>
+<p>If this <a class="reference internal" href="#alembic.runtime.migration.MigrationContext" title="alembic.runtime.migration.MigrationContext"><code class="xref py py-class docutils literal notranslate"><span class="pre">MigrationContext</span></code></a> was configured in “offline”
+mode, that is with <code class="docutils literal notranslate"><span class="pre">as_sql=True</span></code>, the <code class="docutils literal notranslate"><span class="pre">starting_rev</span></code>
+parameter is returned in a one-length tuple.</p>
+<p>If no version table is present, or if there are no revisions
+present, an empty tuple is returned.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 0.7.0.</span></p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="alembic.runtime.migration.MigrationContext.get_current_revision">
+<code class="sig-name descname">get_current_revision</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#alembic.runtime.migration.MigrationContext.get_current_revision" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the current revision, usually that which is present
+in the <code class="docutils literal notranslate"><span class="pre">alembic_version</span></code> table in the database.</p>
+<p>This method intends to be used only for a migration stream that
+does not contain unmerged branches in the target database;
+if there are multiple branches present, an exception is raised.
+The <a class="reference internal" href="#alembic.runtime.migration.MigrationContext.get_current_heads" title="alembic.runtime.migration.MigrationContext.get_current_heads"><code class="xref py py-meth docutils literal notranslate"><span class="pre">MigrationContext.get_current_heads()</span></code></a> should be preferred
+over this method going forward in order to be compatible with
+branch migration support.</p>
+<p>If this <a class="reference internal" href="#alembic.runtime.migration.MigrationContext" title="alembic.runtime.migration.MigrationContext"><code class="xref py py-class docutils literal notranslate"><span class="pre">MigrationContext</span></code></a> was configured in “offline”
+mode, that is with <code class="docutils literal notranslate"><span class="pre">as_sql=True</span></code>, the <code class="docutils literal notranslate"><span class="pre">starting_rev</span></code>
+parameter is returned instead, if any.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="alembic.runtime.migration.MigrationContext.run_migrations">
+<code class="sig-name descname">run_migrations</code><span class="sig-paren">(</span><em class="sig-param">**kw</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.runtime.migration.MigrationContext.run_migrations" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run the migration scripts established for this
+<a class="reference internal" href="#alembic.runtime.migration.MigrationContext" title="alembic.runtime.migration.MigrationContext"><code class="xref py py-class docutils literal notranslate"><span class="pre">MigrationContext</span></code></a>, if any.</p>
+<p>The commands in <a class="reference internal" href="commands.html#module-alembic.command" title="alembic.command"><code class="xref py py-mod docutils literal notranslate"><span class="pre">alembic.command</span></code></a> will set up a function
+that is ultimately passed to the <a class="reference internal" href="#alembic.runtime.migration.MigrationContext" title="alembic.runtime.migration.MigrationContext"><code class="xref py py-class docutils literal notranslate"><span class="pre">MigrationContext</span></code></a>
+as the <code class="docutils literal notranslate"><span class="pre">fn</span></code> argument.  This function represents the “work”
+that will be done when <a class="reference internal" href="#alembic.runtime.migration.MigrationContext.run_migrations" title="alembic.runtime.migration.MigrationContext.run_migrations"><code class="xref py py-meth docutils literal notranslate"><span class="pre">MigrationContext.run_migrations()</span></code></a>
+is called, typically from within the <code class="docutils literal notranslate"><span class="pre">env.py</span></code> script of the
+migration environment.  The “work function” then provides an iterable
+of version callables and other version information which
+in the case of the <code class="docutils literal notranslate"><span class="pre">upgrade</span></code> or <code class="docutils literal notranslate"><span class="pre">downgrade</span></code> commands are the
+list of version scripts to invoke.  Other commands yield nothing,
+in the case that a command wants to run some other operation
+against the database such as the <code class="docutils literal notranslate"><span class="pre">current</span></code> or <code class="docutils literal notranslate"><span class="pre">stamp</span></code> commands.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><span class="target" id="alembic.runtime.migration.MigrationContext.run_migrations.params.**kw"></span><strong>**kw</strong><a class="paramlink headerlink reference internal" href="#alembic.runtime.migration.MigrationContext.run_migrations.params.**kw">¶</a> – keyword arguments here will be passed to each
+migration callable, that is the <code class="docutils literal notranslate"><span class="pre">upgrade()</span></code> or <code class="docutils literal notranslate"><span class="pre">downgrade()</span></code>
+method within revision scripts.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="alembic.runtime.migration.MigrationContext.stamp">
+<code class="sig-name descname">stamp</code><span class="sig-paren">(</span><em class="sig-param">script_directory</em>, <em class="sig-param">revision</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.runtime.migration.MigrationContext.stamp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stamp the version table with a specific revision.</p>
+<p>This method calculates those branches to which the given revision
+can apply, and updates those branches as though they were migrated
+towards that revision (either up or down).  If no current branches
+include the revision, it is added as a new branch head.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 0.7.0.</span></p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="alembic.runtime.migration.MigrationInfo">
+<em class="property">class </em><code class="sig-prename descclassname">alembic.runtime.migration.</code><code class="sig-name descname">MigrationInfo</code><span class="sig-paren">(</span><em class="sig-param">revision_map</em>, <em class="sig-param">is_upgrade</em>, <em class="sig-param">is_stamp</em>, <em class="sig-param">up_revisions</em>, <em class="sig-param">down_revisions</em><span class="sig-paren">)</span><a class="headerlink" href="#alembic.runtime.migration.MigrationInfo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exposes information about a migration step to a callback listener.</p>
+<p>The <a class="reference internal" href="#alembic.runtime.migration.MigrationInfo" title="alembic.runtime.migration.MigrationInfo"><code class="xref py py-class docutils literal notranslate"><span class="pre">MigrationInfo</span></code></a> object is available exclusively for the
+benefit of the <a class="reference internal" href="#alembic.runtime.environment.EnvironmentContext.params.on_version_apply" title="alembic.runtime.environment.EnvironmentContext"><code class="xref py py-paramref docutils literal notranslate"><span class="pre">EnvironmentContext.on_version_apply</span></code></a>
+callback hook.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 0.9.3.</span></p>
+</div>
+<dl class="method">
+<dt id="alembic.runtime.migration.MigrationInfo.destination_revision_ids">
+<em class="property">property </em><code class="sig-name descname">destination_revision_ids</code><a class="headerlink" href="#alembic.runtime.migration.MigrationInfo.destination_revision_ids" title="Permalink to this definition">¶</a></dt>
+<dd><p>Active revisions after this migration step is applied.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="alembic.runtime.migration.MigrationInfo.destination_revisions">
+<em class="property">property </em><code class="sig-name descname">destination_revisions</code><a class="headerlink" href="#alembic.runtime.migration.MigrationInfo.destination_revisions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get <a class="reference internal" href="#alembic.runtime.migration.MigrationInfo.destination_revision_ids" title="alembic.runtime.migration.MigrationInfo.destination_revision_ids"><code class="xref py py-attr docutils literal notranslate"><span class="pre">destination_revision_ids</span></code></a> as a tuple of
+<a class="reference internal" href="script.html#alembic.script.revision.Revision" title="alembic.script.revision.Revision"><code class="xref py py-class docutils literal notranslate"><span class="pre">Revisions</span></code></a>.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="alembic.runtime.migration.MigrationInfo.down_revision_ids">
+<code class="sig-name descname">down_revision_ids</code><em class="property"> = None</em><a class="headerlink" href="#alembic.runtime.migration.MigrationInfo.down_revision_ids" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tuple of strings representing the base revisions of this migration step.</p>
+<p>If empty, this represents a root revision; otherwise, the first item
+corresponds to <a class="reference internal" href="script.html#alembic.script.revision.Revision.down_revision" title="alembic.script.revision.Revision.down_revision"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Revision.down_revision</span></code></a>, and the rest are inferred
+from dependencies.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="alembic.runtime.migration.MigrationInfo.down_revisions">
+<em class="property">property </em><code class="sig-name descname">down_revisions</code><a class="headerlink" href="#alembic.runtime.migration.MigrationInfo.down_revisions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get <a class="reference internal" href="#alembic.runtime.migration.MigrationInfo.down_revision_ids" title="alembic.runtime.migration.MigrationInfo.down_revision_ids"><code class="xref py py-attr docutils literal notranslate"><span class="pre">down_revision_ids</span></code></a> as a tuple of
+<a class="reference internal" href="script.html#alembic.script.revision.Revision" title="alembic.script.revision.Revision"><code class="xref py py-class docutils literal notranslate"><span class="pre">Revisions</span></code></a>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="alembic.runtime.migration.MigrationInfo.is_migration">
+<em class="property">property </em><code class="sig-name descname">is_migration</code><a class="headerlink" href="#alembic.runtime.migration.MigrationInfo.is_migration" title="Permalink to this definition">¶</a></dt>
+<dd><p>True/False: indicates whether this operation is a migration.</p>
+<p>At present this is true if and only the migration is not a stamp.
+If other operation types are added in the future, both this attribute
+and <a class="reference internal" href="#alembic.runtime.migration.MigrationInfo.is_stamp" title="alembic.runtime.migration.MigrationInfo.is_stamp"><code class="xref py py-attr docutils literal notranslate"><span class="pre">is_stamp</span></code></a> will be false.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="alembic.runtime.migration.MigrationInfo.is_stamp">
+<code class="sig-name descname">is_stamp</code><em class="property"> = None</em><a class="headerlink" href="#alembic.runtime.migration.MigrationInfo.is_stamp" title="Permalink to this definition">¶</a></dt>
+<dd><p>True/False: indicates whether this operation is a stamp (i.e. whether
+it results in any actual database operations).</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="alembic.runtime.migration.MigrationInfo.is_upgrade">
+<code class="sig-name descname">is_upgrade</code><em class="property"> = None</em><a class="headerlink" href="#alembic.runtime.migration.MigrationInfo.is_upgrade" title="Permalink to this definition">¶</a></dt>
+<dd><p>True/False: indicates whether this operation ascends or descends the
+version tree.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="alembic.runtime.migration.MigrationInfo.revision_map">
+<code class="sig-name descname">revision_map</code><em class="property"> = None</em><a class="headerlink" href="#alembic.runtime.migration.MigrationInfo.revision_map" title="Permalink to this definition">¶</a></dt>
+<dd><p>The revision map inside of which this operation occurs.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="alembic.runtime.migration.MigrationInfo.source_revision_ids">
+<em class="property">property </em><code class="sig-name descname">source_revision_ids</code><a class="headerlink" href="#alembic.runtime.migration.MigrationInfo.source_revision_ids" title="Permalink to this definition">¶</a></dt>
+<dd><p>Active revisions before this migration step is applied.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="alembic.runtime.migration.MigrationInfo.source_revisions">
+<em class="property">property </em><code class="sig-name descname">source_revisions</code><a class="headerlink" href="#alembic.runtime.migration.MigrationInfo.source_revisions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get <a class="reference internal" href="#alembic.runtime.migration.MigrationInfo.source_revision_ids" title="alembic.runtime.migration.MigrationInfo.source_revision_ids"><code class="xref py py-attr docutils literal notranslate"><span class="pre">source_revision_ids</span></code></a> as a tuple of
+<a class="reference internal" href="script.html#alembic.script.revision.Revision" title="alembic.script.revision.Revision"><code class="xref py py-class docutils literal notranslate"><span class="pre">Revisions</span></code></a>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="alembic.runtime.migration.MigrationInfo.up_revision">
+<em class="property">property </em><code class="sig-name descname">up_revision</code><a class="headerlink" href="#alembic.runtime.migration.MigrationInfo.up_revision" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get <a class="reference internal" href="#alembic.runtime.migration.MigrationInfo.up_revision_id" title="alembic.runtime.migration.MigrationInfo.up_revision_id"><code class="xref py py-attr docutils literal notranslate"><span class="pre">up_revision_id</span></code></a> as
+a <a class="reference internal" href="script.html#alembic.script.revision.Revision" title="alembic.script.revision.Revision"><code class="xref py py-class docutils literal notranslate"><span class="pre">Revision</span></code></a>.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="alembic.runtime.migration.MigrationInfo.up_revision_id">
+<code class="sig-name descname">up_revision_id</code><em class="property"> = None</em><a class="headerlink" href="#alembic.runtime.migration.MigrationInfo.up_revision_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Version string corresponding to <a class="reference internal" href="script.html#alembic.script.revision.Revision.revision" title="alembic.script.revision.Revision.revision"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Revision.revision</span></code></a>.</p>
+<p>In the case of a stamp operation, it is advised to use the
+<a class="reference internal" href="#alembic.runtime.migration.MigrationInfo.up_revision_ids" title="alembic.runtime.migration.MigrationInfo.up_revision_ids"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MigrationInfo.up_revision_ids</span></code></a> tuple as a stamp operation can
+make a single movement from one or more branches down to a single
+branchpoint, in which case there will be multiple “up” revisions.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#alembic.runtime.migration.MigrationInfo.up_revision_ids" title="alembic.runtime.migration.MigrationInfo.up_revision_ids"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MigrationInfo.up_revision_ids</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="alembic.runtime.migration.MigrationInfo.up_revision_ids">
+<code class="sig-name descname">up_revision_ids</code><em class="property"> = None</em><a class="headerlink" href="#alembic.runtime.migration.MigrationInfo.up_revision_ids" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tuple of version strings corresponding to <a class="reference internal" href="script.html#alembic.script.revision.Revision.revision" title="alembic.script.revision.Revision.revision"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Revision.revision</span></code></a>.</p>
+<p>In the majority of cases, this tuple will be a single value, synonomous
+with the scalar value of <a class="reference internal" href="#alembic.runtime.migration.MigrationInfo.up_revision_id" title="alembic.runtime.migration.MigrationInfo.up_revision_id"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MigrationInfo.up_revision_id</span></code></a>.
+It can be multiple revision identifiers only in the case of an
+<code class="docutils literal notranslate"><span class="pre">alembic</span> <span class="pre">stamp</span></code> operation which is moving downwards from multiple
+branches down to their common branch point.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 0.9.4.</span></p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="alembic.runtime.migration.MigrationInfo.up_revisions">
+<em class="property">property </em><code class="sig-name descname">up_revisions</code><a class="headerlink" href="#alembic.runtime.migration.MigrationInfo.up_revisions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get <a class="reference internal" href="#alembic.runtime.migration.MigrationInfo.up_revision_ids" title="alembic.runtime.migration.MigrationInfo.up_revision_ids"><code class="xref py py-attr docutils literal notranslate"><span class="pre">up_revision_ids</span></code></a> as a <a class="reference internal" href="script.html#alembic.script.revision.Revision" title="alembic.script.revision.Revision"><code class="xref py py-class docutils literal notranslate"><span class="pre">Revision</span></code></a>.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 0.9.4.</span></p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Runtime Objects</a><ul>
+<li><a class="reference internal" href="#the-environment-context">The Environment Context</a></li>
+<li><a class="reference internal" href="#the-migration-context">The Migration Context</a></li>
+</ul>
+</li>
+</ul>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="overview.html"
+                        title="previous chapter">Overview</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="config.html"
+                        title="next chapter">Configuration</a></p>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="config.html" title="Configuration"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="overview.html" title="Overview"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Alembic 1.0.11 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >API Details</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2010-2019, Mike Bayer.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.1.2.
+    </div>
+  </body>
+</html>

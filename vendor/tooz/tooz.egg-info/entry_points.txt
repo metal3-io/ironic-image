@@ -1,0 +1,15 @@
+[tooz.backends]
+consul = tooz.drivers.consul:ConsulDriver
+etcd = tooz.drivers.etcd:EtcdDriver
+etcd3 = tooz.drivers.etcd3:Etcd3Driver
+etcd3+http = tooz.drivers.etcd3gw:Etcd3Driver
+file = tooz.drivers.file:FileDriver
+ipc = tooz.drivers.ipc:IPCDriver
+kazoo = tooz.drivers.zookeeper:KazooDriver
+memcached = tooz.drivers.memcached:MemcachedDriver
+mysql = tooz.drivers.mysql:MySQLDriver
+postgresql = tooz.drivers.pgsql:PostgresDriver
+redis = tooz.drivers.redis:RedisDriver
+zake = tooz.drivers.zake:ZakeDriver
+zookeeper = tooz.drivers.zookeeper:KazooDriver
+

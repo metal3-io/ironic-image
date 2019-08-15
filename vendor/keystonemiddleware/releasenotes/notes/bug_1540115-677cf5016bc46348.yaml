@@ -1,0 +1,7 @@
+---
+features:
+  - >
+    [`bug 1540115 <https://bugs.launchpad.net/keystonemiddleware/+bug/1540115>`_]
+    Optional dependencies can now be installed using `extras`. To install audit
+    related libraries, use ``pip install keystonemiddleware[audit_nofications]``.
+    Refer to keystonemiddleware documentation for further information.

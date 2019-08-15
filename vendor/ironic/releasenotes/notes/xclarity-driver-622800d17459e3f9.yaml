@@ -1,0 +1,9 @@
+---
+
+features:
+ - |
+    Adds the new ``xclarity`` hardware type for managing the Lenovo IMM2 and IMM3
+    family of server hardware with the following interfaces:
+
+    * management: ``xclarity``
+    * power: ``xclarity``

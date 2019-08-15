@@ -1,0 +1,9 @@
+---
+fixes:
+  - |
+    [`bug/1747655 <https://bugs.launchpad.net/keystonemiddleware/+bug/1747655>`_]
+    When keystone is temporarily unavailable, keystonemiddleware correctly
+    sends a 503 response to the HTTP client but was not identifying which
+    service was down, leading to confusion on whether it was keystone or the
+    service using keystonemiddleware that was unavailable. This change
+    identifies keystone in the error response.

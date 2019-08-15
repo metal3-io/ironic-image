@@ -1,0 +1,456 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Running “Batch” Migrations for SQLite and Other Databases &#8212; Alembic 1.0.11 documentation</title>
+    <link rel="stylesheet" href="_static/nature_override.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/changelog.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx_paramlinks.css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Working with Branches" href="branches.html" />
+    <link rel="prev" title="The Importance of Naming Constraints" href="naming.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="branches.html" title="Working with Branches"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="naming.html" title="The Importance of Naming Constraints"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Alembic 1.0.11 documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="running-batch-migrations-for-sqlite-and-other-databases">
+<span id="batch-migrations"></span><h1>Running “Batch” Migrations for SQLite and Other Databases<a class="headerlink" href="#running-batch-migrations-for-sqlite-and-other-databases" title="Permalink to this headline">¶</a></h1>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>“Batch mode” for SQLite and other databases is a new and intricate
+feature within the 0.7.0 series of Alembic, and should be
+considered as “beta” for the next several releases.</p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 0.7.0.</span></p>
+</div>
+<p>The SQLite database presents a challenge to migration tools
+in that it has almost no support for the ALTER statement upon which
+relational schema migrations rely upon.  The rationale for this stems from
+philosophical and architectural concerns within SQLite, and they are unlikely
+to be changed.</p>
+<p>Migration tools are instead expected to produce copies of SQLite tables that
+correspond to the new structure, transfer the data from the existing
+table to the new one, then drop the old table.  For our purposes here
+we’ll call this <strong>“move and copy”</strong> workflow, and in order to accommodate it
+in a way that is reasonably predictable, while also remaining compatible
+with other databases, Alembic provides the <strong>batch</strong> operations context.</p>
+<p>Within this context, a relational table is named, and then a series of
+mutation operations to that table alone are specified within
+the block.  When the context is complete, a process begins whereby the
+“move and copy” procedure begins; the existing table structure is reflected
+from the database, a new version of this table is created with the given
+changes, data is copied from the
+old table to the new table using “INSERT from SELECT”, and finally the old
+table is dropped and the new one renamed to the original name.</p>
+<p>The <a class="reference internal" href="ops.html#alembic.operations.Operations.batch_alter_table" title="alembic.operations.Operations.batch_alter_table"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Operations.batch_alter_table()</span></code></a> method provides the gateway to this
+process:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">op</span><span class="o">.</span><span class="n">batch_alter_table</span><span class="p">(</span><span class="s2">&quot;some_table&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">batch_op</span><span class="p">:</span>
+    <span class="n">batch_op</span><span class="o">.</span><span class="n">add_column</span><span class="p">(</span><span class="n">Column</span><span class="p">(</span><span class="s1">&#39;foo&#39;</span><span class="p">,</span> <span class="n">Integer</span><span class="p">))</span>
+    <span class="n">batch_op</span><span class="o">.</span><span class="n">drop_column</span><span class="p">(</span><span class="s1">&#39;bar&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>When the above directives are invoked within a migration script, on a
+SQLite backend we would see SQL like:</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">_alembic_batch_temp</span> <span class="p">(</span>
+  <span class="n">id</span> <span class="nb">INTEGER</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
+  <span class="n">foo</span> <span class="nb">INTEGER</span><span class="p">,</span>
+  <span class="k">PRIMARY</span> <span class="k">KEY</span> <span class="p">(</span><span class="n">id</span><span class="p">)</span>
+<span class="p">);</span>
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">_alembic_batch_temp</span> <span class="p">(</span><span class="n">id</span><span class="p">)</span> <span class="k">SELECT</span> <span class="n">some_table</span><span class="p">.</span><span class="n">id</span> <span class="k">FROM</span> <span class="n">some_table</span><span class="p">;</span>
+<span class="k">DROP</span> <span class="k">TABLE</span> <span class="n">some_table</span><span class="p">;</span>
+<span class="k">ALTER</span> <span class="k">TABLE</span> <span class="n">_alembic_batch_temp</span> <span class="k">RENAME</span> <span class="k">TO</span> <span class="n">some_table</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>On other backends, we’d see the usual <code class="docutils literal notranslate"><span class="pre">ALTER</span></code> statements done as though
+there were no batch directive - the batch context by default only does
+the “move and copy” process if SQLite is in use, and if there are
+migration directives other than <a class="reference internal" href="ops.html#alembic.operations.Operations.add_column" title="alembic.operations.Operations.add_column"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Operations.add_column()</span></code></a> present,
+which is the one kind of column-level ALTER statement that SQLite supports.
+<a class="reference internal" href="ops.html#alembic.operations.Operations.batch_alter_table" title="alembic.operations.Operations.batch_alter_table"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Operations.batch_alter_table()</span></code></a> can be configured
+to run “move and copy” unconditionally in all cases, including on databases
+other than SQLite; more on this is below.</p>
+<div class="section" id="controlling-table-reflection">
+<span id="batch-controlling-table-reflection"></span><h2>Controlling Table Reflection<a class="headerlink" href="#controlling-table-reflection" title="Permalink to this headline">¶</a></h2>
+<p>The <a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/metadata.html#sqlalchemy.schema.Table" title="(in SQLAlchemy v1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Table</span></code></a> object that is reflected when
+“move and copy” proceeds is performed using the standard <code class="docutils literal notranslate"><span class="pre">autoload=True</span></code>
+approach.  This call can be affected using the
+<a class="reference internal" href="ops.html#alembic.operations.Operations.batch_alter_table.params.reflect_args" title="alembic.operations.Operations.batch_alter_table"><code class="xref py py-paramref docutils literal notranslate"><span class="pre">reflect_args</span></code></a> and
+<a class="reference internal" href="ops.html#alembic.operations.Operations.batch_alter_table.params.reflect_kwargs" title="alembic.operations.Operations.batch_alter_table"><code class="xref py py-paramref docutils literal notranslate"><span class="pre">reflect_kwargs</span></code></a> arguments.
+For example, to override a <a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/metadata.html#sqlalchemy.schema.Column" title="(in SQLAlchemy v1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Column</span></code></a> within
+the reflection process such that a <a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/type_basics.html#sqlalchemy.types.Boolean" title="(in SQLAlchemy v1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Boolean</span></code></a>
+object is reflected with the <code class="docutils literal notranslate"><span class="pre">create_constraint</span></code> flag set to <code class="docutils literal notranslate"><span class="pre">False</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">op</span><span class="o">.</span><span class="n">batch_alter_table</span><span class="p">(</span>
+    <span class="s2">&quot;bar&quot;</span><span class="p">,</span>
+    <span class="n">reflect_args</span><span class="o">=</span><span class="p">[</span><span class="n">Column</span><span class="p">(</span><span class="s1">&#39;flag&#39;</span><span class="p">,</span> <span class="n">Boolean</span><span class="p">(</span><span class="n">create_constraint</span><span class="o">=</span><span class="kc">False</span><span class="p">))]</span>
+<span class="p">)</span> <span class="k">as</span> <span class="n">batch_op</span><span class="p">:</span>
+    <span class="n">batch_op</span><span class="o">.</span><span class="n">alter_column</span><span class="p">(</span>
+        <span class="s1">&#39;flag&#39;</span><span class="p">,</span> <span class="n">new_column_name</span><span class="o">=</span><span class="s1">&#39;bflag&#39;</span><span class="p">,</span> <span class="n">existing_type</span><span class="o">=</span><span class="n">Boolean</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Another use case, add a listener to the <a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/metadata.html#sqlalchemy.schema.Table" title="(in SQLAlchemy v1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Table</span></code></a>
+as it is reflected so that special logic can be applied to columns or
+types, using the <a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/events.html#sqlalchemy.events.DDLEvents.column_reflect" title="(in SQLAlchemy v1.3)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">column_reflect()</span></code></a> event:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">listen_for_reflect</span><span class="p">(</span><span class="n">inspector</span><span class="p">,</span> <span class="n">table</span><span class="p">,</span> <span class="n">column_info</span><span class="p">):</span>
+    <span class="s2">&quot;correct an ENUM type&quot;</span>
+    <span class="k">if</span> <span class="n">column_info</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;my_enum&#39;</span><span class="p">:</span>
+        <span class="n">column_info</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Enum</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">)</span>
+
+<span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">op</span><span class="o">.</span><span class="n">batch_alter_table</span><span class="p">(</span>
+    <span class="s2">&quot;bar&quot;</span><span class="p">,</span>
+    <span class="n">reflect_kwargs</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span>
+        <span class="n">listeners</span><span class="o">=</span><span class="p">[</span>
+            <span class="p">(</span><span class="s1">&#39;column_reflect&#39;</span><span class="p">,</span> <span class="n">listen_for_reflect</span><span class="p">)</span>
+        <span class="p">]</span>
+    <span class="p">)</span>
+<span class="p">)</span> <span class="k">as</span> <span class="n">batch_op</span><span class="p">:</span>
+    <span class="n">batch_op</span><span class="o">.</span><span class="n">alter_column</span><span class="p">(</span>
+        <span class="s1">&#39;flag&#39;</span><span class="p">,</span> <span class="n">new_column_name</span><span class="o">=</span><span class="s1">&#39;bflag&#39;</span><span class="p">,</span> <span class="n">existing_type</span><span class="o">=</span><span class="n">Boolean</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The reflection process may also be bypassed entirely by sending a
+pre-fabricated <a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/metadata.html#sqlalchemy.schema.Table" title="(in SQLAlchemy v1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Table</span></code></a> object; see
+<a class="reference internal" href="#batch-offline-mode"><span class="std std-ref">Working in Offline Mode</span></a> for an example.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 0.7.1: </span>added <a class="reference internal" href="ops.html#alembic.operations.Operations.batch_alter_table.params.reflect_args" title="alembic.operations.Operations.batch_alter_table"><code class="xref py py-paramref docutils literal notranslate"><span class="pre">Operations.batch_alter_table.reflect_args</span></code></a>
+and <a class="reference internal" href="ops.html#alembic.operations.Operations.batch_alter_table.params.reflect_kwargs" title="alembic.operations.Operations.batch_alter_table"><code class="xref py py-paramref docutils literal notranslate"><span class="pre">Operations.batch_alter_table.reflect_kwargs</span></code></a> options.</p>
+</div>
+</div>
+<div class="section" id="dealing-with-constraints">
+<span id="sqlite-batch-constraints"></span><h2>Dealing with Constraints<a class="headerlink" href="#dealing-with-constraints" title="Permalink to this headline">¶</a></h2>
+<p>There are a variety of issues when using “batch” mode with constraints,
+such as FOREIGN KEY, CHECK and UNIQUE constraints.  This section
+will attempt to detail many of these scenarios.</p>
+<div class="section" id="dropping-unnamed-or-named-foreign-key-constraints">
+<span id="dropping-sqlite-foreign-keys"></span><h3>Dropping Unnamed or Named Foreign Key Constraints<a class="headerlink" href="#dropping-unnamed-or-named-foreign-key-constraints" title="Permalink to this headline">¶</a></h3>
+<p>SQLite, unlike any other database, allows constraints to exist in the
+database that have no identifying name.  On all other backends, the
+target database will always generate some kind of name, if one is not
+given.</p>
+<p>The first challenge this represents is that an unnamed constraint can’t
+by itself be targeted by the <a class="reference internal" href="ops.html#alembic.operations.BatchOperations.drop_constraint" title="alembic.operations.BatchOperations.drop_constraint"><code class="xref py py-meth docutils literal notranslate"><span class="pre">BatchOperations.drop_constraint()</span></code></a> method.
+An unnamed FOREIGN KEY constraint is implicit whenever the
+<a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/constraints.html#sqlalchemy.schema.ForeignKey" title="(in SQLAlchemy v1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ForeignKey</span></code></a>
+or <a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/constraints.html#sqlalchemy.schema.ForeignKeyConstraint" title="(in SQLAlchemy v1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ForeignKeyConstraint</span></code></a> objects are used without
+passing them a name.  Only on SQLite will these constraints remain entirely
+unnamed when they are created on the target database; an automatically generated
+name will be assigned in the case of all other database backends.</p>
+<p>A second issue is that SQLAlchemy itself has inconsistent behavior in
+dealing with SQLite constraints as far as names.   Prior to version 1.0,
+SQLAlchemy omits the name of foreign key constraints when reflecting them
+against the SQLite backend.  So even if the target application has gone through
+the steps to apply names to the constraints as stated in the database,
+they still aren’t targetable within the batch reflection process prior
+to SQLAlchemy 1.0.</p>
+<p>Within the scope of batch mode, this presents the issue that the
+<a class="reference internal" href="ops.html#alembic.operations.BatchOperations.drop_constraint" title="alembic.operations.BatchOperations.drop_constraint"><code class="xref py py-meth docutils literal notranslate"><span class="pre">BatchOperations.drop_constraint()</span></code></a> method requires a constraint name
+in order to target the correct constraint.</p>
+<p>In order to overcome this, the <a class="reference internal" href="ops.html#alembic.operations.Operations.batch_alter_table" title="alembic.operations.Operations.batch_alter_table"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Operations.batch_alter_table()</span></code></a> method supports a
+<a class="reference internal" href="ops.html#alembic.operations.Operations.batch_alter_table.params.naming_convention" title="alembic.operations.Operations.batch_alter_table"><code class="xref py py-paramref docutils literal notranslate"><span class="pre">naming_convention</span></code></a> argument, so that
+all reflected constraints, including foreign keys that are unnamed, or
+were named but SQLAlchemy isn’t loading this name, may be given a name,
+as described in <a class="reference internal" href="naming.html#autogen-naming-conventions"><span class="std std-ref">Integration of Naming Conventions into Operations, Autogenerate</span></a>.   Usage is as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">naming_convention</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;fk&quot;</span><span class="p">:</span>
+    <span class="s2">&quot;fk_</span><span class="si">%(table_name)s</span><span class="s2">_</span><span class="si">%(column_0_name)s</span><span class="s2">_</span><span class="si">%(referred_table_name)s</span><span class="s2">&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+<span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">op</span><span class="o">.</span><span class="n">batch_alter_table</span><span class="p">(</span>
+        <span class="s2">&quot;bar&quot;</span><span class="p">,</span> <span class="n">naming_convention</span><span class="o">=</span><span class="n">naming_convention</span><span class="p">)</span> <span class="k">as</span> <span class="n">batch_op</span><span class="p">:</span>
+    <span class="n">batch_op</span><span class="o">.</span><span class="n">drop_constraint</span><span class="p">(</span>
+        <span class="s2">&quot;fk_bar_foo_id_foo&quot;</span><span class="p">,</span> <span class="n">type_</span><span class="o">=</span><span class="s2">&quot;foreignkey&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Note that the naming convention feature requires at least
+<strong>SQLAlchemy 0.9.4</strong> for support.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 0.7.1: </span>added <a class="reference internal" href="ops.html#alembic.operations.Operations.batch_alter_table.params.naming_convention" title="alembic.operations.Operations.batch_alter_table"><code class="xref py py-paramref docutils literal notranslate"><span class="pre">naming_convention</span></code></a> to
+<a class="reference internal" href="ops.html#alembic.operations.Operations.batch_alter_table" title="alembic.operations.Operations.batch_alter_table"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Operations.batch_alter_table()</span></code></a>.</p>
+</div>
+</div>
+<div class="section" id="including-unnamed-unique-constraints">
+<h3>Including unnamed UNIQUE constraints<a class="headerlink" href="#including-unnamed-unique-constraints" title="Permalink to this headline">¶</a></h3>
+<p>A similar, but frustratingly slightly different, issue is that in the
+case of UNIQUE constraints, we again have the issue that SQLite allows
+unnamed UNIQUE constraints to exist on the database, however in this case,
+SQLAlchemy prior to version 1.0 doesn’t reflect these constraints at all.
+It does properly reflect named unique constraints with their names, however.</p>
+<p>So in this case, the workaround for foreign key names is still not sufficient
+prior to SQLAlchemy 1.0.  If our table includes unnamed unique constraints,
+and we’d like them to be re-created along with the table, we need to include
+them directly, which can be via the
+<a class="reference internal" href="ops.html#alembic.operations.Operations.batch_alter_table.params.table_args" title="alembic.operations.Operations.batch_alter_table"><code class="xref py py-paramref docutils literal notranslate"><span class="pre">table_args</span></code></a> argument:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">op</span><span class="o">.</span><span class="n">batch_alter_table</span><span class="p">(</span>
+        <span class="s2">&quot;bar&quot;</span><span class="p">,</span> <span class="n">table_args</span><span class="o">=</span><span class="p">(</span><span class="n">UniqueConstraint</span><span class="p">(</span><span class="s1">&#39;username&#39;</span><span class="p">),)</span>
+    <span class="p">):</span>
+    <span class="n">batch_op</span><span class="o">.</span><span class="n">add_column</span><span class="p">(</span><span class="n">Column</span><span class="p">(</span><span class="s1">&#39;foo&#39;</span><span class="p">,</span> <span class="n">Integer</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="changing-the-type-of-boolean-enum-and-other-implicit-check-datatypes">
+<h3>Changing the Type of Boolean, Enum and other implicit CHECK datatypes<a class="headerlink" href="#changing-the-type-of-boolean-enum-and-other-implicit-check-datatypes" title="Permalink to this headline">¶</a></h3>
+<p>The SQLAlchemy types <a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/type_basics.html#sqlalchemy.types.Boolean" title="(in SQLAlchemy v1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Boolean</span></code></a> and
+<a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/type_basics.html#sqlalchemy.types.Enum" title="(in SQLAlchemy v1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></a> are part of a category of types known as
+“schema” types; this style of type creates other structures along with the
+type itself, most commonly (but not always) a CHECK constraint.</p>
+<p>Alembic handles dropping and creating the CHECK constraints here automatically,
+including in the case of batch mode.  When changing the type of an existing
+column, what’s necessary is that the existing type be specified fully:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">op</span><span class="o">.</span><span class="n">batch_alter_table</span><span class="p">(</span><span class="s2">&quot;some_table&quot;</span><span class="p">):</span>
+    <span class="n">batch_op</span><span class="o">.</span><span class="n">alter_column</span><span class="p">(</span>
+        <span class="s1">&#39;q&#39;</span><span class="p">,</span> <span class="n">type_</span><span class="o">=</span><span class="n">Integer</span><span class="p">,</span>
+        <span class="n">existing_type</span><span class="o">=</span><span class="n">Boolean</span><span class="p">(</span><span class="n">create_constraint</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">constraint_name</span><span class="o">=</span><span class="s2">&quot;ck1&quot;</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="including-check-constraints">
+<h3>Including CHECK constraints<a class="headerlink" href="#including-check-constraints" title="Permalink to this headline">¶</a></h3>
+<p>SQLAlchemy currently doesn’t reflect CHECK constraints on any backend.
+So again these must be stated explicitly if they are to be included in the
+recreated table:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">op</span><span class="o">.</span><span class="n">batch_alter_table</span><span class="p">(</span><span class="s2">&quot;some_table&quot;</span><span class="p">,</span> <span class="n">table_args</span><span class="o">=</span><span class="p">[</span>
+      <span class="n">CheckConstraint</span><span class="p">(</span><span class="s1">&#39;x &gt; 5&#39;</span><span class="p">)</span>
+  <span class="p">])</span> <span class="k">as</span> <span class="n">batch_op</span><span class="p">:</span>
+    <span class="n">batch_op</span><span class="o">.</span><span class="n">add_column</span><span class="p">(</span><span class="n">Column</span><span class="p">(</span><span class="s1">&#39;foo&#39;</span><span class="p">,</span> <span class="n">Integer</span><span class="p">))</span>
+    <span class="n">batch_op</span><span class="o">.</span><span class="n">drop_column</span><span class="p">(</span><span class="s1">&#39;bar&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Note this only includes CHECK constraints that are explicitly stated
+as part of the table definition, not the CHECK constraints that are generated
+by datatypes such as <a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/type_basics.html#sqlalchemy.types.Boolean" title="(in SQLAlchemy v1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Boolean</span></code></a> or
+<a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/type_basics.html#sqlalchemy.types.Enum" title="(in SQLAlchemy v1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></a>.</p>
+</div>
+<div class="section" id="dealing-with-referencing-foreign-keys">
+<h3>Dealing with Referencing Foreign Keys<a class="headerlink" href="#dealing-with-referencing-foreign-keys" title="Permalink to this headline">¶</a></h3>
+<p>It is important to note that batch table operations <strong>do not work</strong> with
+foreign keys that enforce referential integrity.  This because the
+target table is dropped; if foreign keys refer to it, this will raise
+an error.   On SQLite, whether or not foreign keys actually enforce is
+controlled by the <code class="docutils literal notranslate"><span class="pre">PRAGMA</span> <span class="pre">FOREIGN</span> <span class="pre">KEYS</span></code> pragma; this pragma, if in use,
+must be disabled when the workflow mode proceeds.   When the operation is
+complete, the batch-migrated table will have the same name
+that it started with, so those referring foreign keys will again
+refer to this table.</p>
+<p>A special case is dealing with self-referring foreign keys.  Here,
+Alembic takes a special step of recreating the self-referring foreign key
+as referring to the original table name, rather than at the “temp” table,
+so that like in the case of other foreign key constraints, when the table
+is renamed to its original name, the foreign key
+again references the correct table.   This operation only works when
+referential integrity is disabled, consistent with the same requirement
+for referring foreign keys from other tables.</p>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 0.8.4: </span>Self-referring foreign keys are created with the
+target table name in batch mode, even though this table will temporarily
+not exist when dropped.  This requires that the target database is not
+enforcing referential integrity.</p>
+</div>
+<p>When SQLite’s <code class="docutils literal notranslate"><span class="pre">PRAGMA</span> <span class="pre">FOREIGN</span> <span class="pre">KEYS</span></code> mode is turned on, it does provide
+the service that foreign key constraints, including self-referential, will
+automatically be modified to point to their table across table renames,
+however this mode prevents the target table from being dropped as is required
+by a batch migration.  Therefore it may be necessary to manipulate the
+<code class="docutils literal notranslate"><span class="pre">PRAGMA</span> <span class="pre">FOREIGN</span> <span class="pre">KEYS</span></code> setting if a migration seeks to rename a table vs.
+batch migrate it.</p>
+</div>
+</div>
+<div class="section" id="working-in-offline-mode">
+<span id="batch-offline-mode"></span><h2>Working in Offline Mode<a class="headerlink" href="#working-in-offline-mode" title="Permalink to this headline">¶</a></h2>
+<p>In the preceding sections, we’ve seen how much of an emphasis the
+“move and copy” process has on using reflection in order to know the
+structure of the table that is to be copied.  This means that in the typical
+case, “online” mode, where a live database connection is present so that
+<a class="reference internal" href="ops.html#alembic.operations.Operations.batch_alter_table" title="alembic.operations.Operations.batch_alter_table"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Operations.batch_alter_table()</span></code></a> can reflect the table from the
+database, is required; the <code class="docutils literal notranslate"><span class="pre">--sql</span></code> flag <strong>cannot</strong> be used without extra
+steps.</p>
+<p>To support offline mode, the system must work without table reflection
+present, which means the full table as it intends to be created must be
+passed to <a class="reference internal" href="ops.html#alembic.operations.Operations.batch_alter_table" title="alembic.operations.Operations.batch_alter_table"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Operations.batch_alter_table()</span></code></a> using
+<a class="reference internal" href="ops.html#alembic.operations.Operations.batch_alter_table.params.copy_from" title="alembic.operations.Operations.batch_alter_table"><code class="xref py py-paramref docutils literal notranslate"><span class="pre">copy_from</span></code></a>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">meta</span> <span class="o">=</span> <span class="n">MetaData</span><span class="p">()</span>
+<span class="n">some_table</span> <span class="o">=</span> <span class="n">Table</span><span class="p">(</span>
+    <span class="s1">&#39;some_table&#39;</span><span class="p">,</span> <span class="n">meta</span><span class="p">,</span>
+    <span class="n">Column</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="n">Integer</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+    <span class="n">Column</span><span class="p">(</span><span class="s1">&#39;bar&#39;</span><span class="p">,</span> <span class="n">String</span><span class="p">(</span><span class="mi">50</span><span class="p">))</span>
+<span class="p">)</span>
+
+<span class="k">with</span> <span class="n">op</span><span class="o">.</span><span class="n">batch_alter_table</span><span class="p">(</span><span class="s2">&quot;some_table&quot;</span><span class="p">,</span> <span class="n">copy_from</span><span class="o">=</span><span class="n">some_table</span><span class="p">)</span> <span class="k">as</span> <span class="n">batch_op</span><span class="p">:</span>
+    <span class="n">batch_op</span><span class="o">.</span><span class="n">add_column</span><span class="p">(</span><span class="n">Column</span><span class="p">(</span><span class="s1">&#39;foo&#39;</span><span class="p">,</span> <span class="n">Integer</span><span class="p">))</span>
+    <span class="n">batch_op</span><span class="o">.</span><span class="n">drop_column</span><span class="p">(</span><span class="s1">&#39;bar&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The above use pattern is pretty tedious and quite far off from Alembic’s
+preferred style of working; however, if one needs to do SQLite-compatible
+“move and copy” migrations and need them to generate flat SQL files in
+“offline” mode, there’s not much alternative.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 0.7.6: </span>Fully implemented the
+<a class="reference internal" href="ops.html#alembic.operations.Operations.batch_alter_table.params.copy_from" title="alembic.operations.Operations.batch_alter_table"><code class="xref py py-paramref docutils literal notranslate"><span class="pre">copy_from</span></code></a>
+parameter.</p>
+</div>
+</div>
+<div class="section" id="batch-mode-with-autogenerate">
+<h2>Batch mode with Autogenerate<a class="headerlink" href="#batch-mode-with-autogenerate" title="Permalink to this headline">¶</a></h2>
+<p>The syntax of batch mode is essentially that <a class="reference internal" href="ops.html#alembic.operations.Operations.batch_alter_table" title="alembic.operations.Operations.batch_alter_table"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Operations.batch_alter_table()</span></code></a>
+is used to enter a batch block, and the returned <a class="reference internal" href="ops.html#alembic.operations.BatchOperations" title="alembic.operations.BatchOperations"><code class="xref py py-class docutils literal notranslate"><span class="pre">BatchOperations</span></code></a> context
+works just like the regular <a class="reference internal" href="ops.html#alembic.operations.Operations" title="alembic.operations.Operations"><code class="xref py py-class docutils literal notranslate"><span class="pre">Operations</span></code></a> context, except that
+the “table name” and “schema name” arguments are omitted.</p>
+<p>To support rendering of migration commands in batch mode for autogenerate,
+configure the <a class="reference internal" href="api/runtime.html#alembic.runtime.environment.EnvironmentContext.configure.params.render_as_batch" title="alembic.runtime.environment.EnvironmentContext.configure"><code class="xref py py-paramref docutils literal notranslate"><span class="pre">EnvironmentContext.configure.render_as_batch</span></code></a>
+flag in <code class="docutils literal notranslate"><span class="pre">env.py</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">context</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span>
+    <span class="n">connection</span><span class="o">=</span><span class="n">connection</span><span class="p">,</span>
+    <span class="n">target_metadata</span><span class="o">=</span><span class="n">target_metadata</span><span class="p">,</span>
+    <span class="n">render_as_batch</span><span class="o">=</span><span class="kc">True</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>Autogenerate will now generate along the lines of:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">upgrade</span><span class="p">():</span>
+    <span class="c1">### commands auto generated by Alembic - please adjust! ###</span>
+    <span class="k">with</span> <span class="n">op</span><span class="o">.</span><span class="n">batch_alter_table</span><span class="p">(</span><span class="s1">&#39;address&#39;</span><span class="p">,</span> <span class="n">schema</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="k">as</span> <span class="n">batch_op</span><span class="p">:</span>
+        <span class="n">batch_op</span><span class="o">.</span><span class="n">add_column</span><span class="p">(</span><span class="n">sa</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s1">&#39;street&#39;</span><span class="p">,</span> <span class="n">sa</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="n">length</span><span class="o">=</span><span class="mi">50</span><span class="p">),</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>This mode is safe to use in all cases, as the <a class="reference internal" href="ops.html#alembic.operations.Operations.batch_alter_table" title="alembic.operations.Operations.batch_alter_table"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Operations.batch_alter_table()</span></code></a>
+directive by default only takes place for SQLite; other backends will
+behave just as they normally do in the absense of the batch directives.</p>
+<p>Note that autogenerate support does not include “offline” mode, where
+the <a class="reference internal" href="ops.html#alembic.operations.Operations.batch_alter_table.params.copy_from" title="alembic.operations.Operations.batch_alter_table"><code class="xref py py-paramref docutils literal notranslate"><span class="pre">Operations.batch_alter_table.copy_from</span></code></a> parameter is used.
+The table definition here would need to be entered into migration files
+manually if this is needed.</p>
+</div>
+<div class="section" id="batch-mode-with-databases-other-than-sqlite">
+<h2>Batch mode with databases other than SQLite<a class="headerlink" href="#batch-mode-with-databases-other-than-sqlite" title="Permalink to this headline">¶</a></h2>
+<p>There’s an odd use case some shops have, where the “move and copy” style
+of migration is useful in some cases for databases that do already support
+ALTER.   There’s some cases where an ALTER operation may block access to the
+table for a long time, which might not be acceptable.  “move and copy” can
+be made to work on other backends, though with a few extra caveats.</p>
+<p>The batch mode directive will run the “recreate” system regardless of
+backend if the flag <code class="docutils literal notranslate"><span class="pre">recreate='always'</span></code> is passed:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">op</span><span class="o">.</span><span class="n">batch_alter_table</span><span class="p">(</span><span class="s2">&quot;some_table&quot;</span><span class="p">,</span> <span class="n">recreate</span><span class="o">=</span><span class="s1">&#39;always&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">batch_op</span><span class="p">:</span>
+    <span class="n">batch_op</span><span class="o">.</span><span class="n">add_column</span><span class="p">(</span><span class="n">Column</span><span class="p">(</span><span class="s1">&#39;foo&#39;</span><span class="p">,</span> <span class="n">Integer</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>The issues that arise in this mode are mostly to do with constraints.
+Databases such as Postgresql and MySQL with InnoDB will enforce referential
+integrity (e.g. via foreign keys) in all cases.   Unlike SQLite, it’s not
+as simple to turn off referential integrity across the board (nor would it
+be desirable).    Since a new table is replacing the old one, existing
+foreign key constraints which refer to the target table will need to be
+unconditionally dropped before the batch operation, and re-created to refer
+to the new table afterwards.  Batch mode currently does not provide any
+automation for this.</p>
+<p>The Postgresql database and possibly others also have the behavior such
+that when the new table is created, a naming conflict occurs with the
+named constraints of the new table, in that they match those of the old
+table, and on Postgresql, these names need to be unique across all tables.
+The Postgresql dialect will therefore emit a “DROP CONSTRAINT” directive
+for all constraints on the old table before the new one is created; this is
+“safe” in case of a failed operation because Postgresql also supports
+transactional DDL.</p>
+<p>Note that also as is the case with SQLite, CHECK constraints need to be
+moved over between old and new table manually using the
+<a class="reference internal" href="ops.html#alembic.operations.Operations.batch_alter_table.params.table_args" title="alembic.operations.Operations.batch_alter_table"><code class="xref py py-paramref docutils literal notranslate"><span class="pre">Operations.batch_alter_table.table_args</span></code></a> parameter.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Running “Batch” Migrations for SQLite and Other Databases</a><ul>
+<li><a class="reference internal" href="#controlling-table-reflection">Controlling Table Reflection</a></li>
+<li><a class="reference internal" href="#dealing-with-constraints">Dealing with Constraints</a><ul>
+<li><a class="reference internal" href="#dropping-unnamed-or-named-foreign-key-constraints">Dropping Unnamed or Named Foreign Key Constraints</a></li>
+<li><a class="reference internal" href="#including-unnamed-unique-constraints">Including unnamed UNIQUE constraints</a></li>
+<li><a class="reference internal" href="#changing-the-type-of-boolean-enum-and-other-implicit-check-datatypes">Changing the Type of Boolean, Enum and other implicit CHECK datatypes</a></li>
+<li><a class="reference internal" href="#including-check-constraints">Including CHECK constraints</a></li>
+<li><a class="reference internal" href="#dealing-with-referencing-foreign-keys">Dealing with Referencing Foreign Keys</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#working-in-offline-mode">Working in Offline Mode</a></li>
+<li><a class="reference internal" href="#batch-mode-with-autogenerate">Batch mode with Autogenerate</a></li>
+<li><a class="reference internal" href="#batch-mode-with-databases-other-than-sqlite">Batch mode with databases other than SQLite</a></li>
+</ul>
+</li>
+</ul>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="naming.html"
+                        title="previous chapter">The Importance of Naming Constraints</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="branches.html"
+                        title="next chapter">Working with Branches</a></p>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="branches.html" title="Working with Branches"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="naming.html" title="The Importance of Naming Constraints"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Alembic 1.0.11 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2010-2019, Mike Bayer.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.1.2.
+    </div>
+  </body>
+</html>

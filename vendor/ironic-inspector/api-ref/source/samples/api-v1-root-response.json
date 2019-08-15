@@ -1,0 +1,31 @@
+{
+  "resources": [
+    {
+      "links": [
+        {
+          "href": "http://127.0.0.1:5050/v1/introspection",
+          "rel": "self"
+        }
+      ],
+      "name": "introspection"
+    },
+    {
+      "links": [
+        {
+          "href": "http://127.0.0.1:5050/v1/continue",
+          "rel": "self"
+        }
+      ],
+      "name": "continue"
+    },
+    {
+      "links": [
+        {
+          "href": "http://127.0.0.1:5050/v1/rules",
+          "rel": "self"
+        }
+      ],
+      "name": "rules"
+    }
+  ]
+}

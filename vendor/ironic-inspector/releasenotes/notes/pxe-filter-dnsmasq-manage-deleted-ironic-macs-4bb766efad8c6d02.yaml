@@ -1,0 +1,9 @@
+---
+fixes:
+  - |
+    The ``dnsmasq`` PXE filter no longer whitelists the MAC addresses of ports
+    deleted from the Bare Metal service. Instead they are blacklisted unless
+    introspection is active or the ``node_not_found_hook`` is set in the
+    configuration. This ensures that no previously enrolled node accidentally
+    boot the inspection image when no node introspection is active.
+    `Bug #2001979 <https://storyboard.openstack.org/#!/story/2001979>`_.

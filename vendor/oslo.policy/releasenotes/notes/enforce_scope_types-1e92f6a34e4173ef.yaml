@@ -1,0 +1,13 @@
+---
+features:
+  - |
+    A new configuration option has been added to the ``[oslo_policy]`` group
+    called ``enforce_scope``. When set to ``True``, oslo.policy will raise an
+    ``InvalidScope`` exception if the context passed into the enforce method
+    doesn't match the policy's ``scope_types``. If ``False``, a warning will be
+    logged for operators. Note that operators should only enable this option
+    once they've audited their users to ensure system users have roles on the
+    system. This could potentially prevent some users from being able to make
+    system-level API calls. This will also give other services the flexibility
+    to fix long-standing RBAC issues in OpenStack once they start introducing
+    ``scope_types`` for policies used in their service.

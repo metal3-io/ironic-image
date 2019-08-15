@@ -1,0 +1,9 @@
+---
+fixes:
+  - |
+    Fixes the issue that ports were not collected when there were only IPv6
+    addresses (no IPv4), and the configuration option
+    ``[processing]add_ports`` was not set to ``all``. Inspector will report
+    "No suitable interfaces found" if no interface is collected. For more
+    information see
+    `Story 1744073 <https://storyboard.openstack.org/#!/story/1744073>`_

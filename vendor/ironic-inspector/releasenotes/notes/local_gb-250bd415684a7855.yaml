@@ -1,0 +1,5 @@
+---
+upgrade:
+  - |
+    Handling of ``local_gb`` property was moved from the ``scheduler`` hook
+    to ``root_disk_selection``.

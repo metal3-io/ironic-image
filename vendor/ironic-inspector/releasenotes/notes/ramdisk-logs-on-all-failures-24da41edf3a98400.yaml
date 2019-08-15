@@ -1,0 +1,11 @@
+---
+fixes:
+  - The ramdisk logs are now stored on all preprocessing errors, not only
+    ones reported by the ramdisk itself. This required moving the ramdisk
+    logs handling from the "ramdisk_error" plugin to the generic processing
+    code.
+upgrade:
+  - Handling ramdisk logs was moved out of the "ramdisk_error" plugin, so
+    disabling it will no longer disable handling ramdisk logs. As before,
+    you can set "ramdisk_logs_dir" option to an empty value (the default)
+    to disable storing ramdisk logs.

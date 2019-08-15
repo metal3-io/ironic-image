@@ -1,0 +1,6 @@
+---
+features:
+  - |
+    Introduces the **dnsmasq** PXE filter driver. This driver takes advantage of
+    the ``inotify`` facility to reconfigure the **dnsmasq** service in real time
+    to implement a caching black-/white-list of port MAC addresses.

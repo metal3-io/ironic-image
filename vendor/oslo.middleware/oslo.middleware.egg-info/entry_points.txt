@@ -1,0 +1,26 @@
+[oslo.config.opts]
+oslo.middleware = oslo_middleware.opts:list_opts
+oslo.middleware.cors = oslo_middleware.opts:list_opts_cors
+oslo.middleware.healthcheck = oslo_middleware.opts:list_opts_healthcheck
+oslo.middleware.http_proxy_to_wsgi = oslo_middleware.opts:list_opts_http_proxy_to_wsgi
+oslo.middleware.sizelimit = oslo_middleware.opts:list_opts_sizelimit
+oslo.middleware.ssl = oslo_middleware.opts:list_opts_ssl
+
+[oslo.middleware.healthcheck]
+disable_by_file = oslo_middleware.healthcheck.disable_by_file:DisableByFileHealthcheck
+disable_by_files_ports = oslo_middleware.healthcheck.disable_by_file:DisableByFilesPortsHealthcheck
+
+[paste.app_factory]
+healthcheck = oslo_middleware:Healthcheck.app_factory
+
+[paste.filter_factory]
+catch_errors = oslo_middleware:CatchErrors.factory
+correlation_id = oslo_middleware:CorrelationId.factory
+cors = oslo_middleware:CORS.factory
+debug = oslo_middleware:Debug.factory
+healthcheck = oslo_middleware:Healthcheck.factory
+http_proxy_to_wsgi = oslo_middleware:HTTPProxyToWSGI.factory
+request_id = oslo_middleware:RequestId.factory
+sizelimit = oslo_middleware:RequestBodySizeLimiter.factory
+ssl = oslo_middleware:SSLMiddleware.factory
+

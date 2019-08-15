@@ -1,0 +1,5 @@
+---
+fixes:
+  - Changes interactions with neutron to always use the neutron credentials
+    from ironic configuration, instead of forwarding the credentials from the
+    API client.
