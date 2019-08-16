@@ -3,6 +3,11 @@
 # Get environment settings and update ironic.conf
 PROVISIONING_INTERFACE=${PROVISIONING_INTERFACE:-"provisioning"}
 IRONIC_IP=$(ip -4 address show dev "$PROVISIONING_INTERFACE" | grep -oP '(?<=inet\s)\d+(\.\d+){3}' | head -n 1)
+until [ ! -z "${IRONIC_IP}" ]; do
+  echo "Waiting for ${PROVISIONING_INTERFACE} interface to be configured"
+  sleep 1
+  IRONIC_IP=$(ip -4 address show dev "$PROVISIONING_INTERFACE" | grep -oP '(?<=inet\s)\d+(\.\d+){3}' | head -n 1)
+done
 HTTP_PORT=${HTTP_PORT:-"80"}
 MARIADB_PASSWORD=${MARIADB_PASSWORD:-"change_me"}
 NUMPROC=$(cat /proc/cpuinfo  | grep "^processor" | wc -l)

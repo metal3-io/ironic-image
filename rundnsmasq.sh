@@ -7,6 +7,11 @@ DHCP_RANGE=${DHCP_RANGE:-"172.22.0.10,172.22.0.100"}
 DNSMASQ_EXCEPT_INTERFACE=${DNSMASQ_EXCEPT_INTERFACE:-"lo"}
 
 PROVISIONING_IP=$(ip -4 address show dev "$PROVISIONING_INTERFACE" | grep -oP '(?<=inet\s)\d+(\.\d+){3}' | head -n 1)
+until [ ! -z "${PROVISIONING_IP}" ]; do
+  echo "Waiting for ${PROVISIONING_INTERFACE} interface to be configured"
+  sleep 1
+  PROVISIONING_IP=$(ip -4 address show dev "$PROVISIONING_INTERFACE" | grep -oP '(?<=inet\s)\d+(\.\d+){3}' | head -n 1)
+done
 
 mkdir -p /shared/tftpboot
 mkdir -p /shared/html/images
