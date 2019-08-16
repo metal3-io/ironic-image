@@ -3,6 +3,11 @@
 PROVISIONING_INTERFACE=${PROVISIONING_INTERFACE:-"provisioning"}
 HTTP_PORT=${HTTP_PORT:-"80"}
 HTTP_IP=$(ip -4 address show dev "$PROVISIONING_INTERFACE" | grep -oP '(?<=inet\s)\d+(\.\d+){3}' | head -n 1)
+until [ ! -z "${HTTP_IP}" ]; do
+  echo "Waiting for ${PROVISIONING_INTERFACE} interface to be configured"
+  sleep 1
+  HTTP_IP=$(ip -4 address show dev "$PROVISIONING_INTERFACE" | grep -oP '(?<=inet\s)\d+(\.\d+){3}' | head -n 1)
+done
 
 mkdir -p /shared/html
 chmod 0777 /shared/html
