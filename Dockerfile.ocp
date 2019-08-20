@@ -3,7 +3,7 @@ FROM ubi8
 RUN yum update -y && \
     yum install -y openstack-ironic-api openstack-ironic-conductor crudini \
         iproute iptables dnsmasq httpd qemu-img parted gdisk ipxe-bootimgs psmisc procps-ng \
-        mariadb-server python3-PyMySQL python2-chardet ipxe-roms-qemu && \
+        mariadb-server python2-chardet ipxe-roms-qemu && \
     yum clean all
 
 copy ./prepare-ipxe.sh /tmp
