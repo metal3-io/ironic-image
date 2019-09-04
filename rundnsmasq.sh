@@ -19,7 +19,8 @@ mkdir -p /shared/html/pxelinux.cfg
 mkdir -p /shared/log/dnsmasq
 
 # Copy files to shared mount
-cp /usr/share/ipxe/undionly.kpxe /usr/share/ipxe/ipxe.efi /shared/tftpboot
+cp /usr/share/ipxe/undionly.kpxe /shared/tftpboot
+cp /usr/share/ipxe/ipxe-x86_64.efi /shared/tftpboot/ipxe.efi
 
 # Use configured values
 sed -i -e s/IRONIC_IP/${PROVISIONING_IP}/g -e s/HTTP_PORT/${HTTP_PORT}/g \
