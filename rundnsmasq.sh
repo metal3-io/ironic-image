@@ -10,7 +10,6 @@ wait_for_interface_or_ip
 mkdir -p /shared/tftpboot
 mkdir -p /shared/html/images
 mkdir -p /shared/html/pxelinux.cfg
-mkdir -p /shared/log/dnsmasq
 
 # Copy files to shared mount
 cp /tftpboot/* /shared/tftpboot/
@@ -22,6 +21,5 @@ for iface in $( echo "$DNSMASQ_EXCEPT_INTERFACE" | tr ',' ' '); do
     sed -i -e "/^interface=.*/ a\except-interface=${iface}" /etc/dnsmasq.conf
 done
 
-/usr/sbin/dnsmasq -d -q -C /etc/dnsmasq.conf 2>&1 | tee /shared/log/dnsmasq/dnsmasq.log &
 /bin/runhealthcheck "dnsmasq" &>/dev/null &
-sleep infinity
+exec /usr/sbin/dnsmasq -d -q -C /etc/dnsmasq.conf
