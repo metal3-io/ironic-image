@@ -39,3 +39,4 @@ interfaces = $IRONIC_IP
 EOF
 
 mkdir -p /shared/html
+mkdir -p /shared/ironic_prometheus_exporter
