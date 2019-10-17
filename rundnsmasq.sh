@@ -1,17 +1,12 @@
 #!/usr/bin/bash
 
-PROVISIONING_INTERFACE=${PROVISIONING_INTERFACE:-"provisioning"}
+. /bin/ironic-common.sh
 
 HTTP_PORT=${HTTP_PORT:-"80"}
 DHCP_RANGE=${DHCP_RANGE:-"172.22.0.10,172.22.0.100"}
 DNSMASQ_EXCEPT_INTERFACE=${DNSMASQ_EXCEPT_INTERFACE:-"lo"}
 
-PROVISIONING_IP=$(ip -4 address show dev "$PROVISIONING_INTERFACE" | grep -oP '(?<=inet\s)\d+(\.\d+){3}' | head -n 1)
-until [ ! -z "${PROVISIONING_IP}" ]; do
-  echo "Waiting for ${PROVISIONING_INTERFACE} interface to be configured"
-  sleep 1
-  PROVISIONING_IP=$(ip -4 address show dev "$PROVISIONING_INTERFACE" | grep -oP '(?<=inet\s)\d+(\.\d+){3}' | head -n 1)
-done
+wait_for_interface_or_ip
 
 mkdir -p /shared/tftpboot
 mkdir -p /shared/html/images
@@ -19,10 +14,13 @@ mkdir -p /shared/html/pxelinux.cfg
 mkdir -p /shared/log/dnsmasq
 
 # Copy files to shared mount
-cp /usr/share/ipxe/undionly.kpxe /usr/share/ipxe/ipxe.efi /shared/tftpboot
+cp /tftpboot/undionly.kpxe /tftpboot/ipxe.efi /tftpboot/snponly.efi /shared/tftpboot
+
+# Copy IPv4 or IPv6 config
+cp /etc/dnsmasq.conf.ipv$IPV /etc/dnsmasq.conf
 
 # Use configured values
-sed -i -e s/IRONIC_IP/${PROVISIONING_IP}/g -e s/HTTP_PORT/${HTTP_PORT}/g \
+sed -i -e s/IRONIC_URL_HOST/${IRONIC_URL_HOST}/g -e s/HTTP_PORT/${HTTP_PORT}/g \
        -e s/DHCP_RANGE/${DHCP_RANGE}/g -e s/PROVISIONING_INTERFACE/${PROVISIONING_INTERFACE}/g \
        /etc/dnsmasq.conf
 for iface in $( echo "$DNSMASQ_EXCEPT_INTERFACE" | tr ',' ' '); do
@@ -39,4 +37,3 @@ done
 /usr/sbin/dnsmasq -d -q -C /etc/dnsmasq.conf 2>&1 | tee /shared/log/dnsmasq/dnsmasq.log &
 /bin/runhealthcheck "dnsmasq" &>/dev/null &
 sleep infinity
-
