@@ -47,9 +47,6 @@ power_off = ${INSPECTOR_POWER_OFF}
 # NOTE(dtantsur): keep inspection arguments synchronized with inspector.ipxe
 extra_kernel_params = ipa-inspection-collectors=default,extra-hardware,logs ipa-inspection-dhcp-all-interfaces=1 ipa-collect-lldp=1 ${INSPECTOR_EXTRA_ARGS}
 
-[mdns]
-interfaces = $IRONIC_IP
-
 [service_catalog]
 endpoint_override = http://${IRONIC_URL_HOST}:6385
 EOF
