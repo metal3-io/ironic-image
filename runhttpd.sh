@@ -2,11 +2,11 @@
 
 PROVISIONING_INTERFACE=${PROVISIONING_INTERFACE:-"provisioning"}
 HTTP_PORT=${HTTP_PORT:-"80"}
-HTTP_IP=$(ip -4 address show dev "$PROVISIONING_INTERFACE" | grep -oP '(?<=inet\s)\d+(\.\d+){3}' | head -n 1)
+HTTP_IP=$(ip -br addr show dev $PROVISIONING_INTERFACE | grep -Po "[^\s]+/[0-9]+" | grep -e "^fd" -e "\." | sed -e 's%/.*%%' | head -n 1)
 until [ ! -z "${HTTP_IP}" ]; do
   echo "Waiting for ${PROVISIONING_INTERFACE} interface to be configured"
   sleep 1
-  HTTP_IP=$(ip -4 address show dev "$PROVISIONING_INTERFACE" | grep -oP '(?<=inet\s)\d+(\.\d+){3}' | head -n 1)
+  HTTP_IP=$(ip -br addr show dev $PROVISIONING_INTERFACE | grep -Po "[^\s]+/[0-9]+" | grep -e "^fd" -e "\." | sed -e 's%/.*%%' | head -n 1)
 done
 
 mkdir -p /shared/html
