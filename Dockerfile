@@ -6,7 +6,8 @@ RUN yum install -y python-requests && \
     yum install -y openstack-ironic-api openstack-ironic-conductor crudini \
         iproute iptables dnsmasq httpd qemu-img-ev iscsi-initiator-utils parted gdisk ipxe-bootimgs psmisc sysvinit-tools \
         mariadb-server python2-chardet genisoimage && \
-    yum clean all && rm -rf /var/cache/{yum,dnf}/*
+    yum clean all && \
+    rm -rf /var/cache/{yum,dnf}/*
 
 RUN mkdir /tftpboot && \
     cp /usr/share/ipxe/undionly.kpxe /usr/share/ipxe/ipxe.efi /tftpboot/
