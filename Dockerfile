@@ -6,7 +6,7 @@ RUN yum install -y python-requests && \
     yum install -y python-gunicorn openstack-ironic-api openstack-ironic-conductor crudini \
         iproute iptables dnsmasq httpd qemu-img-ev iscsi-initiator-utils \
         parted gdisk ipxe-bootimgs psmisc sysvinit-tools \
-        mariadb-server python2-chardet genisoimage && \
+        mariadb-server python-chardet genisoimage && \
     yum install -y python-ironic-prometheus-exporter && \
     yum clean all && \
     rm -rf /var/cache/{yum,dnf}/*
