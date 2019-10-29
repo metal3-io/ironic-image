@@ -1,6 +1,7 @@
 FROM docker.io/centos:centos7
 
 RUN yum install -y python-requests && \
+    curl -sS https://downloads.mariadb.com/MariaDB/mariadb_repo_setup | bash && \
     curl https://raw.githubusercontent.com/openstack/tripleo-repos/master/tripleo_repos/main.py | python - -b train current-tripleo && \
     yum update -y && \
     yum install -y python-gunicorn openstack-ironic-api openstack-ironic-conductor crudini \
