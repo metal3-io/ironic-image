@@ -13,6 +13,9 @@ MARIADB_PASSWORD=${MARIADB_PASSWORD:-"change_me"}
 NUMPROC=$(cat /proc/cpuinfo  | grep "^processor" | wc -l)
 NUMWORKERS=$(( NUMPROC < 12 ? NUMPROC : 12 ))
 
+# Whether to enable fast_track provisioning or not
+IRONIC_FAST_TRACK=${IRONIC_FAST_TRACK:-true}
+
 cp /etc/ironic/ironic.conf /etc/ironic/ironic.conf_orig
 
 crudini --merge /etc/ironic/ironic.conf <<EOF
@@ -30,6 +33,7 @@ connection = mysql+pymysql://ironic:${MARIADB_PASSWORD}@localhost/ironic?charset
 
 [deploy]
 http_url = http://${IRONIC_IP}:${HTTP_PORT}
+fast_track = ${IRONIC_FAST_TRACK}
 
 [inspector]
 endpoint_override = http://${IRONIC_IP}:5050
