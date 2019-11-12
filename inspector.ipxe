@@ -1,6 +1,5 @@
 #!ipxe
 
-
 :retry_boot
 echo In inspector.ipxe
 imgfree
