@@ -6,7 +6,7 @@ tftp-root=/shared/tftpboot
 
 dhcp-match=ipxe,175
 # Client is already running iPXE; move to next stage of chainloading
-dhcp-boot=tag:ipxe,http://IRONIC_IP:HTTP_PORT/dualboot.ipxe
+dhcp-boot=tag:ipxe,http://IRONIC_URL_HOST:HTTP_PORT/dualboot.ipxe
 
 # Note: Need to test EFI booting
 dhcp-match=set:efi,option:client-arch,7
