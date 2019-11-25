@@ -18,7 +18,7 @@ RUN yum install -y python-requests && \
     curl https://raw.githubusercontent.com/openstack/tripleo-repos/master/tripleo_repos/main.py | python - -b train current-tripleo && \
     yum update -y && \
     yum install -y python-gunicorn openstack-ironic-api openstack-ironic-conductor crudini \
-        iproute iptables dnsmasq httpd qemu-img-ev iscsi-initiator-utils parted gdisk psmisc \
+        iproute dnsmasq httpd qemu-img-ev iscsi-initiator-utils parted gdisk psmisc \
         sysvinit-tools mariadb-server genisoimage python-ironic-prometheus-exporter && \
     yum clean all && \
     rm -rf /var/cache/{yum,dnf}/*
