@@ -1,9 +1,9 @@
 FROM ubi8
 
 RUN yum update -y && \
-    yum install -y openstack-ironic-api openstack-ironic-conductor crudini \
+    yum install -y python3-gunicorn openstack-ironic-api openstack-ironic-conductor crudini \
         iproute iptables dnsmasq httpd qemu-img parted gdisk ipxe-bootimgs psmisc procps-ng \
-        mariadb-server python2-chardet ipxe-roms-qemu genisoimage && \
+        mariadb-server ipxe-roms-qemu genisoimage python3-ironic-prometheus-exporter && \
     yum clean all && \
     rm -rf /var/cache/{yum,dnf}/*
 
@@ -17,6 +17,7 @@ RUN crudini --merge /etc/ironic/ironic.conf < /tmp/ironic.conf && \
 
 COPY ./runironic-api.sh /bin/runironic-api
 COPY ./runironic-conductor.sh /bin/runironic-conductor
+COPY ./runironic-exporter.sh /bin/runironic-exporter
 COPY ./rundnsmasq.sh /bin/rundnsmasq
 COPY ./runhttpd.sh /bin/runhttpd
 COPY ./runmariadb.sh /bin/runmariadb
