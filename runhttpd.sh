@@ -21,18 +21,9 @@ sed -i -e 's|\(^[[:space:]]*\)\(DocumentRoot\)\(.*\)|\1\2 "/shared/html"|' \
     -e 's|<Directory "/var/www/html">|<Directory "/shared/html">|' \
     -e 's|<Directory "/var/www">|<Directory "/shared">|' /etc/httpd/conf/httpd.conf
 
-# Remove log files from last deployment
-rm -rf /shared/log/httpd
-
-mkdir -p /shared/log/httpd
-
-# Make logs available in shared mount
-touch /shared/log/httpd/access_log
-ln -s /shared/log/httpd/access_log /var/log/httpd/access_log
-touch /shared/log/httpd/error_log
-ln -s /shared/log/httpd/error_log /var/log/httpd/error_log
-
-/usr/sbin/httpd &
+# Log to std out/err
+sed -i -e 's%^ \+CustomLog.*%    CustomLog /dev/stderr combined%g' /etc/httpd/conf/httpd.conf
+sed -i -e 's%^ErrorLog.*%ErrorLog /dev/stderr%g' /etc/httpd/conf/httpd.conf
 
 /bin/runhealthcheck "httpd" "$HTTP_PORT" &>/dev/null &
-sleep infinity
+exec /usr/sbin/httpd -DFOREGROUND

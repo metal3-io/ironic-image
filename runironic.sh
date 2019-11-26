@@ -9,8 +9,8 @@ rm -rf /shared/log/ironic
 
 mkdir -p /shared/log/ironic
 
-/usr/bin/ironic-conductor --log-file /shared/log/ironic/ironic-conductor.log &
-/usr/bin/ironic-api --log-file  /shared/log/ironic/ironic-api.log &
+/usr/bin/ironic-conductor &
+/usr/bin/ironic-api &
 
 /bin/runhealthcheck "ironic" &>/dev/null &
 
