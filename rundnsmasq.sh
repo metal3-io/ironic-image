@@ -2,9 +2,8 @@
 
 . /bin/ironic-common.sh
 
-HTTP_PORT=${HTTP_PORT:-"80"}
-DHCP_RANGE=${DHCP_RANGE:-"172.22.0.10,172.22.0.100"}
-DNSMASQ_EXCEPT_INTERFACE=${DNSMASQ_EXCEPT_INTERFACE:-"lo"}
+export HTTP_PORT=${HTTP_PORT:-"80"}
+export DNSMASQ_EXCEPT_INTERFACE=${DNSMASQ_EXCEPT_INTERFACE:-"lo"}
 
 wait_for_interface_or_ip
 
@@ -14,15 +13,12 @@ mkdir -p /shared/html/pxelinux.cfg
 mkdir -p /shared/log/dnsmasq
 
 # Copy files to shared mount
-cp /tftpboot/undionly.kpxe /tftpboot/ipxe.efi /tftpboot/snponly.efi /shared/tftpboot
+# TODO(stbenjam): Add snponly.efi to this list when it's available from EL8 packages.
+cp /tftpboot/undionly.kpxe /tftpboot/ipxe.efi /shared/tftpboot
 
-# Copy IPv4 or IPv6 config
-cp /etc/dnsmasq.conf.ipv$IPV /etc/dnsmasq.conf
+# Template and write dnsmasq.conf
+python3 -c 'import os; import sys; import jinja2; sys.stdout.write(jinja2.Template(sys.stdin.read()).render(env=os.environ))' </etc/dnsmasq.conf.j2 >/etc/dnsmasq.conf
 
-# Use configured values
-sed -i -e s/IRONIC_URL_HOST/${IRONIC_URL_HOST}/g -e s/HTTP_PORT/${HTTP_PORT}/g \
-       -e s/DHCP_RANGE/${DHCP_RANGE}/g -e s/PROVISIONING_INTERFACE/${PROVISIONING_INTERFACE}/g \
-       /etc/dnsmasq.conf
 for iface in $( echo "$DNSMASQ_EXCEPT_INTERFACE" | tr ',' ' '); do
     sed -i -e "/^interface=.*/ a\except-interface=${iface}" /etc/dnsmasq.conf
 done

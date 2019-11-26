@@ -1,0 +1,48 @@
+interface={{ env["PROVISIONING_INTERFACE"] }}
+bind-dynamic
+enable-tftp
+tftp-root=/shared/tftpboot
+
+# Disable listening for DNS
+port=0
+
+{%- if env["DHCP_RANGE"]|length %}
+log-dhcp
+dhcp-range={{ env["DHCP_RANGE"] }}
+
+# Disable default router(s) and DNS over provisioning network
+dhcp-option=3
+dhcp-option=6
+
+{%- if env["IPV"] == "4" or env["IPV"] is undefined %}
+# IPv4 Configuration:
+dhcp-match=ipxe,175
+# Client is already running iPXE; move to next stage of chainloading
+dhcp-boot=tag:ipxe,http://{{ env["IRONIC_URL_HOST"] }}:{{ env["HTTP_PORT"] }}/dualboot.ipxe
+
+# Note: Need to test EFI booting
+dhcp-match=set:efi,option:client-arch,7
+dhcp-match=set:efi,option:client-arch,9
+dhcp-match=set:efi,option:client-arch,11
+# Client is PXE booting over EFI without iPXE ROM; send EFI version of iPXE chainloader
+dhcp-boot=tag:efi,tag:!ipxe,ipxe.efi
+
+# Client is running PXE over BIOS; send BIOS version of iPXE chainloader
+dhcp-boot=/undionly.kpxe,{{ env["IRONIC_IP"] }}
+{% endif %}
+
+{% if env["IPV"] == "6" %}
+# IPv6 Configuration:
+enable-ra
+ra-param={{ env["PROVISIONING_INTERFACE"] }},10
+
+dhcp-vendorclass=set:pxe6,enterprise:343,PXEClient
+dhcp-userclass=set:ipxe6,iPXE
+dhcp-option=tag:pxe6,option6:bootfile-url,tftp://{{ env["IRONIC_URL_HOST"] }}/snponly.efi
+dhcp-option=tag:ipxe6,option6:bootfile-url,http://{{ env["IRONIC_URL_HOST"] }}:{{ env["HTTP_PORT"] }}/dualboot.ipxe
+
+# Disable default router(s) and DNS over provisioning network
+dhcp-option=3
+dhcp-option=6
+{% endif %}
+{% endif %}
