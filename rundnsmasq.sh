@@ -21,7 +21,7 @@ cp /etc/dnsmasq.conf.ipv$IPV /etc/dnsmasq.conf
 # Use configured values
 sed -i -e s/IRONIC_URL_HOST/${IRONIC_URL_HOST}/g -e s/HTTP_PORT/${HTTP_PORT}/g \
        -e s/DHCP_RANGE/${DHCP_RANGE}/g -e s/PROVISIONING_INTERFACE/${PROVISIONING_INTERFACE}/g \
-       /etc/dnsmasq.conf
+       -e s/IRONIC_IP/${IRONIC_IP}/g /etc/dnsmasq.conf
 for iface in $( echo "$DNSMASQ_EXCEPT_INTERFACE" | tr ',' ' '); do
     sed -i -e "/^interface=.*/ a\except-interface=${iface}" /etc/dnsmasq.conf
 done
