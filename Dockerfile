@@ -41,7 +41,7 @@ COPY --from=builder /tmp/ipxe/src/bin/undionly.kpxe /tftpboot
 COPY --from=builder /tmp/ipxe/src/bin-x86_64-efi/snponly.efi /tftpboot
 COPY --from=builder /tmp/ipxe/src/bin-x86_64-efi/ipxe.efi /tftpboot
 
-COPY --from=builder /tmp/esp.img /httpboot/uefi_esp.img
+COPY --from=builder /tmp/esp.img /tmp/uefi_esp.img
 
 COPY ./ironic.conf /tmp/ironic.conf
 RUN crudini --merge /etc/ironic/ironic.conf < /tmp/ironic.conf && \
