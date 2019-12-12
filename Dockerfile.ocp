@@ -1,3 +1,15 @@
+FROM openshift/origin-base AS builder
+
+RUN yum install -y gcc git make genisoimage xz-devel grub2 grub2-efi-x64 shim dosfstools mtools
+
+RUN dd bs=1024 count=2880 if=/dev/zero of=esp.img && \
+      mkfs.msdos -F 12 -n 'ESP_IMAGE' ./esp.img && \
+      mmd -i esp.img EFI && \
+      mmd -i esp.img EFI/BOOT && \
+      mcopy -i esp.img -v /boot/efi/EFI/BOOT/BOOTX64.EFI ::EFI/BOOT && \
+      mcopy -i esp.img -v /boot/efi/EFI/redhat/grubx64.efi ::EFI/BOOT && \
+      mdir -i esp.img ::EFI/BOOT
+
 FROM ubi8
 
 RUN yum update -y && \
@@ -7,9 +19,10 @@ RUN yum update -y && \
     yum clean all && \
     rm -rf /var/cache/{yum,dnf}/*
 
-copy ./prepare-ipxe.sh /tmp
+COPY ./prepare-ipxe.sh /tmp
 RUN chmod +x /tmp/prepare-ipxe.sh && /tmp/prepare-ipxe.sh && rm /tmp/prepare-ipxe.sh
 
+ COPY --from=builder /tmp/esp.img /httpboot/uefi_esp.img
 
 COPY ./ironic.conf /tmp/ironic.conf
 RUN crudini --merge /etc/ironic/ironic.conf < /tmp/ironic.conf && \
