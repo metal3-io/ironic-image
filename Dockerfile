@@ -19,7 +19,7 @@ RUN git clone https://github.com/ipxe/ipxe.git && \
 ## NOTE(derekh): We need to build our own grub image because the one
 ## that gets installed by grub2-efi-x64 (/boot/efi/EFI/centos/grubx64.efi)
 ## looks for grub.cnf in /EFI/centos, ironic puts it in /boot/grub
-RUN dd bs=1024 count=2880 if=/dev/zero of=esp.img && \
+RUN dd bs=1024 count=3200 if=/dev/zero of=esp.img && \
       mkfs.msdos -F 12 -n 'ESP_IMAGE' ./esp.img && \
       mmd -i esp.img EFI && \
       mmd -i esp.img EFI/BOOT && \
