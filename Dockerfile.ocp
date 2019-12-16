@@ -2,7 +2,7 @@ FROM openshift/origin-base AS builder
 
 RUN yum install -y gcc git make genisoimage xz-devel grub2 grub2-efi-x64 shim dosfstools mtools
 
-RUN dd bs=1024 count=2880 if=/dev/zero of=esp.img && \
+RUN dd bs=1024 count=3200 if=/dev/zero of=esp.img && \
       mkfs.msdos -F 12 -n 'ESP_IMAGE' ./esp.img && \
       mmd -i esp.img EFI && \
       mmd -i esp.img EFI/BOOT && \
