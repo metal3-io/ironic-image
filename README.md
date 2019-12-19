@@ -18,8 +18,6 @@ All of the containers must share a common mount point or data store.  Ironic req
 - ironic-python-agent.initramfs
 - final image to be deployed onto node in qcow2 format
 
-All of the containers also store log files to <shared store>/log/.
-
 The following environment variables can be passed in to customize run-time functionality:
 - PROVISIONING_INTERFACE - interface to use for ironic, dnsmasq(dhcpd) and httpd (default provisioning)
 - DNSMASQ_EXCEPT_INTERFACE - interfaces to exclude when providing DHCP address (default "lo")
