@@ -2,7 +2,7 @@
 ## Note: we are pinning to a specific commit for reproducible builds.
 ## Updated as needed.
 FROM docker.io/centos:centos7 AS builder
-RUN yum install -y gcc git make genisoimage xz-devel grub2 grub2-efi-x64 shim dosfstools mtools
+RUN yum install -y gcc git make genisoimage xz-devel grub2 grub2-efi-x64-modules shim dosfstools mtools
 WORKDIR /tmp
 COPY . .
 RUN git clone http://git.ipxe.org/ipxe.git && \
@@ -16,12 +16,16 @@ RUN git clone http://git.ipxe.org/ipxe.git && \
 ## of the ESP image file to be sized smaller for the files that need to
 ## be copied in, however that requires more advanced scripting beyond
 ## an MVP.
+## NOTE(derekh): We need to build our own grub image because the one
+## that gets installed by grub2-efi-x64 (/boot/efi/EFI/centos/grubx64.efi)
+## looks for grub.cnf in /EFI/centos, ironic puts it in /boot/grub
 RUN dd bs=1024 count=2880 if=/dev/zero of=esp.img && \
       mkfs.msdos -F 12 -n 'ESP_IMAGE' ./esp.img && \
       mmd -i esp.img EFI && \
       mmd -i esp.img EFI/BOOT && \
+      grub2-mkimage -C xz -O x86_64-efi -p /boot/grub -o /tmp/grubx64.efi boot linux search normal configfile part_gpt btrfs ext2 fat iso9660 loopback test keystatus gfxmenu regexp probe efi_gop efi_uga all_video gfxterm font scsi echo read ls cat png jpeg halt reboot linuxefi && \
       mcopy -i esp.img -v /boot/efi/EFI/BOOT/BOOTX64.EFI ::EFI/BOOT && \
-      mcopy -i esp.img -v /boot/efi/EFI/centos/grubx64.efi ::EFI/BOOT && \
+      mcopy -i esp.img -v /tmp/grubx64.efi ::EFI/BOOT && \
       mdir -i esp.img ::EFI/BOOT
 
 
@@ -41,7 +45,7 @@ COPY --from=builder /tmp/ipxe/src/bin/undionly.kpxe /tftpboot
 COPY --from=builder /tmp/ipxe/src/bin-x86_64-efi/snponly.efi /tftpboot
 COPY --from=builder /tmp/ipxe/src/bin-x86_64-efi/ipxe.efi /tftpboot
 
-COPY --from=builder /tmp/esp.img /httpboot/uefi_esp.img
+COPY --from=builder /tmp/esp.img /tmp/uefi_esp.img
 
 COPY ./ironic.conf /tmp/ironic.conf
 RUN crudini --merge /etc/ironic/ironic.conf < /tmp/ironic.conf && \
