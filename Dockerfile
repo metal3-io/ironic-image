@@ -36,7 +36,8 @@ RUN yum install -y python-requests && \
     yum update -y && \
     yum install -y python-gunicorn openstack-ironic-api openstack-ironic-conductor crudini \
         iproute dnsmasq httpd qemu-img-ev iscsi-initiator-utils parted gdisk psmisc \
-        sysvinit-tools mariadb-server genisoimage python-ironic-prometheus-exporter && \
+        sysvinit-tools mariadb-server genisoimage python-ironic-prometheus-exporter \
+        python-jinja2 && \
     yum clean all && \
     rm -rf /var/cache/{yum,dnf}/*
 
@@ -65,8 +66,7 @@ COPY ./ironic-common.sh /bin/ironic-common.sh
 COPY ./runhealthcheck.sh /bin/runhealthcheck
 COPY ./runironic.sh /bin/runironic
 
-COPY ./dnsmasq.conf.ipv4 /etc/dnsmasq.conf.ipv4
-COPY ./dnsmasq.conf.ipv6 /etc/dnsmasq.conf.ipv6
+COPY ./dnsmasq.conf.j2 /etc/dnsmasq.conf.j2
 COPY ./inspector.ipxe /tmp/inspector.ipxe
 COPY ./dualboot.ipxe /tmp/dualboot.ipxe
 
