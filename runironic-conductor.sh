@@ -18,8 +18,6 @@ else
   crudini --set /etc/ironic/ironic.conf DEFAULT host localhost
 fi
 
-cp -f /tmp/uefi_esp.img /shared/html/uefi_esp.img
-
 # It's possible for the dbsync to fail if mariadb is not up yet, so
 # retry until success
 until ironic-dbsync --config-file /etc/ironic/ironic.conf upgrade; do
