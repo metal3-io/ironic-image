@@ -37,7 +37,7 @@ RUN yum install -y python-requests && \
     yum install -y python-gunicorn openstack-ironic-api openstack-ironic-conductor crudini \
         iproute dnsmasq httpd qemu-img-ev iscsi-initiator-utils parted gdisk psmisc \
         sysvinit-tools mariadb-server genisoimage python-ironic-prometheus-exporter \
-        python-jinja2 && \
+        python-jinja2 python-sushy-oem-idrac && \
     yum clean all && \
     rm -rf /var/cache/{yum,dnf}/*
 
