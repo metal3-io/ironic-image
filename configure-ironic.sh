@@ -24,7 +24,7 @@ api_workers = $NUMWORKERS
 
 [conductor]
 api_url = http://${IRONIC_URL_HOST}:6385
-bootloader = http://${IRONIC_URL_HOST}/uefi_esp.img
+bootloader = http://${IRONIC_URL_HOST}:${HTTP_PORT}/uefi_esp.img
 
 [database]
 connection = mysql+pymysql://ironic:${MARIADB_PASSWORD}@localhost/ironic?charset=utf8
