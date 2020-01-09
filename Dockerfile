@@ -28,17 +28,16 @@ RUN dd bs=1024 count=2880 if=/dev/zero of=esp.img && \
       mcopy -i esp.img -v /tmp/grubx64.efi ::EFI/BOOT && \
       mdir -i esp.img ::EFI/BOOT
 
+FROM docker.io/centos:centos8
 
-FROM docker.io/centos:centos7
-
-RUN yum install -y python-requests && \
-    curl https://raw.githubusercontent.com/openstack/tripleo-repos/master/tripleo_repos/main.py | python - -b train current-tripleo && \
-    yum update -y && \
-    yum install -y python-gunicorn openstack-ironic-api openstack-ironic-conductor crudini \
-        iproute dnsmasq httpd qemu-img-ev iscsi-initiator-utils parted gdisk psmisc \
-        sysvinit-tools mariadb-server genisoimage python-ironic-prometheus-exporter \
-        python-jinja2 python-sushy-oem-idrac && \
-    yum clean all && \
+RUN dnf install -y python3 python3-requests && \
+    curl https://raw.githubusercontent.com/openstack/tripleo-repos/master/tripleo_repos/main.py | python3 - -b train current && \
+    dnf update -y && \
+    dnf install -y python3-gunicorn openstack-ironic-api openstack-ironic-conductor crudini \
+        iproute dnsmasq httpd qemu-img iscsi-initiator-utils parted gdisk psmisc \
+        mariadb-server genisoimage python3-ironic-prometheus-exporter \
+        python3-jinja2 python3-sushy-oem-idrac && \
+    dnf clean all && \
     rm -rf /var/cache/{yum,dnf}/*
 
 RUN mkdir -p /tftpboot
