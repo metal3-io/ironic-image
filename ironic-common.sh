@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 export PROVISIONING_INTERFACE=${PROVISIONING_INTERFACE:-"provisioning"}
 
 # Wait for the interface or IP to be up, sets $IRONIC_IP

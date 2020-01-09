@@ -1,4 +1,5 @@
-#!/usr/bin/bash
+#!/usr/bin/env bash
+
 PATH=$PATH:/usr/sbin/
 DATADIR="/var/lib/mysql"
 MARIADB_PASSWORD=${MARIADB_PASSWORD:-"change_me"}
