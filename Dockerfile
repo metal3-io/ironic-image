@@ -1,7 +1,7 @@
 ## Build iPXE w/ IPv6 Support
 ## Note: we are pinning to a specific commit for reproducible builds.
 ## Updated as needed.
-FROM docker.io/centos:centos7 AS builder
+FROM docker.io/centos:centos8 AS builder
 RUN yum install -y gcc git make genisoimage xz-devel grub2 grub2-efi-x64-modules shim dosfstools mtools
 WORKDIR /tmp
 COPY . .
@@ -23,7 +23,7 @@ RUN dd bs=1024 count=2880 if=/dev/zero of=esp.img && \
       mkfs.msdos -F 12 -n 'ESP_IMAGE' ./esp.img && \
       mmd -i esp.img EFI && \
       mmd -i esp.img EFI/BOOT && \
-      grub2-mkimage -C xz -O x86_64-efi -p /boot/grub -o /tmp/grubx64.efi boot linux search normal configfile part_gpt btrfs ext2 fat iso9660 loopback test keystatus gfxmenu regexp probe efi_gop efi_uga all_video gfxterm font scsi echo read ls cat png jpeg halt reboot linuxefi && \
+      grub2-mkimage -C xz -O x86_64-efi -p /boot/grub -o /tmp/grubx64.efi boot linux search normal configfile part_gpt btrfs ext2 fat iso9660 loopback test keystatus gfxmenu regexp probe efi_gop efi_uga all_video gfxterm font scsi echo read ls cat png jpeg halt reboot && \
       mcopy -i esp.img -v /boot/efi/EFI/BOOT/BOOTX64.EFI ::EFI/BOOT && \
       mcopy -i esp.img -v /tmp/grubx64.efi ::EFI/BOOT && \
       mdir -i esp.img ::EFI/BOOT
