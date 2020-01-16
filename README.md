@@ -3,6 +3,17 @@ Metal3 Ironic Container
 
 This repo contains the files needed to build the Ironic images used by Metal3.
 
+Build Status
+------------
+
+[![Ubuntu V1alpha1 build status](https://jenkins.nordix.org/view/Airship/job/airship_master_integration_test_ubuntu/badge/icon?subject=Ubuntu%20E2E%20V1alpha1)](https://jenkins.nordix.org/view/Airship/job/airship_master_integration_test_ubuntu)
+[![CentOS V1alpha1 build status](https://jenkins.nordix.org/view/Airship/job/airship_master_integration_test_centos/badge/icon?subject=CentOS%20E2E%20V1alpha1)](https://jenkins.nordix.org/view/Airship/job/airship_master_integration_test_centos)
+[![Ubuntu V1alpha2 build status](https://jenkins.nordix.org/view/Airship/job/airship_master_v1a2_integration_test_ubuntu/badge/icon?subject=Ubuntu%20E2E%20V1alpha2)](https://jenkins.nordix.org/view/Airship/job/airship_master_v1a2_integration_test_ubuntu)
+[![CentOS V1alpha2 build status](https://jenkins.nordix.org/view/Airship/job/airship_master_v1a2_integration_test_centos/badge/icon?subject=CentOS%20E2E%20V1alpha2)](https://jenkins.nordix.org/view/Airship/job/airship_master_v1a2_integration_test_centos)
+
+Description
+-----------
+
 When updated, builds are automatically triggered on https://quay.io/repository/metal3-io/ironic/
 
 This repo supports the creation of multiple containers needed when provisioning baremetal nodes with Ironic. Eventually there will be separate images for each container, but currently separate containers can share this same image with specific entry points.
