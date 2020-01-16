@@ -31,7 +31,6 @@ connection = mysql+pymysql://ironic:${MARIADB_PASSWORD}@localhost/ironic?charset
 
 [deploy]
 http_url = http://${IRONIC_URL_HOST}:${HTTP_PORT}
-fast_track = ${IRONIC_FAST_TRACK}
 
 [inspector]
 endpoint_override = http://${IRONIC_URL_HOST}:5050
