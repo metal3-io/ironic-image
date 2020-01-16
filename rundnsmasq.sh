@@ -2,7 +2,7 @@
 
 . /bin/ironic-common.sh
 
-HTTP_PORT=${HTTP_PORT:-"80"}
+export HTTP_PORT=${HTTP_PORT:-"80"}
 DNSMASQ_EXCEPT_INTERFACE=${DNSMASQ_EXCEPT_INTERFACE:-"lo"}
 
 wait_for_interface_or_ip
