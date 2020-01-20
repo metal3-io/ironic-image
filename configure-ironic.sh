@@ -10,6 +10,9 @@ NUMWORKERS=$(( NUMPROC < 12 ? NUMPROC : 12 ))
 # Whether to enable fast_track provisioning or not
 IRONIC_FAST_TRACK=${IRONIC_FAST_TRACK:-true}
 
+# Whether cleaning disks before and after deployment
+IRONIC_AUTOMATED_CLEAN=${IRONIC_AUTOMATED_CLEAN:-true}
+
 wait_for_interface_or_ip
 
 if [[ $IRONIC_FAST_TRACK == true ]]; then
@@ -34,6 +37,7 @@ api_workers = $NUMWORKERS
 
 [conductor]
 bootloader = http://${IRONIC_URL_HOST}:${HTTP_PORT}/uefi_esp.img
+automated_clean = ${IRONIC_AUTOMATED_CLEAN}
 
 [database]
 connection = mysql+pymysql://ironic:${MARIADB_PASSWORD}@localhost/ironic?charset=utf8
