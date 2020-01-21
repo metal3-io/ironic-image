@@ -15,12 +15,12 @@ RUN if [ $(uname -m) = "x86_64" ]; then \
 
 FROM ubi8
 
-RUN yum update -y && \
-    yum install -y python3-gunicorn openstack-ironic-api openstack-ironic-conductor crudini \
+RUN dnf update -y && \
+    dnf install -y python3-gunicorn openstack-ironic-api openstack-ironic-conductor crudini \
         iproute iptables dnsmasq httpd qemu-img parted gdisk ipxe-bootimgs psmisc procps-ng \
         mariadb-server ipxe-roms-qemu genisoimage python3-ironic-prometheus-exporter \
-        python3-jinja2 && \
-    yum clean all && \
+        python3-jinja2 python3-sushy-oem-idrac && \
+    dnf clean all && \
     rm -rf /var/cache/{yum,dnf}/*
 
 COPY ./prepare-ipxe.sh /tmp
