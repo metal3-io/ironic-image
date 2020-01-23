@@ -31,7 +31,8 @@ RUN dd bs=1024 count=2880 if=/dev/zero of=esp.img && \
 FROM docker.io/centos:centos8
 
 RUN dnf install -y python3 python3-requests && \
-    curl https://raw.githubusercontent.com/openstack/tripleo-repos/master/tripleo_repos/main.py | python3 - -b train current && \
+    curl https://trunk.rdoproject.org/centos8-master/puppet-passed-ci/delorean.repo -o /etc/yum.repos.d/tripleo-master.repo && \
+    curl https://trunk.rdoproject.org/centos8-master/delorean-deps.repo -o /etc/yum.repos.d/tripleo-deps.repo && \
     dnf update -y && \
     dnf install -y python3-gunicorn openstack-ironic-api openstack-ironic-conductor crudini \
         iproute dnsmasq httpd qemu-img iscsi-initiator-utils parted gdisk psmisc \
