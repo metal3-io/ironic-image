@@ -1,4 +1,4 @@
-FROM openshift/origin-base AS builder
+FROM ironic-builder AS builder
 
 RUN if [ $(uname -m) = "x86_64" ]; then \
       yum install -y gcc git make genisoimage xz-devel grub2 grub2-efi-x64 shim dosfstools mtools && \
