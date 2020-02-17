@@ -43,9 +43,8 @@ COPY ./runmariadb.sh /bin/runmariadb
 COPY ./configure-ironic.sh /bin/configure-ironic.sh
 COPY ./ironic-common.sh /bin/ironic-common.sh
 
-# TODO(dtantsur): remove these 2 scripts if we decide to
-# stop supporting running all 2 processes via one entry point.
-COPY ./runhealthcheck.sh /bin/runhealthcheck
+# TODO(dtantsur): remove this script when we stop supporting running both
+# API and conductor processes via one entry point.
 COPY ./runironic.sh /bin/runironic
 
 COPY ./dnsmasq.conf.j2 /etc/dnsmasq.conf.j2
