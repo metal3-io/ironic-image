@@ -21,5 +21,4 @@ for iface in $( echo "$DNSMASQ_EXCEPT_INTERFACE" | tr ',' ' '); do
     sed -i -e "/^interface=.*/ a\except-interface=${iface}" /etc/dnsmasq.conf
 done
 
-/bin/runhealthcheck "dnsmasq" &>/dev/null &
 exec /usr/sbin/dnsmasq -d -q -C /etc/dnsmasq.conf
