@@ -13,16 +13,7 @@ mkdir -p /shared/html/pxelinux.cfg
 mkdir -p /shared/log/dnsmasq
 
 # Copy files to shared mount
-# TODO(stbenjam): Add snponly.efi to this list when it's available from EL8 packages.
-cp /usr/share/ipxe/undionly.kpxe /shared/tftpboot
-if [ -f "/usr/share/ipxe/ipxe.efi" ]; then
-    cp /usr/share/ipxe/ipxe.efi /shared/tftpboot/ipxe.efi
-elif [ -f "/usr/share/ipxe/ipxe-x86_64.efi" ]; then
-    cp  /usr/share/ipxe/ipxe-x86_64.efi /shared/tftpboot/ipxe.efi
-else
-    echo "Fatal Error - Failed to find ipxe binary"
-    exit 1
-fi
+cp /tftpboot/* /shared/tftpboot/
 
 # Template and write dnsmasq.conf
 python3 -c 'import os; import sys; import jinja2; sys.stdout.write(jinja2.Template(sys.stdin.read()).render(env=os.environ))' </etc/dnsmasq.conf.j2 >/etc/dnsmasq.conf
