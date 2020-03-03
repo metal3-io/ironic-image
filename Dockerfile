@@ -30,15 +30,28 @@ RUN dd bs=1024 count=2880 if=/dev/zero of=esp.img && \
 
 FROM docker.io/centos:centos8
 
-RUN dnf install -y python3 python3-requests && \
+RUN dnf install -y gcc python3 python3-requests python3-devel && \
     curl https://raw.githubusercontent.com/openstack/tripleo-repos/master/tripleo_repos/main.py | python3 - -b master current && \
     dnf update -y && \
-    dnf install -y python3-gunicorn openstack-ironic-api openstack-ironic-conductor crudini \
+    dnf install -y python3-gunicorn crudini OpenIPMI ipmitool \
         iproute dnsmasq httpd qemu-img iscsi-initiator-utils parted gdisk psmisc \
-        mariadb-server genisoimage python3-ironic-prometheus-exporter \
+        mariadb-server genisoimage \
         python3-jinja2 python3-sushy-oem-idrac && \
     dnf clean all && \
     rm -rf /var/cache/{yum,dnf}/*
+
+RUN /usr/bin/pip3 install pymysql
+RUN /usr/bin/pip3 install git+https://opendev.org/openstack/ironic.git@master
+
+RUN /usr/bin/pip3 install ironic-prometheus-exporter
+
+# Create soft links in order to avoid changing multiple files
+RUN /usr/bin/ln -s /usr/local/bin/ironic-api /usr/bin/ironic-api
+RUN /usr/bin/ln -s /usr/local/bin/ironic-api-wsgi /usr/bin/ironic-api-wsgi
+RUN /usr/bin/ln -s /usr/local/bin/ironic-conductor /usr/bin/ironic-conductor
+RUN /usr/bin/ln -s /usr/local/bin/ironic-dbsync /usr/bin/ironic-dbsync
+RUN /usr/bin/ln -s /usr/local/bin/ironic-rootwrap /usr/bin/ironic-rootwrap
+RUN /usr/bin/ln -s /usr/local/bin/ironic-status /usr/bin/ironic-status
 
 RUN mkdir -p /tftpboot
 COPY --from=builder /tmp/ipxe/src/bin/undionly.kpxe /tftpboot
@@ -47,6 +60,10 @@ COPY --from=builder /tmp/ipxe/src/bin-x86_64-efi/ipxe.efi /tftpboot
 
 COPY --from=builder /tmp/esp.img /tmp/uefi_esp.img
 
+# ./ironic.conf.dnf is copied from dnf's installation
+# It is added here b/c pip3 does not create it
+
+COPY ./ironic.conf.dnf /etc/ironic/ironic.conf
 COPY ./ironic.conf /tmp/ironic.conf
 RUN crudini --merge /etc/ironic/ironic.conf < /tmp/ironic.conf && \
     rm /tmp/ironic.conf
@@ -60,8 +77,9 @@ COPY ./runmariadb.sh /bin/runmariadb
 COPY ./configure-ironic.sh /bin/configure-ironic.sh
 COPY ./ironic-common.sh /bin/ironic-common.sh
 
-# TODO(dtantsur): remove this script when we stop supporting running both
-# API and conductor processes via one entry point.
+# TODO(dtantsur): remove these 2 scripts if we decide to
+# stop supporting running all 2 processes via one entry point.
+COPY ./runhealthcheck.sh /bin/runhealthcheck
 COPY ./runironic.sh /bin/runironic
 
 COPY ./dnsmasq.conf.j2 /etc/dnsmasq.conf.j2
@@ -69,3 +87,4 @@ COPY ./inspector.ipxe /tmp/inspector.ipxe
 COPY ./dualboot.ipxe /tmp/dualboot.ipxe
 
 ENTRYPOINT ["/bin/runironic"]
+
