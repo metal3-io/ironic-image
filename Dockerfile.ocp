@@ -17,7 +17,7 @@ FROM ubi8
 
 RUN dnf update -y && \
     dnf install -y python3-gunicorn openstack-ironic-api openstack-ironic-conductor crudini \
-        iproute iptables dnsmasq httpd qemu-img parted gdisk ipxe-bootimgs psmisc procps-ng \
+        iproute dnsmasq httpd qemu-img parted gdisk ipxe-bootimgs psmisc procps-ng \
         mariadb-server ipxe-roms-qemu genisoimage python3-ironic-prometheus-exporter \
         python3-jinja2 python3-sushy-oem-idrac && \
     dnf clean all && \
