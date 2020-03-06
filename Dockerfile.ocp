@@ -1,5 +1,7 @@
 FROM ironic-builder AS builder
 
+WORKDIR /tmp
+
 RUN if [ $(uname -m) = "x86_64" ]; then \
       yum install -y gcc git make genisoimage xz-devel grub2 grub2-efi-x64 shim dosfstools mtools && \
       dd bs=1024 count=3200 if=/dev/zero of=esp.img && \
