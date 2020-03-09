@@ -25,5 +25,4 @@ sed -i -e 's|\(^[[:space:]]*\)\(DocumentRoot\)\(.*\)|\1\2 "/shared/html"|' \
 sed -i -e 's%^ \+CustomLog.*%    CustomLog /dev/stderr combined%g' /etc/httpd/conf/httpd.conf
 sed -i -e 's%^ErrorLog.*%ErrorLog /dev/stderr%g' /etc/httpd/conf/httpd.conf
 
-/bin/runhealthcheck "httpd" "$HTTP_PORT" &>/dev/null &
 exec /usr/sbin/httpd -DFOREGROUND

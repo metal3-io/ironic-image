@@ -12,7 +12,5 @@ mkdir -p /shared/log/ironic
 /usr/bin/ironic-conductor &
 /usr/bin/ironic-api &
 
-/bin/runhealthcheck "ironic" &>/dev/null &
-
 sleep infinity
 
