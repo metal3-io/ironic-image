@@ -52,3 +52,4 @@ COPY ./inspector.ipxe /tmp/inspector.ipxe
 COPY ./dualboot.ipxe /tmp/dualboot.ipxe
 
 ENTRYPOINT ["/bin/runironic"]
+
