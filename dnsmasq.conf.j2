@@ -34,7 +34,7 @@ dhcp-boot=/undionly.kpxe,{{ env["IRONIC_IP"] }}
 {% if env["IPV"] == "6" %}
 # IPv6 Configuration:
 enable-ra
-ra-param={{ env["PROVISIONING_INTERFACE"] }},10
+ra-param={{ env["PROVISIONING_INTERFACE"] }},0,0
 
 dhcp-vendorclass=set:pxe6,enterprise:343,PXEClient
 dhcp-userclass=set:ipxe6,iPXE
