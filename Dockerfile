@@ -2,7 +2,7 @@
 ## Note: we are pinning to a specific commit for reproducible builds.
 ## Updated as needed.
 FROM docker.io/centos:centos8 AS builder
-RUN yum install -y gcc git make genisoimage xz-devel grub2 grub2-efi-x64-modules shim dosfstools mtools
+RUN dnf install -y gcc git make genisoimage xz-devel grub2 grub2-efi-x64-modules shim dosfstools mtools
 WORKDIR /tmp
 COPY . .
 RUN git clone http://git.ipxe.org/ipxe.git && \
@@ -32,7 +32,7 @@ FROM docker.io/centos:centos8
 
 RUN dnf install -y python3 python3-requests && \
     curl https://raw.githubusercontent.com/openstack/tripleo-repos/master/tripleo_repos/main.py | python3 - -b master current && \
-    dnf update -y && \
+    dnf upgrade -y && \
     dnf install -y python3-gunicorn openstack-ironic-api openstack-ironic-conductor crudini \
         iproute dnsmasq httpd qemu-img iscsi-initiator-utils parted gdisk psmisc \
         mariadb-server genisoimage python3-ironic-prometheus-exporter \
