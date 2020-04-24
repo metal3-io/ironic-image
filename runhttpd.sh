@@ -4,6 +4,14 @@
 
 HTTP_PORT=${HTTP_PORT:-"80"}
 
+# SSH key to use for debugging the ramdisk (public key contents)
+IRONIC_RAMDISK_SSH_KEY=${IRONIC_RAMDISK_SSH_KEY:-}
+
+if [ -n "$IRONIC_RAMDISK_SSH_KEY" ]; then
+    # SELinux prevents root login via SSH in some cases
+    KERNEL_PARAMS="sshkey=\"$IRONIC_RAMDISK_SSH_KEY\" selinux=0"
+fi
+
 wait_for_interface_or_ip
 
 mkdir -p /shared/html
@@ -15,7 +23,10 @@ cp /tmp/dualboot.ipxe /shared/html/dualboot.ipxe
 cp /tmp/uefi_esp.img /shared/html/uefi_esp.img
 
 # Use configured values
-sed -i -e s/IRONIC_IP/${IRONIC_URL_HOST}/g -e s/HTTP_PORT/${HTTP_PORT}/g /shared/html/inspector.ipxe
+sed -i -e s/IRONIC_IP/${IRONIC_URL_HOST}/g \
+    -e s/HTTP_PORT/${HTTP_PORT}/g \
+    -e "s/KERNEL_PARAMS/${KERNEL_PARAMS:-}/g" \
+    /shared/html/inspector.ipxe
 
 sed -i 's/^Listen .*$/Listen [::]:'"$HTTP_PORT"'/' /etc/httpd/conf/httpd.conf
 sed -i -e 's|\(^[[:space:]]*\)\(DocumentRoot\)\(.*\)|\1\2 "/shared/html"|' \

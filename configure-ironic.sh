@@ -13,6 +13,16 @@ IRONIC_FAST_TRACK=${IRONIC_FAST_TRACK:-true}
 # Whether cleaning disks before and after deployment
 IRONIC_AUTOMATED_CLEAN=${IRONIC_AUTOMATED_CLEAN:-true}
 
+# SSH key to use for debugging the ramdisk (public key contents)
+IRONIC_RAMDISK_SSH_KEY=${IRONIC_RAMDISK_SSH_KEY:-}
+
+if [ -n "$IRONIC_RAMDISK_SSH_KEY" ]; then
+    # Ironic upstream defaults
+    PXE_APPEND_PARAMS="pxe_append_params = nofb nomodeset vga=normal"
+    # SELinux prevents root login via SSH in some cases
+    PXE_APPEND_PARAMS+=" sshkey=\"$IRONIC_RAMDISK_SSH_KEY\" selinux=0"
+fi
+
 wait_for_interface_or_ip
 
 cp /etc/ironic/ironic.conf /etc/ironic/ironic.conf_orig
@@ -39,6 +49,9 @@ fast_track = ${IRONIC_FAST_TRACK}
 
 [inspector]
 endpoint_override = http://${IRONIC_URL_HOST}:5050
+
+[pxe]
+${PXE_APPEND_PARAMS:-}
 EOF
 
 mkdir -p /shared/html
