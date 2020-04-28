@@ -16,3 +16,7 @@ reviewers:
   - hardys
   - juliakreger
   - russellb
+
+# Bugzilla Information
+component: "Bare Metal Hardware Provisioning"
+subcomponent: "ironic"
