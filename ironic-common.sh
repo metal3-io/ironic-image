@@ -14,7 +14,7 @@ function wait_for_interface_or_ip() {
   else
     until [ ! -z "${IRONIC_IP}" ]; do
       echo "Waiting for ${PROVISIONING_INTERFACE} interface to be configured"
-      export IRONIC_IP=$(ip -br addr show dev $PROVISIONING_INTERFACE | grep -Po "[^\s]+/[0-9]+" | grep -e "^fd" -e "\." | sed -e 's%/.*%%' | head -n 1)
+      export IRONIC_IP=$(ip -br add show scope global up dev "${PROVISIONING_INTERFACE}" | awk '{print $3}' | sed -e 's%/.*%%' | head -n 1)
       sleep 1
     done
   fi
