@@ -33,7 +33,6 @@ host_ip = ::
 api_workers = $NUMWORKERS
 
 [conductor]
-api_url = http://${IRONIC_URL_HOST}:6385
 
 [database]
 connection = mysql+pymysql://ironic:${MARIADB_PASSWORD}@localhost/ironic?charset=utf8
@@ -50,6 +49,9 @@ extra_kernel_params = ipa-inspector-collectors=default,extra-hardware,logs ipa-i
 
 [mdns]
 interfaces = $IRONIC_IP
+
+[service_catalog]
+endpoint_override = http://${IRONIC_URL_HOST}:6385
 EOF
 
 mkdir -p /shared/html
