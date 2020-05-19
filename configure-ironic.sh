@@ -26,7 +26,6 @@ host_ip = ::
 api_workers = $NUMWORKERS
 
 [conductor]
-api_url = http://${IRONIC_URL_HOST}:6385
 bootloader = http://${IRONIC_URL_HOST}:${HTTP_PORT}/uefi_esp.img
 automated_clean = ${IRONIC_AUTOMATED_CLEAN}
 
@@ -39,6 +38,9 @@ fast_track = ${IRONIC_FAST_TRACK}
 
 [inspector]
 endpoint_override = http://${IRONIC_URL_HOST}:5050
+
+[service_catalog]
+endpoint_override = http://${IRONIC_URL_HOST}:6385
 EOF
 
 mkdir -p /shared/html
