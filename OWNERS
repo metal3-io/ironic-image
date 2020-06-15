@@ -8,3 +8,8 @@ approvers:
  - hardys
  - juliakreger
  - russellb
+
+reviewers:
+ - elfosardo
+ - maelk
+ - stbenjam
