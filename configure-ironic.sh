@@ -56,6 +56,10 @@ extra_kernel_params = ipa-inspection-collectors=default,extra-hardware,logs ipa-
 endpoint_override = http://${IRONIC_URL_HOST}:6385
 EOF
 
+# oslo.config also supports Config Opts From Environment, log them
+echo '# Options set from Environment variables' | tee /etc/ironic/ironic.extra
+env | grep "^OS_" | tee -a /etc/ironic/ironic.extra
+
 mkdir -p /shared/html
 mkdir -p /shared/ironic_prometheus_exporter
 
