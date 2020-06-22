@@ -2,4 +2,7 @@
 
 . /bin/configure-ironic.sh
 
-exec /usr/bin/ironic-api --config-file /etc/ironic/ironic.conf
+# Template and write httpd ironic.conf
+python3 -c 'import os; import sys; import jinja2; sys.stdout.write(jinja2.Template(sys.stdin.read()).render(env=os.environ))' < /etc/httpd-ironic.conf.j2 > /etc/httpd/conf.d/ironic.conf
+
+exec /usr/sbin/httpd -DFOREGROUND

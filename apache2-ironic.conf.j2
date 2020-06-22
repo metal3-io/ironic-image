@@ -1,0 +1,59 @@
+# Licensed under the Apache License, Version 2.0 (the "License"); you may
+# not use this file except in compliance with the License. You may obtain
+# a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations
+# under the License.
+
+Listen 6385
+
+<VirtualHost *:6385>
+    WSGIDaemonProcess ironic user=ironic group=ironic threads=10 display-name=%{GROUP}
+    WSGIScriptAlias / /usr/bin/ironic-api-wsgi
+
+    SetEnv APACHE_RUN_USER ironic
+    SetEnv APACHE_RUN_GROUP ironic
+    WSGIProcessGroup ironic
+
+    ErrorLog /dev/stdout
+    LogLevel debug
+    CustomLog /dev/stdout combined
+
+{% if "CERT_FILE" in env and "KEY_FILE" in env %}
+    ServerName {{ env["DOMAIN_NAME"]}}
+    SSLEngine on
+    SSLCertificateFile {{ env["CERT_FILE"] }}
+    SSLCertificateKeyFile {{ env["KEY_FILE"] }}
+
+{% if "CACERT_FILE" in env %}
+    SSLVerifyClient none
+    SSLCACertificateFile {{ env["CACERT_FILE"] }}
+
+    <Location "/">
+    <If "! -R '{{ env["IRONIC_IP"] }}/32'">
+        SSLVerifyClient require
+        SSLVerifyDepth 1
+    </If>
+    </Location>
+
+    <LocationMatch "(^/?$)|(^/v1/?$)|(^/v1/lookup)|(^/v1/heartbeat)">
+    <If "! -R '{{ env["IRONIC_IP"] }}/32'">
+        SSLVerifyClient none
+    </If>
+    </LocationMatch>
+
+{% endif %}
+{% endif %}
+
+    <Directory /usr/bin >
+        WSGIProcessGroup ironic
+        WSGIApplicationGroup %{GLOBAL}
+        AllowOverride All
+        Require all granted
+    </Directory>
+</VirtualHost>
