@@ -13,6 +13,20 @@ IRONIC_FAST_TRACK=${IRONIC_FAST_TRACK:-true}
 # Whether cleaning disks before and after deployment
 IRONIC_AUTOMATED_CLEAN=${IRONIC_AUTOMATED_CLEAN:-true}
 
+RPC_SSL_CONF=""
+
+if [ ! -z "$CERT_FILE" ] && [ ! -z "$KEY_FILE" ]; then
+    read -r -d '' RPC_SSL_CONF << EOM
+[json_rpc]
+use_ssl = true
+certfile = $CERT_FILE
+keyfile = $KEY_FILE
+insecure = false
+$([ ! -z "$CACERT_FILE" ] && echo "cafile = $CACERT_FILE")
+EOM
+fi
+
+
 wait_for_interface_or_ip
 
 cp /etc/ironic/ironic.conf /etc/ironic/ironic.conf_orig
@@ -20,6 +34,7 @@ cp /etc/ironic/ironic.conf /etc/ironic/ironic.conf_orig
 crudini --merge /etc/ironic/ironic.conf <<EOF
 [DEFAULT]
 my_ip = $IRONIC_IP
+host = $IRONIC_IP
 
 [api]
 host_ip = ::
@@ -41,6 +56,9 @@ endpoint_override = http://${IRONIC_URL_HOST}:5050
 
 [service_catalog]
 endpoint_override = http://${IRONIC_URL_HOST}:6385
+
+$RPC_SSL_CONF
+
 EOF
 
 mkdir -p /shared/html
