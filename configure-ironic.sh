@@ -38,6 +38,7 @@ fast_track = ${IRONIC_FAST_TRACK}
 
 [inspector]
 endpoint_override = http://${IRONIC_URL_HOST}:5050
+extra_kernel_params = ipa-api-url=http://${IRONIC_URL_HOST}:6385
 
 [service_catalog]
 endpoint_override = http://${IRONIC_URL_HOST}:6385
