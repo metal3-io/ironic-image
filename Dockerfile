@@ -31,12 +31,12 @@ RUN dd bs=1024 count=2880 if=/dev/zero of=esp.img && \
 FROM docker.io/centos:centos8
 
 RUN dnf install -y python3 python3-requests && \
-    curl https://raw.githubusercontent.com/openstack/tripleo-repos/master/tripleo_repos/main.py | python3 - -b master current && \
+    curl https://raw.githubusercontent.com/openstack/tripleo-repos/master/tripleo_repos/main.py | python3 - -b master current-tripleo && \
     dnf update -y && \
     dnf install -y python3-gunicorn openstack-ironic-api openstack-ironic-conductor crudini \
         iproute dnsmasq httpd qemu-img iscsi-initiator-utils parted gdisk psmisc \
         mariadb-server genisoimage python3-ironic-prometheus-exporter \
-        python3-jinja2 python3-sushy-oem-idrac && \
+        python3-jinja2 python3-sushy-oem-idrac python3-ibmcclient && \
     dnf clean all && \
     rm -rf /var/cache/{yum,dnf}/*
 
