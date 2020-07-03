@@ -51,6 +51,7 @@ COPY ./ironic.conf /tmp/ironic.conf
 RUN crudini --merge /etc/ironic/ironic.conf < /tmp/ironic.conf && \
     rm /tmp/ironic.conf
 
+COPY ./jinjarender.py /bin/jinjarender
 COPY ./runironic-api.sh /bin/runironic-api
 COPY ./runironic-conductor.sh /bin/runironic-conductor
 COPY ./runironic-exporter.sh /bin/runironic-exporter
