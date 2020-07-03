@@ -31,7 +31,6 @@ All of the containers must share a common mount point or data store.  Ironic req
 
 The following environment variables can be passed in to customize run-time functionality:
 - PROVISIONING_INTERFACE - interface to use for ironic, dnsmasq(dhcpd) and httpd (default provisioning)
-- DNSMASQ_EXCEPT_INTERFACE - interfaces to exclude when providing DHCP address (default "lo")
 - HTTP_PORT - port used by http server (default 80)
 - DHCP_RANGE - dhcp range to use for provisioning (default 172.22.0.10-172.22.0.100)
 - MARIADB_PASSWORD - The database password
