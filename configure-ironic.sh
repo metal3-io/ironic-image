@@ -38,6 +38,10 @@ fast_track = ${IRONIC_FAST_TRACK}
 
 [inspector]
 endpoint_override = http://${IRONIC_URL_HOST}:5050
+# TODO(dtantsur): ipa-api-url should be populated by ironic itself, but it's
+# not, so working around here.
+# NOTE(dtantsur): keep inspection arguments synchronized with inspector.ipxe
+extra_kernel_params = ipa-inspector-collectors=default,extra-hardware,logs ipa-inspection-dhcp-all-interfaces=1 ipa-collect-lldp=1 ipa-api-url=http://${IRONIC_URL_HOST}:6385
 
 [service_catalog]
 endpoint_override = http://${IRONIC_URL_HOST}:6385
