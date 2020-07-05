@@ -68,5 +68,7 @@ COPY ./runironic.sh /bin/runironic
 COPY ./dnsmasq.conf.j2 /etc/dnsmasq.conf.j2
 COPY ./inspector.ipxe /tmp/inspector.ipxe
 COPY ./dualboot.ipxe /tmp/dualboot.ipxe
+COPY ./httpd.conf /etc/httpd/conf/httpd.conf
+COPY ./httpd-ironic-image.conf.j2 /etc/httpd/conf.d/ironic-image.conf.j2
 
 ENTRYPOINT ["/bin/runironic"]

@@ -17,13 +17,6 @@ cp /tmp/uefi_esp.img /shared/html/uefi_esp.img
 # Use configured values
 sed -i -e s/IRONIC_IP/${IRONIC_URL_HOST}/g -e s/HTTP_PORT/${HTTP_PORT}/g /shared/html/inspector.ipxe
 
-sed -i 's/^Listen .*$/Listen [::]:'"$HTTP_PORT"'/' /etc/httpd/conf/httpd.conf
-sed -i -e 's|\(^[[:space:]]*\)\(DocumentRoot\)\(.*\)|\1\2 "/shared/html"|' \
-    -e 's|<Directory "/var/www/html">|<Directory "/shared/html">|' \
-    -e 's|<Directory "/var/www">|<Directory "/shared">|' /etc/httpd/conf/httpd.conf
-
-# Log to std out/err
-sed -i -e 's%^ \+CustomLog.*%    CustomLog /dev/stderr combined%g' /etc/httpd/conf/httpd.conf
-sed -i -e 's%^ErrorLog.*%ErrorLog /dev/stderr%g' /etc/httpd/conf/httpd.conf
+jinjarender </etc/httpd/conf.d/ironic-image.conf.j2 >/etc/httpd/conf.d/ironic-image.conf
 
 exec /usr/sbin/httpd -DFOREGROUND
