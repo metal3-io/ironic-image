@@ -60,7 +60,8 @@ COPY ./runhttpd.sh /bin/runhttpd
 COPY ./runmariadb.sh /bin/runmariadb
 COPY ./configure-ironic.sh /bin/configure-ironic.sh
 COPY ./ironic-common.sh /bin/ironic-common.sh
-COPY ./apache2-ironic.conf.j2 /etc/httpd-ironic.conf.j2
+COPY ./apache2-ironic-api.conf.j2 /etc/httpd-ironic-api.conf.j2
+COPY ./apache2-ironic-conductor.conf.j2 /etc/httpd-ironic-conductor.conf.j2
 
 # TODO(dtantsur): remove this script when we stop supporting running both
 # API and conductor processes via one entry point.

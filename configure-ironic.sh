@@ -13,20 +13,6 @@ IRONIC_FAST_TRACK=${IRONIC_FAST_TRACK:-true}
 # Whether cleaning disks before and after deployment
 IRONIC_AUTOMATED_CLEAN=${IRONIC_AUTOMATED_CLEAN:-true}
 
-RPC_SSL_CONF=""
-
-if [ ! -z "$CERT_FILE" ] && [ ! -z "$KEY_FILE" ]; then
-    read -r -d '' RPC_SSL_CONF << EOM
-[json_rpc]
-use_ssl = true
-certfile = $CERT_FILE
-keyfile = $KEY_FILE
-insecure = false
-$([ ! -z "$CACERT_FILE" ] && echo "cafile = $CACERT_FILE")
-EOM
-fi
-
-
 wait_for_interface_or_ip
 
 cp /etc/ironic/ironic.conf /etc/ironic/ironic.conf_orig
@@ -51,6 +37,30 @@ connection = mysql+pymysql://ironic:${MARIADB_PASSWORD}@localhost/ironic?charset
 http_url = http://${IRONIC_URL_HOST}:${HTTP_PORT}
 fast_track = ${IRONIC_FAST_TRACK}
 
+EOF
+
+if [ ! -z "$CERT_FILE" ] && [ ! -z "$KEY_FILE" ]; then
+    crudini --merge /etc/ironic/ironic.conf <<EOF
+[inspector]
+endpoint_override = https://${IRONIC_URL_HOST}:5050
+certfile = $CERT_FILE
+keyfile = $KEY_FILE
+insecure = false
+$([ ! -z "$CACERT_FILE" ] && echo "cafile = $CACERT_FILE")
+# TODO(dtantsur): ipa-api-url should be populated by ironic itself, but it's
+# not, so working around here.
+# NOTE(dtantsur): keep inspection arguments synchronized with inspector.ipxe
+extra_kernel_params = ipa-insecure=True ipa-inspector-collectors=default,extra-hardware,logs ipa-inspection-dhcp-all-interfaces=1 ipa-collect-lldp=1 ipa-api-url=https://${IRONIC_URL_HOST}:6385
+
+[service_catalog]
+endpoint_override = https://${IRONIC_URL_HOST}:6385
+certfile = $CERT_FILE
+keyfile = $KEY_FILE
+insecure = false
+$([ ! -z "$CACERT_FILE" ] && echo "cafile = $CACERT_FILE")
+EOF
+else
+    crudini --merge /etc/ironic/ironic.conf <<EOF
 [inspector]
 endpoint_override = http://${IRONIC_URL_HOST}:5050
 # TODO(dtantsur): ipa-api-url should be populated by ironic itself, but it's
@@ -60,10 +70,8 @@ extra_kernel_params = ipa-inspector-collectors=default,extra-hardware,logs ipa-i
 
 [service_catalog]
 endpoint_override = http://${IRONIC_URL_HOST}:6385
-
-$RPC_SSL_CONF
-
 EOF
+fi
 
 mkdir -p /shared/html
 mkdir -p /shared/ironic_prometheus_exporter

@@ -35,16 +35,12 @@ Listen 6385
     SSLCACertificateFile {{ env["CACERT_FILE"] }}
 
     <Location "/">
-    <If "! -R '{{ env["IRONIC_IP"] }}/32'">
         SSLVerifyClient require
         SSLVerifyDepth 1
-    </If>
     </Location>
 
     <LocationMatch "(^/?$)|(^/v1/?$)|(^/v1/lookup)|(^/v1/heartbeat)">
-    <If "! -R '{{ env["IRONIC_IP"] }}/32'">
         SSLVerifyClient none
-    </If>
     </LocationMatch>
 
 {% endif %}
