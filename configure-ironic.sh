@@ -39,14 +39,15 @@ fast_track = ${IRONIC_FAST_TRACK}
 
 EOF
 
-if [ ! -z "$CERT_FILE" ] && [ ! -z "$KEY_FILE" ]; then
+if [ ! -z "$CLIENT_CERT_FILE" ] || [ ! -z "$CLIENT_KEY_FILE" ] || [ ! -z "$CACERT_FILE" ] || [ ! -z "$INSECURE" ]; then
     crudini --merge /etc/ironic/ironic.conf <<EOF
 [inspector]
 endpoint_override = https://${IRONIC_URL_HOST}:5050
-certfile = $CERT_FILE
-keyfile = $KEY_FILE
-insecure = false
+$([ ! -z "$CLIENT_CERT_FILE" ] && echo "certfile = $CLIENT_CERT_FILE")
+$([ ! -z "$CLIENT_KEY_FILE" ] && echo "keyfile = $CLIENT_KEY_FILE")
 $([ ! -z "$CACERT_FILE" ] && echo "cafile = $CACERT_FILE")
+$([ ! -z "$INSECURE" ] && echo "insecure = $INSECURE" || echo "insecure = false")
+
 # TODO(dtantsur): ipa-api-url should be populated by ironic itself, but it's
 # not, so working around here.
 # NOTE(dtantsur): keep inspection arguments synchronized with inspector.ipxe
@@ -54,15 +55,16 @@ extra_kernel_params = ipa-insecure=True ipa-inspector-collectors=default,extra-h
 
 [service_catalog]
 endpoint_override = https://${IRONIC_URL_HOST}:6385
-certfile = $CERT_FILE
-keyfile = $KEY_FILE
-insecure = false
+$([ ! -z "$CLIENT_CERT_FILE" ] && echo "certfile = $CLIENT_CERT_FILE")
+$([ ! -z "$CLIENT_KEY_FILE" ] && echo "keyfile = $CLIENT_KEY_FILE")
 $([ ! -z "$CACERT_FILE" ] && echo "cafile = $CACERT_FILE")
+$([ ! -z "$INSECURE" ] && echo "insecure = $INSECURE" || echo "insecure = false")
 EOF
 else
     crudini --merge /etc/ironic/ironic.conf <<EOF
 [inspector]
 endpoint_override = http://${IRONIC_URL_HOST}:5050
+
 # TODO(dtantsur): ipa-api-url should be populated by ironic itself, but it's
 # not, so working around here.
 # NOTE(dtantsur): keep inspection arguments synchronized with inspector.ipxe

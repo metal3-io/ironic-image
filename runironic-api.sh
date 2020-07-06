@@ -6,14 +6,14 @@
 rm -rf /shared/log/ironic
 mkdir -p /shared/log/ironic
 
-if [ ! -z "$CERT_FILE" ] && [ ! -z "$KEY_FILE" ]; then
+if [ ! -z "$CLIENT_CERT_FILE" ] || [ ! -z "$CLIENT_KEY_FILE" ] || [ ! -z "$CACERT_FILE" ] || [ ! -z "$INSECURE" ]; then
     crudini --merge /etc/ironic/ironic.conf <<EOF
 [json_rpc]
 use_ssl = true
-certfile = $CERT_FILE
-keyfile = $KEY_FILE
-insecure = false
+$([ ! -z "$CLIENT_CERT_FILE" ] && echo "certfile = $CLIENT_CERT_FILE")
+$([ ! -z "$CLIENT_KEY_FILE" ] && echo "keyfile = $CLIENT_KEY_FILE")
 $([ ! -z "$CACERT_FILE" ] && echo "cafile = $CACERT_FILE")
+$([ ! -z "$INSECURE" ] && echo "insecure = $INSECURE" || echo "insecure = false")
 port = 8089
 EOF
 else
