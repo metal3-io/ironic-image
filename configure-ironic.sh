@@ -15,37 +15,7 @@ IRONIC_AUTOMATED_CLEAN=${IRONIC_AUTOMATED_CLEAN:-true}
 
 wait_for_interface_or_ip
 
-cp /etc/ironic/ironic.conf /etc/ironic/ironic.conf_orig
-
-crudini --merge /etc/ironic/ironic.conf <<EOF
-[DEFAULT]
-my_ip = $IRONIC_IP
-
-[api]
-host_ip = ::
-api_workers = $NUMWORKERS
-
-[conductor]
-bootloader = http://${IRONIC_URL_HOST}:${HTTP_PORT}/uefi_esp.img
-automated_clean = ${IRONIC_AUTOMATED_CLEAN}
-
-[database]
-connection = mysql+pymysql://ironic:${MARIADB_PASSWORD}@localhost/ironic?charset=utf8
-
-[deploy]
-http_url = http://${IRONIC_URL_HOST}:${HTTP_PORT}
-fast_track = ${IRONIC_FAST_TRACK}
-
-[inspector]
-endpoint_override = http://${IRONIC_URL_HOST}:5050
-# TODO(dtantsur): ipa-api-url should be populated by ironic itself, but it's
-# not, so working around here.
-# NOTE(dtantsur): keep inspection arguments synchronized with inspector.ipxe
-extra_kernel_params = ipa-inspector-collectors=default,extra-hardware,logs ipa-inspection-dhcp-all-interfaces=1 ipa-collect-lldp=1 ipa-api-url=http://${IRONIC_URL_HOST}:6385
-
-[service_catalog]
-endpoint_override = http://${IRONIC_URL_HOST}:6385
-EOF
+jinjarender </etc/ironic/ironic.conf.j2 | crudini --merge /etc/ironic/ironic.conf
 
 mkdir -p /shared/html
 mkdir -p /shared/ironic_prometheus_exporter

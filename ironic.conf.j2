@@ -13,8 +13,13 @@ enabled_management_interfaces = ipmitool,idrac,irmc,fake,redfish,idrac-redfish,i
 enabled_power_interfaces = ipmitool,idrac,irmc,fake,redfish,idrac-redfish,ibmc
 enabled_raid_interfaces = no-raid,irmc,agent,fake
 enabled_vendor_interfaces = ipmitool,no-vendor,idrac,fake,ibmc
+my_ip = {{ env["IRONIC_IP"] }}
 rpc_transport = json-rpc
 use_stderr = true
+
+[api]
+host_ip = ::
+api_workers = {{ env["NUMWORKERS"] }}
 
 [agent]
 deploy_logs_collect = always
@@ -26,7 +31,8 @@ deploy_logs_local_path = /shared/log/ironic/deploy
 max_command_attempts = 30
 
 [conductor]
-automated_clean = true
+automated_clean = {{ env["IRONIC_AUTOMATED_CLEAN"] }}
+bootloader = http://{{ env["IRONIC_URL_HOST"] }}:{{ env["HTTP_PORT"] }}/uefi_esp.img
 # NOTE(dtantsur): keep aligned with [pxe]boot_retry_timeout below.
 deploy_callback_timeout = 4800
 send_sensor_data = true
@@ -39,13 +45,12 @@ send_sensor_data_interval = 160
 default_boot_option = local
 erase_devices_metadata_priority = 10
 erase_devices_priority = 0
+fast_track = {{ env["IRONIC_FAST_TRACK"] }}
 http_root = /shared/html/
+http_url = http://{{ env["IRONIC_URL_HOST"] }}:{{ env["HTTP_PORT"] }}
 
 [dhcp]
 dhcp_provider = none
-
-[inspector]
-power_off = false
 
 [oslo_messaging_notifications]
 driver = prometheus_exporter
@@ -67,3 +72,9 @@ uefi_pxe_config_template = $pybasedir/drivers/modules/ipxe_config.template
 
 [redfish]
 use_swift = false
+
+[database]
+connection = mysql+pymysql://ironic:{{ env["MARIADB_PASSWORD"] }}@localhost/ironic?charset=utf8
+
+[service_catalog]
+endpoint_override = http://{{ env["IRONIC_URL_HOST"] }}:6385
