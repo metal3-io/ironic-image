@@ -15,6 +15,16 @@ IRONIC_AUTOMATED_CLEAN=${IRONIC_AUTOMATED_CLEAN:-true}
 
 wait_for_interface_or_ip
 
+if [[ $IRONIC_FAST_TRACK == true ]]; then
+    INSPECTOR_POWER_OFF=false
+    # TODO(dtantsur): ipa-api-url should be populated by ironic itself, but
+    # it's not yet, so working around here.
+    INSPECTOR_EXTRA_ARGS=" ipa-api-url=http://${IRONIC_URL_HOST}:6385"
+else
+    INSPECTOR_POWER_OFF=true
+    INSPECTOR_EXTRA_ARGS=""
+fi
+
 cp /etc/ironic/ironic.conf /etc/ironic/ironic.conf_orig
 
 crudini --merge /etc/ironic/ironic.conf <<EOF
@@ -38,10 +48,9 @@ fast_track = ${IRONIC_FAST_TRACK}
 
 [inspector]
 endpoint_override = http://${IRONIC_URL_HOST}:5050
-# TODO(dtantsur): ipa-api-url should be populated by ironic itself, but it's
-# not, so working around here.
+power_off = ${INSPECTOR_POWER_OFF}
 # NOTE(dtantsur): keep inspection arguments synchronized with inspector.ipxe
-extra_kernel_params = ipa-inspector-collectors=default,extra-hardware,logs ipa-inspection-dhcp-all-interfaces=1 ipa-collect-lldp=1 ipa-api-url=http://${IRONIC_URL_HOST}:6385
+extra_kernel_params = ipa-inspector-collectors=default,extra-hardware,logs ipa-inspection-dhcp-all-interfaces=1 ipa-collect-lldp=1 ${INSPECTOR_EXTRA_ARGS}
 
 [service_catalog]
 endpoint_override = http://${IRONIC_URL_HOST}:6385
