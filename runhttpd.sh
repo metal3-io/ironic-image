@@ -4,17 +4,29 @@
 
 HTTP_PORT=${HTTP_PORT:-"80"}
 
+# Whether to enable fast_track provisioning or not
+IRONIC_FAST_TRACK=${IRONIC_FAST_TRACK:-true}
+
 wait_for_interface_or_ip
 
 mkdir -p /shared/html
 chmod 0777 /shared/html
+
+if [[ $IRONIC_FAST_TRACK == true ]]; then
+    INSPECTOR_EXTRA_ARGS="ipa-api-url=http://${IRONIC_URL_HOST}:6385"
+else
+    INSPECTOR_EXTRA_ARGS=""
+fi
 
 # Copy files to shared mount
 cp /tmp/inspector.ipxe /shared/html/inspector.ipxe
 cp /tmp/dualboot.ipxe /shared/html/dualboot.ipxe
 
 # Use configured values
-sed -i -e s/IRONIC_IP/${IRONIC_URL_HOST}/g -e s/HTTP_PORT/${HTTP_PORT}/g /shared/html/inspector.ipxe
+sed -i -e s/IRONIC_IP/${IRONIC_URL_HOST}/g \
+    -e s/HTTP_PORT/${HTTP_PORT}/g \
+    -e "s|EXTRA_ARGS|${INSPECTOR_EXTRA_ARGS}|g" \
+    /shared/html/inspector.ipxe
 
 sed -i 's/^Listen .*$/Listen [::]:'"$HTTP_PORT"'/' /etc/httpd/conf/httpd.conf
 sed -i -e 's|\(^[[:space:]]*\)\(DocumentRoot\)\(.*\)|\1\2 "/shared/html"|' \
