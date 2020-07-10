@@ -30,7 +30,7 @@ RUN dd bs=1024 count=2880 if=/dev/zero of=esp.img && \
 
 FROM docker.io/centos:centos8
 
-RUN dnf install -y python3 python3-requests && \
+RUN dnf install -y python3 python3-requests patch patchutils && \
     curl https://raw.githubusercontent.com/openstack/tripleo-repos/master/tripleo_repos/main.py | python3 - -b master current-tripleo && \
     dnf update -y && \
     dnf install -y python3-gunicorn openstack-ironic-api openstack-ironic-conductor crudini \
@@ -46,6 +46,13 @@ COPY --from=builder /tmp/ipxe/src/bin-x86_64-efi/snponly.efi /tftpboot
 COPY --from=builder /tmp/ipxe/src/bin-x86_64-efi/ipxe.efi /tftpboot
 
 COPY --from=builder /tmp/esp.img /tmp/uefi_esp.img
+
+COPY patches /tmp/patches
+RUN cd /usr/lib/python3.6/site-packages && \
+    for pfile in $(ls /tmp/patches); do \
+        filterdiff "/tmp/patches/$pfile" --exclude "*/tests/*" --exclude "*/releasenotes/*" --exclude "*/doc/*" --decompress | tee /dev/stderr | patch --strip 1 --force --verbose; \
+    done && \
+    rm -rf /tmp/patches
 
 COPY ./ironic.conf /tmp/ironic.conf
 RUN crudini --merge /etc/ironic/ironic.conf < /tmp/ironic.conf && \
