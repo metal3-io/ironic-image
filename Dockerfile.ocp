@@ -22,10 +22,13 @@ RUN if [ $(uname -m) = "x86_64" ]; then \
 FROM ubi8
 
 RUN dnf update -y && \
-    dnf install -y python3-gunicorn openstack-ironic-api openstack-ironic-conductor crudini \
-        iproute dnsmasq httpd qemu-img parted gdisk ipxe-bootimgs psmisc procps-ng \
-        mariadb-server ipxe-roms-qemu genisoimage python3-ironic-prometheus-exporter \
-        python3-jinja2 python3-sushy-oem-idrac && \
+    dnf --setopt=install_weak_deps=False install -y python3-gunicorn \
+        openstack-ironic-api openstack-ironic-conductor crudini \
+        iproute dnsmasq httpd qemu-img iscsi-initiator-utils parted \
+        gdisk ipxe-bootimgs ipxe-roms-qemu psmisc mariadb-server \
+        genisoimage python3-ironic-prometheus-exporter \
+        python3-jinja2 python3-sushy-oem-idrac ipmitool python3-dracclient \
+        python3-scciclient python3-sushy && \
     dnf clean all && \
     rm -rf /var/cache/{yum,dnf}/*
 
