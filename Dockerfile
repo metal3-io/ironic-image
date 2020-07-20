@@ -33,10 +33,12 @@ FROM docker.io/centos:centos8
 RUN dnf install -y python3 python3-requests && \
     curl https://raw.githubusercontent.com/openstack/tripleo-repos/master/tripleo_repos/main.py | python3 - -b master current-tripleo && \
     dnf update -y && \
-    dnf install -y python3-gunicorn openstack-ironic-api openstack-ironic-conductor crudini \
+    dnf --setopt=install_weak_deps=False install -y python3-gunicorn \
+        openstack-ironic-api openstack-ironic-conductor crudini \
         iproute dnsmasq httpd qemu-img iscsi-initiator-utils parted gdisk psmisc \
         mariadb-server genisoimage python3-ironic-prometheus-exporter \
-        python3-jinja2 python3-sushy-oem-idrac python3-ibmcclient && \
+        python3-jinja2 python3-sushy-oem-idrac python3-ibmcclient \
+        ipmitool python3-dracclient python3-scciclient python3-sushy && \
     dnf clean all && \
     rm -rf /var/cache/{yum,dnf}/*
 
