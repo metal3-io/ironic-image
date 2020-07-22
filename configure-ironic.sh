@@ -2,9 +2,10 @@
 
 . /bin/ironic-common.sh
 
-USE_HTTP_BASIC=${USE_HTTP_BASIC:-false}
-IRONIC_HTTP_BASIC_USERNAME=${IRONIC_HTTP_BASIC_USERNAME:-"change_me"}
-IRONIC_HTTP_BASIC_PASSWORD=${IRONIC_HTTP_BASIC_PASSWORD:-"change_me"}
+# Accepted values noauth and http_basic
+IRONIC_AUTH_STRATEGY=${IRONIC_AUTH_STRATEGU:-"noauth"}
+IRONIC_HTTP_BASIC_USERNAME=${IRONIC_HTTP_BASIC_USERNAME:-""}
+IRONIC_HTTP_BASIC_PASSWORD=${IRONIC_HTTP_BASIC_PASSWORD:-""}
 
 HTTP_PORT=${HTTP_PORT:-"80"}
 MARIADB_PASSWORD=${MARIADB_PASSWORD:-"change_me"}
@@ -67,14 +68,19 @@ env | grep "^OS_" | tee -a /etc/ironic/ironic.extra
 mkdir -p /shared/html
 mkdir -p /shared/ironic_prometheus_exporter
 
-if [ "$USE_HTTP_BASIC" = "true" ]; then
+if [ "$IRONIC_AUTH_STRATEGY" == "http_basic" ]; then
+
+	if [[ "$IRONIC_HTTP_BASIC_USERNAME" == "" || "$IRONIC_HTTP_BASIC_PASSWORD" == "" ]]; then
+		echo "Please set IRONIC_HTTP_BASIC_USERNAME and IRONIC_HTTP_BASIC_PASSWORD"
+		exit 1
+	fi
 
 	crudini --set /etc/ironic/ironic.conf DEFAULT auth_strategy http_basic
 	crudini --set /etc/ironic/ironic.conf DEFAULT http_basic_auth_user_file /shared/htpasswd-ironic
 	crudini --set /etc/ironic/ironic.conf json_rpc auth_strategy http_basic
 	crudini --set /etc/ironic/ironic.conf json_rpc http_basic_auth_user_file /shared/htpasswd-ironic
-	crudini --set /etc/ironic/ironic.conf json_rpc http_basic_username $IRONIC_HTTP_BASIC_USERNAME
-	crudini --set /etc/ironic/ironic.conf json_rpc http_basic_password $IRONIC_HTTP_BASIC_PASSWORD
+	crudini --set /etc/ironic/ironic.conf json_rpc username $IRONIC_HTTP_BASIC_USERNAME
+	crudini --set /etc/ironic/ironic.conf json_rpc password $IRONIC_HTTP_BASIC_PASSWORD
 
 	## NOTE(iurygregory): reusing the ironic credentials so we don't end up with wrong client credentials
 	htpasswd -nbB $IRONIC_HTTP_BASIC_USERNAME $IRONIC_HTTP_BASIC_PASSWORD > /shared/htpasswd-ironic
