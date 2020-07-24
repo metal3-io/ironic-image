@@ -71,7 +71,9 @@ if [ "$USE_HTTP_BASIC" = "true" ]; then
 
 	crudini --set /etc/ironic/ironic.conf DEFAULT auth_strategy http_basic
 	crudini --set /etc/ironic/ironic.conf DEFAULT http_basic_auth_user_file /shared/htpasswd-ironic
+
 	crudini --set /etc/ironic/ironic.conf json_rpc auth_strategy http_basic
+	crudini --del /etc/ironic/ironic.conf json_rpc host_ip
 	crudini --set /etc/ironic/ironic.conf json_rpc http_basic_auth_user_file /shared/htpasswd-ironic
 	crudini --set /etc/ironic/ironic.conf json_rpc http_basic_username $IRONIC_HTTP_BASIC_USERNAME
 	crudini --set /etc/ironic/ironic.conf json_rpc http_basic_password $IRONIC_HTTP_BASIC_PASSWORD
