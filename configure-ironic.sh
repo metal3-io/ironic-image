@@ -5,6 +5,8 @@
 USE_HTTP_BASIC=${USE_HTTP_BASIC:-false}
 IRONIC_HTTP_BASIC_USERNAME=${IRONIC_HTTP_BASIC_USERNAME:-"change_me"}
 IRONIC_HTTP_BASIC_PASSWORD=${IRONIC_HTTP_BASIC_PASSWORD:-"change_me"}
+INSPECTOR_HTTP_BASIC_USERNAME=${IRONIC_HTTP_BASIC_USERNAME:-"change_me"}
+INSPECTOR_HTTP_BASIC_PASSWORD=${IRONIC_HTTP_BASIC_PASSWORD:-"change_me"}
 
 HTTP_PORT=${HTTP_PORT:-"80"}
 MARIADB_PASSWORD=${MARIADB_PASSWORD:-"change_me"}
@@ -65,6 +67,10 @@ if [ "$USE_HTTP_BASIC" = "true" ]; then
 
 	crudini --set /etc/ironic/ironic.conf DEFAULT auth_strategy http_basic
 	crudini --set /etc/ironic/ironic.conf DEFAULT http_basic_auth_user_file /shared/htpasswd-ironic
+
+	crudini --set /etc/ironic/ironic.conf inspector auth_type http_basic
+	crudini --set /etc/ironic/ironic.conf inspector username $INSPECTOR_HTTP_BASIC_USERNAME
+	crudini --set /etc/ironic/ironic.conf inspector password $INSPECTOR_HTTP_BASIC_PASSWORD
 
 	crudini --set /etc/ironic/ironic.conf json_rpc auth_strategy http_basic
 	crudini --del /etc/ironic/ironic.conf json_rpc host_ip
