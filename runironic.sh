@@ -2,6 +2,8 @@
 
 . /bin/configure-ironic.sh
 
+crudini --set /etc/ironic/ironic.conf DEFAULT host localhost
+
 ironic-dbsync --config-file /etc/ironic/ironic.conf upgrade
 
 # Remove log files from last deployment
