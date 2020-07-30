@@ -58,5 +58,10 @@ COPY ./dnsmasq.conf.j2 /etc/dnsmasq.conf.j2
 COPY ./inspector.ipxe /tmp/inspector.ipxe
 COPY ./dualboot.ipxe /tmp/dualboot.ipxe
 
+# Custom httpd config, removes all but the bare minimum needed modules
+RUN rm -f /etc/httpd/conf.d/autoindex.conf /etc/httpd/conf.d/welcome.conf /etc/httpd/conf.modules.d/*.conf
+COPY ./httpd.conf /etc/httpd/conf.d/httpd.conf
+COPY ./httpd-modules.conf /etc/httpd/conf.modules.d/httpd-modules.conf
+
 ENTRYPOINT ["/bin/runironic"]
 
