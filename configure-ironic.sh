@@ -2,10 +2,6 @@
 
 . /bin/ironic-common.sh
 
-USE_HTTP_BASIC=${USE_HTTP_BASIC:-false}
-IRONIC_HTTP_BASIC_USERNAME=${IRONIC_HTTP_BASIC_USERNAME:-"change_me"}
-IRONIC_HTTP_BASIC_PASSWORD=${IRONIC_HTTP_BASIC_PASSWORD:-"change_me"}
-
 HTTP_PORT=${HTTP_PORT:-"80"}
 MARIADB_PASSWORD=${MARIADB_PASSWORD:-"change_me"}
 NUMPROC=$(cat /proc/cpuinfo  | grep "^processor" | wc -l)
@@ -67,17 +63,31 @@ env | grep "^OS_" | tee -a /etc/ironic/ironic.extra
 mkdir -p /shared/html
 mkdir -p /shared/ironic_prometheus_exporter
 
-if [ "$USE_HTTP_BASIC" = "true" ]; then
-
-	crudini --set /etc/ironic/ironic.conf DEFAULT auth_strategy http_basic
-	crudini --set /etc/ironic/ironic.conf DEFAULT http_basic_auth_user_file /shared/htpasswd-ironic
-
-	crudini --set /etc/ironic/ironic.conf json_rpc auth_strategy http_basic
-	crudini --del /etc/ironic/ironic.conf json_rpc host_ip
-	crudini --set /etc/ironic/ironic.conf json_rpc http_basic_auth_user_file /shared/htpasswd-ironic
-	crudini --set /etc/ironic/ironic.conf json_rpc http_basic_username $IRONIC_HTTP_BASIC_USERNAME
-	crudini --set /etc/ironic/ironic.conf json_rpc http_basic_password $IRONIC_HTTP_BASIC_PASSWORD
-
-	## NOTE(iurygregory): reusing the ironic credentials so we don't end up with wrong client credentials
-	htpasswd -nbB $IRONIC_HTTP_BASIC_USERNAME $IRONIC_HTTP_BASIC_PASSWORD > /shared/htpasswd-ironic
+HTPASSWD_FILE=/etc/ironic/htpasswd
+if [ -n "${HTTP_BASIC_HTPASSWD}" ]; then
+    printf "%s\n" "${HTTP_BASIC_HTPASSWD}" >"${HTPASSWD_FILE}"
 fi
+set_http_basic_server_auth_strategy() {
+    local section=${1:-DEFAULT}
+    crudini --set /etc/ironic/ironic.conf ${section} auth_strategy http_basic
+    crudini --set /etc/ironic/ironic.conf ${section} http_basic_auth_user_file "${HTPASSWD_FILE}"
+}
+
+# Configure HTTP basic auth for ironic-api server
+if [ -f "${HTPASSWD_FILE}" ]; then
+    set_http_basic_server_auth_strategy
+fi
+
+
+# Configure auth for clients
+IRONIC_API_CONFIG_OPTIONS="--config-file /usr/share/ironic/ironic-dist.conf --config-file /etc/ironic/ironic.conf"
+
+configure_client_basic_auth() {
+    local auth_config_file="/auth/$1/auth-config"
+    if [ -f ${auth_config_file} ]; then
+        IRONIC_API_CONFIG_OPTIONS+=" --config_file ${auth_config_file}"
+    fi
+}
+
+configure_client_basic_auth ironic-inspector
+configure_client_basic_auth ironic-rpc
