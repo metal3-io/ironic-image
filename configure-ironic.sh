@@ -85,7 +85,7 @@ IRONIC_API_CONFIG_OPTIONS="--config-file /usr/share/ironic/ironic-dist.conf --co
 configure_client_basic_auth() {
     local auth_config_file="/auth/$1/auth-config"
     if [ -f ${auth_config_file} ]; then
-        IRONIC_API_CONFIG_OPTIONS+=" --config_file ${auth_config_file}"
+        IRONIC_API_CONFIG_OPTIONS+=" --config-file ${auth_config_file}"
     fi
 }
 
