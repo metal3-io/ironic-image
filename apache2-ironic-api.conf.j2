@@ -30,9 +30,9 @@ Listen 6385
     SSLCertificateFile {{ env["CERT_FILE"] }}
     SSLCertificateKeyFile {{ env["KEY_FILE"] }}
 
-{% if "CACERT_FILE" in env %}
+{% if "CLIENT_AUTH_CACERT_FILE" in env %}
     SSLVerifyClient none
-    SSLCACertificateFile {{ env["CACERT_FILE"] }}
+    SSLCACertificateFile {{ env["CLIENT_AUTH_CACERT_FILE"] }}
 
     <Location "/">
         SSLVerifyClient require

@@ -51,7 +51,10 @@ $([ ! -z "$INSECURE" ] && echo "insecure = $INSECURE" || echo "insecure = false"
 # TODO(dtantsur): ipa-api-url should be populated by ironic itself, but it's
 # not, so working around here.
 # NOTE(dtantsur): keep inspection arguments synchronized with inspector.ipxe
-extra_kernel_params = ipa-insecure=True ipa-inspector-collectors=default,extra-hardware,logs ipa-inspection-dhcp-all-interfaces=1 ipa-collect-lldp=1 ipa-api-url=https://${IRONIC_URL_HOST}:6385
+extra_kernel_params = ipa-insecure=1 ipa-inspector-collectors=default,extra-hardware,logs ipa-inspection-dhcp-all-interfaces=1 ipa-collect-lldp=1 ipa-api-url=https://${IRONIC_URL_HOST}:6385
+
+[pxe]
+pxe_append_params = nofb nomodeset vga=normal ipa-insecure=1
 
 [service_catalog]
 endpoint_override = https://${IRONIC_URL_HOST}:6385

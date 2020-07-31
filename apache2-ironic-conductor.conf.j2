@@ -28,8 +28,8 @@ Listen 8089
     SSLCertificateFile {{ env["CERT_FILE"] }}
     SSLCertificateKeyFile {{ env["KEY_FILE"] }}
 
-{% if "CACERT_FILE" in env %}
-    SSLCACertificateFile {{ env["CACERT_FILE"] }}
+{% if "CLIENT_AUTH_CACERT_FILE" in env %}
+    SSLCACertificateFile {{ env["CLIENT_AUTH_CACERT_FILE"] }}
     SSLVerifyClient require
     SSLVerifyDepth 1
 {% endif %}
