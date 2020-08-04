@@ -11,8 +11,8 @@ rm -rf /shared/log/ironic
 
 mkdir -p /shared/log/ironic
 
-/usr/bin/ironic-conductor &
-/usr/bin/ironic-api ${IRONIC_API_CONFIG_OPTIONS} &
+/usr/bin/ironic-conductor ${IRONIC_CONFIG_OPTIONS} &
+/usr/bin/ironic-api --config-file /usr/share/ironic/ironic-dist.conf ${IRONIC_CONFIG_OPTIONS} &
 
 sleep infinity
 

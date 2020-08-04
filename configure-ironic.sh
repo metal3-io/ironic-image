@@ -74,12 +74,12 @@ fi
 
 
 # Configure auth for clients
-IRONIC_API_CONFIG_OPTIONS="--config-file /usr/share/ironic/ironic-dist.conf --config-file /etc/ironic/ironic.conf"
+IRONIC_CONFIG_OPTIONS="--config-file /etc/ironic/ironic.conf"
 
 configure_client_basic_auth() {
     local auth_config_file="/auth/$1/auth-config"
     if [ -f ${auth_config_file} ]; then
-        IRONIC_API_CONFIG_OPTIONS+=" --config-file ${auth_config_file}"
+        IRONIC_CONFIG_OPTIONS+=" --config-file ${auth_config_file}"
     fi
 }
 
