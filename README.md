@@ -36,3 +36,9 @@ The following environment variables can be passed in to customize run-time funct
 - DHCP_RANGE - dhcp range to use for provisioning (default 172.22.0.10-172.22.0.100)
 - MARIADB_PASSWORD - The database password
 - OS_<section>_\_<name>=<value> - This format can be used to set arbitary ironic config options
+
+The ironic configuration can be overridden by various environment variables. The following can serve as an example:
+- OS_CONDUCTOR__DEPLOY_CALLBACK_TIMEOUT=4800 - timeout (seconds) to wait for a callback from a deploy ramdisk
+- OS_CONDUCTOR__INSPECT_TIMEOUT=1800 - timeout (seconds) for waiting for node inspection
+- OS_CONDUCTOR__CLEAN_CALLBACK_TIMEOUT=1800 - timeout (seconds) to wait for a callback from the ramdisk doing the cleaning
+- OS_PXE__BOOT_RETRY_TIMEOUT=1200 - timeout (seconds) to enable boot retries.
