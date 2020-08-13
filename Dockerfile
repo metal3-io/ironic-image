@@ -2,7 +2,7 @@
 ## Note: we are pinning to a specific commit for reproducible builds.
 ## Updated as needed.
 FROM docker.io/centos:centos8 AS builder
-RUN yum install -y gcc git make xz-devel
+RUN dnf install -y gcc git make xz-devel
 WORKDIR /tmp
 COPY . .
 RUN git clone https://github.com/ipxe/ipxe.git && \
@@ -20,7 +20,7 @@ RUN git clone https://github.com/ipxe/ipxe.git && \
 ## that gets installed by grub2-efi-x64 (/boot/efi/EFI/centos/grubx64.efi)
 ## looks for grub.cnf in /EFI/centos, ironic puts it in /boot/grub
 RUN if [ $(uname -m) = "x86_64" ]; then \
-      yum install -y genisoimage grub2 grub2-efi-x64-modules shim dosfstools mtools && \
+      dnf install -y genisoimage grub2 grub2-efi-x64-modules shim dosfstools mtools && \
       dd bs=1024 count=3200 if=/dev/zero of=esp.img && \
       mkfs.msdos -F 12 -n 'ESP_IMAGE' ./esp.img && \
       mmd -i esp.img EFI && \
@@ -35,15 +35,12 @@ RUN if [ $(uname -m) = "x86_64" ]; then \
 
 FROM docker.io/centos:centos8
 
+COPY ./main-packages-list.txt /tmp/main-packages-list.txt
+
 RUN dnf install -y python3 python3-requests && \
     curl https://raw.githubusercontent.com/openstack/tripleo-repos/master/tripleo_repos/main.py | python3 - -b master current-tripleo && \
-    dnf update -y && \
-    dnf --setopt=install_weak_deps=False install -y python3-gunicorn \
-        openstack-ironic-api openstack-ironic-conductor crudini httpd-tools \
-        iproute dnsmasq httpd qemu-img iscsi-initiator-utils parted gdisk psmisc \
-        mariadb-server genisoimage python3-ironic-prometheus-exporter \
-        python3-jinja2 python3-sushy-oem-idrac python3-ibmcclient \
-        ipmitool python3-dracclient python3-scciclient python3-sushy syslinux-nonlinux && \
+    dnf upgrade -y && \
+    dnf --setopt=install_weak_deps=False install -y $(cat /tmp/main-packages-list.txt) && \
     dnf clean all && \
     rm -rf /var/cache/{yum,dnf}/*
 
