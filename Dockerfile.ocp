@@ -6,7 +6,7 @@ WORKDIR /tmp
 ## that gets installed by grub2-efi-x64 (/boot/efi/EFI/centos/grubx64.efi)
 ## looks for grub.cnf in /EFI/centos, ironic puts it in /boot/grub
 RUN if [ $(uname -m) = "x86_64" ]; then \
-      yum install -y gcc git make genisoimage xz-devel grub2 grub2-efi-x64-modules shim dosfstools mtools && \
+      dnf install -y gcc git make genisoimage xz-devel grub2 grub2-efi-x64-modules shim dosfstools mtools && \
       dd bs=1024 count=3200 if=/dev/zero of=esp.img && \
       mkfs.msdos -F 12 -n 'ESP_IMAGE' ./esp.img && \
       mmd -i esp.img EFI && \
@@ -21,14 +21,10 @@ RUN if [ $(uname -m) = "x86_64" ]; then \
 
 FROM ubi8
 
-RUN dnf update -y && \
-    dnf --setopt=install_weak_deps=False install -y python3-gunicorn \
-        openstack-ironic-api openstack-ironic-conductor crudini \
-        iproute dnsmasq httpd qemu-img iscsi-initiator-utils parted \
-        gdisk ipxe-bootimgs ipxe-roms-qemu psmisc mariadb-server \
-        genisoimage python3-ironic-prometheus-exporter \
-        python3-jinja2 python3-sushy-oem-idrac ipmitool python3-dracclient \
-        python3-scciclient python3-sushy && \
+COPY ./main-packages-list.txt /tmp/main-packages-list.txt
+
+RUN dnf upgrade -y && \
+    dnf --setopt=install_weak_deps=False install -y $(cat /tmp/main-packages-list.txt) && \
     dnf clean all && \
     rm -rf /var/cache/{yum,dnf}/*
 
