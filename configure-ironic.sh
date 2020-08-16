@@ -50,7 +50,7 @@ fast_track = ${IRONIC_FAST_TRACK}
 endpoint_override = http://${IRONIC_URL_HOST}:5050
 power_off = ${INSPECTOR_POWER_OFF}
 # NOTE(dtantsur): keep inspection arguments synchronized with inspector.ipxe
-extra_kernel_params = console=ttyS0 ipa-inspector-collectors=default,extra-hardware,logs ipa-inspection-dhcp-all-interfaces=1 ipa-collect-lldp=1 ${INSPECTOR_EXTRA_ARGS}
+extra_kernel_params = console=ttyS0 ipa-inspection-collectors=default,extra-hardware,logs ipa-inspection-dhcp-all-interfaces=1 ipa-collect-lldp=1 ${INSPECTOR_EXTRA_ARGS}
 
 [service_catalog]
 endpoint_override = http://${IRONIC_URL_HOST}:6385
