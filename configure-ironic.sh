@@ -45,7 +45,7 @@ fast_track = ${IRONIC_FAST_TRACK}
 endpoint_override = http://${IRONIC_URL_HOST}:5050
 power_off = ${INSPECTOR_POWER_OFF}
 # NOTE(dtantsur): keep inspection arguments synchronized with inspector.ipxe
-extra_kernel_params = ipa-inspector-collectors=default,extra-hardware,logs ipa-inspection-dhcp-all-interfaces=1 ipa-collect-lldp=1 ${INSPECTOR_EXTRA_ARGS}
+extra_kernel_params = ipa-inspection-collectors=default,extra-hardware,logs ipa-inspection-dhcp-all-interfaces=1 ipa-collect-lldp=1 ${INSPECTOR_EXTRA_ARGS}
 
 [mdns]
 interfaces = $IRONIC_IP
