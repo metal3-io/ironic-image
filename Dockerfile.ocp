@@ -1,4 +1,4 @@
-FROM ironic-builder AS builder
+FROM registry.svc.ci.openshift.org/ocp/builder:rhel-8-base-openshift-4.6 AS builder
 
 WORKDIR /tmp
 
@@ -19,7 +19,7 @@ RUN if [ $(uname -m) = "x86_64" ]; then \
       touch /tmp/esp.img; \
     fi
 
-FROM ubi8
+FROM registry.svc.ci.openshift.org/ocp/builder:rhel-8-base-openshift-4.6
 
 COPY ./main-packages-list.txt /tmp/main-packages-list.txt
 
