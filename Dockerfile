@@ -35,7 +35,9 @@ RUN if [ $(uname -m) = "x86_64" ]; then \
 
 FROM docker.io/centos:centos8
 
-COPY ./main-packages-list.txt /tmp/main-packages-list.txt
+ARG PKGS_LIST=main-packages-list.txt
+
+COPY ${PKGS_LIST} /tmp/main-packages-list.txt
 
 RUN dnf install -y python3 python3-requests && \
     curl https://raw.githubusercontent.com/openstack/tripleo-repos/master/tripleo_repos/main.py | python3 - -b master current-tripleo && \
