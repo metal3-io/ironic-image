@@ -15,9 +15,9 @@ enabled_boot_interfaces = pxe,ipxe,fake,redfish-virtual-media,idrac-redfish-virt
 enabled_deploy_interfaces = direct,fake
 # NOTE(dtantsur): when changing this, make sure to update the driver
 # dependencies in Dockerfile.
-enabled_hardware_types = ipmi,idrac,irmc,fake-hardware,redfish
+enabled_hardware_types = ipmi,idrac,irmc,fake-hardware,redfish,manual-management
 enabled_inspect_interfaces = inspector,idrac,irmc,fake,redfish
-enabled_management_interfaces = ipmitool,idrac,irmc,fake,redfish,idrac-redfish
+enabled_management_interfaces = ipmitool,idrac,irmc,fake,redfish,idrac-redfish,noop
 enabled_power_interfaces = ipmitool,idrac,irmc,fake,redfish,idrac-redfish
 enabled_raid_interfaces = no-raid,irmc,agent,fake,idrac-wsman
 enabled_vendor_interfaces = ipmitool,no-vendor,idrac,fake
@@ -158,6 +158,10 @@ tftp_master_path = /shared/tftpboot
 tftp_root = /shared/tftpboot
 uefi_pxe_config_template = $pybasedir/drivers/modules/ipxe_config.template
 pxe_append_params = nofb nomodeset vga=normal ipa-insecure=1
+# This makes networking boot templates generated even for nodes using local
+# boot (the default), ensuring that they boot correctly even if they start
+# netbooting for some reason (e.g. with the noop management interface).
+enable_netboot_fallback = true
 
 [redfish]
 use_swift = false
