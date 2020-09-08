@@ -76,6 +76,9 @@ set_http_basic_server_auth_strategy() {
 # Configure HTTP basic auth for ironic-api server
 if [ -f "${HTPASSWD_FILE}" ]; then
     set_http_basic_server_auth_strategy
+    # We've just set the DEFAULT auth_strategy to http_basic, we need to
+    # set the json_rpc auth_strategy back to noauth
+    crudini --set /etc/ironic/ironic.conf json_rpc auth_strategy noauth
 fi
 
 
