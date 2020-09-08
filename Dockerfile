@@ -5,7 +5,7 @@ FROM docker.io/centos:centos8 AS builder
 RUN yum install -y gcc git make genisoimage xz-devel grub2 grub2-efi-x64-modules shim dosfstools mtools
 WORKDIR /tmp
 COPY . .
-RUN git clone http://git.ipxe.org/ipxe.git && \
+RUN git clone https://github.com/ipxe/ipxe.git && \
       cd ipxe && \
       git checkout 3fe683ebab29afacf224e6b0921f6329bebcdca7 && \
       cd src && \
