@@ -2,6 +2,7 @@
 
 . /bin/ironic-common.sh
 
+IRONIC_CERT_FILE=/certs/ironic/tls.crt
 HTTP_PORT=${HTTP_PORT:-"80"}
 
 # Whether to enable fast_track provisioning or not
@@ -12,10 +13,16 @@ wait_for_interface_or_ip
 mkdir -p /shared/html
 chmod 0777 /shared/html
 
-if [[ $IRONIC_FAST_TRACK == true ]]; then
-    INSPECTOR_EXTRA_ARGS="ipa-api-url=http://${IRONIC_URL_HOST}:6385"
+if [ -f "$IRONIC_CERT_FILE" ]; then
+    IRONIC_BASE_URL="https://${IRONIC_URL_HOST}"
 else
-    INSPECTOR_EXTRA_ARGS=""
+    IRONIC_BASE_URL="http://${IRONIC_URL_HOST}"
+fi
+
+if [[ $IRONIC_FAST_TRACK == true ]]; then
+    INSPECTOR_EXTRA_ARGS=" ipa-api-url=${IRONIC_BASE_URL}:6385 ipa-inspection-callback-url=${IRONIC_BASE_URL}:5050/v1/continue"
+else
+    INSPECTOR_EXTRA_ARGS=" ipa-inspection-callback-url=${IRONIC_BASE_URL}:5050/v1/continue"
 fi
 
 # Copy files to shared mount
