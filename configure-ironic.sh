@@ -76,6 +76,7 @@ set_http_basic_server_auth_strategy() {
 # Configure HTTP basic auth for ironic-api server
 if [ -f "${HTPASSWD_FILE}" ]; then
     set_http_basic_server_auth_strategy
+    set_http_basic_server_auth_strategy json-rpc
 fi
 
 
