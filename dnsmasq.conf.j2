@@ -9,6 +9,7 @@ port=0
 {%- if env["DHCP_RANGE"]|length %}
 log-dhcp
 dhcp-range={{ env["DHCP_RANGE"] }}
+dhcp-sequential-ip
 
 # Disable default router(s) and DNS over provisioning network
 dhcp-option=3
