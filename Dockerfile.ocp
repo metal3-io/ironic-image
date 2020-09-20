@@ -35,9 +35,7 @@ RUN chmod +x /tmp/prepare-ipxe.sh && /tmp/prepare-ipxe.sh && rm /tmp/prepare-ipx
 
 COPY --from=builder /tmp/esp.img /tmp/uefi_esp.img
 
-COPY ./ironic.conf /tmp/ironic.conf
-RUN crudini --merge /etc/ironic/ironic.conf < /tmp/ironic.conf && \
-    rm /tmp/ironic.conf
+COPY ./ironic.conf.j2 /etc/ironic/ironic.conf.j2
 
 COPY ./runironic-api.sh /bin/runironic-api
 COPY ./runironic-conductor.sh /bin/runironic-conductor

@@ -1,8 +1,8 @@
 #!/usr/bin/bash
 
-. /bin/configure-ironic.sh
+export IRONIC_DEPLOYMENT="Combined"
 
-crudini --set /etc/ironic/ironic.conf DEFAULT host localhost
+. /bin/configure-ironic.sh
 
 ironic-dbsync --config-file /etc/ironic/ironic.conf upgrade
 

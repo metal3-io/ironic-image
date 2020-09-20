@@ -1,0 +1,148 @@
+[DEFAULT]
+{% if "HTTP_BASIC_HTPASSWD" in env and env.HTTP_BASIC_HTPASSWD | length %}
+auth_strategy = http_basic
+http_basic_auth_user_file = /etc/ironic/htpasswd
+{% else %}
+auth_strategy = noauth
+{% endif %}
+debug = true
+default_boot_interface = ipxe
+default_deploy_interface = direct
+default_inspect_interface = inspector
+default_network_interface = noop
+enabled_bios_interfaces = idrac-wsman,no-bios
+enabled_boot_interfaces = pxe,ipxe,fake,redfish-virtual-media,idrac-redfish-virtual-media
+enabled_deploy_interfaces = direct,fake
+# NOTE(dtantsur): when changing this, make sure to update the driver
+# dependencies in Dockerfile.
+enabled_hardware_types = ipmi,idrac,irmc,fake-hardware,redfish
+enabled_inspect_interfaces = inspector,idrac,irmc,fake,redfish
+enabled_management_interfaces = ipmitool,idrac,irmc,fake,redfish,idrac-redfish
+enabled_power_interfaces = ipmitool,idrac,irmc,fake,redfish,idrac-redfish
+enabled_raid_interfaces = no-raid,irmc,agent,fake,idrac-wsman
+enabled_vendor_interfaces = ipmitool,no-vendor,idrac,fake
+rpc_transport = json-rpc
+use_stderr = true
+# NOTE(dtantsur): the default md5 is not compatible with FIPS mode
+hash_ring_algorithm = sha256
+my_ip = {{ env.IRONIC_IP }}
+{% if env.IRONIC_DEPLOYMENT == "Combined" or (env.IRONIC_DEPLOYMENT == "Conductor" and not ( "HTTP_BASIC_HTPASSWD" in env and env.HTTP_BASIC_HTPASSWD | length )) %}
+# if access is unauthenticated, we bind only to localhost - use that as the
+# host name also, so that the client can find the server
+# If we run both API and conductor in the same pod, use localhost
+host = localhost
+{% else %}
+host = {{ env.IRONIC_IP }}
+{% endif %}
+
+isolinux_bin = /usr/share/syslinux/isolinux.bin
+
+[agent]
+deploy_logs_collect = always
+deploy_logs_local_path = /shared/log/ironic/deploy
+# NOTE(dtantsur): in some environments temporary networking issues can cause
+# the whole deployment to fail on inability to reach the ramdisk. Increasing
+# retries here works around such problems without affecting the normal path.
+# See https://bugzilla.redhat.com/show_bug.cgi?id=1822763
+max_command_attempts = 30
+
+[api]
+host_ip = {% if env.LISTEN_ALL_INTERFACES | lower == "true" %}::{% else %}{{ env.IRONIC_IP }}{% endif %}
+api_workers = {{ env.NUMWORKERS }}
+
+[conductor]
+automated_clean = {{ env.IRONIC_AUTOMATED_CLEAN }}
+# NOTE(dtantsur): keep aligned with [pxe]boot_retry_timeout below.
+deploy_callback_timeout = 4800
+send_sensor_data = false
+# NOTE(TheJulia): Do not lower this value below 120 seconds.
+# Power state is checked every 60 seconds and BMC activity should
+# be avoided more often than once every sixty seconds.
+send_sensor_data_interval = 160
+bootloader = http://{{ env.IRONIC_URL_HOST }}:{{ env.HTTP_PORT }}/uefi_esp.img
+
+[database]
+connection = mysql+pymysql://ironic:{{ env.MARIADB_PASSWORD }}@localhost/ironic?charset=utf8
+
+[deploy]
+default_boot_option = local
+erase_devices_metadata_priority = 10
+erase_devices_priority = 0
+http_root = /shared/html/
+http_url = http://{{ env.IRONIC_URL_HOST }}:{{ env.HTTP_PORT }}
+fast_track = {{ env.IRONIC_FAST_TRACK }}
+
+[dhcp]
+dhcp_provider = none
+
+[inspector]
+endpoint_override = http://{{ env.IRONIC_URL_HOST }}:5050
+power_off = {{ false if env.IRONIC_FAST_TRACK == "true" else true }}
+# TODO(dtantsur): ipa-api-url should be populated by ironic itself, but it's
+# not, so working around here.
+# NOTE(dtantsur): keep inspection arguments synchronized with inspector.ipxe
+extra_kernel_params = ipa-insecure=1 ipa-inspector-collectors=default,extra-hardware,logs ipa-inspection-dhcp-all-interfaces=1 ipa-collect-lldp=1 {% if env.IRONIC_FAST_TRACK == "true" %} ipa-api-url=http://{{ env.IRONIC_URL_HOST }}:6385 {% endif %}
+
+[ipmi]
+# use_ipmitool_retries transfers the responsibility of retrying to ipmitool
+# when supported. If set to false, then ipmitool is called as follows :
+#    $ipmitool -R 1 -N 1 ...
+# and Ironic handles the retry loop.
+use_ipmitool_retries = true
+# The following parameters are the defaults in Ironic. They are used in the
+# following way if use_ipmitool_retries is set to true:
+#    $ipmitool -R <X> -N <Y> ...
+# where :
+#    X = command_retry_timeout / min_command_interval
+#    Y = min_command_interval
+# If use_ipmitool_retries is false, then ironic retries X times, with an
+# interval of Y in between each tries.
+min_command_interval = 5
+command_retry_timeout = 60
+
+
+[json_rpc]
+# We assume that when we run API and conductor in the same container, they use
+# authentication over localhost, using the same credentials as API, to prevent
+# unauthenticated connections from other processes in the same host since the
+# containers are in host networking.
+{% if ( env.IRONIC_DEPLOYMENT == "Combined" or env.IRONIC_DEPLOYMENT == "Conductor" ) and ( "HTTP_BASIC_HTPASSWD" in env and env.HTTP_BASIC_HTPASSWD | length ) %}
+auth_strategy = http_basic
+http_basic_auth_user_file = /etc/ironic/htpasswd
+{% else %}
+auth_strategy = noauth
+{% endif %}
+{% if env.IRONIC_DEPLOYMENT == "Combined" or (env.IRONIC_DEPLOYMENT == "Conductor" and not ( "HTTP_BASIC_HTPASSWD" in env and env.HTTP_BASIC_HTPASSWD | length )) ) %}
+# if access is unauthenticated, we bind only to localhost - use that as the
+# host name also, so that the client can find the server
+# If we run both API and conductor in the same container, use localhost
+host_ip = localhost
+{% else %}
+host_ip = {% if env.LISTEN_ALL_INTERFACES | lower == "true" %}::{% else %}{{ env.IRONIC_IP }}{% endif %}
+{% endif %}
+
+[oslo_messaging_notifications]
+driver = prometheus_exporter
+location = /shared/ironic_prometheus_exporter
+transport_url = fake://
+
+[pxe]
+# NOTE(dtantsur): keep this value at least 3x lower than
+# [conductor]deploy_callback_timeout so that at least some retries happen.
+# The default settings enable 3 retries after 20 minutes each.
+boot_retry_timeout = 1200
+images_path = /shared/html/tmp
+instance_master_path = /shared/html/master_images
+ipxe_enabled = true
+pxe_config_template = $pybasedir/drivers/modules/ipxe_config.template
+tftp_master_path = /shared/tftpboot
+tftp_root = /shared/tftpboot
+uefi_pxe_config_template = $pybasedir/drivers/modules/ipxe_config.template
+pxe_append_params = nofb nomodeset vga=normal ipa-insecure=1
+
+[redfish]
+use_swift = false
+kernel_append_params = nofb nomodeset vga=normal ipa-insecure=1
+
+[service_catalog]
+endpoint_override = http://{{ env.IRONIC_URL_HOST }}:6385
