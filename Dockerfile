@@ -49,9 +49,7 @@ COPY --from=builder /tmp/ipxe/src/bin-x86_64-efi/ipxe.efi /tftpboot
 
 COPY --from=builder /tmp/esp.img /tmp/uefi_esp.img
 
-COPY ./ironic.conf /tmp/ironic.conf
-RUN crudini --merge /etc/ironic/ironic.conf < /tmp/ironic.conf && \
-    rm /tmp/ironic.conf
+COPY ./ironic.conf.j2 /etc/ironic/ironic.conf.j2
 
 COPY ./runironic-api.sh /bin/runironic-api
 COPY ./runironic-conductor.sh /bin/runironic-conductor

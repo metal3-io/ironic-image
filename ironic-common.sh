@@ -11,6 +11,12 @@ function wait_for_interface_or_ip() {
       export IRONIC_IP=$(ip -br addr show | grep "${PROVISIONING_IP}" | grep -Po "[^\s]+/[0-9]+" | sed -e 's%/.*%%' | head -n 1)
       sleep 1
     done
+    # When an interface has multiple IP addresses, having IRONIC_IP set at this point means that the desired provisioning ip is set on the
+    # interface. However, the address returned might not be the desired one (no control over the order), so setting it back to the
+    # desired IP
+    if [ ! -z "${IRONIC_IP}" ]; then
+      export IRONIC_IP=${PROVISIONING_IP}
+    fi
   else
     until [ ! -z "${IRONIC_IP}" ]; do
       echo "Waiting for ${PROVISIONING_INTERFACE} interface to be configured"
