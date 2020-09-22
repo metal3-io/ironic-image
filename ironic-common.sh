@@ -15,7 +15,7 @@ function wait_for_interface_or_ip() {
     # interface. However, the address returned might not be the desired one (no control over the order), so setting it back to the
     # desired IP
     if [ ! -z "${IRONIC_IP}" ]; then
-      export IRONIC_IP=${PROVISIONING_IP}
+      export IRONIC_IP="$(echo ${PROVISIONING_IP} | sed -e 's%/.*%%' )"
     fi
   else
     until [ ! -z "${IRONIC_IP}" ]; do

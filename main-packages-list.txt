@@ -3,6 +3,7 @@ dnsmasq
 gdisk
 genisoimage
 httpd
+httpd-tools
 ipmitool
 iproute
 ipxe-bootimgs

@@ -19,13 +19,6 @@ wait_for_interface_or_ip
 
 cp /etc/ironic/ironic.conf /etc/ironic/ironic.conf_orig
 
-function render_j2_config () {
-    python3 -c 'import os; import sys; import jinja2; sys.stdout.write(jinja2.Template(sys.stdin.read()).render(env=os.environ))' < /etc/ironic/ironic.conf.j2
-}
-
-# The original ironic.conf is empty, and can be found in ironic.conf_orig
-render_j2_config > /etc/ironic/ironic.conf
-
 # oslo.config also supports Config Opts From Environment, log them
 echo '# Options set from Environment variables' | tee /etc/ironic/ironic.extra
 env | grep "^OS_" | tee -a /etc/ironic/ironic.extra
@@ -34,9 +27,66 @@ mkdir -p /shared/html
 mkdir -p /shared/ironic_prometheus_exporter
 
 HTPASSWD_FILE=/etc/ironic/htpasswd
+# The user can provide HTTP_BASIC_HTPASSWD and HTTP_BASIC_HTPASSWD_RPC. If
+# - we are running conductor and HTTP_BASIC_HTPASSWD is set,
+#   use HTTP_BASIC_HTPASSWD for RPC.
+# - we are running combined and HTTP_BASIC_HTPASSWD is set, i.e. API is
+#   authenticated. We want to authenticate RPC by default, but the user might
+#   override. Then try to infere the authentication strategy and credentials
+#   from /auth/ironic-rpc/auth-config. If not present, then generate a username
+#   and password, create the config file the htpasswd content
+export JSON_RPC_AUTH_STRATEGY="noauth"
 if [ -n "${HTTP_BASIC_HTPASSWD}" ]; then
-    printf "%s\n" "${HTTP_BASIC_HTPASSWD}" >"${HTPASSWD_FILE}"
+    if [ "${IRONIC_DEPLOYMENT}" == "Conductor" ]; then
+        export JSON_RPC_AUTH_STRATEGY="http_basic"
+        printf "%s\n" "${HTTP_BASIC_HTPASSWD}" >"${HTPASSWD_FILE}-rpc"
+    else
+        printf "%s\n" "${HTTP_BASIC_HTPASSWD}" >"${HTPASSWD_FILE}"
+    fi
 fi
+
+
+# When running both API and Conductor in the same container, we'll try to get the credentials
+# from /auth/ironic-rpc/auth-config if present, or generate it
+if [ "${IRONIC_DEPLOYMENT}" == "Combined" ]; then
+    # We try to read the credentials from the config file as it is probably mounted read-only,
+    # We cannot modify it. If it is not set to basic, then do not authenticate the RPC. This is
+    # to ensure that the setup will work if the user gives a specific config for rpc set to no_auth
+    if [ -f "/auth/ironic-rpc/auth-config" ]; then
+        IRONIC_RPC_TMP_TYPE="$(crudini --get /auth/ironic-rpc/auth-config json_rpc auth_type)" || exit 1
+        if [ "${IRONIC_RPC_TMP_TYPE}" == "http_basic" ]; then
+            IRONIC_RPC_TMP_USERNAME="$(crudini --get /auth/ironic-rpc/auth-config json_rpc username)" || exit 1
+            IRONIC_RPC_TMP_PASSWORD="$(crudini --get /auth/ironic-rpc/auth-config json_rpc password)" || exit 1
+        else
+            export JSON_RPC_AUTH_STRATEGY="noauth"
+        fi
+    # We do not have an auth config file, so we generate one
+    else
+        IRONIC_RPC_TMP_USERNAME="rpc-user"
+        IRONIC_RPC_TMP_PASSWORD="$(tr -dc 'a-zA-Z0-9' < /dev/urandom | fold -w 12 | head -n 1)"
+        mkdir -p "/auth/ironic-rpc"
+        cat << EOF > "/auth/ironic-rpc/auth-config"
+[json_rpc]
+auth_type=http_basic
+username=${IRONIC_RPC_TMP_USERNAME}
+password=${IRONIC_RPC_TMP_PASSWORD}
+http_basic_username=${IRONIC_RPC_TMP_USERNAME}
+http_basic_password=${IRONIC_RPC_TMP_PASSWORD}
+EOF
+    fi
+
+    # Populate HTTP_BASIC_HTPASSWD_RPC
+    if [ -n "${IRONIC_RPC_TMP_USERNAME:-}" ]; then
+        htpasswd -n -b -B "${IRONIC_RPC_TMP_USERNAME}" "${IRONIC_RPC_TMP_PASSWORD}" >"${HTPASSWD_FILE}-rpc"
+    fi
+fi
+
+function render_j2_config () {
+    python3 -c 'import os; import sys; import jinja2; sys.stdout.write(jinja2.Template(sys.stdin.read()).render(env=os.environ))' < /etc/ironic/ironic.conf.j2
+}
+
+# The original ironic.conf is empty, and can be found in ironic.conf_orig
+render_j2_config > /etc/ironic/ironic.conf
 
 # Configure auth for clients
 IRONIC_CONFIG_OPTIONS="--config-file /etc/ironic/ironic.conf"
