@@ -1,22 +1,11 @@
 #!/usr/bin/bash
 
+export IRONIC_DEPLOYMENT="Conductor"
+
 . /bin/configure-ironic.sh
 
 # Ramdisk logs
 mkdir -p /shared/log/ironic/deploy
-
-# Configure HTTP basic auth for json-rpc server
-if [ -f "${HTPASSWD_FILE}" ]; then
-  set_http_basic_server_auth_strategy json_rpc
-
-  # Access is authenticated, so bind json-rpc server to all IP addresses (not
-  # just localhost)
-  crudini --del /etc/ironic/ironic.conf json_rpc host_ip
-else
-  # Access is unauthenticated, so we bind only to localhost - use that as the
-  # host name also, so that the client can find the server
-  crudini --set /etc/ironic/ironic.conf DEFAULT host localhost
-fi
 
 # It's possible for the dbsync to fail if mariadb is not up yet, so
 # retry until success

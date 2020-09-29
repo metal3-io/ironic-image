@@ -2,59 +2,22 @@
 
 . /bin/ironic-common.sh
 
-HTTP_PORT=${HTTP_PORT:-"80"}
-MARIADB_PASSWORD=${MARIADB_PASSWORD:-"change_me"}
-NUMPROC=$(cat /proc/cpuinfo  | grep "^processor" | wc -l)
-NUMWORKERS=$(( NUMPROC < 12 ? NUMPROC : 12 ))
+export HTTP_PORT=${HTTP_PORT:-"80"}
+export MARIADB_PASSWORD=${MARIADB_PASSWORD:-"change_me"}
+export NUMPROC=$(cat /proc/cpuinfo  | grep "^processor" | wc -l)
+export NUMWORKERS=$(( NUMPROC < 12 ? NUMPROC : 12 ))
+export LISTEN_ALL_INTERFACES="${LISTEN_ALL_INTERFACES:-"true"}"
+export IRONIC_DEPLOYMENT="${IRONIC_DEPLOYMENT:-"Combined"}"
 
 # Whether to enable fast_track provisioning or not
-IRONIC_FAST_TRACK=${IRONIC_FAST_TRACK:-true}
+export IRONIC_FAST_TRACK=${IRONIC_FAST_TRACK:-true}
 
 # Whether cleaning disks before and after deployment
-IRONIC_AUTOMATED_CLEAN=${IRONIC_AUTOMATED_CLEAN:-true}
+export IRONIC_AUTOMATED_CLEAN=${IRONIC_AUTOMATED_CLEAN:-true}
 
 wait_for_interface_or_ip
 
-if [[ $IRONIC_FAST_TRACK == true ]]; then
-    INSPECTOR_POWER_OFF=false
-    # TODO(dtantsur): ipa-api-url should be populated by ironic itself, but
-    # it's not yet, so working around here.
-    INSPECTOR_EXTRA_ARGS=" ipa-api-url=http://${IRONIC_URL_HOST}:6385"
-else
-    INSPECTOR_POWER_OFF=true
-    INSPECTOR_EXTRA_ARGS=""
-fi
-
 cp /etc/ironic/ironic.conf /etc/ironic/ironic.conf_orig
-
-crudini --merge /etc/ironic/ironic.conf <<EOF
-[DEFAULT]
-my_ip = $IRONIC_IP
-
-[api]
-host_ip = ::
-api_workers = $NUMWORKERS
-
-[conductor]
-bootloader = http://${IRONIC_URL_HOST}:${HTTP_PORT}/uefi_esp.img
-automated_clean = ${IRONIC_AUTOMATED_CLEAN}
-
-[database]
-connection = mysql+pymysql://ironic:${MARIADB_PASSWORD}@localhost/ironic?charset=utf8
-
-[deploy]
-http_url = http://${IRONIC_URL_HOST}:${HTTP_PORT}
-fast_track = ${IRONIC_FAST_TRACK}
-
-[inspector]
-endpoint_override = http://${IRONIC_URL_HOST}:5050
-power_off = ${INSPECTOR_POWER_OFF}
-# NOTE(dtantsur): keep inspection arguments synchronized with inspector.ipxe
-extra_kernel_params = console=ttyS0 ipa-inspection-collectors=default,extra-hardware,logs ipa-inspection-dhcp-all-interfaces=1 ipa-collect-lldp=1 ${INSPECTOR_EXTRA_ARGS}
-
-[service_catalog]
-endpoint_override = http://${IRONIC_URL_HOST}:6385
-EOF
 
 # oslo.config also supports Config Opts From Environment, log them
 echo '# Options set from Environment variables' | tee /etc/ironic/ironic.extra
@@ -64,20 +27,66 @@ mkdir -p /shared/html
 mkdir -p /shared/ironic_prometheus_exporter
 
 HTPASSWD_FILE=/etc/ironic/htpasswd
+# The user can provide HTTP_BASIC_HTPASSWD and HTTP_BASIC_HTPASSWD_RPC. If
+# - we are running conductor and HTTP_BASIC_HTPASSWD is set,
+#   use HTTP_BASIC_HTPASSWD for RPC.
+# - we are running combined and HTTP_BASIC_HTPASSWD is set, i.e. API is
+#   authenticated. We want to authenticate RPC by default, but the user might
+#   override. Then try to infere the authentication strategy and credentials
+#   from /auth/ironic-rpc/auth-config. If not present, then generate a username
+#   and password, create the config file the htpasswd content
+export JSON_RPC_AUTH_STRATEGY="noauth"
 if [ -n "${HTTP_BASIC_HTPASSWD}" ]; then
-    printf "%s\n" "${HTTP_BASIC_HTPASSWD}" >"${HTPASSWD_FILE}"
+    if [ "${IRONIC_DEPLOYMENT}" == "Conductor" ]; then
+        export JSON_RPC_AUTH_STRATEGY="http_basic"
+        printf "%s\n" "${HTTP_BASIC_HTPASSWD}" >"${HTPASSWD_FILE}-rpc"
+    else
+        printf "%s\n" "${HTTP_BASIC_HTPASSWD}" >"${HTPASSWD_FILE}"
+    fi
 fi
-set_http_basic_server_auth_strategy() {
-    local section=${1:-DEFAULT}
-    crudini --set /etc/ironic/ironic.conf ${section} auth_strategy http_basic
-    crudini --set /etc/ironic/ironic.conf ${section} http_basic_auth_user_file "${HTPASSWD_FILE}"
+
+
+# When running both API and Conductor in the same container, we'll try to get the credentials
+# from /auth/ironic-rpc/auth-config if present, or generate it
+if [ "${IRONIC_DEPLOYMENT}" == "Combined" ]; then
+    # We try to read the credentials from the config file as it is probably mounted read-only,
+    # We cannot modify it. If it is not set to basic, then do not authenticate the RPC. This is
+    # to ensure that the setup will work if the user gives a specific config for rpc set to no_auth
+    if [ -f "/auth/ironic-rpc/auth-config" ]; then
+        IRONIC_RPC_TMP_TYPE="$(crudini --get /auth/ironic-rpc/auth-config json_rpc auth_type)" || exit 1
+        if [ "${IRONIC_RPC_TMP_TYPE}" == "http_basic" ]; then
+            IRONIC_RPC_TMP_USERNAME="$(crudini --get /auth/ironic-rpc/auth-config json_rpc username)" || exit 1
+            IRONIC_RPC_TMP_PASSWORD="$(crudini --get /auth/ironic-rpc/auth-config json_rpc password)" || exit 1
+        else
+            export JSON_RPC_AUTH_STRATEGY="noauth"
+        fi
+    # We do not have an auth config file, so we generate one
+    else
+        IRONIC_RPC_TMP_USERNAME="rpc-user"
+        IRONIC_RPC_TMP_PASSWORD="$(tr -dc 'a-zA-Z0-9' < /dev/urandom | fold -w 12 | head -n 1)"
+        mkdir -p "/auth/ironic-rpc"
+        cat << EOF > "/auth/ironic-rpc/auth-config"
+[json_rpc]
+auth_type=http_basic
+username=${IRONIC_RPC_TMP_USERNAME}
+password=${IRONIC_RPC_TMP_PASSWORD}
+http_basic_username=${IRONIC_RPC_TMP_USERNAME}
+http_basic_password=${IRONIC_RPC_TMP_PASSWORD}
+EOF
+    fi
+
+    # Populate HTTP_BASIC_HTPASSWD_RPC
+    if [ -n "${IRONIC_RPC_TMP_USERNAME:-}" ]; then
+        htpasswd -n -b -B "${IRONIC_RPC_TMP_USERNAME}" "${IRONIC_RPC_TMP_PASSWORD}" >"${HTPASSWD_FILE}-rpc"
+    fi
+fi
+
+function render_j2_config () {
+    python3 -c 'import os; import sys; import jinja2; sys.stdout.write(jinja2.Template(sys.stdin.read()).render(env=os.environ))' < /etc/ironic/ironic.conf.j2
 }
 
-# Configure HTTP basic auth for ironic-api server
-if [ -f "${HTPASSWD_FILE}" ]; then
-    set_http_basic_server_auth_strategy
-fi
-
+# The original ironic.conf is empty, and can be found in ironic.conf_orig
+render_j2_config > /etc/ironic/ironic.conf
 
 # Configure auth for clients
 IRONIC_CONFIG_OPTIONS="--config-file /etc/ironic/ironic.conf"
