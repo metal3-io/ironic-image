@@ -50,6 +50,9 @@ max_command_attempts = 30
 [api]
 host_ip = {% if env.LISTEN_ALL_INTERFACES | lower == "true" %}::{% else %}{{ env.IRONIC_IP }}{% endif %}
 api_workers = {{ env.NUMWORKERS }}
+{% if env.IRONIC_TLS_SETUP == "true" %}
+enable_ssl_api = true
+{% endif %}
 
 [conductor]
 automated_clean = {{ env.IRONIC_AUTOMATED_CLEAN }}
@@ -77,12 +80,15 @@ fast_track = {{ env.IRONIC_FAST_TRACK }}
 dhcp_provider = none
 
 [inspector]
-endpoint_override = http://{{ env.IRONIC_URL_HOST }}:5050
+endpoint_override = {{ env.IRONIC_INSPECTOR_BASE_URL }}
 power_off = {{ false if env.IRONIC_FAST_TRACK == "true" else true }}
+{% if env.IRONIC_INSPECTOR_TLS_SETUP == "true" %}
+cafile = {{ env.IRONIC_INSPECTOR_CACERT_FILE }}
+{% endif %}
 # TODO(dtantsur): ipa-api-url should be populated by ironic itself, but it's
 # not, so working around here.
 # NOTE(dtantsur): keep inspection arguments synchronized with inspector.ipxe
-extra_kernel_params = console=ttyS0 ipa-insecure=1 ipa-inspector-collectors=default,extra-hardware,logs ipa-inspection-dhcp-all-interfaces=1 ipa-collect-lldp=1 {% if env.IRONIC_FAST_TRACK == "true" %} ipa-api-url=http://{{ env.IRONIC_URL_HOST }}:6385 {% endif %}
+extra_kernel_params = console=ttyS0 ipa-insecure=1 ipa-inspector-collectors=default,extra-hardware,logs ipa-inspection-dhcp-all-interfaces=1 ipa-collect-lldp=1 {% if env.IRONIC_FAST_TRACK == "true" %} ipa-api-url={{ env.IRONIC_BASE_URL }} {% endif %}
 
 [ipmi]
 # use_ipmitool_retries transfers the responsibility of retrying to ipmitool
@@ -101,7 +107,6 @@ use_ipmitool_retries = true
 min_command_interval = 5
 command_retry_timeout = 60
 
-
 [json_rpc]
 # We assume that when we run API and conductor in the same container, they use
 # authentication over localhost, using the same credentials as API, to prevent
@@ -116,6 +121,10 @@ http_basic_auth_user_file = /etc/ironic/htpasswd-rpc
 host_ip = localhost
 {% else %}
 host_ip = {% if env.LISTEN_ALL_INTERFACES | lower == "true" %}::{% else %}{{ env.IRONIC_IP }}{% endif %}
+{% endif %}
+{% if env.IRONIC_TLS_SETUP == "true" %}
+use_ssl = true
+cafile = {{ env.IRONIC_CACERT_FILE }}
 {% endif %}
 
 [oslo_messaging_notifications]
@@ -142,4 +151,10 @@ use_swift = false
 kernel_append_params = console=ttyS0 nofb nomodeset vga=normal ipa-insecure=1
 
 [service_catalog]
-endpoint_override = http://{{ env.IRONIC_URL_HOST }}:6385
+endpoint_override = {{ env.IRONIC_BASE_URL }}
+
+{% if env.IRONIC_TLS_SETUP == "true" %}
+[ssl]
+cert_file = {{ env.IRONIC_CERT_FILE }}
+key_file = {{ env.IRONIC_KEY_FILE }}
+{% endif %}
