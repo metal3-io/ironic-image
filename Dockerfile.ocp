@@ -1,4 +1,4 @@
-FROM registry.svc.ci.openshift.org/ocp/builder:rhel-8-base-openshift-4.6 AS builder
+FROM registry.svc.ci.openshift.org/ocp/builder:rhel-8-base-openshift AS builder
 
 WORKDIR /tmp
 
@@ -19,7 +19,7 @@ RUN if [ $(uname -m) = "x86_64" ]; then \
       touch /tmp/esp.img; \
     fi
 
-FROM registry.svc.ci.openshift.org/ocp/builder:rhel-8-base-openshift-4.6
+FROM registry.svc.ci.openshift.org/ocp/builder:rhel-8-base-openshift
 
 ARG PKGS_LIST=main-packages-list.txt
 
