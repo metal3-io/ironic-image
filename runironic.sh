@@ -1,8 +1,8 @@
 #!/usr/bin/bash
 
-. /bin/configure-ironic.sh
+export IRONIC_DEPLOYMENT="Combined"
 
-crudini --set /etc/ironic/ironic.conf DEFAULT host localhost
+. /bin/configure-ironic.sh
 
 ironic-dbsync --config-file /etc/ironic/ironic.conf upgrade
 
@@ -14,5 +14,4 @@ mkdir -p /shared/log/ironic
 /usr/bin/ironic-conductor ${IRONIC_CONFIG_OPTIONS} &
 /usr/bin/ironic-api --config-file /usr/share/ironic/ironic-dist.conf ${IRONIC_CONFIG_OPTIONS} &
 
-sleep infinity
-
+wait -n
