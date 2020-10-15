@@ -35,6 +35,8 @@ host = localhost
 host = {{ env.IRONIC_IP }}
 {% endif %}
 
+isolinux_bin = /usr/share/syslinux/isolinux.bin
+
 [agent]
 deploy_logs_collect = always
 deploy_logs_local_path = /shared/log/ironic/deploy
