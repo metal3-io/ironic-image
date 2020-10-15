@@ -22,4 +22,3 @@ python3-scciclient
 python3-sushy
 python3-sushy-oem-idrac
 qemu-img
-syslinux-nonlinux
