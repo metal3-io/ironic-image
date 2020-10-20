@@ -2,7 +2,7 @@
 ## Note: we are pinning to a specific commit for reproducible builds.
 ## Updated as needed.
 FROM docker.io/centos:centos8 AS builder
-RUN yum install -y gcc git make genisoimage xz-devel grub2 grub2-efi-x64-modules shim dosfstools mtools
+RUN dnf install -y gcc git make xz-devel
 WORKDIR /tmp
 COPY . .
 RUN git clone https://github.com/ipxe/ipxe.git && \
@@ -19,26 +19,30 @@ RUN git clone https://github.com/ipxe/ipxe.git && \
 ## NOTE(derekh): We need to build our own grub image because the one
 ## that gets installed by grub2-efi-x64 (/boot/efi/EFI/centos/grubx64.efi)
 ## looks for grub.cnf in /EFI/centos, ironic puts it in /boot/grub
-RUN dd bs=1024 count=2880 if=/dev/zero of=esp.img && \
+RUN if [ $(uname -m) = "x86_64" ]; then \
+      dnf install -y genisoimage grub2 grub2-efi-x64-modules shim dosfstools mtools && \
+      dd bs=1024 count=3200 if=/dev/zero of=esp.img && \
       mkfs.msdos -F 12 -n 'ESP_IMAGE' ./esp.img && \
       mmd -i esp.img EFI && \
       mmd -i esp.img EFI/BOOT && \
       grub2-mkimage -C xz -O x86_64-efi -p /boot/grub -o /tmp/grubx64.efi boot linux search normal configfile part_gpt btrfs ext2 fat iso9660 loopback test keystatus gfxmenu regexp probe efi_gop efi_uga all_video gfxterm font scsi echo read ls cat png jpeg halt reboot && \
       mcopy -i esp.img -v /boot/efi/EFI/BOOT/BOOTX64.EFI ::EFI/BOOT && \
       mcopy -i esp.img -v /tmp/grubx64.efi ::EFI/BOOT && \
-      mdir -i esp.img ::EFI/BOOT
+      mdir -i esp.img ::EFI/BOOT; \
+    else \
+      touch /tmp/esp.img; \
+    fi
 
 FROM docker.io/centos:centos8
 
+ARG PKGS_LIST=main-packages-list.txt
+
+COPY ${PKGS_LIST} /tmp/main-packages-list.txt
+
 RUN dnf install -y python3 python3-requests && \
     curl https://raw.githubusercontent.com/openstack/tripleo-repos/master/tripleo_repos/main.py | python3 - -b master current-tripleo && \
-    dnf update -y && \
-    dnf --setopt=install_weak_deps=False install -y python3-gunicorn \
-        openstack-ironic-api openstack-ironic-conductor crudini httpd-tools \
-        iproute dnsmasq httpd qemu-img iscsi-initiator-utils parted gdisk psmisc \
-        mariadb-server genisoimage python3-ironic-prometheus-exporter \
-        python3-jinja2 python3-sushy-oem-idrac python3-ibmcclient \
-        ipmitool python3-dracclient python3-scciclient python3-sushy syslinux-nonlinux && \
+    dnf upgrade -y && \
+    dnf --setopt=install_weak_deps=False install -y $(cat /tmp/main-packages-list.txt) && \
     dnf clean all && \
     rm -rf /var/cache/{yum,dnf}/*
 
