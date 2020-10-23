@@ -35,6 +35,9 @@ export IRONIC_FAST_TRACK=${IRONIC_FAST_TRACK:-true}
 # Whether cleaning disks before and after deployment
 export IRONIC_AUTOMATED_CLEAN=${IRONIC_AUTOMATED_CLEAN:-true}
 
+# Wheter to enable the sensor data collection
+export SEND_SENSOR_DATA=${SEND_SENSOR_DATA:-false}
+
 wait_for_interface_or_ip
 
 if [ -f "$IRONIC_CERT_FILE" ]; then
