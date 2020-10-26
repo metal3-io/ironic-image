@@ -13,3 +13,9 @@ if [[ ! -z ${EXTRA_PKGS_LIST} ]]; then
 fi
 dnf clean all
 rm -rf /var/cache/{yum,dnf}/*
+if [[ ! -z ${PATCH_LIST} ]]; then
+    if [[ -s "/tmp/${PATCH_LIST}" ]]; then
+        /bin/patch-image.sh;
+    fi
+fi
+rm -f /bin/patch-image.sh
