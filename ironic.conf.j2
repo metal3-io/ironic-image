@@ -33,7 +33,7 @@ my_ip = {{ env.IRONIC_IP }}
 # If we run both API and conductor in the same pod, use localhost
 host = localhost
 {% else %}
-host = {{ env.IRONIC_IP }}
+host = {{ env.IRONIC_URL_HOST }}
 {% endif %}
 
 isolinux_bin = /usr/share/syslinux/isolinux.bin
