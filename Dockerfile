@@ -16,18 +16,15 @@ RUN git clone https://github.com/ipxe/ipxe.git && \
 ## of the ESP image file to be sized smaller for the files that need to
 ## be copied in, however that requires more advanced scripting beyond
 ## an MVP.
-## NOTE(derekh): We need to build our own grub image because the one
-## that gets installed by grub2-efi-x64 (/boot/efi/EFI/centos/grubx64.efi)
-## looks for grub.cnf in /EFI/centos, ironic puts it in /boot/grub
 RUN if [ $(uname -m) = "x86_64" ]; then \
-      dnf install -y genisoimage grub2 grub2-efi-x64-modules shim dosfstools mtools && \
+      dnf install -y genisoimage grub2 grub2-efi-x64 shim dosfstools mtools && \
       dd bs=1024 count=3200 if=/dev/zero of=esp.img && \
       mkfs.msdos -F 12 -n 'ESP_IMAGE' ./esp.img && \
       mmd -i esp.img EFI && \
       mmd -i esp.img EFI/BOOT && \
-      grub2-mkimage -C xz -O x86_64-efi -p /boot/grub -o /tmp/grubx64.efi boot linux search normal configfile part_gpt btrfs ext2 fat iso9660 loopback test keystatus gfxmenu regexp probe efi_gop efi_uga all_video gfxterm font scsi echo read ls cat png jpeg halt reboot && \
+      mmd -i esp.img EFI/centos && \
       mcopy -i esp.img -v /boot/efi/EFI/BOOT/BOOTX64.EFI ::EFI/BOOT && \
-      mcopy -i esp.img -v /tmp/grubx64.efi ::EFI/BOOT && \
+      mcopy -i esp.img -v /boot/efi/EFI/centos/grubx64.efi ::EFI/centos && \
       mdir -i esp.img ::EFI/BOOT; \
     else \
       touch /tmp/esp.img; \
