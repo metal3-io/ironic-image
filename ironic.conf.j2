@@ -37,6 +37,10 @@ host = {{ env.IRONIC_URL_HOST }}
 
 isolinux_bin = /usr/share/syslinux/isolinux.bin
 
+# NOTE(dtantsur): this path is specific to the GRUB image that is built into
+# the ESP provided in [conductor]bootloader.
+grub_config_path = EFI/redhat/grub.cfg
+
 [agent]
 deploy_logs_collect = always
 deploy_logs_local_path = /shared/log/ironic/deploy
