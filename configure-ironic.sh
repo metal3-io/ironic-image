@@ -5,6 +5,7 @@ export IRONIC_KEY_FILE=/certs/ironic/tls.key
 export IRONIC_CACERT_FILE=/certs/ca/ironic/tls.crt
 export IRONIC_INSPECTOR_CERT_FILE=/certs/ironic-inspector/tls.crt
 export IRONIC_INSPECTOR_CACERT_FILE=/certs/ca/ironic-inspector/tls.crt
+export MARIADB_CACERT_FILE=/certs/ca/mariadb/tls.crt
 
 mkdir -p /certs/ironic
 mkdir -p /certs/ironic-inspector
@@ -63,6 +64,12 @@ if [ -f "$IRONIC_INSPECTOR_CERT_FILE" ] || [ -f "$IRONIC_INSPECTOR_CACERT_FILE" 
 else
     export IRONIC_INSPECTOR_TLS_SETUP="false"
     export IRONIC_INSPECTOR_BASE_URL="http://${IRONIC_URL_HOST}:5050"
+fi
+
+if  [ -f "$MARIADB_CACERT_FILE" ]; then
+    export MARIADB_TLS_ENABLED="true"
+else
+    export MARIADB_TLS_ENABLED="false"
 fi
 
 cp /etc/ironic/ironic.conf /etc/ironic/ironic.conf_orig
