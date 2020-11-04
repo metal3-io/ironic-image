@@ -43,10 +43,7 @@ RUN dnf install -y python3 python3-requests && \
     dnf clean all && \
     rm -rf /var/cache/{yum,dnf}/*
 
-RUN mkdir -p /tftpboot
-COPY --from=builder /tmp/ipxe/src/bin/undionly.kpxe /tftpboot
-COPY --from=builder /tmp/ipxe/src/bin-x86_64-efi/snponly.efi /tftpboot
-COPY --from=builder /tmp/ipxe/src/bin-x86_64-efi/ipxe.efi /tftpboot
+COPY --from=builder /tmp/ipxe/src/bin/undionly.kpxe /tmp/ipxe/src/bin-x86_64-efi/snponly.efi /tmp/ipxe/src/bin-x86_64-efi/ipxe.efi /tftpboot/
 
 COPY --from=builder /tmp/esp.img /tmp/uefi_esp.img
 
