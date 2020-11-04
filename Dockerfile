@@ -22,9 +22,8 @@ RUN if [ $(uname -m) = "x86_64" ]; then \
       mkfs.msdos -F 12 -n 'ESP_IMAGE' ./esp.img && \
       mmd -i esp.img EFI && \
       mmd -i esp.img EFI/BOOT && \
-      mmd -i esp.img EFI/centos && \
       mcopy -i esp.img -v /boot/efi/EFI/BOOT/BOOTX64.EFI ::EFI/BOOT && \
-      mcopy -i esp.img -v /boot/efi/EFI/centos/grubx64.efi ::EFI/centos && \
+      mcopy -i esp.img -v /boot/efi/EFI/centos/grubx64.efi ::EFI/BOOT && \
       mdir -i esp.img ::EFI/BOOT; \
     else \
       touch /tmp/esp.img; \
