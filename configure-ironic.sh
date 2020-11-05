@@ -24,8 +24,11 @@ fi
 
 export HTTP_PORT=${HTTP_PORT:-"80"}
 export MARIADB_PASSWORD=${MARIADB_PASSWORD:-"change_me"}
-export NUMPROC=$(cat /proc/cpuinfo  | grep "^processor" | wc -l)
-export NUMWORKERS=$(( NUMPROC < 12 ? NUMPROC : 12 ))
+# TODO(dtantsur): remove the explicit default once we get
+# https://review.opendev.org/761185 in the repositories
+NUMPROC=$(cat /proc/cpuinfo  | grep "^processor" | wc -l)
+NUMPROC=$(( NUMPROC <= 4 ? NUMPROC : 4 ))
+export NUMWORKERS=${NUMWORKERS:-$NUMPROC}
 export LISTEN_ALL_INTERFACES="${LISTEN_ALL_INTERFACES:-"true"}"
 export IRONIC_DEPLOYMENT="${IRONIC_DEPLOYMENT:-"Combined"}"
 
