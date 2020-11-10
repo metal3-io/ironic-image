@@ -35,7 +35,7 @@ ARG PKGS_LIST=main-packages-list.txt
 
 COPY ${PKGS_LIST} /tmp/main-packages-list.txt
 
-RUN dnf install -y python3 python3-requests && \
+RUN dnf install -y epel-release python3 python3-requests && \
     curl https://raw.githubusercontent.com/openstack/tripleo-repos/master/tripleo_repos/main.py | python3 - -b master current-tripleo && \
     dnf upgrade -y && \
     dnf --setopt=install_weak_deps=False install -y $(cat /tmp/main-packages-list.txt) && \
