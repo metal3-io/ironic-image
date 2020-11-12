@@ -56,6 +56,7 @@ COPY ./runhttpd.sh /bin/runhttpd
 COPY ./runmariadb.sh /bin/runmariadb
 COPY ./configure-ironic.sh /bin/configure-ironic.sh
 COPY ./ironic-common.sh /bin/ironic-common.sh
+COPY ./runlogwatch.sh /bin/runlogwatch.sh
 
 # TODO(dtantsur): remove this script when we stop supporting running both
 # API and conductor processes via one entry point.

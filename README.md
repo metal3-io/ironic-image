@@ -23,6 +23,7 @@ The following entry points are provided:
 - rundnsmasq - Runs the dnmasq dhcp server to provide addresses and initiate PXE boot of baremetal nodes.  This includes a lightweight TFTP server.  Details on dnsmasq can be found at http://www.thekelleys.org.uk/dnsmasq/doc.html.
 - runhttpd - Starts the Apache web server to provide images via http for PXE boot and for deployment of the final images.
 - runmariadb - Provides a database to store information associated with baremetal nodes.
+- runlogwatch - Waits for host provisioning ramdisk logs to appear, prints their contents and deletes files.
 
 All of the containers must share a common mount point or data store.  Ironic requires files for both the TFTP server and HTTP server to be stored in the same partition.  This common store must include, in <shared store>/html/images, the following images:
 - ironic-python-agent.kernel
