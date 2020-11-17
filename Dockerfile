@@ -1,7 +1,7 @@
 ## Build iPXE w/ IPv6 Support
 ## Note: we are pinning to a specific commit for reproducible builds.
 ## Updated as needed.
-FROM docker.io/centos:centos8 AS builder
+FROM registry.centos.org/centos/centos:8 AS builder
 RUN dnf install -y gcc git make xz-devel
 WORKDIR /tmp
 COPY . .
@@ -29,7 +29,7 @@ RUN if [ $(uname -m) = "x86_64" ]; then \
       touch /tmp/esp.img; \
     fi
 
-FROM docker.io/centos:centos8
+FROM registry.centos.org/centos/centos:8
 
 ARG PKGS_LIST=main-packages-list.txt
 
