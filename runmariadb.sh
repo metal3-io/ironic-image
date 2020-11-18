@@ -47,7 +47,10 @@ EOSQL
 
     # mysqld_safe closes stdout/stderr if no bash options are set ($- == '')
     # turn on tracing to prevent this
-    exec bash -x /usr/bin/mysqld_safe --init-file /tmp/configure-mysql.sql
+    exec bash -x /usr/bin/mysqld_safe --init-file /tmp/configure-mysql.sql &
+    until ncat -z localhost 3306; do sleep 1; done
+    rm /tmp/configure-mysql.sql
+    sleep infinity
 else
     exec bash -x /usr/bin/mysqld_safe
 fi
