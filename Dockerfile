@@ -62,7 +62,7 @@ COPY ./runlogwatch.sh /bin/runlogwatch.sh
 COPY ./runironic.sh /bin/runironic
 
 COPY ./dnsmasq.conf.j2 /etc/dnsmasq.conf.j2
-COPY ./inspector.ipxe /tmp/inspector.ipxe
+COPY ./inspector.ipxe.j2 /tmp/inspector.ipxe.j2
 COPY ./dualboot.ipxe /tmp/dualboot.ipxe
 
 # Custom httpd config, removes all but the bare minimum needed modules

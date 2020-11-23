@@ -26,7 +26,7 @@ else
 fi
 
 # Copy files to shared mount
-cp /tmp/inspector.ipxe /shared/html/inspector.ipxe
+render_j2_config /tmp/inspector.ipxe.j2 /shared/html/inspector.ipxe
 cp /tmp/dualboot.ipxe /shared/html/dualboot.ipxe
 cp /tmp/uefi_esp.img /shared/html/uefi_esp.img
 
