@@ -51,8 +51,7 @@ COPY ./runlogwatch.sh /bin/runlogwatch.sh
 COPY ./runironic.sh /bin/runironic
 
 COPY ./dnsmasq.conf.j2 /etc/dnsmasq.conf.j2
-COPY ./inspector.ipxe /tmp/inspector.ipxe
-COPY ./dualboot.ipxe /tmp/dualboot.ipxe
+COPY config/inspector.ipxe.j2 config/dualboot.ipxe /tmp/
 
 # Custom httpd config, removes all but the bare minimum needed modules
 RUN rm -f /etc/httpd/conf.d/autoindex.conf /etc/httpd/conf.d/welcome.conf /etc/httpd/conf.modules.d/*.conf

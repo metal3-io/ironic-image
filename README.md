@@ -29,6 +29,7 @@ The following environment variables can be passed in to customize run-time funct
 - DHCP_RANGE - dhcp range to use for provisioning (default 172.22.0.10-172.22.0.100)
 - MARIADB_PASSWORD - The database password
 - OS_<section>_\_<name>=<value> - This format can be used to set arbitary ironic config options
+- IRONIC_RAMDISK_SSH_KEY - A public key to allow ssh access to nodes running IPA, takes the format "ssh-rsa AAAAB3....."
 
 The ironic configuration can be overridden by various environment variables. The following can serve as an example:
 - OS_CONDUCTOR__DEPLOY_CALLBACK_TIMEOUT=4800 - timeout (seconds) to wait for a callback from a deploy ramdisk

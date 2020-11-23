@@ -1,0 +1,10 @@
+#!ipxe
+
+:retry_boot
+echo In inspector.ipxe
+imgfree
+# NOTE(dtantsur): keep inspection kernel params in [mdns]params in
+# ironic-inspector-image and configuration in configure-ironic.sh
+kernel --timeout 60000 http://IRONIC_IP:HTTP_PORT/images/ironic-python-agent.kernel ipa-insecure=1 ipa-inspection-collectors=default,extra-hardware,logs systemd.journald.forward_to_console=yes BOOTIF=${mac} ipa-debug=1 ipa-inspection-dhcp-all-interfaces=1 ipa-collect-lldp=1 EXTRA_ARGS initrd=ironic-python-agent.initramfs {% if env.IRONIC_RAMDISK_SSH_KEY %}sshkey="{{ env.IRONIC_RAMDISK_SSH_KEY|trim }}"{% endif %} || goto retry_boot
+initrd --timeout 60000 http://IRONIC_IP:HTTP_PORT/images/ironic-python-agent.initramfs || goto retry_boot
+boot
