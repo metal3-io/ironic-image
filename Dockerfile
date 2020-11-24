@@ -34,13 +34,10 @@ FROM docker.io/centos:centos8
 ARG PKGS_LIST=main-packages-list.txt
 
 COPY ${PKGS_LIST} /tmp/main-packages-list.txt
+COPY prepare-image.sh /bin/
 
-RUN dnf install -y python3 python3-requests && \
-    curl https://raw.githubusercontent.com/openstack/tripleo-repos/master/tripleo_repos/main.py | python3 - -b master current-tripleo && \
-    dnf upgrade -y && \
-    dnf --setopt=install_weak_deps=False install -y $(cat /tmp/main-packages-list.txt) && \
-    dnf clean all && \
-    rm -rf /var/cache/{yum,dnf}/*
+RUN prepare-image.sh && \
+  rm -f /bin/prepare-image.sh
 
 COPY --from=builder /tmp/ipxe/src/bin/undionly.kpxe /tmp/ipxe/src/bin-x86_64-efi/snponly.efi /tmp/ipxe/src/bin-x86_64-efi/ipxe.efi /tftpboot/
 
