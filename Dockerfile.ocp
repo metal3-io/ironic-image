@@ -17,9 +17,10 @@ RUN if [ $(uname -m) = "x86_64" ]; then \
 
 FROM registry.svc.ci.openshift.org/ocp/builder:rhel-8-base-openshift
 
-ARG PKGS_LIST=main-packages-list.txt
+ENV PKGS_LIST=main-packages-list.txt
+ARG EXTRA_PKGS_LIST
 
-COPY ${PKGS_LIST} /tmp/main-packages-list.txt
+COPY ${PKGS_LIST} ${EXTRA_PKGS_LIST} /tmp/
 COPY prepare-image.sh /bin/
 
 RUN prepare-image.sh && \
