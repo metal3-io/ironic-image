@@ -8,6 +8,7 @@ approvers:
   - juliakreger
   - russellb
   - stbenjam
+  - zaneb
 reviewers:
   - bfournie
   - derekhiggins
@@ -17,6 +18,7 @@ reviewers:
   - hardys
   - juliakreger
   - russellb
+  - zaneb
 
 # Bugzilla Information
 component: "Bare Metal Hardware Provisioning"

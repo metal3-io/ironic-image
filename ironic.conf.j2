@@ -61,7 +61,7 @@ enable_ssl_api = true
 automated_clean = {{ env.IRONIC_AUTOMATED_CLEAN }}
 # NOTE(dtantsur): keep aligned with [pxe]boot_retry_timeout below.
 deploy_callback_timeout = 4800
-send_sensor_data = false
+send_sensor_data = {{ env.SEND_SENSOR_DATA }} 
 # NOTE(TheJulia): Do not lower this value below 120 seconds.
 # Power state is checked every 60 seconds and BMC activity should
 # be avoided more often than once every sixty seconds.
@@ -69,7 +69,11 @@ send_sensor_data_interval = 160
 bootloader = http://{{ env.IRONIC_URL_HOST }}:{{ env.HTTP_PORT }}/uefi_esp.img
 
 [database]
-connection = mysql+pymysql://ironic:{{ env.MARIADB_PASSWORD }}@localhost/ironic?charset=utf8
+{% if env.MARIADB_TLS_ENABLED == "true" %}
+connection = mysql+pymysql://ironic:{{ env.MARIADB_PASSWORD }}@127.0.0.1/ironic?charset=utf8&ssl=on&ssl_ca={{ env.MARIADB_CACERT_FILE }}
+{% else %}
+connection = mysql+pymysql://ironic:{{ env.MARIADB_PASSWORD }}@127.0.0.1/ironic?charset=utf8
+{% endif %}
 
 [deploy]
 default_boot_option = local

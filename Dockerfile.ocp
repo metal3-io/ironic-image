@@ -3,7 +3,7 @@ FROM registry.svc.ci.openshift.org/ocp/builder:rhel-8-base-openshift AS builder
 WORKDIR /tmp
 
 RUN if [ $(uname -m) = "x86_64" ]; then \
-      dnf install -y gcc git make genisoimage xz-devel grub2 grub2-efi-x64 shim dosfstools mtools && \
+      dnf install -y genisoimage grub2 grub2-efi-x64 shim dosfstools mtools && \
       dd bs=1024 count=3200 if=/dev/zero of=esp.img && \
       mkfs.msdos -F 12 -n 'ESP_IMAGE' ./esp.img && \
       mmd -i esp.img EFI && \
@@ -20,14 +20,10 @@ FROM registry.svc.ci.openshift.org/ocp/builder:rhel-8-base-openshift
 ARG PKGS_LIST=main-packages-list.txt
 
 COPY ${PKGS_LIST} /tmp/main-packages-list.txt
+COPY prepare-image.sh /bin/
 
-RUN dnf upgrade -y && \
-    dnf --setopt=install_weak_deps=False install -y $(cat /tmp/main-packages-list.txt) && \
-    if [ $(uname -m) = "x86_64" ]; then \
-      dnf install -y syslinux-nonlinux; \
-    fi && \
-    dnf clean all && \
-    rm -rf /var/cache/{yum,dnf}/*
+RUN prepare-image.sh && \
+  rm -f /bin/prepare-image.sh
 
 COPY ./prepare-ipxe.sh /tmp
 RUN chmod +x /tmp/prepare-ipxe.sh && /tmp/prepare-ipxe.sh && rm /tmp/prepare-ipxe.sh
