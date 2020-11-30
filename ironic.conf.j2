@@ -91,6 +91,7 @@ endpoint_override = {{ env.IRONIC_INSPECTOR_BASE_URL }}
 power_off = {{ false if env.IRONIC_FAST_TRACK == "true" else true }}
 {% if env.IRONIC_INSPECTOR_TLS_SETUP == "true" %}
 cafile = {{ env.IRONIC_INSPECTOR_CACERT_FILE }}
+insecure = {{ env.IRONIC_INSPECTOR_INSECURE }}
 {% endif %}
 # TODO(dtantsur): ipa-api-url should be populated by ironic itself, but it's
 # not, so working around here.
@@ -132,6 +133,7 @@ host_ip = {% if env.LISTEN_ALL_INTERFACES | lower == "true" %}::{% else %}{{ env
 {% if env.IRONIC_TLS_SETUP == "true" %}
 use_ssl = true
 cafile = {{ env.IRONIC_CACERT_FILE }}
+insecure = {{ env.IRONIC_INSECURE }}
 {% endif %}
 
 [oslo_messaging_notifications]
