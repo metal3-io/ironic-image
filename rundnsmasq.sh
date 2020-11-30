@@ -12,7 +12,7 @@ mkdir -p /shared/html/images
 mkdir -p /shared/html/pxelinux.cfg
 
 # Copy files to shared mount
-cp /tftpboot/* /shared/tftpboot/
+cp /tftpboot/undionly.kpxe /tftpboot/ipxe.efi /tftpboot/snponly.efi /shared/tftpboot
 
 # Template and write dnsmasq.conf
 python3 -c 'import os; import sys; import jinja2; sys.stdout.write(jinja2.Template(sys.stdin.read()).render(env=os.environ))' </etc/dnsmasq.conf.j2 >/etc/dnsmasq.conf
