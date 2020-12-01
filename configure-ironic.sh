@@ -3,8 +3,12 @@
 export IRONIC_CERT_FILE=/certs/ironic/tls.crt
 export IRONIC_KEY_FILE=/certs/ironic/tls.key
 export IRONIC_CACERT_FILE=/certs/ca/ironic/tls.crt
+export IRONIC_INSECURE=${IRONIC_INSECURE:-false}
+
 export IRONIC_INSPECTOR_CERT_FILE=/certs/ironic-inspector/tls.crt
 export IRONIC_INSPECTOR_CACERT_FILE=/certs/ca/ironic-inspector/tls.crt
+export IRONIC_INSPECTOR_INSECURE=${IRONIC_INSPECTOR_INSECURE:-$IRONIC_INSECURE}
+
 export MARIADB_CACERT_FILE=/certs/ca/mariadb/tls.crt
 
 mkdir -p /certs/ironic
