@@ -44,6 +44,12 @@ export IRONIC_AUTOMATED_CLEAN=${IRONIC_AUTOMATED_CLEAN:-true}
 # Wheter to enable the sensor data collection
 export SEND_SENSOR_DATA=${SEND_SENSOR_DATA:-false}
 
+# Additional kernel parameters
+export IRONIC_KERNEL_PARAMS=${IRONIC_KERNEL_PARAMS:-}
+
+# NTP server to use during deploy/cleaning
+export NTP_SERVER=${NTP_SERVER:-}
+
 wait_for_interface_or_ip
 
 if [ -f "$IRONIC_CERT_FILE" ]; then
@@ -95,6 +101,11 @@ if [ -n "${HTTP_BASIC_HTPASSWD}" ]; then
     else
         printf "%s\n" "${HTTP_BASIC_HTPASSWD}" >"${HTPASSWD_FILE}"
     fi
+fi
+
+
+if [[ -n "$NTP_SERVER" ]]; then
+    IRONIC_KERNEL_PARAMS+=" ipa-ntp-server=$NTP_SERVER"
 fi
 
 # The original ironic.conf is empty, and can be found in ironic.conf_orig

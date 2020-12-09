@@ -34,6 +34,7 @@ The following environment variables can be passed in to customize run-time funct
 - HTTP_PORT - port used by http server (default 80)
 - DHCP_RANGE - dhcp range to use for provisioning (default 172.22.0.10-172.22.0.100)
 - MARIADB_PASSWORD - The database password
+- NTP_SERVER - address of an NTP server to use during deploy (disabled by default)
 - OS_<section>_\_<name>=<value> - This format can be used to set arbitary ironic config options
 - IRONIC_RAMDISK_SSH_KEY - A public key to allow ssh access to nodes running IPA, takes the format "ssh-rsa AAAAB3....."
 - IRONIC_KERNEL_PARAMS - This parameter can be used to add additional kernel parameters to nodes running IPA

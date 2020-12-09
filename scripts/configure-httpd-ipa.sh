@@ -6,6 +6,8 @@ HTTP_PORT=${HTTP_PORT:-"80"}
 # Whether to enable fast_track provisioning or not
 IRONIC_FAST_TRACK=${IRONIC_FAST_TRACK:-true}
 
+NTP_SERVER=${NTP_SERVER:-}
+
 wait_for_interface_or_ip
 
 mkdir -pm 0777 /shared/html
@@ -20,6 +22,10 @@ if [[ $IRONIC_FAST_TRACK == true ]]; then
     INSPECTOR_EXTRA_ARGS=" ipa-api-url=${IRONIC_BASE_URL}:6385 ipa-inspection-callback-url=${IRONIC_BASE_URL}:5050/v1/continue"
 else
     INSPECTOR_EXTRA_ARGS=" ipa-inspection-callback-url=${IRONIC_BASE_URL}:5050/v1/continue"
+fi
+
+if [[ -n "$NTP_SERVER" ]]; then
+    INSPECTOR_EXTRA_ARGS+=" ipa-ntp-server=$NTP_SERVER"
 fi
 
 # Copy files to shared mount
