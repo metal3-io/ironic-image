@@ -96,7 +96,7 @@ insecure = {{ env.IRONIC_INSPECTOR_INSECURE }}
 # TODO(dtantsur): ipa-api-url should be populated by ironic itself, but it's
 # not, so working around here.
 # NOTE(dtantsur): keep inspection arguments synchronized with inspector.ipxe
-extra_kernel_params = ipa-insecure=1 ipa-inspector-collectors=default,extra-hardware,logs ipa-inspection-dhcp-all-interfaces=1 ipa-collect-lldp=1 {% if env.IRONIC_FAST_TRACK == "true" %} ipa-api-url={{ env.IRONIC_BASE_URL }} {% endif %}
+extra_kernel_params = ipa-insecure=1 ipa-inspection-collectors=default,extra-hardware,logs ipa-inspection-dhcp-all-interfaces=1 ipa-collect-lldp=1 {% if env.IRONIC_FAST_TRACK == "true" %} ipa-api-url={{ env.IRONIC_BASE_URL }} {% endif %}
 
 [ipmi]
 # use_ipmitool_retries transfers the responsibility of retrying to ipmitool
