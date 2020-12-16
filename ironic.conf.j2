@@ -99,7 +99,7 @@ insecure = {{ env.IRONIC_INSPECTOR_INSECURE }}
 # TODO(dtantsur): ipa-api-url should be populated by ironic itself, but it's
 # not, so working around here.
 # NOTE(dtantsur): keep inspection arguments synchronized with inspector.ipxe
-extra_kernel_params = console=ttyS0 ipa-insecure=1 ipa-inspection-collectors=default,extra-hardware,logs ipa-inspection-dhcp-all-interfaces=1 ipa-collect-lldp=1 {% if env.IRONIC_FAST_TRACK == "true" %} ipa-api-url={{ env.IRONIC_BASE_URL }} {% endif %}
+extra_kernel_params = ipa-insecure=1 ipa-inspection-collectors=default,extra-hardware,logs ipa-inspection-dhcp-all-interfaces=1 ipa-collect-lldp=1 {% if env.IRONIC_FAST_TRACK == "true" %} ipa-api-url={{ env.IRONIC_BASE_URL }} {% endif %}{% if env.IRONIC_RAMDISK_SSH_KEY %} sshkey="{{ env.IRONIC_RAMDISK_SSH_KEY|trim }}"{% endif %} {{ env.IRONIC_KERNEL_PARAMS|trim }}
 
 [ipmi]
 # use_ipmitool_retries transfers the responsibility of retrying to ipmitool
@@ -156,7 +156,7 @@ pxe_config_template = $pybasedir/drivers/modules/ipxe_config.template
 tftp_master_path = /shared/tftpboot
 tftp_root = /shared/tftpboot
 uefi_pxe_config_template = $pybasedir/drivers/modules/ipxe_config.template
-pxe_append_params = nofb nomodeset vga=normal ipa-insecure=1
+pxe_append_params = nofb nomodeset vga=normal ipa-insecure=1 {% if env.IRONIC_RAMDISK_SSH_KEY %}sshkey="{{ env.IRONIC_RAMDISK_SSH_KEY|trim }}"{% endif %} {{ env.IRONIC_KERNEL_PARAMS|trim }}
 # This makes networking boot templates generated even for nodes using local
 # boot (the default), ensuring that they boot correctly even if they start
 # netbooting for some reason (e.g. with the noop management interface).
@@ -164,7 +164,7 @@ enable_netboot_fallback = true
 
 [redfish]
 use_swift = false
-kernel_append_params = console=ttyS0 nofb nomodeset vga=normal ipa-insecure=1
+kernel_append_params = nofb nomodeset vga=normal ipa-insecure=1 {% if env.IRONIC_RAMDISK_SSH_KEY %}sshkey="{{ env.IRONIC_RAMDISK_SSH_KEY|trim }}"{% endif %} {{ env.IRONIC_KERNEL_PARAMS|trim }}
 
 [service_catalog]
 endpoint_override = {{ env.IRONIC_BASE_URL }}
