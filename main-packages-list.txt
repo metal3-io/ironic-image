@@ -8,8 +8,8 @@ ipmitool
 iproute
 iscsi-initiator-utils
 mariadb-server
-openstack-ironic-api
-openstack-ironic-conductor
+openstack-ironic-api >= 16.1.1-0.20210101180248.0112b33.el8
+openstack-ironic-conductor >= 16.1.1-0.20210101180248.0112b33.el8
 parted
 psmisc
 python3-dracclient
