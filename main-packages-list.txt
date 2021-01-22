@@ -1,5 +1,5 @@
 crudini
-dnsmasq
+dnsmasq >= 2.79-13.el8_3.1
 gdisk
 genisoimage
 httpd
