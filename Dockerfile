@@ -45,29 +45,17 @@ COPY --from=builder /tmp/ipxe/src/bin/undionly.kpxe /tmp/ipxe/src/bin-x86_64-efi
 
 COPY --from=builder /tmp/esp.img /tmp/uefi_esp.img
 
-COPY ./ironic.conf.j2 /etc/ironic/ironic.conf.j2
+COPY config/ironic.conf.j2 /etc/ironic/
 
-COPY ./runironic-api.sh /bin/runironic-api
-COPY ./runironic-conductor.sh /bin/runironic-conductor
-COPY ./runironic-exporter.sh /bin/runironic-exporter
-COPY ./rundnsmasq.sh /bin/rundnsmasq
-COPY ./runhttpd.sh /bin/runhttpd
-COPY ./runmariadb.sh /bin/runmariadb
-COPY ./configure-ironic.sh /bin/configure-ironic.sh
-COPY ./ironic-common.sh /bin/ironic-common.sh
-COPY ./runlogwatch.sh /bin/runlogwatch.sh
-
-# TODO(dtantsur): remove this script when we stop supporting running both
-# API and conductor processes via one entry point.
-COPY ./runironic.sh /bin/runironic
-
-COPY ./dnsmasq.conf.j2 /etc/dnsmasq.conf.j2
-COPY ./inspector.ipxe.j2 /tmp/inspector.ipxe.j2
-COPY ./dualboot.ipxe /tmp/dualboot.ipxe
+# TODO(dtantsur): remove scripts/runironic script when we stop supporting
+# running both API and conductor processes via one entry point.
+COPY scripts/ /bin/
+COPY config/dnsmasq.conf.j2 /etc/
+COPY config/inspector.ipxe.j2 config/dualboot.ipxe /tmp/
 
 # Custom httpd config, removes all but the bare minimum needed modules
 RUN rm -f /etc/httpd/conf.d/autoindex.conf /etc/httpd/conf.d/welcome.conf /etc/httpd/conf.modules.d/*.conf
-COPY ./httpd.conf /etc/httpd/conf.d/httpd.conf
-COPY ./httpd-modules.conf /etc/httpd/conf.modules.d/httpd-modules.conf
+COPY config/httpd.conf /etc/httpd/conf.d/
+COPY config/httpd-modules.conf /etc/httpd/conf.modules.d/
 
 ENTRYPOINT ["/bin/runironic"]
