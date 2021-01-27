@@ -3,6 +3,8 @@ dnsmasq
 gdisk
 genisoimage
 httpd
+python3-mod_wsgi
+mod_ssl 
 httpd-tools
 ipmitool
 iproute
