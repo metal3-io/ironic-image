@@ -10,8 +10,8 @@ ipxe-bootimgs
 ipxe-roms-qemu
 iscsi-initiator-utils
 mariadb-server
-openstack-ironic-api >= 16.0.3-0.20201219231205.4ae5375.el8
-openstack-ironic-conductor >= 16.0.3-0.20201219231205.4ae5375.el8
+openstack-ironic-api >= 1:16.0.4-0.20210121171221.0e4e00e.el8
+openstack-ironic-conductor >= 1:16.0.4-0.20210121171221.0e4e00e.el8
 parted
 psmisc
 python3-debtcollector >= 2.2.0-0.20201008171245.649189d.el8
