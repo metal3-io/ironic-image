@@ -1,8 +1,12 @@
 ## Build iPXE w/ IPv6 Support
 ## Note: we are pinning to a specific commit for reproducible builds.
 ## Updated as needed.
-FROM docker.io/centos:centos8 AS builder
-RUN dnf install -y gcc git make xz-devel
+
+ARG OVERRIDE_DOCKER_IO_REGISTRY=${OVERRIDE_DOCKER_IO_REGISTRY:-"docker.io"}
+
+FROM "${OVERRIDE_DOCKER_IO_REGISTRY}/"centos:centos7 AS builder
+RUN yum install -y gcc git make genisoimage xz-devel grub2 grub2-efi-x64-modules shim dosfstools mtools
+
 WORKDIR /tmp
 COPY . .
 RUN git clone https://github.com/ipxe/ipxe.git && \
