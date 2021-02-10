@@ -20,7 +20,7 @@ FROM registry.ci.openshift.org/ocp/builder:rhel-8-base-openshift-4.7
 ENV PKGS_LIST=main-packages-list.txt
 ARG EXTRA_PKGS_LIST
 
-COPY ${PKGS_LIST} ${EXTRA_PKGS_LIST} /tmp/
+COPY ${PKGS_LIST} ${EXTRA_PKGS_LIST:-$PKGS_LIST} /tmp/
 COPY prepare-image.sh /bin/
 
 RUN prepare-image.sh && \
