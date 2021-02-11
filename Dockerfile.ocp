@@ -21,39 +21,27 @@ ENV PKGS_LIST=main-packages-list.txt
 ARG EXTRA_PKGS_LIST
 
 COPY ${PKGS_LIST} ${EXTRA_PKGS_LIST:-$PKGS_LIST} /tmp/
-COPY prepare-image.sh /bin/
+COPY prepare-image.sh prepare-ipxe.sh /bin/
 
 RUN prepare-image.sh && \
-  rm -f /bin/prepare-image.sh
-
-COPY ./prepare-ipxe.sh /tmp
-RUN chmod +x /tmp/prepare-ipxe.sh && /tmp/prepare-ipxe.sh && rm /tmp/prepare-ipxe.sh
+    rm -f /bin/prepare-image.sh && \
+    /bin/prepare-ipxe.sh && \
+    rm -f /tmp/prepare-ipxe.sh
 
 COPY --from=builder /tmp/esp.img /tmp/uefi_esp.img
 
-COPY ./ironic.conf.j2 /etc/ironic/ironic.conf.j2
+COPY config/ironic.conf.j2 /etc/ironic/
 
-COPY ./runironic-api.sh /bin/runironic-api
-COPY ./runironic-conductor.sh /bin/runironic-conductor
-COPY ./runironic-exporter.sh /bin/runironic-exporter
-COPY ./rundnsmasq.sh /bin/rundnsmasq
-COPY ./runhttpd.sh /bin/runhttpd
-COPY ./runmariadb.sh /bin/runmariadb
-COPY ./configure-ironic.sh /bin/configure-ironic.sh
-COPY ./ironic-common.sh /bin/ironic-common.sh
-COPY ./runlogwatch.sh /bin/runlogwatch.sh
+# TODO(dtantsur): remove scripts/runironic script when we stop supporting
+# running both API and conductor processes via one entry point.
+COPY scripts/ /bin/
 
-# TODO(dtantsur): remove this script when we stop supporting running both
-# API and conductor processes via one entry point.
-COPY ./runironic.sh /bin/runironic
-
-COPY ./dnsmasq.conf.j2 /etc/dnsmasq.conf.j2
-COPY ./inspector.ipxe /tmp/inspector.ipxe
-COPY ./dualboot.ipxe /tmp/dualboot.ipxe
+COPY config/dnsmasq.conf.j2 /etc/
+COPY inspector.ipxe dualboot.ipxe /tmp/
 
 # Custom httpd config, removes all but the bare minimum needed modules
 RUN rm -f /etc/httpd/conf.d/autoindex.conf /etc/httpd/conf.d/welcome.conf /etc/httpd/conf.modules.d/*.conf
-COPY ./httpd.conf /etc/httpd/conf.d/httpd.conf
-COPY ./httpd-modules.conf /etc/httpd/conf.modules.d/httpd-modules.conf
+COPY config/httpd.conf /etc/httpd/conf.d/
+COPY config/httpd-modules.conf /etc/httpd/conf.modules.d/
 
 ENTRYPOINT ["/bin/runironic"]
