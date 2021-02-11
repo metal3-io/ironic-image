@@ -1,3 +1,4 @@
+# Please ensure this file is kept in sync with Dockerfile.okd
 FROM registry.ci.openshift.org/ocp/builder:rhel-8-base-openshift-4.7 AS builder
 
 WORKDIR /tmp
