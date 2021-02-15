@@ -35,7 +35,7 @@ COPY config/ironic.conf.j2 /etc/ironic/
 
 # TODO(dtantsur): remove scripts/runironic script when we stop supporting
 # running both API and conductor processes via one entry point.
-COPY scripts/ /bin/
+COPY scripts/* /bin/
 
 COPY config/dnsmasq.conf.j2 /etc/
 COPY inspector.ipxe dualboot.ipxe /tmp/
