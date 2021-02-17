@@ -140,12 +140,8 @@ EOF
     fi
 fi
 
-function render_j2_config () {
-    python3 -c 'import os; import sys; import jinja2; sys.stdout.write(jinja2.Template(sys.stdin.read()).render(env=os.environ))' < /etc/ironic/ironic.conf.j2
-}
-
 # The original ironic.conf is empty, and can be found in ironic.conf_orig
-render_j2_config > /etc/ironic/ironic.conf
+render_j2_config /etc/ironic/ironic.conf.j2 /etc/ironic/ironic.conf
 
 # Configure auth for clients
 IRONIC_CONFIG_OPTIONS="--config-file /etc/ironic/ironic.conf"

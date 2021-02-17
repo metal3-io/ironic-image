@@ -12,12 +12,12 @@ default_inspect_interface = inspector
 default_network_interface = noop
 enabled_bios_interfaces = idrac-wsman,no-bios,redfish,idrac-redfish,irmc
 enabled_boot_interfaces = pxe,ipxe,fake,redfish-virtual-media,idrac-redfish-virtual-media
-enabled_deploy_interfaces = direct,fake
+enabled_deploy_interfaces = direct,fake,ramdisk
 # NOTE(dtantsur): when changing this, make sure to update the driver
 # dependencies in Dockerfile.
-enabled_hardware_types = ipmi,idrac,irmc,fake-hardware,redfish
+enabled_hardware_types = ipmi,idrac,irmc,fake-hardware,redfish,manual-management
 enabled_inspect_interfaces = inspector,idrac,irmc,fake,redfish
-enabled_management_interfaces = ipmitool,idrac,irmc,fake,redfish,idrac-redfish
+enabled_management_interfaces = ipmitool,idrac,irmc,fake,redfish,idrac-redfish,noop
 enabled_power_interfaces = ipmitool,idrac,irmc,fake,redfish,idrac-redfish
 enabled_raid_interfaces = no-raid,irmc,agent,fake,idrac-wsman
 enabled_vendor_interfaces = ipmitool,no-vendor,idrac,fake
@@ -100,7 +100,7 @@ insecure = {{ env.IRONIC_INSPECTOR_INSECURE }}
 # TODO(dtantsur): ipa-api-url should be populated by ironic itself, but it's
 # not, so working around here.
 # NOTE(dtantsur): keep inspection arguments synchronized with inspector.ipxe
-extra_kernel_params = ipa-insecure=1 ipa-inspection-collectors=default,extra-hardware,logs ipa-inspection-dhcp-all-interfaces=1 ipa-collect-lldp=1 {% if env.IRONIC_FAST_TRACK == "true" %} ipa-api-url={{ env.IRONIC_BASE_URL }} {% endif %}
+extra_kernel_params = ipa-insecure=1 ipa-inspection-collectors=default,extra-hardware,logs ipa-inspection-dhcp-all-interfaces=1 ipa-collect-lldp=1 {% if env.IRONIC_FAST_TRACK == "true" %} ipa-api-url={{ env.IRONIC_BASE_URL }} {% endif %}{% if env.IRONIC_RAMDISK_SSH_KEY %} sshkey="{{ env.IRONIC_RAMDISK_SSH_KEY|trim }}"{% endif %} {{ env.IRONIC_KERNEL_PARAMS|trim }}
 
 [ipmi]
 # use_ipmitool_retries transfers the responsibility of retrying to ipmitool
@@ -157,11 +157,15 @@ pxe_config_template = $pybasedir/drivers/modules/ipxe_config.template
 tftp_master_path = /shared/tftpboot
 tftp_root = /shared/tftpboot
 uefi_pxe_config_template = $pybasedir/drivers/modules/ipxe_config.template
-pxe_append_params = nofb nomodeset vga=normal ipa-insecure=1
+pxe_append_params = nofb nomodeset vga=normal ipa-insecure=1 {% if env.IRONIC_RAMDISK_SSH_KEY %}sshkey="{{ env.IRONIC_RAMDISK_SSH_KEY|trim }}"{% endif %} {{ env.IRONIC_KERNEL_PARAMS|trim }}
+# This makes networking boot templates generated even for nodes using local
+# boot (the default), ensuring that they boot correctly even if they start
+# netbooting for some reason (e.g. with the noop management interface).
+enable_netboot_fallback = true
 
 [redfish]
 use_swift = false
-kernel_append_params = nofb nomodeset vga=normal ipa-insecure=1
+kernel_append_params = nofb nomodeset vga=normal ipa-insecure=1 {% if env.IRONIC_RAMDISK_SSH_KEY %}sshkey="{{ env.IRONIC_RAMDISK_SSH_KEY|trim }}"{% endif %} {{ env.IRONIC_KERNEL_PARAMS|trim }}
 
 [service_catalog]
 endpoint_override = {{ env.IRONIC_BASE_URL }}

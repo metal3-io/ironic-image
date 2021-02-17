@@ -5,18 +5,11 @@ function wait_for_interface_or_ip() {
   # If $PROVISIONING_IP is specified, then we wait for that to become available on an interface, otherwise we look at $PROVISIONING_INTERFACE for an IP
   if [ ! -z "${PROVISIONING_IP}" ];
   then
-    export IRONIC_IP=""
-    until [ ! -z "${IRONIC_IP}" ]; do
-      echo "Waiting for ${PROVISIONING_IP} to be configured on an interface"
-      export IRONIC_IP=$(ip -br addr show | grep "${PROVISIONING_IP}" | grep -Po "[^\s]+/[0-9]+" | sed -e 's%/.*%%' | head -n 1)
+    export IRONIC_IP=$(printf %s "${PROVISIONING_IP}" | sed -e 's%/.*%%')
+    until ip -br addr show | grep -q -F " ${IRONIC_IP}/"; do
+      echo "Waiting for ${IRONIC_IP} to be configured on an interface"
       sleep 1
     done
-    # When an interface has multiple IP addresses, having IRONIC_IP set at this point means that the desired provisioning ip is set on the
-    # interface. However, the address returned might not be the desired one (no control over the order), so setting it back to the
-    # desired IP
-    if [ ! -z "${IRONIC_IP}" ]; then
-      export IRONIC_IP="$(echo ${PROVISIONING_IP} | sed -e 's%/.*%%' )"
-    fi
   else
     until [ ! -z "${IRONIC_IP}" ]; do
       echo "Waiting for ${PROVISIONING_INTERFACE} interface to be configured"
@@ -35,4 +28,8 @@ function wait_for_interface_or_ip() {
     export IPV=4
     export IRONIC_URL_HOST=$IRONIC_IP
   fi
+}
+
+function render_j2_config () {
+    python3 -c 'import os; import sys; import jinja2; sys.stdout.write(jinja2.Template(sys.stdin.read()).render(env=os.environ))' < $1 > $2
 }

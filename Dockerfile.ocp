@@ -38,7 +38,7 @@ COPY config/ironic.conf.j2 /etc/ironic/
 COPY scripts/* /bin/
 
 COPY config/dnsmasq.conf.j2 /etc/
-COPY inspector.ipxe dualboot.ipxe /tmp/
+COPY config/inspector.ipxe.j2 config/dualboot.ipxe /tmp/
 
 # Custom httpd config, removes all but the bare minimum needed modules
 RUN rm -f /etc/httpd/conf.d/autoindex.conf /etc/httpd/conf.d/welcome.conf /etc/httpd/conf.modules.d/*.conf
