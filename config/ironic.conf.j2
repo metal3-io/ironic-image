@@ -60,6 +60,7 @@ enable_ssl_api = true
 
 [conductor]
 automated_clean = {{ env.IRONIC_AUTOMATED_CLEAN }}
+heartbeat_timeout = {{ env.IRONIC_HEARTBEAT_TIMEOUT }}
 # NOTE(dtantsur): keep aligned with [pxe]boot_retry_timeout below.
 deploy_callback_timeout = 4800
 send_sensor_data = {{ env.SEND_SENSOR_DATA }} 

@@ -25,6 +25,9 @@ if [ ! -f "$IRONIC_CERT_FILE" ] && [ -f "$IRONIC_KEY_FILE" ] ; then
     exit 1
 fi
 
+# Configure IRONIC_HEARTBEAT_TIMEOUT 
+export IRONIC_HEARTBEAT_TIMEOUT="${IRONIC_HEARTBEAT_TIMEOUT:-60}"
+
 . /bin/ironic-common.sh
 
 export HTTP_PORT=${HTTP_PORT:-"80"}
