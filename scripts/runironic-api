@@ -14,4 +14,13 @@ while true ; do
   sleep 5
 done
 
-exec /usr/bin/ironic-api --config-file /usr/share/ironic/ironic-dist.conf ${IRONIC_CONFIG_OPTIONS}
+
+# TODO: Delete the line of code below and uncomment the next line after the PR https://github.com/metal3-io/baremetal-operator/pull/728 goes in
+[ ! "$(netstat -l | grep ${HTTP_PORT})" ] && . /bin/configure-httpd-ipa.sh  
+# . /bin/configure-httpd-ipa.sh  
+# The code above avoids the httpd instance in this container to listen on port HTTP_PORT when it has been opened by BMO.
+
+python3 -c 'import os; import sys; import jinja2; sys.stdout.write(jinja2.Template(sys.stdin.read()).render(env=os.environ))' < /etc/httpd-ironic-api.conf.j2 > /etc/httpd/conf.d/ironic.conf
+sed -i "/Listen 80/c\#Listen 80" /etc/httpd/conf/httpd.conf
+exec /usr/sbin/httpd -DFOREGROUND
+

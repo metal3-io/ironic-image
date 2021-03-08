@@ -47,8 +47,6 @@ COPY --from=builder /tmp/esp.img /tmp/uefi_esp.img
 
 COPY config/ironic.conf.j2 /etc/ironic/
 
-# TODO(dtantsur): remove scripts/runironic script when we stop supporting
-# running both API and conductor processes via one entry point.
 COPY scripts/ /bin/
 COPY config/dnsmasq.conf.j2 /etc/
 COPY config/inspector.ipxe.j2 config/dualboot.ipxe /tmp/
@@ -57,5 +55,6 @@ COPY config/inspector.ipxe.j2 config/dualboot.ipxe /tmp/
 RUN rm -f /etc/httpd/conf.d/autoindex.conf /etc/httpd/conf.d/welcome.conf /etc/httpd/conf.modules.d/*.conf
 COPY config/httpd.conf /etc/httpd/conf.d/
 COPY config/httpd-modules.conf /etc/httpd/conf.modules.d/
+COPY config/apache2-ironic-api.conf.j2 /etc/httpd-ironic-api.conf.j2
 
 ENTRYPOINT ["/bin/runironic"]

@@ -13,5 +13,4 @@ until ironic-dbsync --config-file /etc/ironic/ironic.conf upgrade; do
   echo "WARNING: ironic-dbsync failed, retrying"
   sleep 1
 done
-
-exec /usr/bin/ironic-conductor ${IRONIC_CONFIG_OPTIONS}
+exec /usr/bin/ironic-conductor
