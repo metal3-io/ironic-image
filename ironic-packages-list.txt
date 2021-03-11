@@ -19,6 +19,7 @@ python3-gunicorn
 python3-ibmcclient
 python3-ironic-prometheus-exporter
 python3-jinja2
+python3-proliantutils
 python3-scciclient
 python3-sushy
 python3-sushy-oem-idrac

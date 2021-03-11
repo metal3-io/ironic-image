@@ -1,20 +1,19 @@
 [DEFAULT]
 auth_strategy = noauth
 debug = true
-default_boot_interface = ipxe
 default_deploy_interface = direct
 default_inspect_interface = inspector
 default_network_interface = noop
-enabled_bios_interfaces = idrac-wsman,no-bios,redfish,idrac-redfish,irmc
-enabled_boot_interfaces = pxe,ipxe,fake,redfish-virtual-media,idrac-redfish-virtual-media
+enabled_bios_interfaces = idrac-wsman,no-bios,redfish,idrac-redfish,irmc,ilo
+enabled_boot_interfaces = ipxe,ilo-ipxe,pxe,ilo-pxe,fake,redfish-virtual-media,idrac-redfish-virtual-media,ilo-virtual-media
 enabled_deploy_interfaces = direct,fake,ramdisk
 # NOTE(dtantsur): when changing this, make sure to update the driver
 # dependencies in Dockerfile.
-enabled_hardware_types = ipmi,idrac,irmc,fake-hardware,redfish,ibmc,manual-management
-enabled_inspect_interfaces = inspector,idrac,irmc,fake,redfish
-enabled_management_interfaces = ipmitool,idrac,irmc,fake,redfish,idrac-redfish,ibmc,noop
-enabled_power_interfaces = ipmitool,idrac,irmc,fake,redfish,idrac-redfish,ibmc
-enabled_raid_interfaces = no-raid,irmc,agent,fake,ibmc,idrac-wsman
+enabled_hardware_types = ipmi,idrac,irmc,fake-hardware,redfish,ibmc,manual-management,ilo,ilo5
+enabled_inspect_interfaces = inspector,idrac,irmc,fake,redfish,ilo
+enabled_management_interfaces = ipmitool,idrac,irmc,fake,redfish,idrac-redfish,ibmc,ilo,ilo5,noop
+enabled_power_interfaces = ipmitool,idrac,irmc,fake,redfish,idrac-redfish,ibmc,ilo
+enabled_raid_interfaces = no-raid,irmc,agent,fake,ibmc,idrac-wsman,ilo5
 enabled_vendor_interfaces = ipmitool,no-vendor,idrac,fake,ibmc
 rpc_transport = json-rpc
 use_stderr = true
