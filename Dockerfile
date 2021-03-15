@@ -1,7 +1,7 @@
 ## Build iPXE w/ IPv6 Support
 ## Note: we are pinning to a specific commit for reproducible builds.
 ## Updated as needed.
-FROM docker.io/centos:centos8 AS builder
+FROM docker.io/centos:centos8 AS ironic-builder
 RUN dnf install -y gcc git make xz-devel
 WORKDIR /tmp
 COPY . .
@@ -31,7 +31,7 @@ RUN if [ $(uname -m) = "x86_64" ]; then \
 
 FROM docker.io/centos:centos8
 
-ENV PKGS_LIST=main-packages-list.txt
+ENV PKGS_LIST=ironic-packages-list.txt
 ARG EXTRA_PKGS_LIST
 ARG PATCH_LIST
 
@@ -41,9 +41,9 @@ COPY prepare-image.sh patch-image.sh /bin/
 RUN prepare-image.sh && \
   rm -f /bin/prepare-image.sh
 
-COPY --from=builder /tmp/ipxe/src/bin/undionly.kpxe /tmp/ipxe/src/bin-x86_64-efi/snponly.efi /tmp/ipxe/src/bin-x86_64-efi/ipxe.efi /tftpboot/
+COPY --from=ironic-builder /tmp/ipxe/src/bin/undionly.kpxe /tmp/ipxe/src/bin-x86_64-efi/snponly.efi /tmp/ipxe/src/bin-x86_64-efi/ipxe.efi /tftpboot/
 
-COPY --from=builder /tmp/esp.img /tmp/uefi_esp.img
+COPY --from=ironic-builder /tmp/esp.img /tmp/uefi_esp.img
 
 COPY config/ironic.conf.j2 /etc/ironic/
 
