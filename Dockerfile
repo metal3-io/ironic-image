@@ -45,16 +45,17 @@ COPY --from=ironic-builder /tmp/ipxe/src/bin/undionly.kpxe /tmp/ipxe/src/bin-x86
 
 COPY --from=ironic-builder /tmp/esp.img /tmp/uefi_esp.img
 
-COPY config/ironic.conf.j2 /etc/ironic/
+COPY ironic-config/ironic.conf.j2 /etc/ironic/
 
-COPY scripts/ /bin/
-COPY config/dnsmasq.conf.j2 /etc/
-COPY config/inspector.ipxe.j2 config/dualboot.ipxe /tmp/
+COPY ironic-scripts/ /bin/
+COPY ironic-config/dnsmasq.conf.j2 /etc/
+COPY ironic-config/inspector.ipxe.j2 ironic-config/dualboot.ipxe /tmp/
 
 # Custom httpd config, removes all but the bare minimum needed modules
 RUN rm -f /etc/httpd/conf.d/autoindex.conf /etc/httpd/conf.d/welcome.conf /etc/httpd/conf.modules.d/*.conf
-COPY config/httpd.conf /etc/httpd/conf.d/
-COPY config/httpd-modules.conf /etc/httpd/conf.modules.d/
-COPY config/apache2-ironic-api.conf.j2 /etc/httpd-ironic-api.conf.j2
+COPY ironic-config/httpd.conf /etc/httpd/conf.d/
+COPY ironic-config/httpd-modules.conf /etc/httpd/conf.modules.d/
+COPY ironic-config/apache2-ironic-api.conf.j2 /etc/httpd-ironic-api.conf.j2
 
 ENTRYPOINT ["/bin/runironic"]
+
