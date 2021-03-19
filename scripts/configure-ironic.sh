@@ -9,6 +9,12 @@ export IRONIC_INSPECTOR_CERT_FILE=/certs/ironic-inspector/tls.crt
 export IRONIC_INSPECTOR_CACERT_FILE=/certs/ca/ironic-inspector/tls.crt
 export IRONIC_INSPECTOR_INSECURE=${IRONIC_INSPECTOR_INSECURE:-$IRONIC_INSECURE}
 
+# Define the VLAN interfaces to be included in introspection report, e.g.
+#   all - all VLANs on all interfaces using LLDP information
+#   <interface> - all VLANs on a particular interface using LLDP information
+#   <interface.vlan> - a particular VLAN on an interface, not relying on LLDP
+export IRONIC_INSPECTOR_VLAN_INTERFACES=${IRONIC_INSPECTOR_VLAN_INTERFACES:-all}
+
 export MARIADB_CACERT_FILE=/certs/ca/mariadb/tls.crt
 
 mkdir -p /certs/ironic
