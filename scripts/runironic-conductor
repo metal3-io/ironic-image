@@ -13,4 +13,11 @@ until ironic-dbsync --config-file /etc/ironic/ironic.conf upgrade; do
   echo "WARNING: ironic-dbsync failed, retrying"
   sleep 1
 done
+
+if [[ "$IRONIC_TLS_SETUP" == "true"  && "${RESTART_CONTAINER_CERTIFICATE_UPDATED}" == "true" ]]; then
+    inotifywait -m -e delete_self "${IRONIC_CERT_FILE}" | while read file event; do
+     kill $(pgrep ironic)
+    done &
+fi
+
 exec /usr/bin/ironic-conductor

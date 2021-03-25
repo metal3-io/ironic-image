@@ -5,6 +5,7 @@ MARIADB_PASSWORD=${MARIADB_PASSWORD:-"change_me"}
 MARIADB_CONF_FILE="/etc/my.cnf.d/mariadb-server.cnf"
 MARIADB_CERT_FILE=/certs/mariadb/tls.crt
 MARIADB_KEY_FILE=/certs/mariadb/tls.key
+RESTART_CONTAINER_CERTIFICATE_UPDATED=${RESTART_CONTAINER_CERTIFICATE_UPDATED:-"false"}
 
 mkdir -p $(dirname ${MARIADB_CERT_FILE})
 if [ -f "$MARIADB_CERT_FILE" ] && [ ! -f "$MARIADB_KEY_FILE" ] ; then
@@ -18,6 +19,13 @@ fi
 
 ln -sf /proc/self/fd/1 /var/log/mariadb/mariadb.log
 rm -f /usr/bin/mysqld_safe_helper # Avoid this script being used which results in a permission denied error.
+
+# Restart mysqld when the certificate is updated
+if [[ -f "$MARIADB_CERT_FILE" && "${RESTART_CONTAINER_CERTIFICATE_UPDATED}" == "true" ]]; then
+    inotifywait -m -e delete_self "${MARIADB_CERT_FILE}" | while read file event; do
+       kill $(pgrep -f mysqld)
+    done &
+fi
 
 if [ ! -d "${DATADIR}/mysql" ]; then
     crudini --set "$MARIADB_CONF_FILE" mysqld max_connections 64
