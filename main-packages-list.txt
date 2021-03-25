@@ -17,7 +17,7 @@ psmisc
 python3-debtcollector >= 2.2.0-0.20201008171245.649189d.el8
 python3-dracclient
 python3-gunicorn
-python3-ironic-lib >= 4.5.1-0.20210227011240.e7a35e4.el8
+python3-ironic-lib >= 4.6.2-0.20210324125107.5d54fe0.el8
 python3-ironic-prometheus-exporter
 python3-jinja2
 python3-msgpack >= 0.6.2-1.el8ost
