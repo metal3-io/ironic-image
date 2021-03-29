@@ -24,5 +24,3 @@ if [[ ! -z ${PATCH_LIST:-} ]]; then
 fi
 rm -f /bin/patch-image.sh
 
-chown ironic:ironic /var/log/ironic
-rm /etc/httpd/conf.d/ssl.conf # This file is generated after installing mod_ssl and it affects our configuration

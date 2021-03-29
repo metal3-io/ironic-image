@@ -41,6 +41,10 @@ COPY prepare-image.sh patch-image.sh /bin/
 RUN prepare-image.sh && \
   rm -f /bin/prepare-image.sh
 
+RUN chown ironic:ironic /var/log/ironic && \
+  # This file is generated after installing mod_ssl and it affects our configuration
+  rm -f /etc/httpd/conf.d/ssl.conf
+
 COPY --from=ironic-builder /tmp/ipxe/src/bin/undionly.kpxe /tmp/ipxe/src/bin-x86_64-efi/snponly.efi /tmp/ipxe/src/bin-x86_64-efi/ipxe.efi /tftpboot/
 
 COPY --from=ironic-builder /tmp/esp.img /tmp/uefi_esp.img
