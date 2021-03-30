@@ -60,6 +60,3 @@ RUN rm -f /etc/httpd/conf.d/autoindex.conf /etc/httpd/conf.d/welcome.conf /etc/h
 COPY ironic-config/httpd.conf /etc/httpd/conf.d/
 COPY ironic-config/httpd-modules.conf /etc/httpd/conf.modules.d/
 COPY ironic-config/apache2-ironic-api.conf.j2 /etc/httpd-ironic-api.conf.j2
-
-ENTRYPOINT ["/bin/runironic"]
-
