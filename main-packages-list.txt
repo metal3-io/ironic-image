@@ -10,15 +10,15 @@ ipxe-bootimgs
 ipxe-roms-qemu
 iscsi-initiator-utils
 mariadb-server
-openstack-ironic-api >= 1:16.2.1-0.20210317011256.e058a5a.el8
-openstack-ironic-conductor >= 1:16.2.1-0.20210317011256.e058a5a.el8
+openstack-ironic-api >= 1:17.0.1-0.20210407191221.d6bb66d.el8
+openstack-ironic-conductor >= 1:17.0.1-0.20210407191221.d6bb66d.el8
 parted
 psmisc
 python3-debtcollector >= 2.2.0-0.20201008171245.649189d.el8
 python3-dracclient
 python3-gunicorn
 python3-ironic-lib >= 4.6.2-0.20210324125107.5d54fe0.el8
-python3-ironic-prometheus-exporter
+python3-ironic-prometheus-exporter >= 2.2.1-0.20210325143713.70e39c8.el8
 python3-jinja2
 python3-msgpack >= 0.6.2-1.el8ost
 python3-oslo-concurrency >= 4.3.0-0.20201008180343.2f78803.el8
@@ -37,7 +37,7 @@ python3-pint >= 0.10.1-1.el8ost
 python3-pyghmi >= 1.5.14-2.1.el8ost
 python3-scciclient
 python3-stevedore >= 3.2.2-0.20201009151242.274eaa6.el8
-python3-sushy >= 3.6.2-0.20210301163045.d4c7e03.el8
+python3-sushy >= 3.7.1-0.20210325021941.ab3a97e.el8
 python3-sushy-oem-idrac
 python3-zipp >= 0.5.1-2.el8ost
 qemu-img
