@@ -54,6 +54,7 @@ COPY ironic-config/ironic.conf.j2 /etc/ironic/
 COPY ironic-scripts/ /bin/
 COPY ironic-config/dnsmasq.conf.j2 /etc/
 COPY ironic-config/inspector.ipxe.j2 ironic-config/dualboot.ipxe /tmp/
+RUN chmod 644 /tmp/dualboot.ipxe
 
 # Custom httpd config, removes all but the bare minimum needed modules
 RUN rm -f /etc/httpd/conf.d/autoindex.conf /etc/httpd/conf.d/welcome.conf /etc/httpd/conf.modules.d/*.conf
