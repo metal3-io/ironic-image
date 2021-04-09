@@ -14,7 +14,7 @@ while true ; do
   sleep 5
 done
 
-. /bin/configure-httpd-ipa.sh  
+. /bin/configure-httpd-ipa.sh
 # The code above avoids the httpd instance in this container to listen on port HTTP_PORT when it has been opened by BMO.
 
 python3 -c 'import os; import sys; import jinja2; sys.stdout.write(jinja2.Template(sys.stdin.read()).render(env=os.environ))' < /etc/httpd-ironic-api.conf.j2 > /etc/httpd/conf.d/ironic.conf

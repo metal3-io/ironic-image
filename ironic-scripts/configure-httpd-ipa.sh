@@ -25,6 +25,7 @@ fi
 # Copy files to shared mount
 render_j2_config /tmp/inspector.ipxe.j2 /shared/html/inspector.ipxe
 cp /tmp/dualboot.ipxe /tmp/uefi_esp.img /shared/html/
+chmod 0644 /shared/html/*.ipxe
 
 # Use configured values
 sed -i -e s/IRONIC_IP/${IRONIC_URL_HOST}/g \
