@@ -1,0 +1,57 @@
+[DEFAULT]
+auth_strategy = noauth
+debug = true
+transport_url = fake://
+use_stderr = true
+{% if env.INSPECTOR_REVERSE_PROXY_SETUP == "true" %}
+listen_port = 5049
+listen_address = 127.0.0.1
+{% else %}
+listen_address = ::
+{% endif %}
+host = {{ env.IRONIC_IP }}
+{% if env.IRONIC_INSPECTOR_TLS_SETUP == "true" and env.INSPECTOR_REVERSE_PROXY_SETUP == "false" %}
+use_ssl = true
+{% endif %}
+
+[database]
+connection = sqlite:///var/lib/ironic-inspector/ironic-inspector.db
+
+{% if env.IRONIC_INSPECTOR_ENABLE_DISCOVERY == "true" %}
+[discovery]
+enroll_node_driver = ipmi
+{% endif %}
+
+[ironic]
+auth_type = none
+endpoint_override = {{ env.IRONIC_BASE_URL }}
+{% if env.IRONIC_TLS_SETUP == "true" %}
+cafile = {{ env.IRONIC_CACERT_FILE }}
+insecure = {{ env.IRONIC_INSECURE }}
+{% endif %}
+
+[processing]
+add_ports = all
+always_store_ramdisk_logs = true
+keep_ports = present
+{% if env.IRONIC_INSPECTOR_ENABLE_DISCOVERY == "true" %}
+node_not_found_hook = enroll
+{% endif %}
+permit_active_introspection = true
+power_off = false
+processing_hooks = $default_processing_hooks,extra_hardware,lldp_basic
+ramdisk_logs_dir = /shared/log/ironic-inspector/ramdisk
+store_data = database
+
+[pxe_filter]
+driver = noop
+
+[service_catalog]
+auth_type = none
+endpoint_override = {{ env.IRONIC_INSPECTOR_BASE_URL }}
+
+{% if env.IRONIC_INSPECTOR_TLS_SETUP == "true" and env.INSPECTOR_REVERSE_PROXY_SETUP == "false" %}
+[ssl]
+cert_file = {{ env.IRONIC_INSPECTOR_CERT_FILE }}
+key_file = {{ env.IRONIC_INSPECTOR_KEY_FILE }}
+{% endif %}

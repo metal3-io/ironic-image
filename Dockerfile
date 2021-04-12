@@ -31,7 +31,7 @@ RUN if [ $(uname -m) = "x86_64" ]; then \
 
 FROM docker.io/centos:centos8
 
-ENV PKGS_LIST=ironic-packages-list.txt
+ENV PKGS_LIST=main-packages-list.txt
 ARG EXTRA_PKGS_LIST
 ARG PATCH_LIST
 
@@ -41,17 +41,18 @@ COPY prepare-image.sh patch-image.sh /bin/
 RUN prepare-image.sh && \
   rm -f /bin/prepare-image.sh
 
+
+COPY scripts/ /bin/
+
+# IRONIC #
 RUN chown ironic:ironic /var/log/ironic && \
   # This file is generated after installing mod_ssl and it affects our configuration
   rm -f /etc/httpd/conf.d/ssl.conf
 
 COPY --from=ironic-builder /tmp/ipxe/src/bin/undionly.kpxe /tmp/ipxe/src/bin-x86_64-efi/snponly.efi /tmp/ipxe/src/bin-x86_64-efi/ipxe.efi /tftpboot/
-
 COPY --from=ironic-builder /tmp/esp.img /tmp/uefi_esp.img
 
 COPY ironic-config/ironic.conf.j2 /etc/ironic/
-
-COPY ironic-scripts/ /bin/
 COPY ironic-config/dnsmasq.conf.j2 /etc/
 COPY ironic-config/inspector.ipxe.j2 ironic-config/dualboot.ipxe /tmp/
 
@@ -60,3 +61,12 @@ RUN rm -f /etc/httpd/conf.d/autoindex.conf /etc/httpd/conf.d/welcome.conf /etc/h
 COPY ironic-config/httpd.conf /etc/httpd/conf.d/
 COPY ironic-config/httpd-modules.conf /etc/httpd/conf.modules.d/
 COPY ironic-config/apache2-ironic-api.conf.j2 /etc/httpd-ironic-api.conf.j2
+
+# IRONIC-INSPECTOR #
+RUN mkdir -p /var/lib/ironic-inspector && \
+  sqlite3 /var/lib/ironic-inspector/ironic-inspector.db "pragma journal_mode=wal" && \
+  dnf remove -y sqlite
+
+COPY ironic-inspector-config/ironic-inspector.conf.j2 /etc/ironic-inspector/
+COPY ironic-inspector-config/inspector-apache.conf.j2 /etc/httpd/conf.d/
+RUN rm -f /etc/httpd/conf.d/ssl.conf
