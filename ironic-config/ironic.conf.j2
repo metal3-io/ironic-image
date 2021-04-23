@@ -29,6 +29,7 @@ host = localhost
 {% else %}
 host = {{ env.IRONIC_URL_HOST }}
 {% endif %}
+webserver_verify_ca = {{ not env.IRONIC_INSECURE | bool }}
 
 isolinux_bin = /usr/share/syslinux/isolinux.bin
 
