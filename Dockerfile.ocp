@@ -5,7 +5,7 @@ WORKDIR /tmp
 
 RUN if [ $(uname -m) = "x86_64" ]; then \
       dnf install -y genisoimage grub2 grub2-efi-x64 shim dosfstools mtools && \
-      dd bs=1024 count=3200 if=/dev/zero of=esp.img && \
+      dd bs=1024 count=6400 if=/dev/zero of=esp.img && \
       mkfs.msdos -F 12 -n 'ESP_IMAGE' ./esp.img && \
       mmd -i esp.img EFI && \
       mmd -i esp.img EFI/BOOT && \
