@@ -17,6 +17,7 @@ if [ ! -f "$MARIADB_CERT_FILE" ] && [ -f "$MARIADB_KEY_FILE" ] ; then
 fi
 
 ln -sf /proc/self/fd/1 /var/log/mariadb/mariadb.log
+rm -f /usr/bin/mysqld_safe_helper # Avoid this script being used which results in a permission denied error.
 
 if [ ! -d "${DATADIR}/mysql" ]; then
     crudini --set "$MARIADB_CONF_FILE" mysqld max_connections 64
