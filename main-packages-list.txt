@@ -3,15 +3,15 @@ dnsmasq
 gdisk
 genisoimage
 httpd
-python3-mod_wsgi
-mod_ssl 
 httpd-tools
 ipmitool
 iproute
 iscsi-initiator-utils
 mariadb-server
+mod_ssl
 openstack-ironic-api >= 16.1.1-0.20210101180248.0112b33.el8
 openstack-ironic-conductor >= 16.1.1-0.20210101180248.0112b33.el8
+openstack-ironic-inspector >= 10.5.1-0.20201223120908.379b892.el8
 parted
 psmisc
 python3-dracclient
@@ -19,9 +19,11 @@ python3-gunicorn
 python3-ibmcclient
 python3-ironic-prometheus-exporter
 python3-jinja2
+python3-mod_wsgi
 python3-proliantutils
 python3-scciclient
 python3-sushy
 python3-sushy-oem-idrac
 qemu-img
+sqlite
 syslinux-nonlinux
