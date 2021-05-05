@@ -70,8 +70,6 @@ connection = mysql+pymysql://ironic:{{ env.MARIADB_PASSWORD }}@127.0.0.1/ironic?
 connection = mysql+pymysql://ironic:{{ env.MARIADB_PASSWORD }}@127.0.0.1/ironic?charset=utf8
 {% endif %}
 
-
-
 [deploy]
 default_boot_option = local
 erase_devices_metadata_priority = 10
@@ -79,6 +77,9 @@ erase_devices_priority = 0
 http_root = /shared/html/
 http_url = http://{{ env.IRONIC_URL_HOST }}:{{ env.HTTP_PORT }}
 fast_track = {{ env.IRONIC_FAST_TRACK }}
+{% if env.IRONIC_BOOT_ISO_SOURCE %}
+ramdisk_image_download_source = {{ env.IRONIC_BOOT_ISO_SOURCE }}
+{% endif %}
 
 [dhcp]
 dhcp_provider = none
