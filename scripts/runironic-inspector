@@ -29,7 +29,7 @@ wait_for_interface_or_ip
 if [ -f "$IRONIC_INSPECTOR_CERT_FILE" ]; then
     export IRONIC_INSPECTOR_TLS_SETUP="true"
     export IRONIC_INSPECTOR_BASE_URL="https://${IRONIC_URL_HOST}:5050"
-    if [ ! -f "${IRONIC_INSPECTOR_CACERT_FILE}"]; then
+    if [ ! -f "${IRONIC_INSPECTOR_CACERT_FILE}" ]; then
         cp "${IRONIC_INSPECTOR_CERT_FILE}" "${IRONIC_INSPECTOR_CACERT_FILE}"
     fi
 else
@@ -41,7 +41,7 @@ fi
 if [ -f "$IRONIC_CERT_FILE" ] || [ -f "$IRONIC_CACERT_FILE" ]; then
     export IRONIC_TLS_SETUP="true"
     export IRONIC_BASE_URL="https://${IRONIC_URL_HOST}:6385"
-    if [ ! -f "${IRONIC_CACERT_FILE}"]; then
+    if [ ! -f "${IRONIC_CACERT_FILE}" ]; then
         cp "${IRONIC_CERT_FILE}" "${IRONIC_CACERT_FILE}"
     fi
 else
