@@ -1,0 +1,5 @@
+{
+  "type": "object",
+  "description": "JSON Schema to allow any network data format",
+  "additionalProperties": true
+}

@@ -51,6 +51,7 @@ api_workers = {{ env.NUMWORKERS }}
 {% if env.IRONIC_TLS_SETUP == "true" %}
 enable_ssl_api = true
 {% endif %}
+network_data_schema = /etc/ironic/network-data-schema.json
 
 [conductor]
 automated_clean = {{ env.IRONIC_AUTOMATED_CLEAN }}

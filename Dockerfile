@@ -52,7 +52,7 @@ RUN chown ironic:ironic /var/log/ironic && \
 COPY --from=ironic-builder /tmp/ipxe/src/bin/undionly.kpxe /tmp/ipxe/src/bin-x86_64-efi/snponly.efi /tmp/ipxe/src/bin-x86_64-efi/ipxe.efi /tftpboot/
 COPY --from=ironic-builder /tmp/esp.img /tmp/uefi_esp.img
 
-COPY ironic-config/ironic.conf.j2 /etc/ironic/
+COPY ironic-config/ironic.conf.j2 ironic-config/network-data-schema.json /etc/ironic/
 COPY ironic-config/dnsmasq.conf.j2 /etc/
 COPY ironic-config/inspector.ipxe.j2 ironic-config/dualboot.ipxe /tmp/
 
