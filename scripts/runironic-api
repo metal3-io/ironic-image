@@ -19,5 +19,12 @@ done
 
 python3 -c 'import os; import sys; import jinja2; sys.stdout.write(jinja2.Template(sys.stdin.read()).render(env=os.environ))' < /etc/httpd-ironic-api.conf.j2 > /etc/httpd/conf.d/ironic.conf
 sed -i "/Listen 80/c\#Listen 80" /etc/httpd/conf/httpd.conf
+
+if [[ "$IRONIC_TLS_SETUP" == "true"  && "${RESTART_CONTAINER_CERTIFICATE_UPDATED}" == "true" ]]; then
+    inotifywait -m -e delete_self "${IRONIC_CERT_FILE}" | while read file event; do
+      kill -WINCH $(pgrep httpd)
+    done &
+fi
+
 exec /usr/sbin/httpd -DFOREGROUND
 

@@ -8,6 +8,7 @@ export IRONIC_INSECURE=${IRONIC_INSECURE:-false}
 export IRONIC_INSPECTOR_CERT_FILE=/certs/ironic-inspector/tls.crt
 export IRONIC_INSPECTOR_CACERT_FILE=/certs/ca/ironic-inspector/tls.crt
 export IRONIC_INSPECTOR_INSECURE=${IRONIC_INSPECTOR_INSECURE:-$IRONIC_INSECURE}
+export RESTART_CONTAINER_CERTIFICATE_UPDATED=${RESTART_CONTAINER_CERTIFICATE_UPDATED:-"false"}
 
 # Define the VLAN interfaces to be included in introspection report, e.g.
 #   all - all VLANs on all interfaces using LLDP information
