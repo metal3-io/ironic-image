@@ -30,6 +30,13 @@ host = localhost
 host = {{ env.IRONIC_URL_HOST }}
 {% endif %}
 
+# If a path to a certificate is defined, use that first for webserver
+{% if env.WEBSERVER_CACERT_FILE %}
+webserver_verify_ca =  {{ env.WEBSERVER_CACERT_FILE }}
+{% elif env.IRONIC_INSECURE == "true" %}
+webserver_verify_ca = false
+{% endif %}
+
 isolinux_bin = /usr/share/syslinux/isolinux.bin
 
 # NOTE(dtantsur): this path is specific to the GRUB image that is built into
