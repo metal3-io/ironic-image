@@ -48,7 +48,10 @@ fi
 
 if [ -f "$IRONIC_INSPECTOR_CERT_FILE" ]; then
     export IRONIC_INSPECTOR_TLS_SETUP="true"
-    render_j2_config $INSPECTOR_ORIG_HTTPD_CONFIG $INSPECTOR_RESULT_HTTPD_CONFIG
+    # Delete the line below after the PR: https://github.com/metal3-io/baremetal-operator/pull/886 goes in. 
+    INSPECTOR_PORT=5050
+    # Delete the condition statement after the PR above goes in. 
+    [ ! "$(netstat -l | grep ${INSPECTOR_PORT})" ] render_j2_config $INSPECTOR_ORIG_HTTPD_CONFIG $INSPECTOR_RESULT_HTTPD_CONFIG
 else
     export IRONIC_INSPECTOR_TLS_SETUP="false"
     export INSPECTOR_REVERSE_PROXY_SETUP="false" # If TLS is not used, we have no reason to use the reverse proxy
