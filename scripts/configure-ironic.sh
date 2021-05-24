@@ -16,9 +16,6 @@ export IRONIC_INSPECTOR_VLAN_INTERFACES=${IRONIC_INSPECTOR_VLAN_INTERFACES:-all}
 
 export MARIADB_CACERT_FILE=/certs/ca/mariadb/tls.crt
 
-# Set default live-iso source to http and disable local caching
-export IRONIC_BOOT_ISO_SOURCE=${IRONIC_BOOT_ISO_SOURCE:-"http"}
-
 mkdir -p /certs/ironic
 mkdir -p /certs/ironic-inspector
 mkdir -p /certs/ca/ironic
