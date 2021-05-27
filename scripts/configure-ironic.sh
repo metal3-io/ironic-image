@@ -81,6 +81,15 @@ else
     export MARIADB_TLS_ENABLED="false"
 fi
 
+if [ ! -z "${IRONIC_EXTERNAL_IP}" ]; then
+	if [ "${IRONIC_INSPECTOR_TLS_SETUP}" == "true" ]; then
+		export IRONIC_EXTERNAL_CALLBACK_URL="https://${IRONIC_EXTERNAL_IP}:6385"
+	else
+		export IRONIC_EXTERNAL_CALLBACK_URL="http://${IRONIC_EXTERNAL_IP}:6385"
+	fi
+	export IRONIC_EXTERNAL_HTTP_URL="http://${IRONIC_EXTERNAL_IP}:6180"
+fi
+
 cp /etc/ironic/ironic.conf /etc/ironic/ironic.conf_orig
 
 # oslo.config also supports Config Opts From Environment, log them
