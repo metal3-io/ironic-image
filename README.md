@@ -23,7 +23,8 @@ All of the containers must share a common mount point or data store.  Ironic req
 - final image to be deployed onto node in qcow2 format
 
 The following environment variables can be passed in to customize run-time functionality:
-- PROVISIONING_INTERFACE - interface to use for ironic, dnsmasq(dhcpd) and httpd (default provisioning)
+- PROVISIONING_MACS - a comma seperated list of mac address of the master nodes (used to determine the PROVISIONING_INTERFACE)
+- PROVISIONING_INTERFACE - interface to use for ironic, dnsmasq(dhcpd) and httpd (default provisioning, this is calculated if the above PROVISIONING_MACS is provided)
 - DNSMASQ_EXCEPT_INTERFACE - interfaces to exclude when providing DHCP address (default "lo")
 - HTTP_PORT - port used by http server (default 80)
 - DHCP_RANGE - dhcp range to use for provisioning (default 172.22.0.10-172.22.0.100)

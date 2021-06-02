@@ -1,4 +1,21 @@
-export PROVISIONING_INTERFACE=${PROVISIONING_INTERFACE:-"provisioning"}
+function get_provisioning_interface() {
+  if [ -n "${PROVISIONING_INTERFACE}" ]; then
+    # don't override the PROVISIONING_INTERFACE if one is provided
+    echo ${PROVISIONING_INTERFACE}
+    return
+  fi
+
+  local interface="provisioning"
+  for mac in ${PROVISIONING_MACS//,/ } ; do
+    if ip -br link show up | grep -q "$mac"; then
+      interface=$(ip -br link show up | grep "$mac" | cut -f 1 -d ' ')
+      break
+    fi
+  done
+  echo $interface
+}
+
+export PROVISIONING_INTERFACE=$(get_provisioning_interface)
 
 # Wait for the interface or IP to be up, sets $IRONIC_IP
 function wait_for_interface_or_ip() {
