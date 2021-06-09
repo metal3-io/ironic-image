@@ -125,6 +125,10 @@ use_ipmitool_retries = true
 # interval of Y in between each tries.
 min_command_interval = 5
 command_retry_timeout = 60
+# List of possible cipher suites versions that can be
+# supported by the hardware in case the field `cipher_suite`
+# is not set for the node. (list value)
+cipher_suite_versions = 3,17
 
 [json_rpc]
 # We assume that when we run API and conductor in the same container, they use
