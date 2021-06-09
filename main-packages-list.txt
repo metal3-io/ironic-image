@@ -12,6 +12,7 @@ iscsi-initiator-utils
 mariadb-server
 openstack-ironic-api >= 1:17.0.3-0.20210518121213.77be4c6.el8
 openstack-ironic-conductor >= 1:17.0.3-0.20210518121213.77be4c6.el8
+openstack-ironic-inspector >= 10.6.1-0.20210406091336.579f59c.el8
 parted
 psmisc
 python3-debtcollector >= 2.2.0-0.20210324220630.649189d.el8
@@ -46,3 +47,4 @@ python3-sushy >= 3.7.1-0.20210428165244.bc49878.el8
 python3-sushy-oem-idrac >= 2.0.1-0.20210326152858.83b7eb0.el8
 python3-zipp >= 0.5.1-2.el8ost
 qemu-img
+sqlite
