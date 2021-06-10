@@ -104,10 +104,10 @@ power_off = {{ false if env.IRONIC_FAST_TRACK == "true" else true }}
 cafile = {{ env.IRONIC_INSPECTOR_CACERT_FILE }}
 insecure = {{ env.IRONIC_INSPECTOR_INSECURE }}
 {% endif %}
-# TODO(dtantsur): ipa-api-url should be populated by ironic itself, but it's
-# not, so working around here.
 # NOTE(dtantsur): keep inspection arguments synchronized with inspector.ipxe
-extra_kernel_params = ipa-insecure=1 ipa-inspection-collectors=default,extra-hardware,logs ipa-enable-vlan-interfaces={{ env.IRONIC_INSPECTOR_VLAN_INTERFACES }} ipa-inspection-dhcp-all-interfaces=1 ipa-collect-lldp=1 {% if env.IRONIC_FAST_TRACK == "true" %} ipa-api-url={{ env.IRONIC_BASE_URL }} {% endif %}{% if env.IRONIC_RAMDISK_SSH_KEY %} sshkey="{{ env.IRONIC_RAMDISK_SSH_KEY|trim }}"{% endif %} {{ env.IRONIC_KERNEL_PARAMS|trim }}
+# Also keep in mind that only parameters unique for inspection go here.
+# No need to duplicate pxe_append_params/kernel_append_params.
+extra_kernel_params = ipa-inspection-collectors=default,extra-hardware,logs ipa-enable-vlan-interfaces={{ env.IRONIC_INSPECTOR_VLAN_INTERFACES }} ipa-inspection-dhcp-all-interfaces=1 ipa-collect-lldp=1
 
 [ipmi]
 # use_ipmitool_retries transfers the responsibility of retrying to ipmitool
@@ -175,6 +175,9 @@ enable_netboot_fallback = true
 
 [redfish]
 use_swift = false
+kernel_append_params = nofb nomodeset vga=normal ipa-insecure=1 {% if env.IRONIC_RAMDISK_SSH_KEY %}sshkey="{{ env.IRONIC_RAMDISK_SSH_KEY|trim }}"{% endif %} {{ env.IRONIC_KERNEL_PARAMS|trim }}
+
+[ilo]
 kernel_append_params = nofb nomodeset vga=normal ipa-insecure=1 {% if env.IRONIC_RAMDISK_SSH_KEY %}sshkey="{{ env.IRONIC_RAMDISK_SSH_KEY|trim }}"{% endif %} {{ env.IRONIC_KERNEL_PARAMS|trim }}
 
 [service_catalog]
