@@ -18,7 +18,7 @@ python3-debtcollector >= 2.2.0-0.20210324220630.649189d.el8
 python3-dracclient
 python3-eventlet >= 0.25.2-4.el8
 python3-gunicorn
-python3-ironic-lib >= 4.6.2-0.20210329132157.5d54fe0.el8
+python3-ironic-lib >= 4.6.2-0.20210608101214.ca2e4ba.el8
 python3-ironic-prometheus-exporter >= 2.2.1-0.20210325143713.70e39c8.el8
 python3-jinja2
 python3-msgpack >= 0.6.2-1.el8ost
