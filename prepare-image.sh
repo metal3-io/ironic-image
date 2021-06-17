@@ -14,9 +14,6 @@ if [[ ! -z ${EXTRA_PKGS_LIST:-} ]]; then
 fi
 dnf install -y --enablerepo=epel inotify-tools
 
-# Delete the line below after the PR: https://github.com/metal3-io/baremetal-operator/pull/886 goes in.
-dnf install -y net-tools
-
 dnf clean all
 rm -rf /var/cache/{yum,dnf}/*
 if [[ ! -z ${PATCH_LIST:-} ]]; then

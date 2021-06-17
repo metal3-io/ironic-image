@@ -50,8 +50,10 @@ if [ -f "$IRONIC_INSPECTOR_CERT_FILE" ]; then
     export IRONIC_INSPECTOR_TLS_SETUP="true"
     # Delete the line below after the PR: https://github.com/metal3-io/baremetal-operator/pull/886 goes in. 
     INSPECTOR_PORT=5050
-    # Delete the netstate and grep statement after the PR above goes in. 
-    netstat -ln | grep ${INSPECTOR_PORT} -q || render_j2_config $INSPECTOR_ORIG_HTTPD_CONFIG $INSPECTOR_RESULT_HTTPD_CONFIG
+
+    if [[ "${INSPECTOR_REVERSE_PROXY_SETUP}" == "true" ]]; then
+      render_j2_config $INSPECTOR_ORIG_HTTPD_CONFIG $INSPECTOR_RESULT_HTTPD_CONFIG
+    fi
     # Add user 'apache' to the group `ironic-inspector`, so httpd can access /etc/ironic-inspector and read the pasword file
     usermod -aG ironic-inspector apache
 else
@@ -82,6 +84,12 @@ sed -i -e 's%^ErrorLog.*%ErrorLog /dev/stderr%g' /etc/httpd/conf/httpd.conf
 
 if [[ "$IRONIC_INSPECTOR_TLS_SETUP" == "true"  && "${RESTART_CONTAINER_CERTIFICATE_UPDATED}" == "true" ]]; then
     inotifywait -m -e delete_self "${IRONIC_INSPECTOR_CERT_FILE}" | while read file event; do
+      kill -WINCH $(pgrep httpd)
+    done &
+fi
+
+if [[ "$IRONIC_TLS_SETUP" == "true"  && "${RESTART_CONTAINER_CERTIFICATE_UPDATED}" == "true" ]]; then
+    inotifywait -m -e delete_self "${IRONIC_CERT_FILE}" | while read file event; do
       kill -WINCH $(pgrep httpd)
     done &
 fi
