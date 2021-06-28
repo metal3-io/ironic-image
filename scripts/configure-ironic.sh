@@ -145,6 +145,8 @@ EOF
     fi
 fi
 
+. /bin/coreos-ipa-common.sh
+
 # The original ironic.conf is empty, and can be found in ironic.conf_orig
 render_j2_config /etc/ironic/ironic.conf.j2 /etc/ironic/ironic.conf
 
