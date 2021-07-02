@@ -96,6 +96,12 @@ fast_track = {{ env.IRONIC_FAST_TRACK }}
 {% if env.IRONIC_BOOT_ISO_SOURCE %}
 ramdisk_image_download_source = {{ env.IRONIC_BOOT_ISO_SOURCE }}
 {% endif %}
+{% if env.IRONIC_EXTERNAL_HTTP_URL %}
+external_http_url = {{ env.IRONIC_EXTERNAL_HTTP_URL }}
+{% endif %}
+{% if env.IRONIC_EXTERNAL_CALLBACK_URL %}
+external_callback_url = {{ env.IRONIC_EXTERNAL_CALLBACK_URL }}
+{% endif %}
 
 [dhcp]
 dhcp_provider = none
