@@ -4,4 +4,10 @@ export IRONIC_DEPLOYMENT="API"
 
 . /bin/configure-ironic.sh
 
-exec /usr/bin/ironic-api --config-file /usr/share/ironic/ironic-dist.conf ${IRONIC_CONFIG_OPTIONS}
+python3 -c 'import os; import sys; import jinja2; sys.stdout.write(jinja2.Template(sys.stdin.read()).render(env=os.environ))' < /etc/httpd-ironic-api.conf.j2 > /etc/httpd/conf.d/ironic.conf
+
+IRONIC_HTTPD=${IRONIC_HTTPD:-"false"}
+
+if "$IRONIC_HTTPD" == "true" ; then
+    . /bin/runhttpd
+fi

@@ -14,4 +14,3 @@ if [[ ! -z ${EXTRA_PKGS_LIST:-} ]]; then
 fi
 dnf clean all
 rm -rf /var/cache/{yum,dnf}/*
-

@@ -1,18 +1,12 @@
 [DEFAULT]
-{% if "HTTP_BASIC_HTPASSWD" in env and env.HTTP_BASIC_HTPASSWD | length %}
-auth_strategy = http_basic
-http_basic_auth_user_file = /etc/ironic/htpasswd
-{% else %}
 auth_strategy = noauth
-{% endif %}
 debug = true
-default_boot_interface = ipxe
 default_deploy_interface = direct
 default_inspect_interface = inspector
 default_network_interface = noop
 enabled_bios_interfaces = idrac-wsman,no-bios,redfish,idrac-redfish
-enabled_boot_interfaces = pxe,ipxe,fake,redfish-virtual-media,idrac-redfish-virtual-media
-enabled_deploy_interfaces = direct,fake,ramdisk
+enabled_boot_interfaces = ipxe,pxe,fake,redfish-virtual-media,idrac-redfish-virtual-media
+enabled_deploy_interfaces = direct,fake,ramdisk,custom-agent
 # NOTE(dtantsur): when changing this, make sure to update the driver
 # dependencies in Dockerfile.
 enabled_hardware_types = ipmi,idrac,irmc,fake-hardware,redfish,manual-management
@@ -26,7 +20,7 @@ use_stderr = true
 # NOTE(dtantsur): the default md5 is not compatible with FIPS mode
 hash_ring_algorithm = sha256
 my_ip = {{ env.IRONIC_IP }}
-{% if env.IRONIC_DEPLOYMENT == "Combined" or (env.IRONIC_DEPLOYMENT == "Conductor" and env.JSON_RPC_AUTH_STRATEGY == "noauth") %}
+{% if env.IRONIC_DEPLOYMENT == "Conductor" and env.JSON_RPC_AUTH_STRATEGY == "noauth" %}
 # if access is unauthenticated, we bind only to localhost - use that as the
 # host name also, so that the client can find the server
 # If we run both API and conductor in the same pod, use localhost
@@ -96,6 +90,12 @@ fast_track = {{ env.IRONIC_FAST_TRACK }}
 {% if env.IRONIC_BOOT_ISO_SOURCE %}
 ramdisk_image_download_source = {{ env.IRONIC_BOOT_ISO_SOURCE }}
 {% endif %}
+{% if env.IRONIC_EXTERNAL_HTTP_URL %}
+external_http_url = {{ env.IRONIC_EXTERNAL_HTTP_URL }}
+{% endif %}
+{% if env.IRONIC_EXTERNAL_CALLBACK_URL %}
+external_callback_url = {{ env.IRONIC_EXTERNAL_CALLBACK_URL }}
+{% endif %}
 
 [dhcp]
 dhcp_provider = none
@@ -107,10 +107,10 @@ power_off = {{ false if env.IRONIC_FAST_TRACK == "true" else true }}
 cafile = {{ env.IRONIC_INSPECTOR_CACERT_FILE }}
 insecure = {{ env.IRONIC_INSPECTOR_INSECURE }}
 {% endif %}
-# TODO(dtantsur): ipa-api-url should be populated by ironic itself, but it's
-# not, so working around here.
 # NOTE(dtantsur): keep inspection arguments synchronized with inspector.ipxe
-extra_kernel_params = ipa-insecure=1 ipa-inspection-collectors=default,extra-hardware,logs ipa-enable-vlan-interfaces={{ env.IRONIC_INSPECTOR_VLAN_INTERFACES }} ipa-inspection-dhcp-all-interfaces=1 ipa-collect-lldp=1 {% if env.IRONIC_FAST_TRACK == "true" %} ipa-api-url={{ env.IRONIC_BASE_URL }} {% endif %}{% if env.IRONIC_RAMDISK_SSH_KEY %} sshkey="{{ env.IRONIC_RAMDISK_SSH_KEY|trim }}"{% endif %} {{ env.IRONIC_KERNEL_PARAMS|trim }}
+# Also keep in mind that only parameters unique for inspection go here.
+# No need to duplicate pxe_append_params/kernel_append_params.
+extra_kernel_params = ipa-inspection-collectors=default,extra-hardware,logs ipa-enable-vlan-interfaces={{ env.IRONIC_INSPECTOR_VLAN_INTERFACES }} ipa-inspection-dhcp-all-interfaces=1 ipa-collect-lldp=1
 
 [ipmi]
 # use_ipmitool_retries transfers the responsibility of retrying to ipmitool
@@ -140,10 +140,9 @@ cipher_suite_versions = 3,17
 # containers are in host networking.
 auth_strategy = {{ env.JSON_RPC_AUTH_STRATEGY }}
 http_basic_auth_user_file = /etc/ironic/htpasswd-rpc
-{% if env.IRONIC_DEPLOYMENT == "Combined" or (env.IRONIC_DEPLOYMENT == "Conductor" and env.JSON_RPC_AUTH_STRATEGY == "noauth" ) %}
+{% if env.IRONIC_DEPLOYMENT == "Conductor" and env.JSON_RPC_AUTH_STRATEGY == "noauth" %}
 # if access is unauthenticated, we bind only to localhost - use that as the
 # host name also, so that the client can find the server
-# If we run both API and conductor in the same container, use localhost
 host_ip = localhost
 {% else %}
 host_ip = {% if env.LISTEN_ALL_INTERFACES | lower == "true" %}::{% else %}{{ env.IRONIC_IP }}{% endif %}

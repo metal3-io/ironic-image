@@ -5,6 +5,13 @@
 IRONIC_CERT_FILE=/certs/ironic/tls.crt
 HTTP_PORT=${HTTP_PORT:-"80"}
 
+INSPECTOR_ORIG_HTTPD_CONFIG=/etc/httpd/conf.d/inspector-apache.conf.j2
+INSPECTOR_RESULT_HTTPD_CONFIG=/etc/httpd/conf.d/ironic-inspector.conf
+export IRONIC_INSPECTOR_CERT_FILE=/certs/ironic-inspector/tls.crt
+export IRONIC_INSPECTOR_KEY_FILE=/certs/ironic-inspector/tls.key
+export INSPECTOR_REVERSE_PROXY_SETUP=${INSPECTOR_REVERSE_PROXY_SETUP:-"false"}
+export RESTART_CONTAINER_CERTIFICATE_UPDATED=${RESTART_CONTAINER_CERTIFICATE_UPDATED:-"false"}
+
 # Whether to enable fast_track provisioning or not
 IRONIC_FAST_TRACK=${IRONIC_FAST_TRACK:-true}
 
@@ -29,6 +36,34 @@ fi
 render_j2_config /tmp/inspector.ipxe.j2 /shared/html/inspector.ipxe
 cp /tmp/dualboot.ipxe /shared/html/dualboot.ipxe
 cp /tmp/uefi_esp.img /shared/html/uefi_esp.img
+
+if [ -f "$IRONIC_INSPECTOR_CERT_FILE" ] && [ ! -f "$IRONIC_INSPECTOR_KEY_FILE" ] ; then
+    echo "Missing TLS Certificate key file /certs/ironic-inspector/tls.key"
+    exit 1
+fi
+if [ ! -f "$IRONIC_INSPECTOR_CERT_FILE" ] && [ -f "$IRONIC_INSPECTOR_KEY_FILE" ] ; then
+    echo "Missing TLS Certificate file /certs/ironic-inspector/tls.crt"
+    exit 1
+fi
+
+if [ -f "$IRONIC_INSPECTOR_CERT_FILE" ]; then
+    export IRONIC_INSPECTOR_TLS_SETUP="true"
+
+    if [[ "${INSPECTOR_REVERSE_PROXY_SETUP}" == "true" ]]; then
+        render_j2_config $INSPECTOR_ORIG_HTTPD_CONFIG $INSPECTOR_RESULT_HTTPD_CONFIG
+    fi
+    # Add user 'apache' to the group `ironic-inspector`, so httpd can access /etc/ironic-inspector and read the pasword file
+    usermod -aG ironic-inspector apache
+else
+    export IRONIC_INSPECTOR_TLS_SETUP="false"
+    export INSPECTOR_REVERSE_PROXY_SETUP="false" # If TLS is not used, we have no reason to use the reverse proxy
+fi
+
+# Configure HTTP basic auth for API server
+HTPASSWD_FILE=/etc/ironic-inspector/htpasswd
+if [ -n "${HTTP_BASIC_HTPASSWD:-}" ]; then
+    printf "%s\n" "${HTTP_BASIC_HTPASSWD}" >"${HTPASSWD_FILE}"
+fi
 
 # Use configured values
 sed -i -e s/IRONIC_IP/${IRONIC_URL_HOST}/g \

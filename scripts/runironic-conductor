@@ -14,4 +14,4 @@ until ironic-dbsync --config-file /etc/ironic/ironic.conf upgrade; do
   sleep 1
 done
 
-exec /usr/bin/ironic-conductor ${IRONIC_CONFIG_OPTIONS}
+exec /usr/bin/ironic-conductor
