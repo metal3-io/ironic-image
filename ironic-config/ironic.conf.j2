@@ -17,7 +17,6 @@ enabled_raid_interfaces = no-raid,irmc,agent,fake,ibmc,idrac-wsman,ilo5
 enabled_vendor_interfaces = ipmitool,no-vendor,idrac,fake,ibmc
 rpc_transport = json-rpc
 use_stderr = true
-require_agent_token = true
 # NOTE(dtantsur): the default md5 is not compatible with FIPS mode
 hash_ring_algorithm = sha256
 my_ip = {{ env.IRONIC_IP }}
