@@ -6,7 +6,5 @@ export IRONIC_DEPLOYMENT="API"
 
 python3 -c 'import os; import sys; import jinja2; sys.stdout.write(jinja2.Template(sys.stdin.read()).render(env=os.environ))' < /etc/httpd-ironic-api.conf.j2 > /etc/httpd/conf.d/ironic.conf
 
-# Delete the line below after the PR: https://github.com/metal3-io/baremetal-operator/pull/886 goes in. 
-sleep 10 # Add a delay to avoid race condition. When ironic-api checks the port 5050 to determine the existence of another httpd instance that serves as the inspector reversed proxy, it can be the case that the other instance is only in initial phase and has not yet opened the port 5050. 
-
 . /bin/runhttpd
+

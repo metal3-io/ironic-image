@@ -48,8 +48,6 @@ fi
 
 if [ -f "$IRONIC_INSPECTOR_CERT_FILE" ]; then
     export IRONIC_INSPECTOR_TLS_SETUP="true"
-    # Delete the line below after the PR: https://github.com/metal3-io/baremetal-operator/pull/886 goes in. 
-    INSPECTOR_PORT=5050
 
     if [[ "${INSPECTOR_REVERSE_PROXY_SETUP}" == "true" ]]; then
       render_j2_config $INSPECTOR_ORIG_HTTPD_CONFIG $INSPECTOR_RESULT_HTTPD_CONFIG
