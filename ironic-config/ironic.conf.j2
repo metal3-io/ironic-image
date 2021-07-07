@@ -14,7 +14,7 @@ enabled_inspect_interfaces = inspector,idrac,irmc,fake,redfish,ilo
 enabled_management_interfaces = ipmitool,idrac,irmc,fake,redfish,idrac-redfish,ibmc,ilo,ilo5,noop
 enabled_power_interfaces = ipmitool,idrac,irmc,fake,redfish,idrac-redfish,ibmc,ilo
 enabled_raid_interfaces = no-raid,irmc,agent,fake,ibmc,idrac-wsman,ilo5
-enabled_vendor_interfaces = ipmitool,no-vendor,idrac,fake,ibmc
+enabled_vendor_interfaces = no-vendor,ipmitool,idrac,idrac-redfish,redfish,ilo,fake,ibmc
 rpc_transport = json-rpc
 use_stderr = true
 # NOTE(dtantsur): the default md5 is not compatible with FIPS mode
