@@ -115,12 +115,12 @@ fi
 
 . /bin/coreos-ipa-common.sh
 
-. /bin/coreos-ipa-common.sh
-
 # The original ironic.conf is empty, and can be found in ironic.conf_orig
 render_j2_config /etc/ironic/ironic.conf.j2 /etc/ironic/ironic.conf
 
 # Configure auth for clients
+export IRONIC_CONFIG_OPTIONS="--config-file /etc/ironic/ironic.conf"
+
 configure_client_basic_auth() {
     local auth_config_file="/auth/$1/auth-config"
     if [ -f ${auth_config_file} ]; then
