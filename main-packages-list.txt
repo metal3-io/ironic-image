@@ -42,7 +42,7 @@ python3-paste-deploy >= 2.0.1-4.el8ost
 python3-pint >= 0.10.1-1.el8ost
 python3-pyghmi >= 1.5.14-2.1.el8ost
 python3-tooz >= 2.8.0-0.20210324235001.54448e9.el8
-python3-scciclient
+python3-scciclient >= 0.10.0
 python3-stevedore >= 3.3.0-0.20210325001012.7d7154f.el8
 python3-sushy >= 3.9.1-0.20210610202221.5b38ec5.el8
 python3-sushy-oem-idrac >= 2.0.1-0.20210326153413.83b7eb0.el8
