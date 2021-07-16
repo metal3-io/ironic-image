@@ -6,11 +6,13 @@
 set -x
 
 export IRONIC_INSPECTOR_VLAN_INTERFACES=${IRONIC_INSPECTOR_VLAN_INTERFACES:-all}
+# FIXME(dtantsur): the default is most certainly undesired
+export IRONIC_AGENT_IMAGE=${IRONIC_AGENT_IMAGE:-quay.io/dtantsur/ironic-agent}
+export IRONIC_AGENT_PODMAN_FLAGS=${IRONIC_AGENT_PODMAN_FLAGS:---tls-verify=false}
+# Base64 encoded pull secret
+export IRONIC_AGENT_PULL_SECRET=${IRONIC_AGENT_PULL_SECRET:-}
 
 IRONIC_CERT_FILE=/certs/ironic/tls.crt
-
-# FIXME(dtantsur): the default is most certainly undesired
-export IRONIC_AGENT_REGISTRY=${IRONIC_AGENT_REGISTRY:-quay.io/dtantsur}
 
 wait_for_interface_or_ip
 
