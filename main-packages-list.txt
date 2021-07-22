@@ -11,18 +11,21 @@ ipxe-bootimgs
 ipxe-roms-qemu
 iscsi-initiator-utils
 mariadb-server
-openstack-ironic-api >= 1:18.0.1-0.20210620232216.416a095.el8
-openstack-ironic-conductor >= 1:18.0.1-0.20210620232216.416a095.el8
-openstack-ironic-inspector >= 10.7.0-0.20210617192218.948325c.el8
+mod_ssl
+openstack-ironic-api >= 1:18.0.1-0.20210706133149.7dd2652.el8
+openstack-ironic-conductor >= 1:18.0.1-0.20210706133149.7dd2652.el8
+openstack-ironic-inspector >= 10.7.0-0.20210706132217.806ce60.el8
 parted
 psmisc
 python3-debtcollector >= 2.2.0-0.20210324220630.649189d.el8
-python3-dracclient
-python3-eventlet >= 0.25.2-4.el8
+python3-dracclient >= 5.1.1-0.20210318155434.98c7ea3.el8
+python3-eventlet >= 0.30.2-1.el8
 python3-gunicorn
-python3-ironic-lib >= 4.7.2-0.20210607094446.831b5c1.el8
-python3-ironic-prometheus-exporter >= 2.2.1-0.20210325143713.70e39c8.el8
+python3-ironic-lib >= 4.7.2-0.20210707162243.d33cf3e.el8
+python3-ironic-prometheus-exporter >= 2.3.0-0.20210611093526.3c9b517.el8
+python3-ironicclient >= 4.7.1-0.20210611202214.3d146fb.el8
 python3-jinja2
+python3-mod_wsgi
 python3-msgpack >= 0.6.2-1.el8ost
 python3-oslo-concurrency >= 4.4.0-0.20210325004915.7dcf9e9.el8
 python3-oslo-config >= 8.5.0-0.20210325050501.cfa2564.el8
@@ -44,7 +47,7 @@ python3-pyghmi >= 1.5.14-2.1.el8ost
 python3-tooz >= 2.8.0-0.20210324235001.54448e9.el8
 python3-scciclient >= 0.9.1-0.20210720102209.34ccd96.el8
 python3-stevedore >= 3.3.0-0.20210325001012.7d7154f.el8
-python3-sushy >= 3.9.1-0.20210610202221.5b38ec5.el8
+python3-sushy >= 3.9.2-0.20210713222215.21ec275.el8
 python3-sushy-oem-idrac >= 2.0.1-0.20210326153413.83b7eb0.el8
 python3-zipp >= 0.5.1-2.el8ost
 qemu-img

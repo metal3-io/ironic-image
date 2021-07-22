@@ -1,17 +1,11 @@
 [DEFAULT]
-{% if "HTTP_BASIC_HTPASSWD" in env and env.HTTP_BASIC_HTPASSWD | length %}
-auth_strategy = http_basic
-http_basic_auth_user_file = /etc/ironic/htpasswd
-{% else %}
 auth_strategy = noauth
-{% endif %}
 debug = true
-default_boot_interface = ipxe
 default_deploy_interface = direct
 default_inspect_interface = inspector
 default_network_interface = noop
 enabled_bios_interfaces = idrac-wsman,no-bios,redfish,idrac-redfish,irmc
-enabled_boot_interfaces = pxe,ipxe,fake,redfish-virtual-media,idrac-redfish-virtual-media
+enabled_boot_interfaces = ipxe,pxe,fake,redfish-virtual-media,idrac-redfish-virtual-media
 enabled_deploy_interfaces = direct,fake,ramdisk,custom-agent
 # NOTE(dtantsur): when changing this, make sure to update the driver
 # dependencies in Dockerfile.
@@ -26,7 +20,7 @@ use_stderr = true
 # NOTE(dtantsur): the default md5 is not compatible with FIPS mode
 hash_ring_algorithm = sha256
 my_ip = {{ env.IRONIC_IP }}
-{% if env.IRONIC_DEPLOYMENT == "Combined" or (env.IRONIC_DEPLOYMENT == "Conductor" and env.JSON_RPC_AUTH_STRATEGY == "noauth") %}
+{% if env.IRONIC_DEPLOYMENT == "Conductor" and env.JSON_RPC_AUTH_STRATEGY == "noauth" %}
 # if access is unauthenticated, we bind only to localhost - use that as the
 # host name also, so that the client can find the server
 # If we run both API and conductor in the same pod, use localhost
@@ -146,10 +140,9 @@ cipher_suite_versions = 3,17
 # containers are in host networking.
 auth_strategy = {{ env.JSON_RPC_AUTH_STRATEGY }}
 http_basic_auth_user_file = /etc/ironic/htpasswd-rpc
-{% if env.IRONIC_DEPLOYMENT == "Combined" or (env.IRONIC_DEPLOYMENT == "Conductor" and env.JSON_RPC_AUTH_STRATEGY == "noauth" ) %}
+{% if env.IRONIC_DEPLOYMENT == "Conductor" and env.JSON_RPC_AUTH_STRATEGY == "noauth" %}
 # if access is unauthenticated, we bind only to localhost - use that as the
 # host name also, so that the client can find the server
-# If we run both API and conductor in the same container, use localhost
 host_ip = localhost
 {% else %}
 host_ip = {% if env.LISTEN_ALL_INTERFACES | lower == "true" %}::{% else %}{{ env.IRONIC_IP }}{% endif %}

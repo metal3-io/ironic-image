@@ -6,8 +6,8 @@ Wants=network-online.target
 
 [Service]
 TimeoutStartSec=0
-ExecStartPre=/bin/podman pull {{ env.IRONIC_AGENT_REGISTRY }}/ironic-agent --tls-verify=false
-ExecStart=/bin/podman run --privileged --network host --mount type=bind,src=/etc/ironic-python-agent.conf,dst=/etc/ironic-python-agent/ignition.conf --mount type=bind,src=/dev,dst=/dev --mount type=bind,src=/sys,dst=/sys --mount type=bind,src=/,dst=/mnt/coreos --name ironic-agent ironic-agent
+ExecStartPre=/bin/podman pull {{ env.IRONIC_AGENT_IMAGE }} {{ env.IRONIC_AGENT_PODMAN_FLAGS }} {% if env.IRONIC_AGENT_PULL_SECRET %}--authfile=/etc/authfile.json{% endif %}
+ExecStart=/bin/podman run --privileged --network host --mount type=bind,src=/etc/ironic-python-agent.conf,dst=/etc/ironic-python-agent/ignition.conf --mount type=bind,src=/dev,dst=/dev --mount type=bind,src=/sys,dst=/sys --mount type=bind,src=/,dst=/mnt/coreos --name ironic-agent {{ env.IRONIC_AGENT_IMAGE }}
 
 [Install]
 WantedBy=multi-user.target
@@ -17,6 +17,7 @@ WantedBy=multi-user.target
 [DEFAULT]
 api_url = {{ env.IRONIC_BASE_URL }}:6385
 inspection_callback_url = {{ env.IRONIC_BASE_URL }}:5050/v1/continue
+insecure = True
 
 collect_lldp = True
 enable_vlan_interfaces = {{ env.IRONIC_INSPECTOR_VLAN_INTERFACES }}
@@ -42,10 +43,17 @@ inspection_dhcp_all_interfaces = True
   },
   {% endif -%}
   "storage": {
-    "files": [{
-      "path": "/etc/ironic-python-agent.conf",
-      "contents": {"source": "data:,{{ ipa_config | urlencode }}"}
-    }]
+    "files": [
+      {
+        "path": "/etc/ironic-python-agent.conf",
+        "contents": {"source": "data:,{{ ipa_config | urlencode }}"}
+      }{% if env.IRONIC_AGENT_PULL_SECRET %},
+      {
+        "path": "/etc/authfile.json",
+        "contents": {"source": "data:;base64,{{ env.IRONIC_AGENT_PULL_SECRET | trim }}"}
+      }
+      {% endif %}
+    ]
   },
   "systemd": {
     "units": [
