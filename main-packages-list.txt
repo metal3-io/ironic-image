@@ -11,6 +11,7 @@ ipxe-bootimgs
 ipxe-roms-qemu
 iscsi-initiator-utils
 mariadb-server
+mod_ssl
 openstack-ironic-api >= 1:18.0.1-0.20210706133149.7dd2652.el8
 openstack-ironic-conductor >= 1:18.0.1-0.20210706133149.7dd2652.el8
 openstack-ironic-inspector >= 10.7.0-0.20210706132217.806ce60.el8
@@ -24,6 +25,7 @@ python3-ironic-lib >= 4.7.2-0.20210707162243.d33cf3e.el8
 python3-ironic-prometheus-exporter >= 2.3.0-0.20210611093526.3c9b517.el8
 python3-ironicclient >= 4.7.1-0.20210611202214.3d146fb.el8
 python3-jinja2
+python3-mod_wsgi
 python3-msgpack >= 0.6.2-1.el8ost
 python3-oslo-concurrency >= 4.4.0-0.20210325004915.7dcf9e9.el8
 python3-oslo-config >= 8.5.0-0.20210325050501.cfa2564.el8
