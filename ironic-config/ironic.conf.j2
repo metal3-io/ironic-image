@@ -4,7 +4,7 @@ debug = true
 default_deploy_interface = direct
 default_inspect_interface = inspector
 default_network_interface = noop
-enabled_bios_interfaces = idrac-wsman,no-bios,redfish,idrac-redfish,ilo
+enabled_bios_interfaces = idrac-wsman,no-bios,redfish,idrac-redfish,irmc,ilo
 enabled_boot_interfaces = ipxe,ilo-ipxe,pxe,ilo-pxe,fake,redfish-virtual-media,idrac-redfish-virtual-media,ilo-virtual-media
 enabled_deploy_interfaces = direct,fake,ramdisk,custom-agent
 # NOTE(dtantsur): when changing this, make sure to update the driver
@@ -62,7 +62,7 @@ enable_ssl_api = true
 automated_clean = {{ env.IRONIC_AUTOMATED_CLEAN }}
 # NOTE(dtantsur): keep aligned with [pxe]boot_retry_timeout below.
 deploy_callback_timeout = 4800
-send_sensor_data = {{ env.SEND_SENSOR_DATA }} 
+send_sensor_data = {{ env.SEND_SENSOR_DATA }}
 # NOTE(TheJulia): Do not lower this value below 120 seconds.
 # Power state is checked every 60 seconds and BMC activity should
 # be avoided more often than once every sixty seconds.
