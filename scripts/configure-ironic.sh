@@ -88,6 +88,7 @@ if [ ! -z "${IRONIC_EXTERNAL_IP}" ]; then
 		export IRONIC_EXTERNAL_CALLBACK_URL="http://${IRONIC_EXTERNAL_IP}:6385"
 	fi
 	export IRONIC_EXTERNAL_HTTP_URL="http://${IRONIC_EXTERNAL_IP}:6180"
+	export IRONIC_INSPECTOR_CALLBACK_ENDPOINT_OVERRIDE="https://${IRONIC_EXTERNAL_IP}:5050"
 fi
 
 cp /etc/ironic/ironic.conf /etc/ironic/ironic.conf_orig
