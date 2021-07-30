@@ -1,4 +1,6 @@
-FROM docker.io/centos:centos8
+ARG BASE_IMAGE=docker.io/centos:centos8
+
+FROM $BASE_IMAGE
 
 RUN dnf install -y python3 python3-requests python3-pip && \
      curl https://raw.githubusercontent.com/openstack/tripleo-repos/master/plugins/module_utils/tripleo_repos/main.py | python3 - -b master current-tripleo --no-stream && \
