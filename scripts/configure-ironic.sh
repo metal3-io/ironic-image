@@ -34,6 +34,7 @@ fi
 
 . /bin/ironic-common.sh
 
+export HTTP_PORT=${HTTP_PORT:-"80"}
 export MARIADB_PASSWORD=${MARIADB_PASSWORD:-"change_me"}
 # TODO(dtantsur): remove the explicit default once we get
 # https://review.opendev.org/761185 in the repositories
@@ -87,7 +88,7 @@ if [ ! -z "${IRONIC_EXTERNAL_IP}" ]; then
 	else
 		export IRONIC_EXTERNAL_CALLBACK_URL="http://${IRONIC_EXTERNAL_IP}:6385"
 	fi
-	export IRONIC_EXTERNAL_HTTP_URL="http://${IRONIC_EXTERNAL_IP}:6180"
+	export IRONIC_EXTERNAL_HTTP_URL="http://${IRONIC_EXTERNAL_IP}:${HTTP_PORT}"
 	export IRONIC_INSPECTOR_CALLBACK_ENDPOINT_OVERRIDE="https://${IRONIC_EXTERNAL_IP}:5050"
 fi
 
