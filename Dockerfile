@@ -1,7 +1,11 @@
+ARG BASE_IMAGE=quay.io/centos/centos:stream8
+
 ## Build iPXE w/ IPv6 Support
 ## Note: we are pinning to a specific commit for reproducible builds.
 ## Updated as needed.
-FROM quay.io/centos/centos:stream8 AS ironic-builder
+
+FROM $BASE_IMAGE AS ironic-builder
+
 RUN dnf install -y gcc git make xz-devel
 WORKDIR /tmp
 COPY . .
@@ -29,7 +33,7 @@ RUN if [ $(uname -m) = "x86_64" ]; then \
       touch /tmp/esp.img; \
     fi
 
-FROM quay.io/centos/centos:stream8
+FROM $BASE_IMAGE
 
 ENV PKGS_LIST=main-packages-list.txt
 ARG EXTRA_PKGS_LIST
