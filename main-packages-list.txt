@@ -26,4 +26,5 @@ python3-sushy
 python3-sushy-oem-idrac
 qemu-img
 sqlite
-syslinux-nonlinux
+syslinux-nonlinux 
+procps
