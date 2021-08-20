@@ -18,7 +18,7 @@ RUN if [ $(uname -m) = "x86_64" ]; then \
 
 FROM registry.ci.openshift.org/ocp/builder:rhel-8-base-openshift-4.10
 
-ENV PKGS_LIST=main-packages-list.txt
+ENV PKGS_LIST=main-packages-list.ocp
 ARG EXTRA_PKGS_LIST
 
 COPY ${PKGS_LIST} ${EXTRA_PKGS_LIST:-$PKGS_LIST} /tmp/
