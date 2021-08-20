@@ -13,6 +13,7 @@ openstack-ironic-api >= 16.1.1-0.20210101180248.0112b33.el8
 openstack-ironic-conductor >= 16.1.1-0.20210101180248.0112b33.el8
 openstack-ironic-inspector >= 10.5.1-0.20201223120908.379b892.el8
 parted
+procps
 psmisc
 python3-dracclient
 python3-gunicorn
@@ -26,5 +27,4 @@ python3-sushy
 python3-sushy-oem-idrac
 qemu-img
 sqlite
-syslinux-nonlinux 
-procps
+syslinux-nonlinux
