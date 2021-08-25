@@ -45,15 +45,30 @@ The ironic configuration can be overridden by various environment variables. The
 - OS_CONDUCTOR__CLEAN_CALLBACK_TIMEOUT=1800 - timeout (seconds) to wait for a callback from the ramdisk doing the cleaning
 - OS_PXE__BOOT_RETRY_TIMEOUT=1200 - timeout (seconds) to enable boot retries.
 
-Applying Patches to the image
------------------------------
+Apply project patches to the images during build
+------------------------------------------------
 
 When building the image, it is possible to specify a patch of one or more
-upstream projects to apply to the image, passing a file with the patch list
-using the PATCH_LIST build argument.
+upstream projects to apply to the image using the **PATCH_LIST** argument in
+the cli command, for example:
+
+    podman build -t ironic-image -f Dockerfile --build-arg PATCH_LIST=my-patch-list
+
+The **PATCH_LIST** argument is a path to a file under the image context.  
+Its format is a simple text file that contains references to upstream patches
+for the ironic projects.  
+Each line of the file is in the form:  
+    **project_dir refspec**  
+where:
+
+* **project_dir** is the last part of the project url including the organization,
+for example for ironic is _openstack/ironic_
+* **refspec** is the gerrit refspec of the patch we want to test, for example if
+you want to apply the patch at
+<https://review.opendev.org/c/openstack/ironic/+/800084>
+the refspec will be _refs/changes/84/800084/22_
+Using multiple refspecs is convenient in case we need to test patches that
+are connected to each other, either on the same project or on different
+projects.
+
 At the moment, only projects hosted in opendev.org are supported.
-
-Each line of the file is in the form "project_dir refspec" where:
-- project is the last part of the project url including the org, for example openstack/ironic
-- refspec is the gerrit refspec of the patch we want to test, for example refs/changes/67/759567/1
-
