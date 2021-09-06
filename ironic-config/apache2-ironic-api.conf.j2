@@ -36,17 +36,27 @@ Listen 6385
     SSLCertificateKeyFile {{ env.IRONIC_KEY_FILE }}
 {% endif %}
 
+    <Location /v1/lookup >
+        Require all granted
+    </Location>
+    <Location /v1/heartbeat >
+        Require all granted
+    </Location>
+    <Location ~ "^/(v1/?)?$">
+        Require all granted
+    </Location>
     <Directory /usr/bin >
         WSGIProcessGroup ironic
         WSGIApplicationGroup %{GLOBAL}
-        AllowOverride All
-        Require all granted
+        AllowOverride None
 
         {% if "HTTP_BASIC_HTPASSWD" in env and env.HTTP_BASIC_HTPASSWD | length %}
-            AuthType Basic
-            AuthName "Restricted WSGI area"
-            AuthUserFile "/etc/ironic/htpasswd"
-            Require valid-user
+           AuthType Basic
+           AuthName "Restricted WSGI area"
+           AuthUserFile "/etc/ironic/htpasswd"
+           Require valid-user
+        {% else %}
+           Require all granted
         {% endif %}
     </Directory>
 </VirtualHost>
