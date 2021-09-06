@@ -1,5 +1,5 @@
 # Please ensure this file is kept in sync with Dockerfile.okd
-FROM registry.ci.openshift.org/ocp/builder:rhel-8-base-openshift-4.9 AS builder
+FROM registry.ci.openshift.org/ocp/builder:rhel-8-base-openshift-4.10 AS builder
 
 WORKDIR /tmp
 
@@ -16,7 +16,7 @@ RUN if [ $(uname -m) = "x86_64" ]; then \
       touch /tmp/esp.img; \
     fi
 
-FROM registry.ci.openshift.org/ocp/builder:rhel-8-base-openshift-4.9
+FROM registry.ci.openshift.org/ocp/builder:rhel-8-base-openshift-4.10
 
 ENV PKGS_LIST=main-packages-list.txt
 ARG EXTRA_PKGS_LIST
