@@ -51,12 +51,12 @@ Listen 6385
         AllowOverride None  
         
         {% if "HTTP_BASIC_HTPASSWD" in env and env.HTTP_BASIC_HTPASSWD | length %}
-           AuthType Basic
-           AuthName "Restricted WSGI area"
-           AuthUserFile "/etc/ironic/htpasswd"
-           Require valid-user
+        AuthType Basic
+        AuthName "Restricted WSGI area"
+        AuthUserFile "/etc/ironic/htpasswd"
+        Require valid-user
         {% else %}
-           Require all granted
+        Require all granted
         {% endif %}
     </Directory>
  </VirtualHost>
