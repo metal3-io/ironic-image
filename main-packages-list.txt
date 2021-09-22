@@ -9,9 +9,9 @@ iproute
 iscsi-initiator-utils
 mariadb-server
 mod_ssl
-openstack-ironic-api >= 16.1.1-0.20210101180248.0112b33.el8
-openstack-ironic-conductor >= 16.1.1-0.20210101180248.0112b33.el8
-openstack-ironic-inspector >= 10.5.1-0.20201223120908.379b892.el8
+openstack-ironic-api
+openstack-ironic-conductor
+openstack-ironic-inspector
 parted
 procps
 psmisc
