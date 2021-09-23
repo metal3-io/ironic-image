@@ -1,5 +1,5 @@
 # Please ensure this file is kept in sync with Dockerfile.ocp
-FROM fedora:33 AS builder
+FROM fedora:34 AS builder
 
 WORKDIR /tmp
 
@@ -16,47 +16,49 @@ RUN if [ $(uname -m) = "x86_64" ]; then \
       touch /tmp/esp.img; \
     fi
 
-FROM centos:8
+FROM quay.io/centos/centos:stream8
 
-ENV PKGS_LIST=main-packages-list.txt
+ENV PKGS_LIST=main-packages-list.okd
 ARG EXTRA_PKGS_LIST
 
 COPY ${PKGS_LIST} ${EXTRA_PKGS_LIST:-$PKGS_LIST} /tmp/
-COPY prepare-image.sh /bin/
+COPY prepare-image.sh prepare-ipxe.sh /bin/
 
-RUN dnf install -y python3 python3-requests && \
-    curl https://raw.githubusercontent.com/openstack/tripleo-repos/master/tripleo_repos/main.py | python3 - -b master current-tripleo && \
-    prepare-image.sh && \
-    rm -f /bin/prepare-image.sh
+# Configure OpenStack repos
+RUN dnf install --setopt=install_weak_deps=False --setopt=tsflags=nodocs -y python3 python3-requests && \
+    curl https://raw.githubusercontent.com/openstack/tripleo-repos/master/plugins/module_utils/tripleo_repos/main.py | python3 - -b master current-tripleo
 
-COPY ./prepare-ipxe.sh /tmp
-RUN chmod +x /tmp/prepare-ipxe.sh && /tmp/prepare-ipxe.sh && rm /tmp/prepare-ipxe.sh
+RUN prepare-image.sh && \
+    rm -f /bin/prepare-image.sh && \
+    /bin/prepare-ipxe.sh && \
+    rm -f /tmp/prepare-ipxe.sh
+
+COPY scripts/* /bin/
+
+# IRONIC #
+RUN chown ironic:ironic /var/log/ironic && \
+  # This file is generated after installing mod_ssl and it affects our configuration
+  rm -f /etc/httpd/conf.d/ssl.conf
 
 COPY --from=builder /tmp/esp.img /tmp/uefi_esp.img
 
-COPY ./ironic.conf.j2 /etc/ironic/ironic.conf.j2
-
-COPY ./runironic-api.sh /bin/runironic-api
-COPY ./runironic-conductor.sh /bin/runironic-conductor
-COPY ./runironic-exporter.sh /bin/runironic-exporter
-COPY ./rundnsmasq.sh /bin/rundnsmasq
-COPY ./runhttpd.sh /bin/runhttpd
-COPY ./runmariadb.sh /bin/runmariadb
-COPY ./configure-ironic.sh /bin/configure-ironic.sh
-COPY ./ironic-common.sh /bin/ironic-common.sh
-COPY ./runlogwatch.sh /bin/runlogwatch.sh
-
-# TODO(dtantsur): remove this script when we stop supporting running both
-# API and conductor processes via one entry point.
-COPY ./runironic.sh /bin/runironic
-
-COPY ./dnsmasq.conf.j2 /etc/dnsmasq.conf.j2
+COPY ironic-config/ironic.conf.j2 /etc/ironic/
+COPY ironic-config/dnsmasq.conf.j2 /etc/
 COPY ironic-config/inspector.ipxe.j2 ironic-config/dualboot.ipxe ironic-config/ironic-python-agent.ign.j2 /tmp/
 
 # Custom httpd config, removes all but the bare minimum needed modules
 RUN rm -f /etc/httpd/conf.d/autoindex.conf /etc/httpd/conf.d/welcome.conf /etc/httpd/conf.modules.d/*.conf
-COPY ./httpd.conf /etc/httpd/conf.d/httpd.conf
-COPY ./httpd-modules.conf /etc/httpd/conf.modules.d/httpd-modules.conf
+COPY ironic-config/httpd.conf /etc/httpd/conf.d/
+COPY ironic-config/httpd-modules.conf /etc/httpd/conf.modules.d/
+COPY ironic-config/apache2-ironic-api.conf.j2 /etc/httpd-ironic-api.conf.j2
+
+# IRONIC-INSPECTOR #
+RUN mkdir -p /var/lib/ironic-inspector && \
+  sqlite3 /var/lib/ironic-inspector/ironic-inspector.db "pragma journal_mode=wal" && \
+  dnf remove -y sqlite
+
+COPY ironic-inspector-config/ironic-inspector.conf.j2 /etc/ironic-inspector/
+COPY ironic-inspector-config/inspector-apache.conf.j2 /etc/httpd/conf.d/
+RUN rm -f /etc/httpd/conf.d/ssl.conf
 
 ENV IS_OKD=true
-ENTRYPOINT ["/bin/runironic"]
