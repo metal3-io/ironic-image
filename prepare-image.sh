@@ -16,5 +16,6 @@ if [[ ! -z ${EXTRA_PKGS_LIST:-} ]]; then
         xargs -rd'\n' dnf install -y < /tmp/${EXTRA_PKGS_LIST}
     fi
 fi
+
 dnf clean all
 rm -rf /var/cache/{yum,dnf}/*

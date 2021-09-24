@@ -82,4 +82,16 @@ sed -i -e 's|\(^[[:space:]]*\)\(DocumentRoot\)\(.*\)|\1\2 "/shared/html"|' \
 sed -i -e 's%^ \+CustomLog.*%    CustomLog /dev/stderr combined%g' /etc/httpd/conf/httpd.conf
 sed -i -e 's%^ErrorLog.*%ErrorLog /dev/stderr%g' /etc/httpd/conf/httpd.conf
 
+if [[ "$IRONIC_INSPECTOR_TLS_SETUP" == "true"  && "${RESTART_CONTAINER_CERTIFICATE_UPDATED}" == "true" ]]; then
+    inotifywait -m -e delete_self "${IRONIC_INSPECTOR_CERT_FILE}" | while read file event; do
+        kill -WINCH $(pgrep httpd)
+    done &
+fi
+
+if [[ "$IRONIC_TLS_SETUP" == "true"  && "${RESTART_CONTAINER_CERTIFICATE_UPDATED}" == "true" ]]; then
+    inotifywait -m -e delete_self "${IRONIC_CERT_FILE}" | while read file event; do
+        kill -WINCH $(pgrep httpd)
+    done &
+fi
+
 exec /usr/sbin/httpd -DFOREGROUND
