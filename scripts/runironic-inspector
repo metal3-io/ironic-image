@@ -12,6 +12,7 @@ export IRONIC_INSPECTOR_CACERT_FILE=/certs/ca/ironic-inspector/tls.crt
 export IRONIC_INSPECTOR_CERT_FILE=/certs/ironic-inspector/tls.crt
 export IRONIC_INSPECTOR_KEY_FILE=/certs/ironic-inspector/tls.key
 export INSPECTOR_REVERSE_PROXY_SETUP=${INSPECTOR_REVERSE_PROXY_SETUP:-"false"}
+export RESTART_CONTAINER_CERTIFICATE_UPDATED=${RESTART_CONTAINER_CERTIFICATE_UPDATED:-"false"}
 
 if [ -f "$IRONIC_INSPECTOR_CERT_FILE" ] && [ ! -f "$IRONIC_INSPECTOR_KEY_FILE" ] ; then
     echo "Missing TLS Certificate key file /certs/ironic-inspector/tls.key"
@@ -28,7 +29,13 @@ wait_for_interface_or_ip
 
 if [ -f "$IRONIC_INSPECTOR_CERT_FILE" ]; then
     export IRONIC_INSPECTOR_TLS_SETUP="true"
-    export IRONIC_INSPECTOR_BASE_URL="https://${IRONIC_URL_HOST}:5050"
+
+    if [[ "${INSPECTOR_REVERSE_PROXY_SETUP}" == "true" ]]; then
+      export IRONIC_INSPECTOR_BASE_URL="https://${IRONIC_URL_HOST}:5049"
+    else
+      export IRONIC_INSPECTOR_BASE_URL="https://${IRONIC_URL_HOST}:5050"
+    fi
+
     if [ ! -f "${IRONIC_INSPECTOR_CACERT_FILE}" ]; then
         cp "${IRONIC_INSPECTOR_CERT_FILE}" "${IRONIC_INSPECTOR_CACERT_FILE}"
     fi
@@ -49,15 +56,13 @@ else
     export IRONIC_BASE_URL="http://${IRONIC_URL_HOST}:6385"
 fi
 
-cp $CONFIG $CONFIG.orig
-
 function build_j2_config() {
     CONFIG_FILE=$1
     python3 -c 'import os; import sys; import jinja2; sys.stdout.write(jinja2.Template(sys.stdin.read()).render(env=os.environ))' < $CONFIG_FILE.j2
 }
 
 # Merge with the original configuration file from the package.
-build_j2_config $CONFIG | crudini --merge /etc/ironic-inspector/ironic-inspector.conf
+build_j2_config $CONFIG | crudini --merge $CONFIG
 
 # Configure HTTP basic auth for API server
 HTPASSWD_FILE=/etc/ironic-inspector/htpasswd
@@ -78,5 +83,11 @@ if [ -f ${auth_config_file} ]; then
 fi
 
 ironic-inspector-dbsync --config-file /etc/ironic-inspector/ironic-inspector.conf upgrade
+
+if [[ "$INSPECTOR_REVERSE_PROXY_SETUP" == "false" && "${RESTART_CONTAINER_CERTIFICATE_UPDATED}" == "true" ]]; then
+    inotifywait -m -e delete_self "${IRONIC_INSPECTOR_CERT_FILE}" | while read file event; do
+    kill $(pgrep ironic)
+    done &
+fi
 
 exec /usr/bin/ironic-inspector $CONFIG_OPTIONS
