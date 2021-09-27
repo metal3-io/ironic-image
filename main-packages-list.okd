@@ -43,6 +43,7 @@ python3-packaging
 python3-paste
 python3-paste-deploy
 python3-pint
+python3-proliantutils
 python3-pyghmi
 python3-tooz
 python3-scciclient
