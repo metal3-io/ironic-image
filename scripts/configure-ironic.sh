@@ -1,36 +1,12 @@
 #!/usr/bin/bash
 
-export IRONIC_CERT_FILE=/certs/ironic/tls.crt
-export IRONIC_KEY_FILE=/certs/ironic/tls.key
-export IRONIC_CACERT_FILE=/certs/ca/ironic/tls.crt
-export IRONIC_INSECURE=${IRONIC_INSECURE:-false}
-
-export IRONIC_INSPECTOR_CERT_FILE=/certs/ironic-inspector/tls.crt
-export IRONIC_INSPECTOR_CACERT_FILE=/certs/ca/ironic-inspector/tls.crt
-export IRONIC_INSPECTOR_INSECURE=${IRONIC_INSPECTOR_INSECURE:-$IRONIC_INSECURE}
-export RESTART_CONTAINER_CERTIFICATE_UPDATED=${RESTART_CONTAINER_CERTIFICATE_UPDATED:-"false"}
-
 # Define the VLAN interfaces to be included in introspection report, e.g.
 #   all - all VLANs on all interfaces using LLDP information
 #   <interface> - all VLANs on a particular interface using LLDP information
 #   <interface.vlan> - a particular VLAN on an interface, not relying on LLDP
 export IRONIC_INSPECTOR_VLAN_INTERFACES=${IRONIC_INSPECTOR_VLAN_INTERFACES:-all}
 
-export MARIADB_CACERT_FILE=/certs/ca/mariadb/tls.crt
-
-mkdir -p /certs/ironic
-mkdir -p /certs/ironic-inspector
-mkdir -p /certs/ca/ironic
-mkdir -p /certs/ca/ironic-inspector
-
-if [ -f "$IRONIC_CERT_FILE" ] && [ ! -f "$IRONIC_KEY_FILE" ] ; then
-    echo "Missing TLS Certificate key file /certs/ironic/key"
-    exit 1
-fi
-if [ ! -f "$IRONIC_CERT_FILE" ] && [ -f "$IRONIC_KEY_FILE" ] ; then
-    echo "Missing TLS Certificate file /certs/ironic/crt"
-    exit 1
-fi
+. /bin/tls-common.sh
 
 . /bin/ironic-common.sh
 
@@ -54,42 +30,13 @@ export SEND_SENSOR_DATA=${SEND_SENSOR_DATA:-false}
 
 wait_for_interface_or_ip
 
-if [ -f "$IRONIC_CERT_FILE" ]; then
-    export IRONIC_TLS_SETUP="true"
-    export IRONIC_BASE_URL="https://${IRONIC_URL_HOST}:6385"
-    if [ ! -f "$IRONIC_CACERT_FILE" ]; then
-        cp "$IRONIC_CERT_FILE" "$IRONIC_CACERT_FILE"
-    fi
-else
-    export IRONIC_TLS_SETUP="false"
-    export IRONIC_BASE_URL="http://${IRONIC_URL_HOST}:6385"
-fi
-
-if [ -f "$IRONIC_INSPECTOR_CERT_FILE" ] || [ -f "$IRONIC_INSPECTOR_CACERT_FILE" ]; then
-    export IRONIC_INSPECTOR_TLS_SETUP="true"
-    export IRONIC_INSPECTOR_BASE_URL="https://${IRONIC_URL_HOST}:5050"
-    if [ ! -f "$IRONIC_INSPECTOR_CACERT_FILE" ]; then
-        cp "$IRONIC_INSPECTOR_CERT_FILE" "$IRONIC_INSPECTOR_CACERT_FILE"
-    fi
-else
-    export IRONIC_INSPECTOR_TLS_SETUP="false"
-    export IRONIC_INSPECTOR_BASE_URL="http://${IRONIC_URL_HOST}:5050"
-fi
-
-if  [ -f "$MARIADB_CACERT_FILE" ]; then
-    export MARIADB_TLS_ENABLED="true"
-else
-    export MARIADB_TLS_ENABLED="false"
-fi
+export IRONIC_BASE_URL="${IRONIC_SCHEME}://${IRONIC_URL_HOST}:6385"
+export IRONIC_INSPECTOR_BASE_URL="${IRONIC_INSPECTOR_SCHEME}://${IRONIC_URL_HOST}:5050"
 
 if [ ! -z "${IRONIC_EXTERNAL_IP}" ]; then
-	if [ "${IRONIC_INSPECTOR_TLS_SETUP}" == "true" ]; then
-		export IRONIC_EXTERNAL_CALLBACK_URL="https://${IRONIC_EXTERNAL_IP}:6385"
-	else
-		export IRONIC_EXTERNAL_CALLBACK_URL="http://${IRONIC_EXTERNAL_IP}:6385"
-	fi
-	export IRONIC_EXTERNAL_HTTP_URL="http://${IRONIC_EXTERNAL_IP}:${HTTP_PORT}"
-	export IRONIC_INSPECTOR_CALLBACK_ENDPOINT_OVERRIDE="https://${IRONIC_EXTERNAL_IP}:5050"
+    export IRONIC_EXTERNAL_CALLBACK_URL="${IRONIC_SCHEME}://${IRONIC_EXTERNAL_IP}:6385"
+    export IRONIC_EXTERNAL_HTTP_URL="http://${IRONIC_EXTERNAL_IP}:${HTTP_PORT}"
+    export IRONIC_INSPECTOR_CALLBACK_ENDPOINT_OVERRIDE="https://${IRONIC_EXTERNAL_IP}:5050"
 fi
 
 cp /etc/ironic/ironic.conf /etc/ironic/ironic.conf_orig
