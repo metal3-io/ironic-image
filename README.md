@@ -45,6 +45,15 @@ The ironic configuration can be overridden by various environment variables. The
 - OS_CONDUCTOR__CLEAN_CALLBACK_TIMEOUT=1800 - timeout (seconds) to wait for a callback from the ramdisk doing the cleaning
 - OS_PXE__BOOT_RETRY_TIMEOUT=1200 - timeout (seconds) to enable boot retries.
 
+Build Ironic Image from source
+------------------------------
+
+Normally the ironic image is built using RPMs coming from the RDO project.  
+It is possible to build it using source code setting the **INSTALL_TYPE**
+argument to **source** at build time; the full command is for example:
+
+    podman build -t ironic-image -f Dockerfile --build-arg INSTALL_TYPE=source
+
 Apply project patches to the images during build
 ------------------------------------------------
 
