@@ -9,8 +9,7 @@ export IRONIC_AGENT_PULL_SECRET=${IRONIC_AGENT_PULL_SECRET:-}
 set -x
 
 export IRONIC_INSPECTOR_VLAN_INTERFACES=${IRONIC_INSPECTOR_VLAN_INTERFACES:-all}
-# FIXME(dtantsur): the default is most certainly undesired
-export IRONIC_AGENT_IMAGE=${IRONIC_AGENT_IMAGE:-quay.io/dtantsur/ironic-agent}
+export IRONIC_AGENT_IMAGE
 export IRONIC_AGENT_PODMAN_FLAGS=${IRONIC_AGENT_PODMAN_FLAGS:---tls-verify=false}
 
 IRONIC_CERT_FILE=/certs/ironic/tls.crt
