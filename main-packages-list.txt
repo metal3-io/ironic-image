@@ -9,6 +9,7 @@ iproute
 iscsi-initiator-utils
 mariadb-server
 mod_ssl
+nc
 openstack-ironic-api
 openstack-ironic-conductor
 openstack-ironic-inspector
