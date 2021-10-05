@@ -22,7 +22,8 @@ function wait_for_interface_or_ip() {
   # If $PROVISIONING_IP is specified, then we wait for that to become available on an interface, otherwise we look at $PROVISIONING_INTERFACE for an IP
   if [ ! -z "${PROVISIONING_IP}" ];
   then
-    export IRONIC_IP=$(printf %s "${PROVISIONING_IP}" | sed -e 's%/.*%%')
+    # Convert the address using ipcalc which strips out the subnet. For IPv6 addresses, this will give the short-form address
+    export IRONIC_IP=$(ipcalc -s "${PROVISIONING_IP}" | grep "^Address:" | awk '{print $2}')
     until ip -br addr show | grep -q -F " ${IRONIC_IP}/"; do
       echo "Waiting for ${IRONIC_IP} to be configured on an interface"
       sleep 1
