@@ -5,6 +5,7 @@
 . /bin/ironic-common.sh
 
 HTTP_PORT=${HTTP_PORT:-"80"}
+export VMEDIA_TLS_PORT=${VMEDIA_TLS_PORT:-8083}
 
 INSPECTOR_ORIG_HTTPD_CONFIG=/etc/httpd/conf.d/inspector-apache.conf.j2
 INSPECTOR_RESULT_HTTPD_CONFIG=/etc/httpd/conf.d/ironic-inspector.conf
@@ -62,6 +63,10 @@ sed -i -e 's|\(^[[:space:]]*\)\(DocumentRoot\)\(.*\)|\1\2 "/shared/html"|' \
 sed -i -e 's%^ \+CustomLog.*%    CustomLog /dev/stderr combined%g' /etc/httpd/conf/httpd.conf
 sed -i -e 's%^ErrorLog.*%ErrorLog /dev/stderr%g' /etc/httpd/conf/httpd.conf
 
+if [ "$IRONIC_VMEDIA_TLS_SETUP" = "true" ]; then
+    render_j2_config /etc/httpd-vmedia.conf.j2 /etc/httpd/conf.d/vmedia.conf
+fi
+
 if [[ "$IRONIC_INSPECTOR_TLS_SETUP" == "true"  && "${RESTART_CONTAINER_CERTIFICATE_UPDATED}" == "true" ]]; then
     inotifywait -m -e delete_self "${IRONIC_INSPECTOR_CERT_FILE}" | while read file event; do
       kill -WINCH $(pgrep httpd)
@@ -70,6 +75,12 @@ fi
 
 if [[ "$IRONIC_TLS_SETUP" == "true"  && "${RESTART_CONTAINER_CERTIFICATE_UPDATED}" == "true" ]]; then
     inotifywait -m -e delete_self "${IRONIC_CERT_FILE}" | while read file event; do
+      kill -WINCH $(pgrep httpd)
+    done &
+fi
+
+if [[ "$IRONIC_VMEDIA_TLS_SETUP" == "true"  && "${RESTART_CONTAINER_CERTIFICATE_UPDATED}" == "true" ]]; then
+    inotifywait -m -e delete_self "${IRONIC_VMEDIA_CERT_FILE}" | while read file event; do
       kill -WINCH $(pgrep httpd)
     done &
 fi

@@ -1,0 +1,16 @@
+Listen {{ env.VMEDIA_TLS_PORT }}
+
+<VirtualHost *:{{ env.VMEDIA_TLS_PORT }}>
+    ErrorLog /dev/stderr
+    LogLevel debug
+    CustomLog /dev/stdout combined
+
+    ServerName {{ env.IRONIC_IP }}
+    SSLEngine on
+    SSLCertificateFile {{ env.IRONIC_VMEDIA_CERT_FILE }}
+    SSLCertificateKeyFile {{ env.IRONIC_VMEDIA_KEY_FILE }}
+</VirtualHost>
+
+<Location ~ "^/(redfish|ilo)/">
+    SSLRequireSSL
+</Location>

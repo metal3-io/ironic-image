@@ -8,6 +8,9 @@ export IRONIC_INSPECTOR_KEY_FILE=/certs/ironic-inspector/tls.key
 export IRONIC_INSPECTOR_CACERT_FILE=/certs/ca/ironic-inspector/tls.crt
 export IRONIC_INSPECTOR_INSECURE=${IRONIC_INSPECTOR_INSECURE:-$IRONIC_INSECURE}
 
+export IRONIC_VMEDIA_CERT_FILE=/certs/vmedia/tls.crt
+export IRONIC_VMEDIA_KEY_FILE=/certs/vmedia/tls.key
+
 export RESTART_CONTAINER_CERTIFICATE_UPDATED=${RESTART_CONTAINER_CERTIFICATE_UPDATED:-"false"}
 
 export MARIADB_CACERT_FILE=/certs/ca/mariadb/tls.crt
@@ -32,6 +35,15 @@ if [ -f "$IRONIC_INSPECTOR_CERT_FILE" ] && [ ! -f "$IRONIC_INSPECTOR_KEY_FILE" ]
 fi
 if [ ! -f "$IRONIC_INSPECTOR_CERT_FILE" ] && [ -f "$IRONIC_INSPECTOR_KEY_FILE" ] ; then
     echo "Missing TLS Certificate file $IRONIC_INSPECTOR_CERT_FILE"
+    exit 1
+fi
+
+if [ -f "$IRONIC_VMEDIA_CERT_FILE" ] && [ ! -f "$IRONIC_VMEDIA_KEY_FILE" ] ; then
+    echo "Missing TLS Certificate key file $IRONIC_VMEDIA_KEY_FILE"
+    exit 1
+fi
+if [ ! -f "$IRONIC_VMEDIA_CERT_FILE" ] && [ -f "$IRONIC_VMEDIA_KEY_FILE" ] ; then
+    echo "Missing TLS Certificate file $IRONIC_VMEDIA_CERT_FILE"
     exit 1
 fi
 
@@ -65,6 +77,14 @@ if [ -f "$IRONIC_INSPECTOR_CERT_FILE" ] || [ -f "$IRONIC_INSPECTOR_CACERT_FILE" 
 else
     export IRONIC_INSPECTOR_TLS_SETUP="false"
     export IRONIC_INSPECTOR_SCHEME="http"
+fi
+
+if [ -f "$IRONIC_VMEDIA_CERT_FILE" ]; then
+    export IRONIC_VMEDIA_SCHEME="https"
+    export IRONIC_VMEDIA_TLS_SETUP="true"
+else
+    export IRONIC_VMEDIA_SCHEME="http"
+    export IRONIC_VMEDIA_TLS_SETUP="false"
 fi
 
 if  [ -f "$MARIADB_CACERT_FILE" ]; then
