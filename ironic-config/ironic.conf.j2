@@ -77,6 +77,7 @@ send_sensor_data = {{ env.SEND_SENSOR_DATA }}
 # be avoided more often than once every sixty seconds.
 send_sensor_data_interval = 160
 bootloader = http://{{ env.IRONIC_URL_HOST }}:{{ env.HTTP_PORT }}/uefi_esp.img
+verify_step_priority_override = management.clear_job_queue:90
 
 [database]
 {% if env.MARIADB_TLS_ENABLED == "true" %}
