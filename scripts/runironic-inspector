@@ -4,57 +4,25 @@ CONFIG=/etc/ironic-inspector/ironic-inspector.conf
 
 export IRONIC_INSPECTOR_ENABLE_DISCOVERY=${IRONIC_INSPECTOR_ENABLE_DISCOVERY:-false}
 
-export IRONIC_CERT_FILE=/certs/ironic/tls.crt
-export IRONIC_CACERT_FILE=/certs/ca/ironic/tls.crt
-export IRONIC_INSECURE=${IRONIC_INSECURE:-false}
-
-export IRONIC_INSPECTOR_CACERT_FILE=/certs/ca/ironic-inspector/tls.crt
-export IRONIC_INSPECTOR_CERT_FILE=/certs/ironic-inspector/tls.crt
-export IRONIC_INSPECTOR_KEY_FILE=/certs/ironic-inspector/tls.key
 export INSPECTOR_REVERSE_PROXY_SETUP=${INSPECTOR_REVERSE_PROXY_SETUP:-"false"}
-export RESTART_CONTAINER_CERTIFICATE_UPDATED=${RESTART_CONTAINER_CERTIFICATE_UPDATED:-"false"}
 
-if [ -f "$IRONIC_INSPECTOR_CERT_FILE" ] && [ ! -f "$IRONIC_INSPECTOR_KEY_FILE" ] ; then
-    echo "Missing TLS Certificate key file /certs/ironic-inspector/tls.key"
-    exit 1
-fi
-if [ ! -f "$IRONIC_INSPECTOR_CERT_FILE" ] && [ -f "$IRONIC_INSPECTOR_KEY_FILE" ] ; then
-    echo "Missing TLS Certificate file /certs/ironic-inspector/tls.crt"
-    exit 1
-fi
+. /bin/tls-common.sh
 
 . /bin/ironic-common.sh
 
 wait_for_interface_or_ip
 
-if [ -f "$IRONIC_INSPECTOR_CERT_FILE" ]; then
-    export IRONIC_INSPECTOR_TLS_SETUP="true"
-
+IRONIC_INSPECTOR_PORT=5050
+if [ "$IRONIC_INSPECTOR_TLS_SETUP" = "true" ]; then
     if [[ "${INSPECTOR_REVERSE_PROXY_SETUP}" == "true" ]]; then
-      export IRONIC_INSPECTOR_BASE_URL="https://${IRONIC_URL_HOST}:5049"
-    else
-      export IRONIC_INSPECTOR_BASE_URL="https://${IRONIC_URL_HOST}:5050"
-    fi
-
-    if [ ! -f "${IRONIC_INSPECTOR_CACERT_FILE}" ]; then
-        cp "${IRONIC_INSPECTOR_CERT_FILE}" "${IRONIC_INSPECTOR_CACERT_FILE}"
+        IRONIC_INSPECTOR_PORT=5049
     fi
 else
-    export IRONIC_INSPECTOR_TLS_SETUP="false"
-    export IRONIC_INSPECTOR_BASE_URL="http://${IRONIC_URL_HOST}:5050"
     export INSPECTOR_REVERSE_PROXY_SETUP="false" # If TLS is not used, we have no reason to use the reverse proxy
 fi
+export IRONIC_INSPECTOR_BASE_URL="${IRONIC_INSPECTOR_SCHEME}://${IRONIC_URL_HOST}:${IRONIC_INSPECTOR_PORT}"
 
-if [ -f "$IRONIC_CERT_FILE" ] || [ -f "$IRONIC_CACERT_FILE" ]; then
-    export IRONIC_TLS_SETUP="true"
-    export IRONIC_BASE_URL="https://${IRONIC_URL_HOST}:6385"
-    if [ ! -f "${IRONIC_CACERT_FILE}" ]; then
-        cp "${IRONIC_CERT_FILE}" "${IRONIC_CACERT_FILE}"
-    fi
-else
-    export IRONIC_TLS_SETUP="false"
-    export IRONIC_BASE_URL="http://${IRONIC_URL_HOST}:6385"
-fi
+export IRONIC_BASE_URL="${IRONIC_SCHEME}://${IRONIC_URL_HOST}:6385"
 
 function build_j2_config() {
     CONFIG_FILE=$1
