@@ -5,6 +5,7 @@ gdisk
 genisoimage
 httpd
 httpd-tools
+ipcalc
 ipmitool
 iproute
 ipxe-bootimgs
