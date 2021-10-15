@@ -18,39 +18,39 @@ openstack-ironic-conductor >= 1:18.3.0-0.20211004175517.6676e09.el8
 openstack-ironic-inspector >= 10.7.1-0.20210722154052.edf655c.el8
 parted
 psmisc
-python3-debtcollector >= 2.2.0-0.20210324220630.649189d.el8
-python3-dracclient >= 5.1.1-0.20210318155434.98c7ea3.el8
+python3-debtcollector >= 2.3.0-0.20211012161119.0bf5bf5.el8
+python3-dracclient >= 7.0.0-0.20211012182751.d26664e.el8
 python3-eventlet >= 0.30.2-1.el8
 python3-gunicorn
 python3-ironic-lib >= 4.7.2-0.20210707162243.d33cf3e.el8
 python3-ironic-prometheus-exporter >= 2.3.0-0.20210611093526.3c9b517.el8
 python3-ironicclient >= 4.7.1-0.20210611202214.3d146fb.el8
 python3-jinja2
+python3-keystoneauth1 >= 4.4.0-0.20211012144044.112bcae.el8
 python3-mod_wsgi
 python3-msgpack >= 0.6.2-1.el8ost
-python3-oslo-concurrency >= 4.4.0-0.20210325004915.7dcf9e9.el8
-python3-oslo-config >= 8.5.0-0.20210325050501.cfa2564.el8
-python3-oslo-context >= 3.2.0-0.20210325043103.0d02866.el8
-python3-oslo-db >= 8.5.0-0.20210325041241.503db60.el8
-python3-keystoneauth1 >= 4.3.0-0.20210325001456.6a66271.el8
-python3-openstacksdk >= 0.53.0-0.20210325011601.4629245.el8
-python3-oslo-i18n >= 5.0.1-0.20210324221600.73187bd.el8
-python3-oslo-log >= 4.4.0-0.20210409081224.9b29c90.el8
-python3-oslo-policy >= 3.7.0-0.20210325051823.d853485.el8
-python3-oslo-serialization >= 4.1.0-0.20210325012242.8445e61.el8
-python3-oslo-service >= 2.5.0-0.20210325014731.d25e454.el8
-python3-oslo-utils >= 4.8.0-0.20210325043201.3288539.el8
+python3-openstacksdk >= 0.59.0-0.20211012172340.d0d4d8b.el8
+python3-oslo-concurrency >= 4.4.1-0.20211012150632.8e08400.el8
+python3-oslo-config >= 8.7.1-0.20211012155707.1a7bd66.el8
+python3-oslo-context >= 3.3.1-0.20211012152439.641a1e0.el8
+python3-oslo-db >= 8.5.0-0.20210722170843.503db60.el8
+python3-oslo-i18n >= 5.1.0-0.20211012165753.b031d17.el8
+python3-oslo-log >= 4.6.0-0.20211012154701.41c8807.el8
+python3-oslo-policy >= 3.8.2-0.20211012161944.c7fd9f4.el8
+python3-oslo-serialization >= 4.2.0-0.20211012151454.2b94a4f.el8
+python3-oslo-service >= 2.6.0-0.20211012154519.091fd65.el8
+python3-oslo-utils >= 4.10.0-0.20211012164840.2c74bb9.el8
 python3-packaging >= 20.4-1.el8ost
 python3-paste >= 3.2.4-1.el8ost
 python3-paste-deploy >= 2.0.1-4.el8ost
 python3-pint >= 0.10.1-1.el8ost
-python3-proliantutils
+python3-proliantutils >= 2.12.0-0.20211012162915.abc6432.el8
 python3-pyghmi >= 1.5.14-2.1.el8ost
-python3-tooz >= 2.8.0-0.20210324235001.54448e9.el8
-python3-scciclient >= 0.9.1-0.20210720102209.34ccd96.el8
-python3-stevedore >= 3.3.0-0.20210325001012.7d7154f.el8
+python3-scciclient >= 0.9.1-0.20210827164043.21a184b.el8
+python3-stevedore >= 3.4.0-0.20211012153718.8846a3f.el8
 python3-sushy >= 3.13.0-0.20211011142922.933b889.el8
 python3-sushy-oem-idrac >= 3.0.2-0.20211011174039.9733d23.el8
+python3-tooz >= 2.9.0-0.20211012145018.174065f.el8
 python3-zipp >= 0.5.1-2.el8ost
 qemu-img
 sqlite
