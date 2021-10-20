@@ -1,8 +1,8 @@
 #!/usr/bin/bash
 
-ROOTFS_FILE=/shared/html/images/ironic-python-agent.rootfs
-IGNITION_FILE=/shared/html/ironic-python-agent.ign
-ISO_FILE=/shared/html/images/ironic-python-agent.iso
+ROOTFS_FILE=${ROOTFS_FILE:-/shared/html/images/ironic-python-agent.rootfs}
+IGNITION_FILE=${IGNITION_FILE:-/shared/html/ironic-python-agent.ign}
+ISO_FILE=${ISO_FILE:-/shared/html/images/ironic-python-agent.iso}
 
 function coreos_kernel_params {
     echo -n "coreos.live.rootfs_url=http://$IRONIC_IP:$HTTP_PORT/images/ironic-python-agent.rootfs"
