@@ -36,6 +36,7 @@ python3-oslo-context >= 3.3.1-0.20211012152439.641a1e0.el8
 python3-oslo-db >= 8.5.0-0.20210722170843.503db60.el8
 python3-oslo-i18n >= 5.1.0-0.20211012165753.b031d17.el8
 python3-oslo-log >= 4.6.0-0.20211012154701.41c8807.el8
+python3-oslo-messaging >= 12.9.1-0.20211020204149.f9de265.el8
 python3-oslo-policy >= 3.8.2-0.20211012161944.c7fd9f4.el8
 python3-oslo-serialization >= 4.2.0-0.20211012151454.2b94a4f.el8
 python3-oslo-service >= 2.6.0-0.20211012154519.091fd65.el8
