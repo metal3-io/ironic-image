@@ -8,11 +8,9 @@ FROM $BASE_IMAGE AS ironic-builder
 
 RUN dnf install -y gcc git make xz-devel
 WORKDIR /tmp
-RUN git clone https://github.com/ipxe/ipxe.git && \
+RUN git clone --depth 1 --branch v1.21.1 https://github.com/ipxe/ipxe.git && \
       cd ipxe && \
-      git checkout 3fe683ebab29afacf224e6b0921f6329bebcdca7 && \
       cd src && \
-      sed -i -e "s/#undef.*NET_PROTO_IPV6/#define NET_PROTO_IPV6/g" config/general.h && \
       make bin/undionly.kpxe bin-x86_64-efi/ipxe.efi bin-x86_64-efi/snponly.efi
 
 ## TODO(TheJulia): At some point we may want to try and make the size
