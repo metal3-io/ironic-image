@@ -12,6 +12,15 @@ RUN if [ $(uname -m) = "x86_64" ]; then \
       mcopy -i esp.img -v /boot/efi/EFI/BOOT/BOOTX64.EFI ::EFI/BOOT && \
       mcopy -i esp.img -v /boot/efi/EFI/redhat/grubx64.efi ::EFI/BOOT && \
       mdir -i esp.img ::EFI/BOOT; \
+    elif [ $(uname -m) = "aarch64" ]; then \
+      dnf install -y genisoimage grub2 grub2-efi-aa64 shim dosfstools mtools && \
+      dd bs=1024 count=6400 if=/dev/zero of=esp.img && \
+      mkfs.msdos -F 12 -n 'ESP_IMAGE' ./esp.img && \
+      mmd -i esp.img EFI && \
+      mmd -i esp.img EFI/BOOT && \
+      mcopy -i esp.img -v /boot/efi/EFI/BOOT/BOOTAA64.EFI ::EFI/BOOT && \
+      mcopy -i esp.img -v /boot/efi/EFI/redhat/grubaa64.efi ::EFI/BOOT && \
+      mdir -i esp.img ::EFI/BOOT; \
     else \
       touch /tmp/esp.img; \
     fi
