@@ -58,7 +58,7 @@ The **PATCH_LIST** argument is a path to a file under the image context.
 Its format is a simple text file that contains references to upstream patches
 for the ironic projects.  
 Each line of the file is in the form:  
-    **project_dir refspec**  
+    **project_dir refspec (git_host)**  
 where:
 
 * **project_dir** is the last part of the project url including the organization,
@@ -70,5 +70,5 @@ the refspec will be _refs/changes/84/800084/22_
 Using multiple refspecs is convenient in case we need to test patches that
 are connected to each other, either on the same project or on different
 projects.
-
-At the moment, only projects hosted in opendev.org are supported.
+* **git_host** (optional) is the git host from which the project will be cloned.
+If unset, `https://opendev.org` is used.

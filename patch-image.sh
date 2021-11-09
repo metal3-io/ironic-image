@@ -12,7 +12,8 @@ do
     # for example refs/changes/67/759567/1
     PROJECT=$(echo $line | cut -d " " -f1)
     PROJ_NAME=$(echo $PROJECT | cut -d "/" -f2)
-    PROJ_URL="https://opendev.org/$PROJECT"
+    GIT_HOST=$(echo $line | cut -d " " -f3)
+    PROJ_URL="${GIT_HOST:-"https://opendev.org"}/$PROJECT"
     REFSPEC=$(echo $line | cut -d " " -f2)
 
     cd /tmp
