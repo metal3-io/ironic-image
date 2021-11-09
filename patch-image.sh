@@ -1,20 +1,14 @@
 #!/usr/bin/bash
 set -ex
 
-patch_file="/tmp/${PATCH_LIST}"
+PATCH_FILE="/tmp/${PATCH_LIST}"
+VARS="PROJECT REFSPEC GIT_HOST"
 
 while IFS= read -r line
 do
-    # each line is in the form "project_dir refsspec" where:
-    # - project is the last part of the project url including the org,
-    # for example openstack/ironic
-    # - refspec is the gerrit refspec of the patch we want to test,
-    # for example refs/changes/67/759567/1
-    PROJECT=$(echo $line | cut -d " " -f1)
+    IFS=' ' read -r $VARS <<< $line
     PROJ_NAME=$(echo $PROJECT | cut -d "/" -f2)
-    GIT_HOST=$(echo $line | cut -d " " -f3)
     PROJ_URL="${GIT_HOST:-"https://opendev.org"}/$PROJECT"
-    REFSPEC=$(echo $line | cut -d " " -f2)
 
     cd /tmp
     git clone "$PROJ_URL"
@@ -23,8 +17,7 @@ do
     git checkout FETCH_HEAD
 
     SKIP_GENERATE_AUTHORS=1 SKIP_WRITE_GIT_CHANGELOG=1 python3 setup.py sdist
-    pip3 install dist/*.tar.gz
-done < "$patch_file"
+    pip3 install --prefix /usr dist/*.tar.gz
+done < "$PATCH_FILE"
 
 cd /
-
