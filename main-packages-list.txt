@@ -1,4 +1,3 @@
-crudini
 dnsmasq
 genisoimage
 httpd
@@ -8,20 +7,11 @@ ipmitool
 iproute
 mariadb-server
 mod_ssl
-openstack-ironic-api
-openstack-ironic-conductor
-openstack-ironic-inspector
+parted
 procps
-python3-dracclient
-python3-gunicorn
-python3-ibmcclient
-python3-ironic-prometheus-exporter
+psmisc
 python3-jinja2
 python3-mod_wsgi
-python3-proliantutils
-python3-scciclient
-python3-sushy
-python3-sushy-oem-idrac
 qemu-img
 sqlite
 syslinux-nonlinux
