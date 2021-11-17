@@ -20,9 +20,10 @@ fi
 
 # SOURCE install #
 if [[ $INSTALL_TYPE == "source" ]]; then
+    BUILD_DEPS="python3-pip python3-devel gcc git-core"
     dnf upgrade -y
-    dnf install -y python3-pip python3-devel gcc git-core
-    pip3 install --upgrade pip
+    dnf install -y $BUILD_DEPS
+    pip3 install pip==21.3.1
     pip3 install --prefix /usr -r $IRONIC_PKG_LIST -c https://raw.githubusercontent.com/openstack/requirements/master/upper-constraints.txt
 
     # ironic and ironic-inspector system configuration
@@ -31,6 +32,9 @@ if [[ $INSTALL_TYPE == "source" ]]; then
     getent passwd ironic >/dev/null || useradd -r -g ironic -s /sbin/nologin ironic -d /var/lib/ironic
     getent group ironic-inspector >/dev/null || groupadd -r ironic-inspector
     getent passwd ironic-inspector >/dev/null || useradd -r -g ironic-inspector -s /sbin/nologin ironic-inspector -d /var/lib/ironic-inspector
+
+    # clean installed build dependencies
+    dnf remove -y $BUILD_DEPS
 fi
 
 xargs -rtd'\n' dnf install -y < /tmp/${PKGS_LIST}
@@ -41,7 +45,7 @@ if [[ ! -z ${EXTRA_PKGS_LIST:-} ]]; then
     fi
 fi
 
-dnf install -y --enablerepo=epel inotify-tools python3-gunicorn
+dnf install -y --enablerepo=epel inotify-tools
 
 dnf clean all
 rm -rf /var/cache/{yum,dnf}/*
