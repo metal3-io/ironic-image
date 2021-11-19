@@ -1,8 +1,8 @@
 #!/usr/bin/bash
+SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-. /bin/tls-common.sh
-
-. /bin/ironic-common.sh
+. "${SCRIPTDIR}/tls-common.sh"
+. "${SCRIPTDIR}/ironic-common.sh"
 
 HTTP_PORT=${HTTP_PORT:-"80"}
 export VMEDIA_TLS_PORT=${VMEDIA_TLS_PORT:-8083}
@@ -28,7 +28,7 @@ else
     INSPECTOR_EXTRA_ARGS=" ipa-inspection-callback-url=${IRONIC_BASE_URL}:5050/v1/continue"
 fi
 
-. /bin/coreos-ipa-common.sh
+. "${SCRIPTDIR}/coreos-ipa-common.sh"
 
 # Copy files to shared mount
 render_j2_config /tmp/inspector.ipxe.j2 /shared/html/inspector.ipxe

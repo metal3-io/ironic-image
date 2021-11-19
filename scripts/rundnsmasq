@@ -1,6 +1,7 @@
 #!/usr/bin/bash
+SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-. /bin/ironic-common.sh
+. "${SCRIPTDIR}/ironic-common.sh"
 
 export HTTP_PORT=${HTTP_PORT:-"80"}
 DNSMASQ_EXCEPT_INTERFACE=${DNSMASQ_EXCEPT_INTERFACE:-"lo"}

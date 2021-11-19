@@ -1,8 +1,8 @@
 #!/usr/bin/bash
 
 export IRONIC_DEPLOYMENT="Conductor"
-
-. /bin/configure-ironic.sh
+SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+. "${SCRIPTDIR}/configure-ironic.sh"
 
 # Ramdisk logs
 mkdir -p /shared/log/ironic/deploy

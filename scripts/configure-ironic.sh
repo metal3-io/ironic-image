@@ -5,10 +5,10 @@
 #   <interface> - all VLANs on a particular interface using LLDP information
 #   <interface.vlan> - a particular VLAN on an interface, not relying on LLDP
 export IRONIC_INSPECTOR_VLAN_INTERFACES=${IRONIC_INSPECTOR_VLAN_INTERFACES:-all}
+SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-. /bin/tls-common.sh
-
-. /bin/ironic-common.sh
+. "${SCRIPTDIR}/tls-common.sh"
+. "${SCRIPTDIR}/ironic-common.sh"
 
 export HTTP_PORT=${HTTP_PORT:-"80"}
 export MARIADB_PASSWORD=${MARIADB_PASSWORD:-"change_me"}

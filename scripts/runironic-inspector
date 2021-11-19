@@ -5,10 +5,10 @@ CONFIG=/etc/ironic-inspector/ironic-inspector.conf
 export IRONIC_INSPECTOR_ENABLE_DISCOVERY=${IRONIC_INSPECTOR_ENABLE_DISCOVERY:-false}
 
 export INSPECTOR_REVERSE_PROXY_SETUP=${INSPECTOR_REVERSE_PROXY_SETUP:-"false"}
+SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-. /bin/tls-common.sh
-
-. /bin/ironic-common.sh
+. "${SCRIPTDIR}/tls-common.sh"
+. "${SCRIPTDIR}/ironic-common.sh"
 
 wait_for_interface_or_ip
 

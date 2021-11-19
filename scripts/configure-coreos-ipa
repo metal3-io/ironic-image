@@ -1,7 +1,8 @@
 #!/usr/bin/bash
+SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-. /bin/ironic-common.sh
-. /bin/coreos-ipa-common.sh
+. "${SCRIPTDIR}/ironic-common.sh"
+. "${SCRIPTDIR}/coreos-ipa-common.sh"
 
 # Base64 encoded pull secret
 export IRONIC_AGENT_PULL_SECRET=${IRONIC_AGENT_PULL_SECRET:-}

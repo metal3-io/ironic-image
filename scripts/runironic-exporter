@@ -1,6 +1,8 @@
 #!/usr/bin/bash
 
-. /bin/configure-ironic.sh
+SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+. "${SCRIPTDIR}/configure-ironic.sh"
 
 FLASK_RUN_HOST=${FLASK_RUN_HOST:-"0.0.0.0"}
 FLASK_RUN_PORT=${FLASK_RUN_PORT:-"9608"}
