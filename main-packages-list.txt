@@ -1,5 +1,4 @@
 dnsmasq
-genisoimage
 httpd
 httpd-tools
 ipcalc
@@ -12,3 +11,4 @@ python3-mod_wsgi
 qemu-img
 sqlite
 syslinux-nonlinux
+xorriso
