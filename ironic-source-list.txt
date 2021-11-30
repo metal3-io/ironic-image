@@ -1,4 +1,5 @@
 crudini
+gunicorn
 ironic @ git+https://opendev.org/openstack/ironic
 ironic-inspector @ git+https://opendev.org/openstack/ironic-inspector
 ironic-prometheus-exporter
