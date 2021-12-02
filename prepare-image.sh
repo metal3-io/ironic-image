@@ -47,6 +47,11 @@ fi
 
 dnf install -y --enablerepo=epel inotify-tools
 
+chown ironic:ironic /var/log/ironic
+# This file is generated after installing mod_ssl and it affects our configuration
+rm -f /etc/httpd/conf.d/ssl.conf /etc/httpd/conf.d/autoindex.conf /etc/httpd/conf.d/welcome.conf /etc/httpd/conf.modules.d/*.conf
+
+
 dnf clean all
 rm -rf /var/cache/{yum,dnf}/*
 
