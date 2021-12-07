@@ -18,7 +18,7 @@ dhcp-option=6
 # IPv4 Configuration:
 dhcp-match=ipxe,175
 # Client is already running iPXE; move to next stage of chainloading
-dhcp-boot=tag:ipxe,http://{{ env["IRONIC_URL_HOST"] }}:{{ env["HTTP_PORT"] }}/dualboot.ipxe
+dhcp-boot=tag:ipxe,http://{{ env["IRONIC_URL_HOST"] }}:{{ env["HTTP_PORT"] }}/boot.ipxe
 
 # Note: Need to test EFI booting
 dhcp-match=set:efi,option:client-arch,7
@@ -39,7 +39,7 @@ ra-param={{ env["PROVISIONING_INTERFACE"] }},0,0
 dhcp-vendorclass=set:pxe6,enterprise:343,PXEClient
 dhcp-userclass=set:ipxe6,iPXE
 dhcp-option=tag:pxe6,option6:bootfile-url,tftp://{{ env["IRONIC_URL_HOST"] }}/snponly.efi
-dhcp-option=tag:ipxe6,option6:bootfile-url,http://{{ env["IRONIC_URL_HOST"] }}:{{ env["HTTP_PORT"] }}/dualboot.ipxe
+dhcp-option=tag:ipxe6,option6:bootfile-url,http://{{ env["IRONIC_URL_HOST"] }}:{{ env["HTTP_PORT"] }}/boot.ipxe
 
 # Disable default router(s) and DNS over provisioning network
 dhcp-option=3

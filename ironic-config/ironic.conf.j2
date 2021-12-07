@@ -177,6 +177,8 @@ pxe_append_params = nofb nomodeset vga=normal ipa-insecure=1 {% if env.IRONIC_RA
 # boot (the default), ensuring that they boot correctly even if they start
 # netbooting for some reason (e.g. with the noop management interface).
 enable_netboot_fallback = true
+# Enable the fallback path to ironic-inspector
+ipxe_fallback_script = inspector.ipxe
 
 [redfish]
 use_swift = false
