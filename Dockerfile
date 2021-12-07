@@ -55,10 +55,6 @@ RUN prepare-image.sh && \
 COPY scripts/ /bin/
 
 # IRONIC #
-RUN chown ironic:ironic /var/log/ironic && \
-  # This file is generated after installing mod_ssl and it affects our configuration
-  rm -f /etc/httpd/conf.d/ssl.conf
-
 COPY --from=ironic-builder /tmp/ipxe/src/bin/undionly.kpxe /tmp/ipxe/src/bin-x86_64-efi/snponly.efi /tmp/ipxe/src/bin-x86_64-efi/ipxe.efi /tftpboot/
 COPY --from=ironic-builder /tmp/esp.img /tmp/uefi_esp.img
 
@@ -67,7 +63,6 @@ COPY ironic-config/dnsmasq.conf.j2 /etc/
 COPY ironic-config/inspector.ipxe.j2 ironic-config/dualboot.ipxe ironic-config/ironic-python-agent.ign.j2 /tmp/
 
 # Custom httpd config, removes all but the bare minimum needed modules
-RUN rm -f /etc/httpd/conf.d/autoindex.conf /etc/httpd/conf.d/welcome.conf /etc/httpd/conf.modules.d/*.conf
 COPY ironic-config/httpd.conf /etc/httpd/conf.d/
 COPY ironic-config/httpd-modules.conf /etc/httpd/conf.modules.d/
 COPY ironic-config/apache2-ironic-api.conf.j2 /etc/httpd-ironic-api.conf.j2
@@ -80,4 +75,3 @@ RUN mkdir -p /var/lib/ironic-inspector && \
 
 COPY ironic-inspector-config/ironic-inspector.conf.j2 /etc/ironic-inspector/
 COPY ironic-inspector-config/inspector-apache.conf.j2 /etc/httpd/conf.d/
-RUN rm -f /etc/httpd/conf.d/ssl.conf
