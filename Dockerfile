@@ -13,31 +13,8 @@ RUN git clone --depth 1 --branch v1.21.1 https://github.com/ipxe/ipxe.git && \
       cd src && \
       make bin/undionly.kpxe bin-x86_64-efi/ipxe.efi bin-x86_64-efi/snponly.efi
 
-## TODO(TheJulia): At some point we may want to try and make the size
-## of the ESP image file to be sized smaller for the files that need to
-## be copied in, however that requires more advanced scripting beyond
-## an MVP.
-RUN if [ $(uname -m) = "x86_64" ]; then \
-      dnf install -y genisoimage grub2 grub2-efi-x64 shim dosfstools mtools && \
-      dd bs=1024 count=6400 if=/dev/zero of=esp.img && \
-      mkfs.msdos -F 12 -n 'ESP_IMAGE' ./esp.img && \
-      mmd -i esp.img EFI && \
-      mmd -i esp.img EFI/BOOT && \
-      mcopy -i esp.img -v /boot/efi/EFI/BOOT/BOOTX64.EFI ::EFI/BOOT && \
-      mcopy -i esp.img -v /boot/efi/EFI/centos/grubx64.efi ::EFI/BOOT && \
-      mdir -i esp.img ::EFI/BOOT; \
-    elif [ $(uname -m) = "aarch64" ]; then \
-      dnf install -y genisoimage grub2 grub2-efi-aa64 shim dosfstools mtools && \
-      dd bs=1024 count=6400 if=/dev/zero of=esp.img && \
-      mkfs.msdos -F 12 -n 'ESP_IMAGE' ./esp.img && \
-      mmd -i esp.img EFI && \
-      mmd -i esp.img EFI/BOOT && \
-      mcopy -i esp.img -v /boot/efi/EFI/BOOT/BOOTAA64.EFI ::EFI/BOOT && \
-      mcopy -i esp.img -v /boot/efi/EFI/centos/grubaa64.efi ::EFI/BOOT && \
-      mdir -i esp.img ::EFI/BOOT; \
-    else \
-      touch /tmp/esp.img; \
-    fi
+COPY prepare-efi.sh /bin/
+RUN prepare-efi.sh centos
 
 FROM $BASE_IMAGE
 
