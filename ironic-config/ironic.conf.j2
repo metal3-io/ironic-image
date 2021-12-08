@@ -15,7 +15,11 @@ enabled_management_interfaces = ipmitool,idrac,irmc,fake,redfish,idrac-redfish,i
 enabled_power_interfaces = ipmitool,idrac,irmc,fake,redfish,idrac-redfish,ibmc,ilo
 enabled_raid_interfaces = no-raid,irmc,agent,fake,ibmc,idrac-wsman,ilo5
 enabled_vendor_interfaces = no-vendor,ipmitool,idrac,idrac-redfish,redfish,ilo,fake,ibmc
+{% if env.IRONIC_EXPOSE_JSON_RPC | lower == "true" %}
 rpc_transport = json-rpc
+{% else %}
+rpc_transport = none
+{% endif %}
 use_stderr = true
 # NOTE(dtantsur): the default md5 is not compatible with FIPS mode
 hash_ring_algorithm = sha256
@@ -71,7 +75,9 @@ bootloader = http://{{ env.IRONIC_URL_HOST }}:{{ env.HTTP_PORT }}/uefi_esp.img
 verify_step_priority_override = management.clear_job_queue:90
 
 [database]
-{% if env.MARIADB_TLS_ENABLED == "true" %}
+{% if env.IRONIC_USE_MARIADB | lower == "false" %}
+connection = sqlite:////var/lib/ironic/ironic.sqlite
+{% elif env.MARIADB_TLS_ENABLED == "true" %}
 connection = mysql+pymysql://ironic:{{ env.MARIADB_PASSWORD }}@127.0.0.1/ironic?charset=utf8&ssl=on&ssl_ca={{ env.MARIADB_CACERT_FILE }}
 {% else %}
 connection = mysql+pymysql://ironic:{{ env.MARIADB_PASSWORD }}@127.0.0.1/ironic?charset=utf8
@@ -135,6 +141,7 @@ command_retry_timeout = 60
 # is not set for the node. (list value)
 cipher_suite_versions = 3,17
 
+{% if env.IRONIC_EXPOSE_JSON_RPC | lower == "true" %}
 [json_rpc]
 # We assume that when we run API and conductor in the same container, they use
 # authentication over localhost, using the same credentials as API, to prevent
@@ -153,6 +160,7 @@ host_ip = {% if env.LISTEN_ALL_INTERFACES | lower == "true" %}::{% else %}{{ env
 use_ssl = true
 cafile = {{ env.IRONIC_CACERT_FILE }}
 insecure = {{ env.IRONIC_INSECURE }}
+{% endif %}
 {% endif %}
 
 [oslo_messaging_notifications]
