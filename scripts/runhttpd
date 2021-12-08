@@ -9,6 +9,7 @@ export VMEDIA_TLS_PORT=${VMEDIA_TLS_PORT:-8083}
 
 INSPECTOR_ORIG_HTTPD_CONFIG=/etc/httpd/conf.d/inspector-apache.conf.j2
 INSPECTOR_RESULT_HTTPD_CONFIG=/etc/httpd/conf.d/ironic-inspector.conf
+export IRONIC_REVERSE_PROXY_SETUP=${IRONIC_REVERSE_PROXY_SETUP:-"false"}
 export INSPECTOR_REVERSE_PROXY_SETUP=${INSPECTOR_REVERSE_PROXY_SETUP:-"false"}
 
 # Whether to enable fast_track provisioning or not
@@ -44,10 +45,20 @@ else
     export INSPECTOR_REVERSE_PROXY_SETUP="false" # If TLS is not used, we have no reason to use the reverse proxy
 fi
 
+if [ "$IRONIC_TLS_SETUP" = "true" ]; then
+    if [[ "${IRONIC_REVERSE_PROXY_SETUP}" == "true" ]]; then
+      render_j2_config /etc/httpd-ironic-api.conf.j2 /etc/httpd/conf.d/ironic.conf
+    fi
+    # Add user 'apache' to the group `ironic-inspector`, so httpd can access /etc/ironic-inspector and read the pasword file
+    usermod -aG ironic apache
+else
+    export IRONIC_REVERSE_PROXY_SETUP="false" # If TLS is not used, we have no reason to use the reverse proxy
+fi
+
 # Configure HTTP basic auth for API server
-HTPASSWD_FILE=/etc/ironic-inspector/htpasswd
 if [ -n "${HTTP_BASIC_HTPASSWD:-}" ]; then
-    printf "%s\n" "${HTTP_BASIC_HTPASSWD}" >"${HTPASSWD_FILE}"
+    printf "%s\n" "${HTTP_BASIC_HTPASSWD}" > /etc/ironic/htpasswd
+    printf "%s\n" "${HTTP_BASIC_HTPASSWD}" > /etc/ironic-inspector/htpasswd
 fi
 
 # Use configured values

@@ -56,11 +56,16 @@ deploy_logs_local_path = /shared/log/ironic/deploy
 max_command_attempts = 30
 
 [api]
+{% if env.IRONIC_REVERSE_PROXY_SETUP == "true" %}
+host_ip = 127.0.0.1
+port = 6388
+{% else %}
 host_ip = {% if env.LISTEN_ALL_INTERFACES | lower == "true" %}::{% else %}{{ env.IRONIC_IP }}{% endif %}
-api_workers = {{ env.NUMWORKERS }}
 {% if env.IRONIC_TLS_SETUP == "true" %}
 enable_ssl_api = true
 {% endif %}
+{% endif %}
+api_workers = {{ env.NUMWORKERS }}
 
 [conductor]
 automated_clean = {{ env.IRONIC_AUTOMATED_CLEAN }}
