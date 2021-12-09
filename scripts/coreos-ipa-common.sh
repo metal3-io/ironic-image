@@ -6,12 +6,14 @@ ISO_FILE=${ISO_FILE:-/shared/html/images/ironic-python-agent.iso}
 
 function coreos_kernel_params {
     echo -n "coreos.live.rootfs_url=http://$IRONIC_IP:$HTTP_PORT/images/ironic-python-agent.rootfs"
-    echo -n " ignition.config.url=http://$IRONIC_IP:$HTTP_PORT/ironic-python-agent.ign"
+    if [ -f "$IGNITION_FILE" ]; then
+        echo -n " ignition.config.url=http://$IRONIC_IP:$HTTP_PORT/ironic-python-agent.ign"
+    fi
     echo " ignition.firstboot ignition.platform.id=metal"
 }
 
 function use_coreos_ipa {
-    [ -f "$ROOTFS_FILE" ] && [ -f "$IGNITION_FILE" ] && return 0 || return 1
+    [ -f "$ROOTFS_FILE" ] && return 0 || return 1
 }
 
 if use_coreos_ipa; then
