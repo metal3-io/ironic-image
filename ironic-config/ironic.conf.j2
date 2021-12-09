@@ -82,6 +82,10 @@ verify_step_priority_override = management.clear_job_queue:90
 [database]
 {% if env.IRONIC_USE_MARIADB | lower == "false" %}
 connection = sqlite:////var/lib/ironic/ironic.sqlite
+# Synchronous mode is required for data integrity in case of operating system
+# crash. In our case we restart the container from scratch, so we can save some
+# IO by not doing syncs all the time.
+sqlite_synchronous = False
 {% elif env.MARIADB_TLS_ENABLED == "true" %}
 connection = mysql+pymysql://ironic:{{ env.MARIADB_PASSWORD }}@127.0.0.1/ironic?charset=utf8&ssl=on&ssl_ca={{ env.MARIADB_CACERT_FILE }}
 {% else %}
