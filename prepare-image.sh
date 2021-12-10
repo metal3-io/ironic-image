@@ -20,9 +20,10 @@ fi
 
 # SOURCE install #
 if [[ $INSTALL_TYPE == "source" ]]; then
-    BUILD_DEPS="python3-pip python3-devel gcc git-core"
+    BUILD_DEPS="python3-devel gcc git-core"
     dnf upgrade -y
-    dnf install -y $BUILD_DEPS
+    # NOTE(dtantsur): pip is a requirement of python3 in CentOS
+    dnf install -y python3-pip $BUILD_DEPS
     pip3 install pip==21.3.1
     pip3 install --prefix /usr -r $IRONIC_PKG_LIST -c https://raw.githubusercontent.com/openstack/requirements/master/upper-constraints.txt
 
