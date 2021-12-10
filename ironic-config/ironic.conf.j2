@@ -169,7 +169,7 @@ images_path = /shared/html/tmp
 instance_master_path = /shared/html/master_images
 ipxe_enabled = true
 pxe_config_template = $pybasedir/drivers/modules/ipxe_config.template
-tftp_master_path = /shared/tftpboot
+tftp_master_path = /shared/tftpboot/master_images
 tftp_root = /shared/tftpboot
 uefi_pxe_config_template = $pybasedir/drivers/modules/ipxe_config.template
 pxe_append_params = nofb nomodeset vga=normal ipa-insecure=1 {% if env.IRONIC_RAMDISK_SSH_KEY %}sshkey="{{ env.IRONIC_RAMDISK_SSH_KEY|trim }}"{% endif %} {{ env.IRONIC_KERNEL_PARAMS|trim }}
