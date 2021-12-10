@@ -39,7 +39,10 @@ if [ ! -z "${IRONIC_EXTERNAL_IP}" ]; then
     export IRONIC_INSPECTOR_CALLBACK_ENDPOINT_OVERRIDE="https://${IRONIC_EXTERNAL_IP}:5050"
 fi
 
-cp /etc/ironic/ironic.conf /etc/ironic/ironic.conf_orig
+if [ -f /etc/ironic/ironic.conf ]; then
+    # Make a copy of the original supposed empty configuration file
+    cp /etc/ironic/ironic.conf /etc/ironic/ironic.conf_orig
+fi
 
 # oslo.config also supports Config Opts From Environment, log them
 echo '# Options set from Environment variables' | tee /etc/ironic/ironic.extra

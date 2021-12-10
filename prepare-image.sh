@@ -7,15 +7,20 @@ echo "install_weak_deps=False" >> /etc/dnf/dnf.conf
 echo "tsflags=nodocs" >> /etc/dnf/dnf.conf
 
 dnf upgrade -y
-xargs -rd'\n' dnf install -y < /tmp/${PKGS_LIST}
+xargs -rtd'\n' dnf install -y < /tmp/${PKGS_LIST}
 if [ $(uname -m) = "x86_64" ]; then
     dnf install -y syslinux-nonlinux;
 fi
+
 if [[ ! -z ${EXTRA_PKGS_LIST:-} ]]; then
     if [[ -s /tmp/${EXTRA_PKGS_LIST} ]]; then
-        xargs -rd'\n' dnf install -y < /tmp/${EXTRA_PKGS_LIST}
+        xargs -rtd'\n' dnf install -y < /tmp/${EXTRA_PKGS_LIST}
     fi
 fi
+
+chown ironic:ironic /var/log/ironic
+# This file is generated after installing mod_ssl and it affects our configuration
+rm -f /etc/httpd/conf.d/ssl.conf /etc/httpd/conf.d/autoindex.conf /etc/httpd/conf.d/welcome.conf /etc/httpd/conf.modules.d/*.conf
 
 dnf clean all
 rm -rf /var/cache/{yum,dnf}/*

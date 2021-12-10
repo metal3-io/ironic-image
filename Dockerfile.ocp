@@ -3,27 +3,8 @@ FROM registry.ci.openshift.org/ocp/builder:rhel-8-base-openshift-4.10 AS builder
 
 WORKDIR /tmp
 
-RUN if [ $(uname -m) = "x86_64" ]; then \
-      dnf install -y genisoimage grub2 grub2-efi-x64 shim dosfstools mtools && \
-      dd bs=1024 count=6400 if=/dev/zero of=esp.img && \
-      mkfs.msdos -F 12 -n 'ESP_IMAGE' ./esp.img && \
-      mmd -i esp.img EFI && \
-      mmd -i esp.img EFI/BOOT && \
-      mcopy -i esp.img -v /boot/efi/EFI/BOOT/BOOTX64.EFI ::EFI/BOOT && \
-      mcopy -i esp.img -v /boot/efi/EFI/redhat/grubx64.efi ::EFI/BOOT && \
-      mdir -i esp.img ::EFI/BOOT; \
-    elif [ $(uname -m) = "aarch64" ]; then \
-      dnf install -y genisoimage grub2 grub2-efi-aa64 shim dosfstools mtools && \
-      dd bs=1024 count=6400 if=/dev/zero of=esp.img && \
-      mkfs.msdos -F 12 -n 'ESP_IMAGE' ./esp.img && \
-      mmd -i esp.img EFI && \
-      mmd -i esp.img EFI/BOOT && \
-      mcopy -i esp.img -v /boot/efi/EFI/BOOT/BOOTAA64.EFI ::EFI/BOOT && \
-      mcopy -i esp.img -v /boot/efi/EFI/redhat/grubaa64.efi ::EFI/BOOT && \
-      mdir -i esp.img ::EFI/BOOT; \
-    else \
-      touch /tmp/esp.img; \
-    fi
+COPY prepare-efi.sh /bin/
+RUN prepare-efi.sh redhat
 
 FROM registry.ci.openshift.org/ocp/builder:rhel-8-base-openshift-4.10
 
@@ -41,10 +22,6 @@ RUN prepare-image.sh && \
 COPY scripts/* /bin/
 
 # IRONIC #
-RUN chown ironic:ironic /var/log/ironic && \
-  # This file is generated after installing mod_ssl and it affects our configuration
-  rm -f /etc/httpd/conf.d/ssl.conf
-
 COPY --from=builder /tmp/esp.img /tmp/uefi_esp.img
 
 COPY ironic-config/ironic.conf.j2 /etc/ironic/
@@ -52,7 +29,6 @@ COPY ironic-config/dnsmasq.conf.j2 /etc/
 COPY ironic-config/inspector.ipxe.j2 ironic-config/dualboot.ipxe ironic-config/ironic-python-agent.ign.j2 /tmp/
 
 # Custom httpd config, removes all but the bare minimum needed modules
-RUN rm -f /etc/httpd/conf.d/autoindex.conf /etc/httpd/conf.d/welcome.conf /etc/httpd/conf.modules.d/*.conf
 COPY ironic-config/httpd.conf /etc/httpd/conf.d/
 COPY ironic-config/httpd-modules.conf /etc/httpd/conf.modules.d/
 COPY ironic-config/apache2-ironic-api.conf.j2 /etc/httpd-ironic-api.conf.j2
@@ -65,4 +41,3 @@ RUN mkdir -p /var/lib/ironic-inspector && \
 
 COPY ironic-inspector-config/ironic-inspector.conf.j2 /etc/ironic-inspector/
 COPY ironic-inspector-config/inspector-apache.conf.j2 /etc/httpd/conf.d/
-RUN rm -f /etc/httpd/conf.d/ssl.conf
