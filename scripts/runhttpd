@@ -32,7 +32,6 @@ fi
 
 # Copy files to shared mount
 render_j2_config /tmp/inspector.ipxe.j2 /shared/html/inspector.ipxe
-cp /tmp/dualboot.ipxe /shared/html/dualboot.ipxe
 cp /tmp/uefi_esp.img /shared/html/uefi_esp.img
 
 if [ "$IRONIC_INSPECTOR_TLS_SETUP" = "true" ]; then
