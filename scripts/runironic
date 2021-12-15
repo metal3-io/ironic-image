@@ -1,6 +1,9 @@
 #!/usr/bin/bash
 
-export IRONIC_DEPLOYMENT="Conductor"
+# These settings must go before configure-ironic since it has different
+# defaults.
+export IRONIC_USE_MARIADB=${IRONIC_USE_MARIADB:-false}
+export IRONIC_EXPOSE_JSON_RPC=${IRONIC_EXPOSE_JSON_RPC:-false}
 
 . /bin/configure-ironic.sh
 
@@ -15,4 +18,4 @@ if [[ "$IRONIC_TLS_SETUP" == "true"  && "${RESTART_CONTAINER_CERTIFICATE_UPDATED
     done &
 fi
 
-exec /usr/bin/ironic-conductor
+exec /usr/bin/ironic

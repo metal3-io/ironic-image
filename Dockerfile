@@ -46,7 +46,8 @@ COPY ironic-config/apache2-ironic-api.conf.j2 /etc/httpd-ironic-api.conf.j2
 COPY ironic-config/apache2-vmedia.conf.j2 /etc/httpd-vmedia.conf.j2
 
 # IRONIC-INSPECTOR #
-RUN mkdir -p /var/lib/ironic-inspector && \
+RUN mkdir -p /var/lib/ironic /var/lib/ironic-inspector && \
+  sqlite3 /var/lib/ironic/ironic.db "pragma journal_mode=wal" && \
   sqlite3 /var/lib/ironic-inspector/ironic-inspector.db "pragma journal_mode=wal" && \
   dnf remove -y sqlite
 
