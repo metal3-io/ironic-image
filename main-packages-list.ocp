@@ -13,18 +13,18 @@ ipxe-roms-qemu
 iscsi-initiator-utils
 mariadb-server
 mod_ssl
-openstack-ironic-api >= 1:18.3.0-0.20211206200515.0ff3da2.el8
-openstack-ironic-conductor >= 1:18.3.0-0.20211206200515.0ff3da2.el8
-openstack-ironic-inspector >= 10.7.1-0.20210722154052.edf655c.el8
+openstack-ironic-api >= 1:19.0.1-0.20211210165034.c86ca20.el8
+openstack-ironic-conductor >= 1:19.0.1-0.20211210165034.c86ca20.el8
+openstack-ironic-inspector >= 10.9.1-0.20211209161020.21209f3.el8
 parted
 psmisc
 python3-debtcollector >= 2.3.0-0.20211012161119.0bf5bf5.el8
 python3-dracclient >= 7.0.0-0.20211012182751.d26664e.el8
 python3-eventlet >= 0.30.2-1.el8
-python3-gunicorn
-python3-ironic-lib >= 4.7.2-0.20210707162243.d33cf3e.el8
-python3-ironic-prometheus-exporter >= 2.3.0-0.20210611093526.3c9b517.el8
-python3-ironicclient >= 4.7.1-0.20210611202214.3d146fb.el8
+python3-gunicorn >= 19.9.0-10.el8ost.1
+python3-ironic-lib >= 5.1.0-0.20211209154936.731e2f9.el8
+python3-ironic-prometheus-exporter >= 3.1.0-0.20211130174057.d25ba32.el8
+python3-ironicclient >= 4.9.0-0.20211209154934.6f1be06.el8
 python3-jinja2
 python3-keystoneauth1 >= 4.4.0-0.20211012144044.112bcae.el8
 python3-mod_wsgi
@@ -33,7 +33,7 @@ python3-openstacksdk >= 0.59.0-0.20211012172340.d0d4d8b.el8
 python3-oslo-concurrency >= 4.4.1-0.20211012150632.8e08400.el8
 python3-oslo-config >= 8.7.1-0.20211012155707.1a7bd66.el8
 python3-oslo-context >= 3.3.1-0.20211012152439.641a1e0.el8
-python3-oslo-db >= 8.5.0-0.20210722170843.503db60.el8
+python3-oslo-db >= 9.1.0-0.20211020204148.be2cc6a.el8
 python3-oslo-i18n >= 5.1.0-0.20211012165753.b031d17.el8
 python3-oslo-log >= 4.6.0-0.20211012154701.41c8807.el8
 python3-oslo-messaging >= 12.9.1-0.20211020204149.f9de265.el8
@@ -45,11 +45,11 @@ python3-packaging >= 20.4-1.el8ost
 python3-paste >= 3.2.4-1.el8ost
 python3-paste-deploy >= 2.0.1-4.el8ost
 python3-pint >= 0.10.1-1.el8ost
-python3-proliantutils >= 2.12.0-0.20211012162915.abc6432.el8
+python3-proliantutils >= 2.12.2-0.20211210161243.500f518.el8
 python3-pyghmi >= 1.5.14-2.1.el8ost
-python3-scciclient = 0.10.0-0.20211117144100.22064a9.el8
+python3-scciclient >= 0.11.1-0.20211208154124.a84332b.el8
 python3-stevedore >= 3.4.0-0.20211012153718.8846a3f.el8
-python3-sushy >= 3.13.0-0.20211118144107.eda4ea1.el8
+python3-sushy >= 4.0.0-0.20211209155954.45d24d4.el8
 python3-sushy-oem-idrac >= 3.0.2-0.20211011174039.9733d23.el8
 python3-tooz >= 2.9.0-0.20211012145018.174065f.el8
 python3-zipp >= 0.5.1-2.el8ost
