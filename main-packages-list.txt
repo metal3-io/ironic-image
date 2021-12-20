@@ -5,7 +5,6 @@ httpd-tools
 ipcalc
 ipmitool
 iproute
-mariadb-server
 mod_ssl
 parted
 procps
