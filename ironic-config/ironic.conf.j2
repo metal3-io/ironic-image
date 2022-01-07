@@ -203,6 +203,9 @@ kernel_append_params = nofb nomodeset vga=normal ipa-insecure=1 {% if env.IRONIC
 [ilo]
 kernel_append_params = nofb nomodeset vga=normal ipa-insecure=1 {% if env.IRONIC_RAMDISK_SSH_KEY %}sshkey="{{ env.IRONIC_RAMDISK_SSH_KEY|trim }}"{% endif %} {{ env.IRONIC_KERNEL_PARAMS|trim }}
 
+[irmc]
+kernel_append_params = nofb nomodeset vga=normal ipa-insecure=1 {% if env.IRONIC_RAMDISK_SSH_KEY %}sshkey="{{ env.IRONIC_RAMDISK_SSH_KEY|trim }}"{% endif %} {{ env.IRONIC_KERNEL_PARAMS|trim }}
+
 [service_catalog]
 endpoint_override = {{ env.IRONIC_BASE_URL }}
 
