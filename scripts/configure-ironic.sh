@@ -55,16 +55,17 @@ mkdir -p /shared/html
 mkdir -p /shared/ironic_prometheus_exporter
 
 HTPASSWD_FILE=/etc/ironic/htpasswd
+export IRONIC_HTPASSWD=${IRONIC_HTPASSWD:-${HTTP_BASIC_HTPASSWD:-}}
 # The user can provide HTTP_BASIC_HTPASSWD and HTTP_BASIC_HTPASSWD_RPC. If
 # - we are running conductor and HTTP_BASIC_HTPASSWD is set,
 #   use HTTP_BASIC_HTPASSWD for RPC.
 export JSON_RPC_AUTH_STRATEGY="noauth"
-if [ -n "${HTTP_BASIC_HTPASSWD}" ]; then
+if [ -n "${IRONIC_HTPASSWD}" ]; then
     if [ "${IRONIC_DEPLOYMENT}" == "Conductor" ]; then
         export JSON_RPC_AUTH_STRATEGY="http_basic"
-        printf "%s\n" "${HTTP_BASIC_HTPASSWD}" >"${HTPASSWD_FILE}-rpc"
+        printf "%s\n" "${IRONIC_HTPASSWD}" >"${HTPASSWD_FILE}-rpc"
     else
-        printf "%s\n" "${HTTP_BASIC_HTPASSWD}" >"${HTPASSWD_FILE}"
+        printf "%s\n" "${IRONIC_HTPASSWD}" >"${HTPASSWD_FILE}"
     fi
 fi
 

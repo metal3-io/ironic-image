@@ -24,6 +24,8 @@ export IRONIC_INSPECTOR_BASE_URL="${IRONIC_INSPECTOR_SCHEME}://${IRONIC_URL_HOST
 
 export IRONIC_BASE_URL="${IRONIC_SCHEME}://${IRONIC_URL_HOST}:6385"
 
+export INSPECTOR_HTPASSWD=${INSPECTOR_HTPASSWD:-${HTTP_BASIC_HTPASSWD:-}}
+
 function build_j2_config() {
     CONFIG_FILE=$1
     python3 -c 'import os; import sys; import jinja2; sys.stdout.write(jinja2.Template(sys.stdin.read()).render(env=os.environ))' < $CONFIG_FILE.j2
@@ -34,8 +36,8 @@ build_j2_config $CONFIG | crudini --merge $CONFIG
 
 # Configure HTTP basic auth for API server
 HTPASSWD_FILE=/etc/ironic-inspector/htpasswd
-if [ -n "${HTTP_BASIC_HTPASSWD}" ]; then
-    printf "%s\n" "${HTTP_BASIC_HTPASSWD}" >"${HTPASSWD_FILE}"
+if [ -n "${INSPECTOR_HTPASSWD}" ]; then
+    printf "%s\n" "${INSPECTOR_HTPASSWD}" >"${HTPASSWD_FILE}"
     if [[ $INSPECTOR_REVERSE_PROXY_SETUP == "false" ]]
     then
         crudini --set $CONFIG DEFAULT auth_strategy http_basic

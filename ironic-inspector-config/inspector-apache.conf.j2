@@ -31,7 +31,7 @@ Listen 5050
 
 
     <Location /v1/introspection/ >
-        {% if "HTTP_BASIC_HTPASSWD" in env and env.HTTP_BASIC_HTPASSWD | length %}
+        {% if "INSPECTOR_HTPASSWD" in env and env.INSPECTOR_HTPASSWD | length %}
             AuthType Basic
             AuthName "Restricted area"
             AuthUserFile "/etc/ironic-inspector/htpasswd"
