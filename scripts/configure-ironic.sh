@@ -19,6 +19,9 @@ NUMPROC=$(( NUMPROC <= 4 ? NUMPROC : 4 ))
 export NUMWORKERS=${NUMWORKERS:-$NUMPROC}
 export LISTEN_ALL_INTERFACES="${LISTEN_ALL_INTERFACES:-"true"}"
 
+export IRONIC_USE_MARIADB=${IRONIC_USE_MARIADB:-true}
+export IRONIC_EXPOSE_JSON_RPC=${IRONIC_EXPOSE_JSON_RPC:-true}
+
 # Whether to enable fast_track provisioning or not
 export IRONIC_FAST_TRACK=${IRONIC_FAST_TRACK:-true}
 

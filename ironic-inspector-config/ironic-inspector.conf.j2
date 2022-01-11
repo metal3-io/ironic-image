@@ -15,7 +15,7 @@ use_ssl = true
 {% endif %}
 
 [database]
-connection = sqlite:///var/lib/ironic-inspector/ironic-inspector.db
+connection = sqlite:////var/lib/ironic-inspector/ironic-inspector.db
 
 {% if env.IRONIC_INSPECTOR_ENABLE_DISCOVERY == "true" %}
 [discovery]

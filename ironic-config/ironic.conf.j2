@@ -20,7 +20,11 @@ enabled_management_interfaces = ipmitool,idrac,irmc,fake,redfish,idrac-redfish,i
 enabled_power_interfaces = ipmitool,idrac,irmc,fake,redfish,idrac-redfish,ilo
 enabled_raid_interfaces = no-raid,irmc,agent,fake,idrac-wsman,ilo5
 enabled_vendor_interfaces = no-vendor,ipmitool,idrac,idrac-redfish,redfish,ilo,fake
+{% if env.IRONIC_EXPOSE_JSON_RPC | lower == "true" %}
 rpc_transport = json-rpc
+{% else %}
+rpc_transport = none
+{% endif %}
 use_stderr = true
 # NOTE(dtantsur): the default md5 is not compatible with FIPS mode
 hash_ring_algorithm = sha256
@@ -61,11 +65,16 @@ deploy_logs_local_path = /shared/log/ironic/deploy
 max_command_attempts = 30
 
 [api]
+{% if env.IRONIC_REVERSE_PROXY_SETUP == "true" %}
+host_ip = 127.0.0.1
+port = 6388
+{% else %}
 host_ip = {% if env.LISTEN_ALL_INTERFACES | lower == "true" %}::{% else %}{{ env.IRONIC_IP }}{% endif %}
-api_workers = {{ env.NUMWORKERS }}
 {% if env.IRONIC_TLS_SETUP == "true" %}
 enable_ssl_api = true
 {% endif %}
+{% endif %}
+api_workers = {{ env.NUMWORKERS }}
 
 [conductor]
 automated_clean = {{ env.IRONIC_AUTOMATED_CLEAN }}
@@ -82,7 +91,13 @@ verify_step_priority_override = management.clear_job_queue:90
 node_history = False
 
 [database]
-{% if env.MARIADB_TLS_ENABLED == "true" %}
+{% if env.IRONIC_USE_MARIADB | lower == "false" %}
+connection = sqlite:////var/lib/ironic/ironic.sqlite
+# Synchronous mode is required for data integrity in case of operating system
+# crash. In our case we restart the container from scratch, so we can save some
+# IO by not doing syncs all the time.
+sqlite_synchronous = False
+{% elif env.MARIADB_TLS_ENABLED == "true" %}
 connection = mysql+pymysql://ironic:{{ env.MARIADB_PASSWORD }}@127.0.0.1/ironic?charset=utf8&ssl=on&ssl_ca={{ env.MARIADB_CACERT_FILE }}
 {% else %}
 connection = mysql+pymysql://ironic:{{ env.MARIADB_PASSWORD }}@127.0.0.1/ironic?charset=utf8
@@ -146,6 +161,7 @@ command_retry_timeout = 60
 # is not set for the node. (list value)
 cipher_suite_versions = 3,17
 
+{% if env.IRONIC_EXPOSE_JSON_RPC | lower == "true" %}
 [json_rpc]
 # We assume that when we run API and conductor in the same container, they use
 # authentication over localhost, using the same credentials as API, to prevent
@@ -165,6 +181,7 @@ use_ssl = true
 cafile = {{ env.IRONIC_CACERT_FILE }}
 insecure = {{ env.IRONIC_INSECURE }}
 {% endif %}
+{% endif %}
 
 [oslo_messaging_notifications]
 driver = prometheus_exporter
@@ -178,22 +195,24 @@ transport_url = fake://
 boot_retry_timeout = 1200
 images_path = /shared/html/tmp
 instance_master_path = /shared/html/master_images
-ipxe_enabled = true
-pxe_config_template = $pybasedir/drivers/modules/ipxe_config.template
-tftp_master_path = /shared/tftpboot
+tftp_master_path = /shared/tftpboot/master_images
 tftp_root = /shared/tftpboot
-uefi_pxe_config_template = $pybasedir/drivers/modules/ipxe_config.template
-pxe_append_params = nofb nomodeset vga=normal ipa-insecure=1 {% if env.IRONIC_RAMDISK_SSH_KEY %}sshkey="{{ env.IRONIC_RAMDISK_SSH_KEY|trim }}"{% endif %} {{ env.IRONIC_KERNEL_PARAMS|trim }}
+kernel_append_params = nofb nomodeset vga=normal ipa-insecure=1 {% if env.IRONIC_RAMDISK_SSH_KEY %}sshkey="{{ env.IRONIC_RAMDISK_SSH_KEY|trim }}"{% endif %} {{ env.IRONIC_KERNEL_PARAMS|trim }}
 # This makes networking boot templates generated even for nodes using local
 # boot (the default), ensuring that they boot correctly even if they start
 # netbooting for some reason (e.g. with the noop management interface).
 enable_netboot_fallback = true
+# Enable the fallback path to ironic-inspector
+ipxe_fallback_script = inspector.ipxe
 
 [redfish]
 use_swift = false
 kernel_append_params = nofb nomodeset vga=normal ipa-insecure=1 {% if env.IRONIC_RAMDISK_SSH_KEY %}sshkey="{{ env.IRONIC_RAMDISK_SSH_KEY|trim }}"{% endif %} {{ env.IRONIC_KERNEL_PARAMS|trim }}
 
 [ilo]
+kernel_append_params = nofb nomodeset vga=normal ipa-insecure=1 {% if env.IRONIC_RAMDISK_SSH_KEY %}sshkey="{{ env.IRONIC_RAMDISK_SSH_KEY|trim }}"{% endif %} {{ env.IRONIC_KERNEL_PARAMS|trim }}
+
+[irmc]
 kernel_append_params = nofb nomodeset vga=normal ipa-insecure=1 {% if env.IRONIC_RAMDISK_SSH_KEY %}sshkey="{{ env.IRONIC_RAMDISK_SSH_KEY|trim }}"{% endif %} {{ env.IRONIC_KERNEL_PARAMS|trim }}
 
 [service_catalog]

@@ -23,7 +23,7 @@ function wait_for_interface_or_ip() {
   if [ ! -z "${PROVISIONING_IP}" ];
   then
     # Convert the address using ipcalc which strips out the subnet. For IPv6 addresses, this will give the short-form address
-    export IRONIC_IP=$(ipcalc -s "${PROVISIONING_IP}" | grep "^Address:" | awk '{print $2}')
+    export IRONIC_IP=$(ipcalc "${PROVISIONING_IP}" | grep "^Address:" | awk '{print $2}')
     until ip -br addr show | grep -q -F " ${IRONIC_IP}/"; do
       echo "Waiting for ${IRONIC_IP} to be configured on an interface"
       sleep 1
@@ -50,4 +50,19 @@ function wait_for_interface_or_ip() {
 
 function render_j2_config () {
     python3 -c 'import os; import sys; import jinja2; sys.stdout.write(jinja2.Template(sys.stdin.read()).render(env=os.environ))' < $1 > $2
+}
+
+function run_ironic_dbsync() {
+    if [[ "${IRONIC_USE_MARIADB:-true}" == "true" ]]; then
+        # It's possible for the dbsync to fail if mariadb is not up yet, so
+        # retry until success
+        until ironic-dbsync --config-file /etc/ironic/ironic.conf upgrade; do
+          echo "WARNING: ironic-dbsync failed, retrying"
+          sleep 1
+        done
+    else
+        # SQLite does not support some statements. Fortunately, we can just create
+        # the schema in one go instead of going through an upgrade.
+        ironic-dbsync --config-file /etc/ironic/ironic.conf create_schema
+    fi
 }
