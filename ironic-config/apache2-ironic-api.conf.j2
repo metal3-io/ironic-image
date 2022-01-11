@@ -53,7 +53,7 @@ Listen 6385
 
     {% if env.IRONIC_REVERSE_PROXY_SETUP | lower == "true" %}
     <Location ~ "^/v1/.+">
-         {% if "HTTP_BASIC_HTPASSWD" in env and env.HTTP_BASIC_HTPASSWD | length %}
+         {% if "IRONIC_HTPASSWD" in env and env.IRONIC_HTPASSWD | length %}
             AuthType Basic
             AuthName "Restricted area"
             AuthUserFile "/etc/ironic/htpasswd"
@@ -66,7 +66,7 @@ Listen 6385
         WSGIApplicationGroup %{GLOBAL}
         AllowOverride None  
         
-        {% if "HTTP_BASIC_HTPASSWD" in env and env.HTTP_BASIC_HTPASSWD | length %}
+        {% if "IRONIC_HTPASSWD" in env and env.IRONIC_HTPASSWD | length %}
         AuthType Basic
         AuthName "Restricted WSGI area"
         AuthUserFile "/etc/ironic/htpasswd"

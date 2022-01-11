@@ -54,10 +54,15 @@ else
     export IRONIC_REVERSE_PROXY_SETUP="false" # If TLS is not used, we have no reason to use the reverse proxy
 fi
 
+export IRONIC_HTPASSWD=${IRONIC_HTPASSWD:-${HTTP_BASIC_HTPASSWD:-}}
+export INSPECTOR_HTPASSWD=${INSPECTOR_HTPASSWD:-${HTTP_BASIC_HTPASSWD:-}}
+
 # Configure HTTP basic auth for API server
-if [ -n "${HTTP_BASIC_HTPASSWD:-}" ]; then
-    printf "%s\n" "${HTTP_BASIC_HTPASSWD}" > /etc/ironic/htpasswd
-    printf "%s\n" "${HTTP_BASIC_HTPASSWD}" > /etc/ironic-inspector/htpasswd
+if [ -n "${IRONIC_HTPASSWD:-}" ]; then
+    printf "%s\n" "${IRONIC_HTPASSWD}" > /etc/ironic/htpasswd
+fi
+if [ -n "${INSPECTOR_HTPASSWD:-}" ]; then
+    printf "%s\n" "${INSPECTOR_HTPASSWD}" > /etc/ironic-inspector/htpasswd
 fi
 
 # Use configured values
