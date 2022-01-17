@@ -41,18 +41,8 @@ Listen 6385
     SSLCertificateKeyFile {{ env.IRONIC_KEY_FILE }}
 {% endif %}
 
-    <Location /v1/lookup >
-        Require all granted
-    </Location>
-    <Location /v1/heartbeat >
-        Require all granted
-    </Location>
-    <Location ~ "^/(v1/?)?$">
-        Require all granted
-    </Location>    
-
     {% if env.IRONIC_REVERSE_PROXY_SETUP | lower == "true" %}
-    <Location ~ "^/v1/.+">
+    <Location />
          {% if "IRONIC_HTPASSWD" in env and env.IRONIC_HTPASSWD | length %}
             AuthType Basic
             AuthName "Restricted area"
@@ -64,8 +54,8 @@ Listen 6385
     <Directory /usr/bin >
         WSGIProcessGroup ironic
         WSGIApplicationGroup %{GLOBAL}
-        AllowOverride None  
-        
+        AllowOverride None
+
         {% if "IRONIC_HTPASSWD" in env and env.IRONIC_HTPASSWD | length %}
         AuthType Basic
         AuthName "Restricted WSGI area"
@@ -76,4 +66,12 @@ Listen 6385
         {% endif %}
     </Directory>
     {% endif %}
- </VirtualHost>
+
+    <Location ~ "^/(v1/?)?$" >
+        Require all granted
+    </Location>
+
+    <Location ~ "^/(v1/)?(lookup|heartbeat)" >
+        Require all granted
+    </Location>
+</VirtualHost>
