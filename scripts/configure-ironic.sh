@@ -17,7 +17,6 @@ export MARIADB_PASSWORD=${MARIADB_PASSWORD:-"change_me"}
 NUMPROC=$(cat /proc/cpuinfo  | grep "^processor" | wc -l)
 NUMPROC=$(( NUMPROC <= 4 ? NUMPROC : 4 ))
 export NUMWORKERS=${NUMWORKERS:-$NUMPROC}
-export LISTEN_ALL_INTERFACES="${LISTEN_ALL_INTERFACES:-"true"}"
 
 export IRONIC_USE_MARIADB=${IRONIC_USE_MARIADB:-true}
 export IRONIC_EXPOSE_JSON_RPC=${IRONIC_EXPOSE_JSON_RPC:-true}
