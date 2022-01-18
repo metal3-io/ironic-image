@@ -19,8 +19,8 @@ Listen 6385
 {% endif %}
 
     {% if env.IRONIC_REVERSE_PROXY_SETUP | lower == "true" %}
-    ProxyPass "/"  "http://127.0.0.1:6388/"
-    ProxyPassReverse "/"  "http://127.0.0.1:6388/"
+    ProxyPass "/"  "http://127.0.0.1:{{ env.IRONIC_PRIVATE_PORT }}/"
+    ProxyPassReverse "/"  "http://127.0.0.1:{{ env.IRONIC_PRIVATE_PORT }}/"
     {% else %}
     WSGIDaemonProcess ironic user=ironic group=ironic threads=10 display-name=%{GROUP}
     WSGIScriptAlias / /usr/bin/ironic-api-wsgi

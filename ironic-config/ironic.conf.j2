@@ -58,7 +58,8 @@ max_command_attempts = 30
 [api]
 {% if env.IRONIC_REVERSE_PROXY_SETUP == "true" %}
 host_ip = 127.0.0.1
-port = 6388
+port = {{ env.IRONIC_PRIVATE_PORT }}
+public_endpoint = {{ env.IRONIC_BASE_URL }}
 {% else %}
 host_ip = {% if env.LISTEN_ALL_INTERFACES | lower == "true" %}::{% else %}{{ env.IRONIC_IP }}{% endif %}
 {% if env.IRONIC_TLS_SETUP == "true" %}
