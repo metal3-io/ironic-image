@@ -68,3 +68,6 @@ function run_ironic_dbsync() {
         ironic-dbsync --config-file /etc/ironic/ironic.conf create_schema
     fi
 }
+
+export IRONIC_PRIVATE_PORT=${IRONIC_PRIVATE_PORT:-6388}
+export IRONIC_INSPECTOR_PRIVATE_PORT=${IRONIC_INSPECTOR_PRIVATE_PORT:-5049}

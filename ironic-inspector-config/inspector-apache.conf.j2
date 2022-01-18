@@ -13,8 +13,8 @@
 
 Listen 5050
 <VirtualHost *:5050>
-    ProxyPass "/"  "http://127.0.0.1:5049/"
-    ProxyPassReverse "/"  "http://127.0.0.1:5049/"
+    ProxyPass "/"  "http://127.0.0.1:{{ env.IRONIC_INSPECTOR_PRIVATE_PORT }}/"
+    ProxyPassReverse "/"  "http://127.0.0.1:{{ env.IRONIC_INSPECTOR_PRIVATE_PORT }}/"
 
     SetEnv APACHE_RUN_USER ironic-inspector
     SetEnv APACHE_RUN_GROUP ironic-inspector

@@ -15,7 +15,7 @@ wait_for_interface_or_ip
 IRONIC_INSPECTOR_PORT=5050
 if [ "$IRONIC_INSPECTOR_TLS_SETUP" = "true" ]; then
     if [[ "${INSPECTOR_REVERSE_PROXY_SETUP}" == "true" ]]; then
-        IRONIC_INSPECTOR_PORT=5049
+        IRONIC_INSPECTOR_PORT=$IRONIC_INSPECTOR_PRIVATE_PORT
     fi
 else
     export INSPECTOR_REVERSE_PROXY_SETUP="false" # If TLS is not used, we have no reason to use the reverse proxy
