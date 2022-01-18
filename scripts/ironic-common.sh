@@ -17,6 +17,8 @@ function get_provisioning_interface() {
 
 export PROVISIONING_INTERFACE=$(get_provisioning_interface)
 
+export LISTEN_ALL_INTERFACES="${LISTEN_ALL_INTERFACES:-"true"}"
+
 # Wait for the interface or IP to be up, sets $IRONIC_IP
 function wait_for_interface_or_ip() {
   # If $PROVISIONING_IP is specified, then we wait for that to become available on an interface, otherwise we look at $PROVISIONING_INTERFACE for an IP
