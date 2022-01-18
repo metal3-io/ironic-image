@@ -29,15 +29,20 @@ Listen 5050
     SSLCertificateFile {{ env.IRONIC_INSPECTOR_CERT_FILE }}
     SSLCertificateKeyFile {{ env.IRONIC_INSPECTOR_KEY_FILE }}
 
-
-    <Location /v1/introspection/ >
-        {% if "INSPECTOR_HTPASSWD" in env and env.INSPECTOR_HTPASSWD | length %}
-            AuthType Basic
-            AuthName "Restricted area"
-            AuthUserFile "/etc/ironic-inspector/htpasswd"
-            Require valid-user
-        {% endif %}
+    {% if "INSPECTOR_HTPASSWD" in env and env.INSPECTOR_HTPASSWD | length %}
+    <Location / >
+        AuthType Basic
+        AuthName "Restricted area"
+        AuthUserFile "/etc/ironic-inspector/htpasswd"
+        Require valid-user
     </Location>
 
+    <Location ~ "^/(v1/?)?$" >
+        Require all granted
+    </Location>
 
+    <Location /v1/continue >
+        Require all granted
+    </Location>
+    {% endif %}
 </VirtualHost>
