@@ -13,9 +13,9 @@ ipxe-roms-qemu
 iscsi-initiator-utils
 mariadb-server
 mod_ssl
-openstack-ironic-api >= 1:19.0.1-0.20211220164057.e09f09f.el8
-openstack-ironic-conductor >= 1:19.0.1-0.20211220164057.e09f09f.el8
-openstack-ironic-inspector >= 10.9.1-0.20211209161020.21209f3.el8
+openstack-ironic-api >= 1:19.0.1-0.20220120204037.438b8af.el8
+openstack-ironic-conductor >= 1:19.0.1-0.20220120204037.438b8af.el8
+openstack-ironic-inspector >= 10.9.1-0.20220117094044.19e2592.el8
 parted
 psmisc
 python3-debtcollector >= 2.3.0-0.20211012161119.0bf5bf5.el8
