@@ -13,6 +13,7 @@ ipxe-roms-qemu
 iscsi-initiator-utils
 mariadb-server
 mod_ssl
+openstack-ironic
 openstack-ironic-api
 openstack-ironic-conductor
 openstack-ironic-inspector

@@ -15,7 +15,7 @@ wait_for_interface_or_ip
 IRONIC_INSPECTOR_PORT=5050
 if [ "$IRONIC_INSPECTOR_TLS_SETUP" = "true" ]; then
     if [[ "${INSPECTOR_REVERSE_PROXY_SETUP}" == "true" ]]; then
-        IRONIC_INSPECTOR_PORT=5049
+        IRONIC_INSPECTOR_PORT=$IRONIC_INSPECTOR_PRIVATE_PORT
     fi
 else
     export INSPECTOR_REVERSE_PROXY_SETUP="false" # If TLS is not used, we have no reason to use the reverse proxy
@@ -23,6 +23,8 @@ fi
 export IRONIC_INSPECTOR_BASE_URL="${IRONIC_INSPECTOR_SCHEME}://${IRONIC_URL_HOST}:${IRONIC_INSPECTOR_PORT}"
 
 export IRONIC_BASE_URL="${IRONIC_SCHEME}://${IRONIC_URL_HOST}:6385"
+
+export INSPECTOR_HTPASSWD=${INSPECTOR_HTPASSWD:-${HTTP_BASIC_HTPASSWD:-}}
 
 function build_j2_config() {
     CONFIG_FILE=$1
@@ -34,8 +36,8 @@ build_j2_config $CONFIG | crudini --merge $CONFIG
 
 # Configure HTTP basic auth for API server
 HTPASSWD_FILE=/etc/ironic-inspector/htpasswd
-if [ -n "${HTTP_BASIC_HTPASSWD}" ]; then
-    printf "%s\n" "${HTTP_BASIC_HTPASSWD}" >"${HTPASSWD_FILE}"
+if [ -n "${INSPECTOR_HTPASSWD}" ]; then
+    printf "%s\n" "${INSPECTOR_HTPASSWD}" >"${HTPASSWD_FILE}"
     if [[ $INSPECTOR_REVERSE_PROXY_SETUP == "false" ]]
     then
         crudini --set $CONFIG DEFAULT auth_strategy http_basic

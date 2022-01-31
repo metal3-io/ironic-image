@@ -17,7 +17,9 @@ export MARIADB_PASSWORD=${MARIADB_PASSWORD:-"change_me"}
 NUMPROC=$(cat /proc/cpuinfo  | grep "^processor" | wc -l)
 NUMPROC=$(( NUMPROC <= 4 ? NUMPROC : 4 ))
 export NUMWORKERS=${NUMWORKERS:-$NUMPROC}
-export LISTEN_ALL_INTERFACES="${LISTEN_ALL_INTERFACES:-"true"}"
+
+export IRONIC_USE_MARIADB=${IRONIC_USE_MARIADB:-true}
+export IRONIC_EXPOSE_JSON_RPC=${IRONIC_EXPOSE_JSON_RPC:-true}
 
 # Whether to enable fast_track provisioning or not
 export IRONIC_FAST_TRACK=${IRONIC_FAST_TRACK:-true}
@@ -52,16 +54,17 @@ mkdir -p /shared/html
 mkdir -p /shared/ironic_prometheus_exporter
 
 HTPASSWD_FILE=/etc/ironic/htpasswd
+export IRONIC_HTPASSWD=${IRONIC_HTPASSWD:-${HTTP_BASIC_HTPASSWD:-}}
 # The user can provide HTTP_BASIC_HTPASSWD and HTTP_BASIC_HTPASSWD_RPC. If
 # - we are running conductor and HTTP_BASIC_HTPASSWD is set,
 #   use HTTP_BASIC_HTPASSWD for RPC.
 export JSON_RPC_AUTH_STRATEGY="noauth"
-if [ -n "${HTTP_BASIC_HTPASSWD}" ]; then
+if [ -n "${IRONIC_HTPASSWD}" ]; then
     if [ "${IRONIC_DEPLOYMENT}" == "Conductor" ]; then
         export JSON_RPC_AUTH_STRATEGY="http_basic"
-        printf "%s\n" "${HTTP_BASIC_HTPASSWD}" >"${HTPASSWD_FILE}-rpc"
+        printf "%s\n" "${IRONIC_HTPASSWD}" >"${HTPASSWD_FILE}-rpc"
     else
-        printf "%s\n" "${HTTP_BASIC_HTPASSWD}" >"${HTPASSWD_FILE}"
+        printf "%s\n" "${IRONIC_HTPASSWD}" >"${HTPASSWD_FILE}"
     fi
 fi
 

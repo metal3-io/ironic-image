@@ -13,8 +13,8 @@
 
 Listen 5050
 <VirtualHost *:5050>
-    ProxyPass "/"  "http://127.0.0.1:5049/"
-    ProxyPassReverse "/"  "http://127.0.0.1:5049/"
+    ProxyPass "/"  "http://127.0.0.1:{{ env.IRONIC_INSPECTOR_PRIVATE_PORT }}/"
+    ProxyPassReverse "/"  "http://127.0.0.1:{{ env.IRONIC_INSPECTOR_PRIVATE_PORT }}/"
 
     SetEnv APACHE_RUN_USER ironic-inspector
     SetEnv APACHE_RUN_GROUP ironic-inspector
@@ -29,15 +29,20 @@ Listen 5050
     SSLCertificateFile {{ env.IRONIC_INSPECTOR_CERT_FILE }}
     SSLCertificateKeyFile {{ env.IRONIC_INSPECTOR_KEY_FILE }}
 
-
-    <Location /v1/introspection/ >
-        {% if "HTTP_BASIC_HTPASSWD" in env and env.HTTP_BASIC_HTPASSWD | length %}
-            AuthType Basic
-            AuthName "Restricted area"
-            AuthUserFile "/etc/ironic-inspector/htpasswd"
-            Require valid-user
-        {% endif %}
+    {% if "INSPECTOR_HTPASSWD" in env and env.INSPECTOR_HTPASSWD | length %}
+    <Location / >
+        AuthType Basic
+        AuthName "Restricted area"
+        AuthUserFile "/etc/ironic-inspector/htpasswd"
+        Require valid-user
     </Location>
 
+    <Location ~ "^/(v1/?)?$" >
+        Require all granted
+    </Location>
 
+    <Location /v1/continue >
+        Require all granted
+    </Location>
+    {% endif %}
 </VirtualHost>
