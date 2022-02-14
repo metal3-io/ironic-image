@@ -1,7 +1,6 @@
 coreos-installer
 crudini
 dnsmasq
-gdisk
 genisoimage
 httpd
 httpd-tools
@@ -10,15 +9,12 @@ ipmitool
 iproute
 ipxe-bootimgs
 ipxe-roms-qemu
-iscsi-initiator-utils
 mariadb-server
 mod_ssl
 openstack-ironic
 openstack-ironic-api
 openstack-ironic-conductor
 openstack-ironic-inspector
-parted
-psmisc
 python3-debtcollector
 python3-dracclient
 python3-eventlet
