@@ -1,7 +1,6 @@
 coreos-installer
 crudini
 dnsmasq >= 2.79-13.el8_3.1
-gdisk
 genisoimage
 httpd
 httpd-tools
@@ -10,15 +9,11 @@ ipmitool
 iproute
 ipxe-bootimgs
 ipxe-roms-qemu
-iscsi-initiator-utils
-mariadb-server
 mod_ssl
 openstack-ironic >= 1:19.0.1-0.20220120204037.438b8af.el8
 openstack-ironic-api >= 1:19.0.1-0.20220120204037.438b8af.el8
 openstack-ironic-conductor >= 1:19.0.1-0.20220120204037.438b8af.el8
 openstack-ironic-inspector >= 10.9.1-0.20220117094044.19e2592.el8
-parted
-psmisc
 python3-debtcollector >= 2.3.0-0.20211012161119.0bf5bf5.el8
 python3-dracclient >= 7.0.0-0.20211012182751.d26664e.el8
 python3-eventlet >= 0.30.2-1.el8

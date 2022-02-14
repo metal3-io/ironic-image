@@ -55,6 +55,7 @@ Listen 6385
         WSGIProcessGroup ironic
         WSGIApplicationGroup %{GLOBAL}
         AllowOverride None
+
         {% if "IRONIC_HTPASSWD" in env and env.IRONIC_HTPASSWD | length %}
         AuthType Basic
         AuthName "Restricted WSGI area"
