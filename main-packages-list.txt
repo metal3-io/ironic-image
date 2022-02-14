@@ -6,9 +6,7 @@ ipcalc
 ipmitool
 iproute
 mod_ssl
-parted
 procps
-psmisc
 python3-jinja2
 python3-mod_wsgi
 qemu-img
