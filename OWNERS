@@ -6,12 +6,12 @@ approvers:
  - dtantsur
  - elfosardo
  - hardys
+ - iurygregory
 
 reviewers:
- - iurygregory
  - namnx228
- - stbenjam
  - zaneb
 
 emeritus_reviewers:
  - maelk
+ - stbenjam
