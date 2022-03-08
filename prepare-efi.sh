@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -euxo pipefail
+
 ARCH=$(uname -m)
 DEST=${2:-/tmp/esp.img}
 OS=${1:-centos}
