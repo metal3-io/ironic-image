@@ -146,7 +146,7 @@ callback_endpoint_override = {{ env.IRONIC_INSPECTOR_CALLBACK_ENDPOINT_OVERRIDE 
 # when supported. If set to false, then ipmitool is called as follows :
 #    $ipmitool -R 1 -N 1 ...
 # and Ironic handles the retry loop.
-use_ipmitool_retries = true
+use_ipmitool_retries = false
 # The following parameters are the defaults in Ironic. They are used in the
 # following way if use_ipmitool_retries is set to true:
 #    $ipmitool -R <X> -N <Y> ...
