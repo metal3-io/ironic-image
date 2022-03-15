@@ -17,9 +17,9 @@ FROM $BASE_IMAGE AS ironic-builder
 RUN dnf install -y gcc git make xz-devel glibc-gconv-extra
 WORKDIR /tmp
 RUN git clone --depth 1 --branch v1.21.1 https://github.com/ipxe/ipxe.git && \
-      cd ipxe && \
-      cd src && \
-      make bin/undionly.kpxe bin-x86_64-efi/ipxe.efi bin-x86_64-efi/snponly.efi
+      cd ipxe/src && \
+      ARCH=$(uname -m | sed 's/aarch/arm/') && \
+      make bin/undionly.kpxe bin-$ARCH-efi/ipxe.efi bin-$ARCH-efi/snponly.efi
 
 COPY prepare-efi.sh /bin/
 RUN prepare-efi.sh centos
