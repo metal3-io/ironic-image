@@ -6,26 +6,11 @@ ARG BASE_IMAGE=quay.io/centos/centos:stream9
 
 FROM $BASE_IMAGE AS ironic-builder
 
-# NOTE(elfosardo): glibc-gconv-extra was included by default in the past and
-# we need it otherwise mkfs.msdos will fail with:
-# ``Cannot initialize conversion from codepage 850 to ANSI_X3.4-1968: Invalid argument``
-# ``Cannot initialize conversion from ANSI_X3.4-1968 to codepage 850: Invalid argument``
-# subsequently making mmd fail with:
-# ``Error converting to codepage 850 Invalid argument``
-# ``Cannot initialize '::'``
-# This is due to the conversion table missing codepage 850, included in glibc-gconv-extra
-RUN dnf install -y gcc git make xz-devel glibc-gconv-extra
+COPY builder.sh /bin/
 
 WORKDIR /tmp
 
-RUN git clone --depth 1 --branch v1.21.1 https://github.com/ipxe/ipxe.git && \
-      cd ipxe/src && \
-      ARCH=$(uname -m | sed 's/aarch/arm/') && \
-      # NOTE(elfosardo): warning should not be treated as errors by default
-      NO_WERROR=1 make bin/undionly.kpxe bin-$ARCH-efi/snponly.efi
-
-COPY prepare-efi.sh /bin/
-RUN prepare-efi.sh centos
+RUN builder.sh centos
 
 FROM $BASE_IMAGE
 
