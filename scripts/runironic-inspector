@@ -1,5 +1,7 @@
 #!/usr/bin/bash
 
+set -euxo pipefail
+
 CONFIG=/etc/ironic-inspector/ironic-inspector.conf
 
 export IRONIC_INSPECTOR_ENABLE_DISCOVERY=${IRONIC_INSPECTOR_ENABLE_DISCOVERY:-false}
@@ -39,8 +41,7 @@ build_j2_config $CONFIG | crudini --merge $CONFIG
 HTPASSWD_FILE=/etc/ironic-inspector/htpasswd
 if [ -n "${INSPECTOR_HTPASSWD}" ]; then
     printf "%s\n" "${INSPECTOR_HTPASSWD}" >"${HTPASSWD_FILE}"
-    if [[ $INSPECTOR_REVERSE_PROXY_SETUP == "false" ]]
-    then
+    if [[ $INSPECTOR_REVERSE_PROXY_SETUP == "false" ]]; then
       crudini --set $CONFIG DEFAULT auth_strategy http_basic
       crudini --set $CONFIG DEFAULT http_basic_auth_user_file "${HTPASSWD_FILE}"
     fi
