@@ -8,12 +8,13 @@ echo "install_weak_deps=False" >> /etc/dnf/dnf.conf
 # Tell RPM to skip installing documentation
 echo "tsflags=nodocs" >> /etc/dnf/dnf.conf
 
-dnf install -y python3 python3-requests epel-release 'dnf-command(config-manager)'
-dnf config-manager --set-disabled epel
+dnf install -y python3 python3-requests 'dnf-command(config-manager)'
 
 # RPM install #
 if [[ $INSTALL_TYPE == "rpm" ]]; then
     curl https://raw.githubusercontent.com/openstack/tripleo-repos/master/plugins/module_utils/tripleo_repos/main.py | python3 - -b master current-tripleo
+    # NOTE(elfosardo): enable CRB repo for more python3 dependencies
+    dnf config-manager --set-enabled crb
     dnf upgrade -y
     xargs -rtd'\n' dnf install -y < $IRONIC_PKG_LIST
 fi
@@ -46,7 +47,13 @@ if [[ ! -z ${EXTRA_PKGS_LIST:-} ]]; then
     fi
 fi
 
+dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
+dnf config-manager --set-disabled epel
 dnf install -y --enablerepo=epel inotify-tools
+
+# NOTE(elfosardo): we need to reinstall tzdata as the base CS9 container removes
+# its content, for more info see https://bugzilla.redhat.com/show_bug.cgi?id=2052861
+dnf reinstall -y tzdata
 
 chown ironic:ironic /var/log/ironic
 # This file is generated after installing mod_ssl and it affects our configuration

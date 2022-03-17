@@ -1,4 +1,4 @@
-ARG BASE_IMAGE=quay.io/centos/centos:stream8
+ARG BASE_IMAGE=quay.io/centos/centos:stream9
 
 ## Build iPXE w/ IPv6 Support
 ## Note: we are pinning to a specific commit for reproducible builds.
@@ -15,11 +15,14 @@ FROM $BASE_IMAGE AS ironic-builder
 # ``Cannot initialize '::'``
 # This is due to the conversion table missing codepage 850, included in glibc-gconv-extra
 RUN dnf install -y gcc git make xz-devel glibc-gconv-extra
+
 WORKDIR /tmp
+
 RUN git clone --depth 1 --branch v1.21.1 https://github.com/ipxe/ipxe.git && \
       cd ipxe/src && \
       ARCH=$(uname -m | sed 's/aarch/arm/') && \
-      make bin/undionly.kpxe bin-$ARCH-efi/ipxe.efi bin-$ARCH-efi/snponly.efi
+      # NOTE(elfosardo): warning should not be treated as errors by default
+      NO_WERROR=1 make bin/undionly.kpxe bin-$ARCH-efi/ipxe.efi bin-$ARCH-efi/snponly.efi
 
 COPY prepare-efi.sh /bin/
 RUN prepare-efi.sh centos
@@ -61,3 +64,4 @@ RUN mkdir -p /var/lib/ironic /var/lib/ironic-inspector && \
 
 COPY ironic-inspector-config/ironic-inspector.conf.j2 /etc/ironic-inspector/
 COPY ironic-inspector-config/inspector-apache.conf.j2 /etc/httpd/conf.d/
+
