@@ -4,6 +4,8 @@ set -ex
 PATCH_FILE="/tmp/${PATCH_LIST}"
 VARS="PROJECT REFSPEC GIT_HOST"
 
+dnf install -y python3-pip
+
 while IFS= read -r line
 do
     IFS=' ' read -r $VARS <<< $line
