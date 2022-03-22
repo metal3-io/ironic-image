@@ -7,7 +7,8 @@ httpd-tools
 ipcalc
 ipmitool
 iproute
-ipxe-bootimgs
+ipxe-bootimgs-aarch64
+ipxe-bootimgs-x86
 ipxe-roms-qemu
 mod_ssl
 openstack-ironic >= 1:20.1.1-0.20220407160303.e5626ab.el8
