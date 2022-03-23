@@ -22,7 +22,7 @@ RUN git clone --depth 1 --branch v1.21.1 https://github.com/ipxe/ipxe.git && \
       cd ipxe/src && \
       ARCH=$(uname -m | sed 's/aarch/arm/') && \
       # NOTE(elfosardo): warning should not be treated as errors by default
-      NO_WERROR=1 make bin/undionly.kpxe bin-$ARCH-efi/ipxe.efi bin-$ARCH-efi/snponly.efi
+      NO_WERROR=1 make bin/undionly.kpxe bin-$ARCH-efi/snponly.efi
 
 COPY prepare-efi.sh /bin/
 RUN prepare-efi.sh centos
@@ -43,7 +43,7 @@ RUN prepare-image.sh && \
 COPY scripts/ /bin/
 
 # IRONIC #
-COPY --from=ironic-builder /tmp/ipxe/src/bin/undionly.kpxe /tmp/ipxe/src/bin-x86_64-efi/snponly.efi /tmp/ipxe/src/bin-x86_64-efi/ipxe.efi /tftpboot/
+COPY --from=ironic-builder /tmp/ipxe/src/bin/undionly.kpxe /tmp/ipxe/src/bin-x86_64-efi/snponly.efi /tftpboot/
 COPY --from=ironic-builder /tmp/esp.img /tmp/uefi_esp.img
 
 COPY ironic-config/ironic.conf.j2 /etc/ironic/
