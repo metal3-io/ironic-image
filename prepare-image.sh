@@ -21,12 +21,12 @@ fi
 
 # SOURCE install #
 if [[ $INSTALL_TYPE == "source" ]]; then
-    BUILD_DEPS="python3-devel gcc git-core"
+    BUILD_DEPS="python3-devel gcc git-core python3-setuptools"
     dnf upgrade -y
     # NOTE(dtantsur): pip is a requirement of python3 in CentOS
     dnf install -y python3-pip $BUILD_DEPS
-    pip3 install pip==21.3.1
-    pip3 install --prefix /usr -r $IRONIC_PKG_LIST -c https://raw.githubusercontent.com/openstack/requirements/master/upper-constraints.txt
+    python3 -m pip install pip==21.3.1
+    python3 -m pip install --ignore-installed --prefix /usr -r $IRONIC_PKG_LIST -c https://raw.githubusercontent.com/openstack/requirements/master/upper-constraints.txt
 
     # ironic and ironic-inspector system configuration
     mkdir -p /var/log/ironic /var/log/ironic-inspector /var/lib/ironic /var/lib/ironic-inspector
