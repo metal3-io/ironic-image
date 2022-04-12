@@ -1,5 +1,9 @@
+#!/usr/bin/bash
+
+set -euxo pipefail
+
 function get_provisioning_interface() {
-  if [ -n "${PROVISIONING_INTERFACE}" ]; then
+  if [ -n "${PROVISIONING_INTERFACE:-}" ]; then
     # don't override the PROVISIONING_INTERFACE if one is provided
     echo ${PROVISIONING_INTERFACE}
     return
@@ -22,7 +26,7 @@ export LISTEN_ALL_INTERFACES="${LISTEN_ALL_INTERFACES:-"true"}"
 # Wait for the interface or IP to be up, sets $IRONIC_IP
 function wait_for_interface_or_ip() {
   # If $PROVISIONING_IP is specified, then we wait for that to become available on an interface, otherwise we look at $PROVISIONING_INTERFACE for an IP
-  if [ ! -z "${PROVISIONING_IP}" ];
+  if [ ! -z "${PROVISIONING_IP:-}" ];
   then
     # Convert the address using ipcalc which strips out the subnet. For IPv6 addresses, this will give the short-form address
     export IRONIC_IP=$(ipcalc "${PROVISIONING_IP}" | grep "^Address:" | awk '{print $2}')
@@ -31,7 +35,7 @@ function wait_for_interface_or_ip() {
       sleep 1
     done
   else
-    until [ ! -z "${IRONIC_IP}" ]; do
+    until [ ! -z "${IRONIC_IP:-}" ]; do
       echo "Waiting for ${PROVISIONING_INTERFACE} interface to be configured"
       export IRONIC_IP=$(ip -br add show scope global up dev "${PROVISIONING_INTERFACE}" | awk '{print $3}' | sed -e 's%/.*%%' | head -n 1)
       sleep 1
