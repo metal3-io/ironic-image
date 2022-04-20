@@ -12,7 +12,11 @@
 
 
 Listen 5050
-<VirtualHost *:5050>
+{% if env.LISTEN_ALL_INTERFACES | lower == "true" %}
+ <VirtualHost *:5050>
+{% else %}
+ <VirtualHost {{ env.IRONIC_URL_HOST }}:5050>
+{% endif %}
     ProxyPass "/"  "http://127.0.0.1:{{ env.IRONIC_INSPECTOR_PRIVATE_PORT }}/"
     ProxyPassReverse "/"  "http://127.0.0.1:{{ env.IRONIC_INSPECTOR_PRIVATE_PORT }}/"
 
