@@ -26,7 +26,8 @@ Listen 5050
     ServerName 172.22.0.2
 
     SSLEngine On
-    SSLCertificateFile {{ env.IRONIC_INSPECTOR_CERT_FILE }}
+    SSLProtocol {{ env.IRONIC_SSL_PROTOCOL }}
+    SSLCertificateFile {{ env.IRONIC_INSPECTOR_CERT_FILE }} 
     SSLCertificateKeyFile {{ env.IRONIC_INSPECTOR_KEY_FILE }}
 
     {% if "INSPECTOR_HTPASSWD" in env and env.INSPECTOR_HTPASSWD | length %}

@@ -4,7 +4,7 @@
 
 . /bin/ironic-common.sh
 
-HTTP_PORT=${HTTP_PORT:-"80"}
+export HTTP_PORT=${HTTP_PORT:-"80"}
 export VMEDIA_TLS_PORT=${VMEDIA_TLS_PORT:-8083}
 
 INSPECTOR_ORIG_HTTPD_CONFIG=/etc/httpd/conf.d/inspector-apache.conf.j2
@@ -64,12 +64,6 @@ fi
 if [ -n "${INSPECTOR_HTPASSWD:-}" ]; then
     printf "%s\n" "${INSPECTOR_HTPASSWD}" > /etc/ironic-inspector/htpasswd
 fi
-
-# Use configured values
-sed -i -e s/IRONIC_IP/${IRONIC_URL_HOST}/g \
-    -e s/HTTP_PORT/${HTTP_PORT}/g \
-    -e "s|EXTRA_ARGS|${INSPECTOR_EXTRA_ARGS}|g" \
-    /shared/html/inspector.ipxe
 
 sed -i 's/^Listen .*$/Listen [::]:'"$HTTP_PORT"'/' /etc/httpd/conf/httpd.conf
 sed -i -e 's|\(^[[:space:]]*\)\(DocumentRoot\)\(.*\)|\1\2 "/shared/html"|' \

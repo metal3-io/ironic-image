@@ -1,7 +1,7 @@
 #!/usr/bin/bash
 
 IRONIC_CERT_FILE=${IRONIC_CERT_FILE:-/certs/ironic/tls.crt}
-HTTP_PORT=${HTTP_PORT:-"80"}
+export HTTP_PORT=${HTTP_PORT:-"80"}
 
 # Whether to enable fast_track provisioning or not
 IRONIC_FAST_TRACK=${IRONIC_FAST_TRACK:-true}
@@ -25,12 +25,6 @@ fi
 # Copy files to shared mount
 render_j2_config /tmp/inspector.ipxe.j2 /shared/html/inspector.ipxe
 cp /tmp/uefi_esp.img /shared/html/
-
-# Use configured values
-sed -i -e s/IRONIC_IP/${IRONIC_URL_HOST}/g \
-    -e s/HTTP_PORT/${HTTP_PORT}/g \
-    -e "s|EXTRA_ARGS|${INSPECTOR_EXTRA_ARGS}|g" \
-    /shared/html/inspector.ipxe
 
 sed -i 's/^Listen .*$/Listen [::]:'"$HTTP_PORT"'/' /etc/httpd/conf/httpd.conf
 sed -i -e 's|\(^[[:space:]]*\)\(DocumentRoot\)\(.*\)|\1\2 "/shared/html"|' \

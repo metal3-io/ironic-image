@@ -20,7 +20,15 @@ else
     exit 0
 fi
 
-dnf install -y grub2 shim dosfstools mtools $PACKAGES
+# NOTE(elfosardo): glibc-gconv-extra was included by default in the past and
+# we need it otherwise mkfs.msdos will fail with:
+# ``Cannot initialize conversion from codepage 850 to ANSI_X3.4-1968: Invalid argument``
+# ``Cannot initialize conversion from ANSI_X3.4-1968 to codepage 850: Invalid argument``
+# subsequently making mmd fail with:
+# ``Error converting to codepage 850 Invalid argument``
+# ``Cannot initialize '::'``
+# This is due to the conversion table missing codepage 850, included in glibc-gconv-extra
+dnf install -y grub2 shim dosfstools mtools glibc-gconv-extra $PACKAGES
 
 ## TODO(TheJulia): At some point we may want to try and make the size
 ## of the ESP image file to be sized smaller for the files that need to

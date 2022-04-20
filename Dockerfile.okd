@@ -1,5 +1,5 @@
 # Please ensure this file is kept in sync with Dockerfile.ocp
-FROM fedora:34 AS builder
+FROM fedora:35 AS builder
 
 WORKDIR /tmp
 

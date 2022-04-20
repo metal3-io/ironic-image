@@ -1,5 +1,7 @@
 #!/usr/bin/bash
 
+set -euxo pipefail
+
 # Define the VLAN interfaces to be included in introspection report, e.g.
 #   all - all VLANs on all interfaces using LLDP information
 #   <interface> - all VLANs on a particular interface using LLDP information
@@ -35,7 +37,7 @@ wait_for_interface_or_ip
 export IRONIC_BASE_URL="${IRONIC_SCHEME}://${IRONIC_URL_HOST}:6385"
 export IRONIC_INSPECTOR_BASE_URL="${IRONIC_INSPECTOR_SCHEME}://${IRONIC_URL_HOST}:5050"
 
-if [ ! -z "${IRONIC_EXTERNAL_IP}" ]; then
+if [ ! -z "${IRONIC_EXTERNAL_IP:-}" ]; then
     export IRONIC_EXTERNAL_CALLBACK_URL="${IRONIC_SCHEME}://${IRONIC_EXTERNAL_IP}:6385"
     export IRONIC_EXTERNAL_HTTP_URL="http://${IRONIC_EXTERNAL_IP}:${HTTP_PORT}"
     export IRONIC_INSPECTOR_CALLBACK_ENDPOINT_OVERRIDE="https://${IRONIC_EXTERNAL_IP}:5050"
@@ -60,7 +62,7 @@ export IRONIC_HTPASSWD=${IRONIC_HTPASSWD:-${HTTP_BASIC_HTPASSWD:-}}
 #   use HTTP_BASIC_HTPASSWD for RPC.
 export JSON_RPC_AUTH_STRATEGY="noauth"
 if [ -n "${IRONIC_HTPASSWD}" ]; then
-    if [ "${IRONIC_DEPLOYMENT}" == "Conductor" ]; then
+    if [ "${IRONIC_DEPLOYMENT:-}" == "Conductor" ]; then
         export JSON_RPC_AUTH_STRATEGY="http_basic"
         printf "%s\n" "${IRONIC_HTPASSWD}" >"${HTPASSWD_FILE}-rpc"
     else
