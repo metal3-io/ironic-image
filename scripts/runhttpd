@@ -65,7 +65,11 @@ if [ -n "${INSPECTOR_HTPASSWD:-}" ]; then
     printf "%s\n" "${INSPECTOR_HTPASSWD}" > /etc/ironic-inspector/htpasswd
 fi
 
-sed -i 's/^Listen .*$/Listen [::]:'"$HTTP_PORT"'/' /etc/httpd/conf/httpd.conf
+if [[ "${LISTEN_ALL_INTERFACES}" == "true" ]]; then
+  sed -i 's/^Listen .*$/Listen [::]:'"$HTTP_PORT"'/' /etc/httpd/conf/httpd.conf
+else
+  sed -i 's/^Listen .*$/Listen '"$IRONIC_URL_HOST"':'"$HTTP_PORT"'/' /etc/httpd/conf/httpd.conf
+fi
 sed -i -e 's|\(^[[:space:]]*\)\(DocumentRoot\)\(.*\)|\1\2 "/shared/html"|' \
     -e 's|<Directory "/var/www/html">|<Directory "/shared/html">|' \
     -e 's|<Directory "/var/www">|<Directory "/shared">|' /etc/httpd/conf/httpd.conf
