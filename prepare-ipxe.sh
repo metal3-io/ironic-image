@@ -10,6 +10,8 @@
 set -ex
 
 mkdir -p /tftpboot
+mkdir -p /tftpboot/arm64-efi
 
 cp /usr/share/ipxe/undionly.kpxe /tftpboot/
 cp /usr/share/ipxe/ipxe-snponly-x86_64.efi /tftpboot/snponly.efi
+cp /usr/share/ipxe/arm64-efi/snponly.efi /tftpboot/arm64-efi/snponly.efi

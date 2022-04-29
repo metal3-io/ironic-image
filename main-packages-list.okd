@@ -7,7 +7,8 @@ httpd-tools
 ipcalc
 ipmitool
 iproute
-ipxe-bootimgs
+ipxe-bootimgs-aarch64
+ipxe-bootimgs-x86
 ipxe-roms-qemu
 mariadb-server
 mod_ssl
