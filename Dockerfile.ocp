@@ -42,10 +42,3 @@ RUN mkdir -p /var/lib/ironic /var/lib/ironic-inspector && \
 # IRONIC-INSPECTOR #
 COPY ironic-inspector-config/ironic-inspector.conf.j2 /etc/ironic-inspector/
 COPY ironic-inspector-config/inspector-apache.conf.j2 /etc/httpd/conf.d/
-
-COPY patches/* /tmp/
-# Needed for https://github.com/openshift/enhancements/pull/1059
-# Remove after the first package sync in 4.12.
-RUN cd /usr/lib/python3.6/site-packages && \
-    patch -p1 -f < /tmp/001-Allow-reusing-defaults-in-per-node-kernel_append_params.patch
-
