@@ -6,9 +6,8 @@ This repo contains the files needed to build the Ironic images used by Metal3.
 Build Status
 ------------
 
-[![Ubuntu V1beta1 build status](https://jenkins.nordix.org/view/Metal3/job/metal3_main_v1b1_integration_test_ubuntu/badge/icon?subject=Ubuntu%20E2E%20V1beta1)](https://jenkins.nordix.org/view/Metal3/job/metal3_main_v1b1_integration_test_ubuntu/)
-[![CentOS V1beta1 build status](https://jenkins.nordix.org/view/Metal3/job/metal3_main_v1b1_integration_test_centos/badge/icon?subject=CentOS%20E2E%20V1beta1)](https://jenkins.nordix.org/view/Metal3/job/metal3_main_v1b1_integration_test_centos/)
-
+[![Ubuntu daily main build status](https://jenkins.nordix.org/buildStatus/icon?job=metal3_daily_main_integration_test_ubuntu&subject=Ubuntu%20daily%20main)](https://jenkins.nordix.org/view/Metal3/job/metal3_daily_main_integration_test_ubuntu/)
+[![CentOS daily main build status](https://jenkins.nordix.org/buildStatus/icon?job=metal3_daily_main_integration_test_centos&subject=CentOS%20daily%20main)](https://jenkins.nordix.org/view/Metal3/job/metal3_daily_main_integration_test_centos/)
 Description
 -----------
 
@@ -47,7 +46,7 @@ The ironic configuration can be overridden by various environment variables. The
 Build Ironic Image from source
 ------------------------------
 
-Normally the ironic image is built using RPMs coming from the RDO project.  
+Normally the ironic image is built using RPMs coming from the RDO project.
 It is possible to build it using source code setting the **INSTALL_TYPE**
 argument to **source** at build time; the full command is for example:
 
@@ -62,11 +61,11 @@ the cli command, for example:
 
     podman build -t ironic-image -f Dockerfile --build-arg PATCH_LIST=my-patch-list
 
-The **PATCH_LIST** argument is a path to a file under the image context.  
+The **PATCH_LIST** argument is a path to a file under the image context.
 Its format is a simple text file that contains references to upstream patches
-for the ironic projects.  
-Each line of the file is in the form:  
-    **project_dir refspec (git_host)**  
+for the ironic projects.
+Each line of the file is in the form:
+    **project_dir refspec (git_host)**
 where:
 
 * **project_dir** is the last part of the project url including the organization,
