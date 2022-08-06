@@ -1,0 +1,31 @@
+<VirtualHost *:{{ env.HTTP_PORT }}>
+    ServerName {{ env.IRONIC_IP }}
+
+    ErrorLog /dev/stderr
+    LogLevel debug
+    CustomLog /dev/stdout combined
+
+    ProxyPass "/"  "{{ env.IRONIC_UPSTREAM_PROTO }}://{{ env.IRONIC_UPSTREAM_IP }}:{{ env.IRONIC_UPSTREAM_PORT }}/"
+    ProxyPassReverse "/"  "{{ env.IRONIC_UPSTREAM_PROTO }}://{{ env.IRONIC_UPSTREAM_IP }}:{{ env.IRONIC_UPSTREAM_PORT }}/"
+    {% if env.IRONIC_UPSTREAM_PROTO == "https" %}
+    SSLProxyEngine On
+
+    {% if env.IRONIC_INSECURE == "true" %}
+    SSLProxyVerify none
+    SSLProxyCheckPeerCN off
+    SSLProxyCheckPeerName off
+    SSLProxyCheckPeerExpire off
+    {% else %}
+    SSLProxyCACertificateFile {{ env.IRONIC_CERT_FILE }}
+    {% endif %}
+
+    {% endif %}
+
+    {% if env.IRONIC_TLS_SETUP == "true" %}
+    SSLEngine on
+    SSLProtocol {{ env.IRONIC_SSL_PROTOCOL }}
+    SSLCertificateFile {{ env.IRONIC_CERT_FILE }}
+    SSLCertificateKeyFile {{ env.IRONIC_KEY_FILE }}
+    {% endif %}
+</VirtualHost>
+

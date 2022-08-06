@@ -33,6 +33,7 @@ COPY ironic-config/httpd.conf /etc/httpd/conf.d/
 COPY ironic-config/httpd-modules.conf /etc/httpd/conf.modules.d/
 COPY ironic-config/apache2-ironic-api.conf.j2 /etc/httpd-ironic-api.conf.j2
 COPY ironic-config/apache2-vmedia.conf.j2 /etc/httpd-vmedia.conf.j2
+COPY ironic-config/apache2-proxy.conf.j2 /etc/httpd-proxy.conf.j2
 
 RUN mkdir -p /var/lib/ironic /var/lib/ironic-inspector && \
   sqlite3 /var/lib/ironic/ironic.db "pragma journal_mode=wal" && \
