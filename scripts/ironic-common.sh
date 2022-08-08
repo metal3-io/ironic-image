@@ -69,5 +69,6 @@ function run_ironic_dbsync() {
     fi
 }
 
+# Use the special value "unix" for unix sockets
 export IRONIC_PRIVATE_PORT=${IRONIC_PRIVATE_PORT:-6388}
 export IRONIC_INSPECTOR_PRIVATE_PORT=${IRONIC_INSPECTOR_PRIVATE_PORT:-5049}

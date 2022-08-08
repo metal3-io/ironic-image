@@ -16,7 +16,7 @@ wait_for_interface_or_ip
 
 IRONIC_INSPECTOR_PORT=5050
 if [ "$IRONIC_INSPECTOR_TLS_SETUP" = "true" ]; then
-    if [[ "${INSPECTOR_REVERSE_PROXY_SETUP}" == "true" ]]; then
+    if [[ "${INSPECTOR_REVERSE_PROXY_SETUP}" == "true" && "${IRONIC_INSPECTOR_PRIVATE_PORT}" != "unix" ]]; then
         IRONIC_INSPECTOR_PORT=$IRONIC_INSPECTOR_PRIVATE_PORT
     fi
 else
