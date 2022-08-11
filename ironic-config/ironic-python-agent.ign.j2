@@ -15,8 +15,8 @@ WantedBy=multi-user.target
 
 {% set ipa_config %}
 [DEFAULT]
-api_url = {{ env.IRONIC_BASE_URL }}:6385
-inspection_callback_url = {{ env.IRONIC_BASE_URL }}:5050/v1/continue
+api_url = {{ env.IRONIC_BASE_URL }}:{{ env.IRONIC_ACCESS_PORT }}
+inspection_callback_url = {{ env.IRONIC_BASE_URL }}:{{ env.IRONIC_INSPECTOR_ACCESS_PORT }}/v1/continue
 
 collect_lldp = True
 enable_vlan_interfaces = {{ env.IRONIC_INSPECTOR_VLAN_INTERFACES }}

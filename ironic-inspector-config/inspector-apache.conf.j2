@@ -11,11 +11,11 @@
 # under the License.
 
 
-Listen 5050
+Listen {{ env.IRONIC_INSPECTOR_LISTEN_PORT }}
 {% if env.LISTEN_ALL_INTERFACES | lower == "true" %}
- <VirtualHost *:5050>
+ <VirtualHost *:{{ env.IRONIC_INSPECTOR_LISTEN_PORT }}>
 {% else %}
- <VirtualHost {{ env.IRONIC_URL_HOST }}:5050>
+ <VirtualHost {{ env.IRONIC_URL_HOST }}:{{ env.IRONIC_INSPECTOR_LISTEN_PORT }}>
 {% endif %}
     {% if env.IRONIC_INSPECTOR_PRIVATE_PORT == "unix" %}
     ProxyPass "/"  "unix:/shared/inspector.sock|http://127.0.0.1/"

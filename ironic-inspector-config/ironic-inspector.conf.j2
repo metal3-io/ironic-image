@@ -13,9 +13,11 @@ listen_unix_socket_mode = 0666
 listen_port = {{ env.IRONIC_INSPECTOR_PRIVATE_PORT }}
 listen_address = 127.0.0.1
 {% endif %}
-{% elif  env.LISTEN_ALL_INTERFACES | lower == "true" %}
+{% elif env.LISTEN_ALL_INTERFACES | lower == "true" %}
+listen_port = {{ env.IRONIC_INSPECTOR_LISTEN_PORT }}
 listen_address = ::
 {% else %}
+listen_port = {{ env.IRONIC_INSPECTOR_LISTEN_PORT }}
 listen_address = {{ env.IRONIC_IP }}
 {% endif %}
 host = {{ env.IRONIC_IP }}
