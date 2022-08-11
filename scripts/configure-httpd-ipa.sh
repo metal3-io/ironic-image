@@ -16,10 +16,9 @@ else
     IRONIC_BASE_URL="http://${IRONIC_URL_HOST}"
 fi
 
+INSPECTOR_EXTRA_ARGS=" ipa-inspection-callback-url=${IRONIC_BASE_URL}:${IRONIC_INSPECTOR_ACCESS_PORT}/v1/continue"
 if [[ $IRONIC_FAST_TRACK == true ]]; then
-    INSPECTOR_EXTRA_ARGS=" ipa-api-url=${IRONIC_BASE_URL}:6385 ipa-inspection-callback-url=${IRONIC_BASE_URL}:5050/v1/continue"
-else
-    INSPECTOR_EXTRA_ARGS=" ipa-inspection-callback-url=${IRONIC_BASE_URL}:5050/v1/continue"
+    INSPECTOR_EXTRA_ARGS+=" ipa-api-url=${IRONIC_BASE_URL}:${IRONIC_ACCESS_PORT}"
 fi
 
 # Copy files to shared mount

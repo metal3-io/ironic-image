@@ -4,10 +4,21 @@ debug = true
 transport_url = fake://
 use_stderr = true
 {% if env.INSPECTOR_REVERSE_PROXY_SETUP == "true" %}
+{% if env.IRONIC_INSPECTOR_PRIVATE_PORT == "unix" %}
+listen_unix_socket = /shared/inspector.sock
+# NOTE(dtantsur): this is not ideal, but since the socket is accessed from
+# another container, we need to make it world-writeable.
+listen_unix_socket_mode = 0666
+{% else %}
 listen_port = {{ env.IRONIC_INSPECTOR_PRIVATE_PORT }}
 listen_address = 127.0.0.1
-{% else %}
+{% endif %}
+{% elif env.LISTEN_ALL_INTERFACES | lower == "true" %}
+listen_port = {{ env.IRONIC_INSPECTOR_LISTEN_PORT }}
 listen_address = ::
+{% else %}
+listen_port = {{ env.IRONIC_INSPECTOR_LISTEN_PORT }}
+listen_address = {{ env.IRONIC_IP }}
 {% endif %}
 host = {{ env.IRONIC_IP }}
 {% if env.IRONIC_INSPECTOR_TLS_SETUP == "true" and env.INSPECTOR_REVERSE_PROXY_SETUP == "false" %}
