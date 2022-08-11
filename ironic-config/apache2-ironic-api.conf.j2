@@ -19,8 +19,15 @@ Listen 6385
 {% endif %}
 
     {% if env.IRONIC_REVERSE_PROXY_SETUP | lower == "true" %}
+
+    {% if env.IRONIC_PRIVATE_PORT == "unix" %}
+    ProxyPass "/"  "unix:/shared/ironic.sock|http://127.0.0.1/"
+    ProxyPassReverse "/"  "unix:/shared/ironic.sock|http://127.0.0.1/"
+    {% else %}
     ProxyPass "/"  "http://127.0.0.1:{{ env.IRONIC_PRIVATE_PORT }}/"
     ProxyPassReverse "/"  "http://127.0.0.1:{{ env.IRONIC_PRIVATE_PORT }}/"
+    {% endif %}
+
     {% else %}
     WSGIDaemonProcess ironic user=ironic group=ironic threads=10 display-name=%{GROUP}
     WSGIScriptAlias / /usr/bin/ironic-api-wsgi
