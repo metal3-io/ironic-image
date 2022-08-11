@@ -11,14 +11,19 @@
 # under the License.
 
 
-Listen 5050
+Listen {{ env.IRONIC_INSPECTOR_LISTEN_PORT }}
 {% if env.LISTEN_ALL_INTERFACES | lower == "true" %}
- <VirtualHost *:5050>
+ <VirtualHost *:{{ env.IRONIC_INSPECTOR_LISTEN_PORT }}>
 {% else %}
- <VirtualHost {{ env.IRONIC_URL_HOST }}:5050>
+ <VirtualHost {{ env.IRONIC_URL_HOST }}:{{ env.IRONIC_INSPECTOR_LISTEN_PORT }}>
 {% endif %}
+    {% if env.IRONIC_INSPECTOR_PRIVATE_PORT == "unix" %}
+    ProxyPass "/"  "unix:/shared/inspector.sock|http://127.0.0.1/"
+    ProxyPassReverse "/"  "unix:/shared/inspector.sock|http://127.0.0.1/"
+    {% else %}
     ProxyPass "/"  "http://127.0.0.1:{{ env.IRONIC_INSPECTOR_PRIVATE_PORT }}/"
     ProxyPassReverse "/"  "http://127.0.0.1:{{ env.IRONIC_INSPECTOR_PRIVATE_PORT }}/"
+    {% endif %}
 
     SetEnv APACHE_RUN_USER ironic-inspector
     SetEnv APACHE_RUN_GROUP ironic-inspector

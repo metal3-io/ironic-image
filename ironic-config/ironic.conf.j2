@@ -66,11 +66,19 @@ max_command_attempts = 30
 
 [api]
 {% if env.IRONIC_REVERSE_PROXY_SETUP == "true" %}
+{% if env.IRONIC_PRIVATE_PORT == "unix" %}
+unix_socket = /shared/ironic.sock
+# NOTE(dtantsur): this is not ideal, but since the socket is accessed from
+# another container, we need to make it world-writeable.
+unix_socket_mode = 0666
+{% else %}
 host_ip = 127.0.0.1
 port = {{ env.IRONIC_PRIVATE_PORT }}
+{% endif %}
 public_endpoint = {{ env.IRONIC_BASE_URL }}
 {% else %}
 host_ip = {% if env.LISTEN_ALL_INTERFACES | lower == "true" %}::{% else %}{{ env.IRONIC_IP }}{% endif %}
+port = {{ env.IRONIC_LISTEN_PORT }}
 {% if env.IRONIC_TLS_SETUP == "true" %}
 enable_ssl_api = true
 {% endif %}

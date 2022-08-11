@@ -10,17 +10,24 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-Listen 6385
+Listen {{ env.IRONIC_LISTEN_PORT }}
 
 {% if env.LISTEN_ALL_INTERFACES | lower == "true" %}
-<VirtualHost *:6385>
+<VirtualHost *:{{ env.IRONIC_LISTEN_PORT }}>
 {% else %}
-<VirtualHost {{ env.IRONIC_URL_HOST }}:6385>
+<VirtualHost {{ env.IRONIC_URL_HOST }}:{{ env.IRONIC_LISTEN_PORT }}>
 {% endif %}
 
     {% if env.IRONIC_REVERSE_PROXY_SETUP | lower == "true" %}
+
+    {% if env.IRONIC_PRIVATE_PORT == "unix" %}
+    ProxyPass "/"  "unix:/shared/ironic.sock|http://127.0.0.1/"
+    ProxyPassReverse "/"  "unix:/shared/ironic.sock|http://127.0.0.1/"
+    {% else %}
     ProxyPass "/"  "http://127.0.0.1:{{ env.IRONIC_PRIVATE_PORT }}/"
     ProxyPassReverse "/"  "http://127.0.0.1:{{ env.IRONIC_PRIVATE_PORT }}/"
+    {% endif %}
+
     {% else %}
     WSGIDaemonProcess ironic user=ironic group=ironic threads=10 display-name=%{GROUP}
     WSGIScriptAlias / /usr/bin/ironic-api-wsgi
