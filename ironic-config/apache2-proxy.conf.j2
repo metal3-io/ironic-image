@@ -12,12 +12,13 @@
 
     {% if env.IRONIC_INSECURE == "true" %}
     SSLProxyVerify none
-    SSLProxyCheckPeerCN off
-    SSLProxyCheckPeerName off
     SSLProxyCheckPeerExpire off
     {% else %}
     SSLProxyCACertificateFile {{ env.IRONIC_CERT_FILE }}
+    SSLProxyVerify require
+    SSLProxyCheckPeerExpire on
     {% endif %}
+    SSLProxyCheckPeerName off
 
     {% endif %}
 
