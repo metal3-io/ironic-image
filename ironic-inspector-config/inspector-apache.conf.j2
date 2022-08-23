@@ -32,7 +32,7 @@ Listen {{ env.IRONIC_INSPECTOR_LISTEN_PORT }}
     LogLevel debug
     CustomLog /dev/stdout combined
 
-    ServerName 172.22.0.2
+    ServerName {{ env.IRONIC_IP }}
 
     SSLEngine On
     SSLProtocol {{ env.IRONIC_SSL_PROTOCOL }}
