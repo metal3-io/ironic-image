@@ -1,6 +1,6 @@
 FROM registry.hub.docker.com/library/python:3.9
 
-ARG SUSHY_TOOLS_VERSION="0.20.0"
+ARG SUSHY_TOOLS_VERSION="0.21.0"
 
 RUN apt update && \
     apt install -y libvirt-dev && \
