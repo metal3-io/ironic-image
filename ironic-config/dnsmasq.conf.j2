@@ -46,3 +46,13 @@ dhcp-option=3
 dhcp-option=6
 {% endif %}
 {% endif %}
+
+{%- if env.DHCP_IGNORE | length %}
+dhcp-ignore={{ env.DHCP_IGNORE }}
+{% endif %}
+
+{%- if env.DHCP_HOSTS | length %}
+{%- for item in env.DHCP_HOSTS.split(";") %}
+dhcp-host={{ item }}
+{%- endfor %}
+{% endif %}
