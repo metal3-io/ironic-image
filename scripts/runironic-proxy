@@ -11,6 +11,10 @@ export IRONIC_UPSTREAM_IP=${IRONIC_UPSTREAM_IP:-$IRONIC_IP}
 export IRONIC_UPSTREAM_PORT=${IRONIC_UPSTREAM_PORT:-6385}
 export IRONIC_UPSTREAM_PROTO=${IRONIC_UPSTREAM_PROTO:-$IRONIC_SCHEME}
 
+if [[ "$IRONIC_UPSTREAM_IP" =~ .*:.* ]]; then
+    export IRONIC_UPSTREAM_IP="[$IRONIC_UPSTREAM_IP]"
+fi
+
 sed -i 's/^Listen .*$/Listen [::]:'"$HTTP_PORT"'/' /etc/httpd/conf/httpd.conf
 # Log to std out/err
 sed -i -e 's%^ \+CustomLog.*%    CustomLog /dev/stderr combined%g' /etc/httpd/conf/httpd.conf
