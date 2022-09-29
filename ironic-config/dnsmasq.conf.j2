@@ -2,9 +2,10 @@ interface={{ env.PROVISIONING_INTERFACE }}
 bind-dynamic
 enable-tftp
 tftp-root=/shared/tftpboot
+log-queries
 
-# Disable listening for DNS
-port=0
+# Configure listening for DNS (0 disables DNS)
+port={{ env.DNS_PORT }}
 
 {%- if env.DHCP_RANGE | length %}
 log-dhcp
