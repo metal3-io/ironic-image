@@ -4,6 +4,7 @@
 
 export HTTP_PORT=${HTTP_PORT:-"80"}
 export DNSMASQ_EXCEPT_INTERFACE=${DNSMASQ_EXCEPT_INTERFACE:-"lo"}
+export DNS_PORT=${DNS_PORT:-0}
 
 wait_for_interface_or_ip
 
