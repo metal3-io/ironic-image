@@ -42,7 +42,6 @@ Listen {{ env.IRONIC_LISTEN_PORT }}
     CustomLog /dev/stdout combined
 
 {% if env.IRONIC_TLS_SETUP == "true" %}
-    ServerName {{ env.IRONIC_IP }}
     SSLEngine on
     SSLProtocol {{ env.IRONIC_SSL_PROTOCOL }}
     SSLCertificateFile {{ env.IRONIC_CERT_FILE }}
