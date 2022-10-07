@@ -5,7 +5,6 @@ Listen {{ env.VMEDIA_TLS_PORT }}
     LogLevel debug
     CustomLog /dev/stdout combined
 
-    ServerName {{ env.IRONIC_IP }}
     SSLEngine on
     SSLProtocol {{ env.IRONIC_VMEDIA_SSL_PROTOCOL }}
     SSLCertificateFile {{ env.IRONIC_VMEDIA_CERT_FILE }}
