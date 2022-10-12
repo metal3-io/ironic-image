@@ -1,4 +1,4 @@
-ARG BASE_IMAGE=quay.io/centos/centos:stream8
+ARG BASE_IMAGE=quay.io/centos/centos:stream9
 
 FROM $BASE_IMAGE
 
