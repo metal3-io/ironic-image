@@ -26,6 +26,7 @@ INSPECTOR_EXTRA_ARGS=" ipa-inspection-callback-url=${IRONIC_BASE_URL}:${IRONIC_I
 if [[ $IRONIC_FAST_TRACK == true ]]; then
     INSPECTOR_EXTRA_ARGS+=" ipa-api-url=${IRONIC_BASE_URL}:${IRONIC_ACCESS_PORT}"
 fi
+export INSPECTOR_EXTRA_ARGS
 
 . /bin/coreos-ipa-common.sh
 
