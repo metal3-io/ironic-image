@@ -26,7 +26,12 @@ ARG EXTRA_PKGS_LIST
 ARG PATCH_LIST
 ARG INSTALL_TYPE=rpm
 
-COPY ironic-${INSTALL_TYPE}-list.txt ${PKGS_LIST} ${EXTRA_PKGS_LIST:-$PKGS_LIST} ${PATCH_LIST:-$PKGS_LIST} /tmp/
+# build arguments for source build customization
+ARG IRONIC_SOURCE
+ARG IRONIC_INSPECTOR_SOURCE
+ARG SUSHY_SOURCE
+
+COPY ironic-${INSTALL_TYPE}-list ${PKGS_LIST} ${EXTRA_PKGS_LIST:-$PKGS_LIST} ${PATCH_LIST:-$PKGS_LIST} /tmp/
 COPY prepare-image.sh patch-image.sh /bin/
 
 RUN prepare-image.sh && \

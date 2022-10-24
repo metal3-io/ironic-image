@@ -50,9 +50,18 @@ Build Ironic Image from source
 
 Normally the ironic image is built using RPMs coming from the RDO project.
 It is possible to build it using source code setting the **INSTALL_TYPE**
-argument to **source** at build time; the full command is for example:
+argument to **source** at build time; for example:
 
     podman build -t ironic-image -f Dockerfile --build-arg INSTALL_TYPE=source
+
+When building the ironic image from source, it is also possible to specify a
+different source for ironic, ironic-inspector or the sushy library using the build
+arguments **IRONIC_SOURCE**, **IRONIC_INSPECTOR_SOURCE**, and **SUSHY_SOURCE**.
+The accepted formats are gerrit refs, like _refs/changes/89/860689/2_, or commit
+hash, like _a1fe6cb41e6f0a1ed0a43ba5e17745714f206f1f_.
+An example of a full command installing ironic from a gerrit patch is:
+
+    podman build -t ironic-image -f Dockerfile --build-arg INSTALL_TYPE=source --build-arg IRONIC_SOURCE="refs/changes/89/860689/2"
 
 Apply project patches to the images during build
 ------------------------------------------------

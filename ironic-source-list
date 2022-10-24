@@ -1,0 +1,24 @@
+crudini
+gunicorn
+{% if env.IRONIC_SOURCE %}
+ironic @ git+https://opendev.org/openstack/ironic@{{ env.IRONIC_SOURCE }}
+{% else %}
+ironic @ git+https://opendev.org/openstack/ironic
+{% endif %}
+{% if env.IRONIC_INSPECTOR_SOURCE %}
+ironic-inspector @ git+https://opendev.org/openstack/ironic-inspector@{{ env.IRONIC_INSPECTOR_SOURCE }}
+{% else %}
+ironic-inspector @ git+https://opendev.org/openstack/ironic-inspector
+{% endif %}
+ironic-prometheus-exporter
+proliantutils
+PyMySQL>=0.8.0
+python-dracclient
+python-ibmcclient
+python-scciclient
+{% if env.SUSHY_SOURCE %}
+sushy @ git+https://opendev.org/openstack/sushy@{{ env.SUSHY_SOURCE }}
+{% else %}
+sushy
+{% endif %}
+sushy-oem-idrac
