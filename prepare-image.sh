@@ -12,7 +12,8 @@ dnf install -y python3 python3-requests 'dnf-command(config-manager)'
 
 # RPM install #
 if [[ $INSTALL_TYPE == "rpm" ]]; then
-    curl https://raw.githubusercontent.com/openstack/tripleo-repos/master/plugins/module_utils/tripleo_repos/main.py | python3 - -b master current-tripleo
+    # FIXME(dtantsur): revert back to current-tripleo once it has the sqlite fix in
+    curl https://raw.githubusercontent.com/openstack/tripleo-repos/master/plugins/module_utils/tripleo_repos/main.py | python3 - -b master current
     # NOTE(elfosardo): enable CRB repo for more python3 dependencies
     dnf config-manager --set-enabled crb
     dnf upgrade -y
