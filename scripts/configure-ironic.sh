@@ -52,9 +52,9 @@ if [ -f /etc/ironic/ironic.conf ]; then
     cp /etc/ironic/ironic.conf /etc/ironic/ironic.conf_orig
 fi
 
-# oslo.config also supports Config Opts From Environment, log them
-echo '# Options set from Environment variables' | tee /etc/ironic/ironic.extra
-env | grep "^OS_" | tee -a /etc/ironic/ironic.extra
+# oslo.config also supports Config Opts From Environment, log them to stdout
+echo 'Options set from Environment variables'
+env | grep "^OS_" || true
 
 mkdir -p /shared/html
 mkdir -p /shared/ironic_prometheus_exporter
