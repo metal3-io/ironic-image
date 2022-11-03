@@ -11,9 +11,19 @@ port={{ env.DNS_PORT }}
 log-dhcp
 dhcp-range={{ env.DHCP_RANGE }}
 
-# Disable default router(s) and DNS over provisioning network
+# It can be used when setting DNS or GW variables.
+{%- if env["GATEWAY_IP"] is undefined %}
+# Disable default router(s)
 dhcp-option=3
+{% else %}
+dhcp-option=3,{{ env["GATEWAY_IP"] }}
+{% endif %}
+{%- if env["DNS_IP"] is undefined %}
+# Disable DNS over provisioning network
 dhcp-option=6
+{% else %}
+dhcp-option=6,{{ env["DNS_IP"] }}
+{% endif %}
 
 {%- if env.IPV == "4" or env.IPV is undefined %}
 # IPv4 Configuration:
@@ -42,8 +52,18 @@ dhcp-userclass=set:ipxe6,iPXE
 dhcp-option=tag:pxe6,option6:bootfile-url,tftp://{{ env.IRONIC_URL_HOST }}/snponly.efi
 dhcp-option=tag:ipxe6,option6:bootfile-url,http://{{ env.IRONIC_URL_HOST }}:{{ env.HTTP_PORT }}/boot.ipxe
 
-# Disable default router(s) and DNS over provisioning network
+# It can be used when setting DNS or GW variables.
+{%- if env["GATEWAY_IP"] is undefined %}
+# Disable default router(s)
 dhcp-option=3
+{% else %}
+dhcp-option=3,{{ env["GATEWAY_IP"] }}
+{% endif %}
+{%- if env["DNS_IP"] is undefined %}
+# Disable DNS over provisioning network
 dhcp-option=6
+{% else %}
+dhcp-option=6,{{ env["DNS_IP"] }}
+{% endif %}
 {% endif %}
 {% endif %}
