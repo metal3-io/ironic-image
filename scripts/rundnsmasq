@@ -6,6 +6,10 @@ export HTTP_PORT=${HTTP_PORT:-"80"}
 export DNSMASQ_EXCEPT_INTERFACE=${DNSMASQ_EXCEPT_INTERFACE:-"lo"}
 
 wait_for_interface_or_ip
+if [[ "${DNS_IP:-}" == "provisioning" ]]; then
+    export DNS_IP=$IRONIC_IP
+fi
+
 
 mkdir -p /shared/tftpboot
 mkdir -p /shared/tftpboot/arm64-efi
