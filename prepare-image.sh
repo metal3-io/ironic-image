@@ -2,7 +2,7 @@
 
 set -euxo pipefail
 
-IRONIC_PKG_LIST=/tmp/ironic-${INSTALL_TYPE}-list.txt
+IRONIC_PKG_LIST=/tmp/ironic-${INSTALL_TYPE}-list
 
 echo "install_weak_deps=False" >> /etc/dnf/dnf.conf
 # Tell RPM to skip installing documentation
@@ -21,12 +21,17 @@ fi
 
 # SOURCE install #
 if [[ $INSTALL_TYPE == "source" ]]; then
-    BUILD_DEPS="python3-devel gcc git-core python3-setuptools"
+    BUILD_DEPS="python3-devel gcc git-core python3-setuptools python3-jinja2"
     dnf upgrade -y
     # NOTE(dtantsur): pip is a requirement of python3 in CentOS
     dnf install -y python3-pip $BUILD_DEPS
     python3 -m pip install pip==21.3.1
-    python3 -m pip install --ignore-installed --prefix /usr -r $IRONIC_PKG_LIST -c https://raw.githubusercontent.com/openstack/requirements/master/upper-constraints.txt
+
+    IRONIC_PKG_LIST_FINAL="/tmp/ironic-${INSTALL_TYPE}-list-final"
+
+    python3 -c 'import os; import sys; import jinja2; sys.stdout.write(jinja2.Template(sys.stdin.read()).render(env=os.environ))' < "${IRONIC_PKG_LIST}" > "${IRONIC_PKG_LIST_FINAL}"
+
+    python3 -m pip install --ignore-installed --prefix /usr -r $IRONIC_PKG_LIST_FINAL -c ${UPPER_CONSTRAINTS_FILE:-"https://releases.openstack.org/constraints/upper/master"}
 
     # ironic and ironic-inspector system configuration
     mkdir -p /var/log/ironic /var/log/ironic-inspector /var/lib/ironic /var/lib/ironic-inspector
