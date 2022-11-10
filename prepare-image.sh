@@ -29,7 +29,8 @@ if [[ $INSTALL_TYPE == "source" ]]; then
 
     IRONIC_PKG_LIST_FINAL="/tmp/ironic-${INSTALL_TYPE}-list-final"
 
-    python3 -c 'import os; import sys; import jinja2; sys.stdout.write(jinja2.Template(sys.stdin.read()).render(env=os.environ))' < "${IRONIC_PKG_LIST}" > "${IRONIC_PKG_LIST_FINAL}"
+
+    python3 -c 'import os; import sys; import jinja2; sys.stdout.write(jinja2.Template(sys.stdin.read()).render(env=os.environ, path=os.path))' < "${IRONIC_PKG_LIST}" > "${IRONIC_PKG_LIST_FINAL}"
 
     python3 -m pip install --ignore-installed --prefix /usr -r $IRONIC_PKG_LIST_FINAL -c ${UPPER_CONSTRAINTS_FILE:-"https://releases.openstack.org/constraints/upper/master"}
 
