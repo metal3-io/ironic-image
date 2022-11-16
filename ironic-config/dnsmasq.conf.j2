@@ -67,3 +67,13 @@ dhcp-option=6,{{ env["DNS_IP"] }}
 {% endif %}
 {% endif %}
 {% endif %}
+
+{%- if env.DHCP_IGNORE | length %}
+dhcp-ignore={{ env.DHCP_IGNORE }}
+{% endif %}
+
+{%- if env.DHCP_HOSTS | length %}
+{%- for item in env.DHCP_HOSTS.split(";") %}
+dhcp-host={{ item }}
+{%- endfor %}
+{% endif %}
