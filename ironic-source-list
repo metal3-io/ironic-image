@@ -1,12 +1,20 @@
 crudini
 gunicorn
 {% if env.IRONIC_SOURCE %}
+    {% if path.isdir('/sources/' + env.IRONIC_SOURCE) %}
+git+file:///sources/{{ env.IRONIC_SOURCE }}
+    {% else %}
 ironic @ git+https://opendev.org/openstack/ironic@{{ env.IRONIC_SOURCE }}
+    {% endif %}
 {% else %}
 ironic @ git+https://opendev.org/openstack/ironic
 {% endif %}
 {% if env.IRONIC_INSPECTOR_SOURCE %}
+    {% if path.isdir('/sources/' + env.IRONIC_INSPECTOR_SOURCE) %}
+git+file:///sources/{ env.IRONIC_INSPECTOR_SOURCE }}
+    {% else %}
 ironic-inspector @ git+https://opendev.org/openstack/ironic-inspector@{{ env.IRONIC_INSPECTOR_SOURCE }}
+    {% endif %}
 {% else %}
 ironic-inspector @ git+https://opendev.org/openstack/ironic-inspector
 {% endif %}
@@ -17,7 +25,11 @@ python-dracclient
 python-ibmcclient
 python-scciclient
 {% if env.SUSHY_SOURCE %}
+    {% if path.isdir('/sources/' + env.SUSHY_SOURCE) %}
+git+file:///sources/{{ env.SUSHY_SOURCE }}
+    {% else %}
 sushy @ git+https://opendev.org/openstack/sushy@{{ env.SUSHY_SOURCE }}
+    {% endif %}
 {% else %}
 sushy
 {% endif %}
