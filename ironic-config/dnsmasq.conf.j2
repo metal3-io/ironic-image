@@ -16,13 +16,13 @@ dhcp-range={{ env.DHCP_RANGE }}
 # Disable default router(s)
 dhcp-option=3
 {% else %}
-dhcp-option=3,{{ env["GATEWAY_IP"] }}
+dhcp-option=option{% if ":" in env["GATEWAY_IP"] %}6{% endif %}:router,{{ env["GATEWAY_IP"] }}
 {% endif %}
 {%- if env["DNS_IP"] is undefined %}
 # Disable DNS over provisioning network
 dhcp-option=6
 {% else %}
-dhcp-option=6,{{ env["DNS_IP"] }}
+dhcp-option=option{% if ":" in env["DNS_IP"] %}6{% endif %}:dns-server,{{ env["DNS_IP"] }}
 {% endif %}
 
 {%- if env.IPV == "4" or env.IPV is undefined %}
