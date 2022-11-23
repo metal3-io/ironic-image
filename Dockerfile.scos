@@ -1,10 +1,10 @@
 # Please ensure this file is kept in sync with Dockerfile.ocp
-FROM fedora:37 AS builder
+FROM quay.io/centos/centos:stream9 AS builder
 
 WORKDIR /tmp
 
 COPY prepare-efi.sh /bin/
-RUN prepare-efi.sh fedora
+RUN prepare-efi.sh centos
 
 FROM quay.io/centos/centos:stream9
 
@@ -49,4 +49,4 @@ RUN mkdir -p /var/lib/ironic /var/lib/ironic-inspector && \
 COPY ironic-inspector-config/ironic-inspector.conf.j2 /etc/ironic-inspector/
 COPY ironic-inspector-config/inspector-apache.conf.j2 /etc/httpd/conf.d/
 
-ENV IS_FCOS=true
+ENV IS_SCOS=true
