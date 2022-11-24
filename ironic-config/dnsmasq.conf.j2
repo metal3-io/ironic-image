@@ -16,13 +16,13 @@ dhcp-range={{ env.DHCP_RANGE }}
 # Disable default router(s)
 dhcp-option=3
 {% else %}
-dhcp-option=3,{{ env["GATEWAY_IP"] }}
+dhcp-option=option{% if ":" in env["GATEWAY_IP"] %}6{% endif %}:router,{{ env["GATEWAY_IP"] }}
 {% endif %}
 {%- if env["DNS_IP"] is undefined %}
 # Disable DNS over provisioning network
 dhcp-option=6
 {% else %}
-dhcp-option=6,{{ env["DNS_IP"] }}
+dhcp-option=option{% if ":" in env["DNS_IP"] %}6{% endif %}:dns-server,{{ env["DNS_IP"] }}
 {% endif %}
 
 {%- if env.IPV == "4" or env.IPV is undefined %}
@@ -61,13 +61,23 @@ dhcp-option=tag:ipxe6,option6:bootfile-url,http://{{ env.IRONIC_URL_HOST }}:{{ e
 # Disable default router(s)
 dhcp-option=3
 {% else %}
-dhcp-option=3,{{ env["GATEWAY_IP"] }}
+dhcp-option=option{% if ":" in env["GATEWAY_IP"] %}6{% endif %}:router,{{ env["GATEWAY_IP"] }}
 {% endif %}
 {%- if env["DNS_IP"] is undefined %}
 # Disable DNS over provisioning network
 dhcp-option=6
 {% else %}
-dhcp-option=6,{{ env["DNS_IP"] }}
+dhcp-option=option{% if ":" in env["DNS_IP"] %}6{% endif %}:dns-server,{{ env["DNS_IP"] }}
 {% endif %}
 {% endif %}
+{% endif %}
+
+{%- if env.DHCP_IGNORE | length %}
+dhcp-ignore={{ env.DHCP_IGNORE }}
+{% endif %}
+
+{%- if env.DHCP_HOSTS | length %}
+{%- for item in env.DHCP_HOSTS.split(";") %}
+dhcp-host={{ item }}
+{%- endfor %}
 {% endif %}

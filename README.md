@@ -27,6 +27,8 @@ The following environment variables can be passed in to customize run-time funct
 - DNSMASQ_EXCEPT_INTERFACE - interfaces to exclude when providing DHCP address (default "lo")
 - HTTP_PORT - port used by http server (default 80)
 - DHCP_RANGE - dhcp range to use for provisioning (default 172.22.0.10-172.22.0.100)
+- DHCP_HOSTS - a `;` separated list of `dhcp-host` entries, e.g. known MAC addresses like `00:20:e0:3b:13:af;00:20:e0:3b:14:af` (empty by default). For more details on `dhcp-host` see [the man page](https://thekelleys.org.uk/dnsmasq/docs/dnsmasq-man.html).
+- DHCP_IGNORE - a set of tags on hosts that should be ignored and not allocate DHCP leases for, e.g. `tag:!known` to ignore any unknown hosts (empty by default)
 - MARIADB_PASSWORD - The database password
 - OS_<section>_\_<name>=<value> - This format can be used to set arbitary ironic config options
 - IRONIC_RAMDISK_SSH_KEY - A public key to allow ssh access to nodes running IPA, takes the format "ssh-rsa AAAAB3....."
