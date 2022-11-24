@@ -20,6 +20,7 @@ INSPECTOR_EXTRA_ARGS=" ipa-inspection-callback-url=${IRONIC_BASE_URL}:${IRONIC_I
 if [[ $IRONIC_FAST_TRACK == true ]]; then
     INSPECTOR_EXTRA_ARGS+=" ipa-api-url=${IRONIC_BASE_URL}:${IRONIC_ACCESS_PORT}"
 fi
+export INSPECTOR_EXTRA_ARGS
 
 # Copy files to shared mount
 render_j2_config /tmp/inspector.ipxe.j2 /shared/html/inspector.ipxe

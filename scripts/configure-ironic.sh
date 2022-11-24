@@ -2,6 +2,9 @@
 
 set -euxo pipefail
 
+IRONIC_DEPLOYMENT="${IRONIC_DEPLOYMENT:-}"
+IRONIC_EXTERNAL_IP="${IRONIC_EXTERNAL_IP:-}"
+
 # Define the VLAN interfaces to be included in introspection report, e.g.
 #   all - all VLANs on all interfaces using LLDP information
 #   <interface> - all VLANs on a particular interface using LLDP information
