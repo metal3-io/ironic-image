@@ -49,8 +49,10 @@ isolinux_bin = /usr/share/syslinux/isolinux.bin
 
 # NOTE(dtantsur): this path is specific to the GRUB image that is built into
 # the ESP provided in [conductor]bootloader.
-{% if env.IS_OKD == "true" %}
+{% if env.IS_FCOS == "true" %}
 grub_config_path = EFI/fedora/grub.cfg
+{% elif env.IS_SCOS == "true" %}
+grub_config_path = EFI/centos/grub.cfg
 {% else %}
 grub_config_path = EFI/redhat/grub.cfg
 {% endif %}

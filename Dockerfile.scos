@@ -1,0 +1,52 @@
+# Please ensure this file is kept in sync with Dockerfile.ocp
+FROM quay.io/centos/centos:stream9 AS builder
+
+WORKDIR /tmp
+
+COPY prepare-efi.sh /bin/
+RUN prepare-efi.sh centos
+
+FROM quay.io/centos/centos:stream9
+
+ENV PKGS_LIST=main-packages-list.ocp
+ARG EXTRA_PKGS_LIST
+
+COPY ${PKGS_LIST} ${EXTRA_PKGS_LIST:-$PKGS_LIST} /tmp/
+COPY prepare-image.sh prepare-ipxe.sh /bin/
+
+# Configure OpenStack repos
+RUN sed -i 's/ >=.*//g' /tmp/main-packages-list.ocp && \
+    dnf install --setopt=install_weak_deps=False --setopt=tsflags=nodocs -y python3 python3-requests && \
+    curl https://raw.githubusercontent.com/openstack/tripleo-repos/master/plugins/module_utils/tripleo_repos/main.py | python3 - -b master current-tripleo
+
+RUN prepare-image.sh && \
+    rm -f /bin/prepare-image.sh && \
+    /bin/prepare-ipxe.sh && \
+    rm -f /tmp/prepare-ipxe.sh
+
+COPY scripts/* /bin/
+
+# IRONIC #
+COPY --from=builder /tmp/esp.img /tmp/uefi_esp.img
+
+COPY ironic-config/ironic.conf.j2 /etc/ironic/
+COPY ironic-config/dnsmasq.conf.j2 /etc/
+COPY ironic-config/inspector.ipxe.j2 ironic-config/ironic-python-agent.ign.j2 /tmp/
+
+# Custom httpd config, removes all but the bare minimum needed modules
+COPY ironic-config/httpd.conf /etc/httpd/conf.d/
+COPY ironic-config/httpd-modules.conf /etc/httpd/conf.modules.d/
+COPY ironic-config/apache2-ironic-api.conf.j2 /etc/httpd-ironic-api.conf.j2
+COPY ironic-config/apache2-vmedia.conf.j2 /etc/httpd-vmedia.conf.j2
+COPY ironic-config/apache2-proxy.conf.j2 /etc/httpd-proxy.conf.j2
+
+RUN mkdir -p /var/lib/ironic /var/lib/ironic-inspector && \
+  sqlite3 /var/lib/ironic/ironic.db "pragma journal_mode=wal" && \
+  sqlite3 /var/lib/ironic-inspector/ironic-inspector.db "pragma journal_mode=wal" && \
+  dnf remove -y sqlite
+
+# IRONIC-INSPECTOR #
+COPY ironic-inspector-config/ironic-inspector.conf.j2 /etc/ironic-inspector/
+COPY ironic-inspector-config/inspector-apache.conf.j2 /etc/httpd/conf.d/
+
+ENV IS_SCOS=true
