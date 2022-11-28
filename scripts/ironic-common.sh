@@ -5,6 +5,7 @@ set -euxo pipefail
 IRONIC_IP="${IRONIC_IP:-}"
 PROVISIONING_INTERFACE="${PROVISIONING_INTERFACE:-}"
 PROVISIONING_IP="${PROVISIONING_IP:-}"
+PROVISIONING_MACS="${PROVISIONING_MACS:-}"
 
 function get_provisioning_interface() {
   if [ -n "$PROVISIONING_INTERFACE" ]; then
