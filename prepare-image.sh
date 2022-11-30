@@ -22,5 +22,8 @@ chown ironic:ironic /var/log/ironic
 # This file is generated after installing mod_ssl and it affects our configuration
 rm -f /etc/httpd/conf.d/ssl.conf /etc/httpd/conf.d/autoindex.conf /etc/httpd/conf.d/welcome.conf /etc/httpd/conf.modules.d/*.conf
 
+# RDO-provided configuration forces creating log files
+rm -f /usr/share/ironic/ironic-dist.conf /etc/ironic-inspector/inspector-dist.conf
+
 dnf clean all
 rm -rf /var/cache/{yum,dnf}/*
