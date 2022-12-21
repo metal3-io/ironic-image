@@ -1,4 +1,5 @@
 dnsmasq
+dosfstools
 httpd
 httpd-tools
 ipcalc
@@ -11,4 +12,5 @@ python3-mod_wsgi
 qemu-img
 sqlite
 syslinux-nonlinux
+util-linux
 xorriso
