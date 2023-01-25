@@ -97,3 +97,6 @@ configure_client_basic_auth() {
 
 configure_client_basic_auth ironic-inspector
 configure_client_basic_auth ironic-rpc
+
+# Make sure ironic traffic bypasses any proxies
+export NO_PROXY="${NO_PROXY:-},$IRONIC_IP"

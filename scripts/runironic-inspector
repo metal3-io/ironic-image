@@ -61,4 +61,7 @@ if [[ "$INSPECTOR_REVERSE_PROXY_SETUP" == "false" && "${RESTART_CONTAINER_CERTIF
     done &
 fi
 
+# Make sure ironic traffic bypasses any proxies
+export NO_PROXY="${NO_PROXY:-},$IRONIC_IP"
+
 exec /usr/bin/ironic-inspector $CONFIG_OPTIONS
