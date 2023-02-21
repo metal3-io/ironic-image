@@ -11,3 +11,4 @@ python3-proliantutils
 python3-scciclient
 python3-sushy
 python3-sushy-oem-idrac
+python3-werkzeug >= 2.0.3-4

@@ -34,3 +34,4 @@ sushy @ git+https://opendev.org/openstack/sushy@{{ env.SUSHY_SOURCE }}
 sushy
 {% endif %}
 sushy-oem-idrac
+Werkzeug
