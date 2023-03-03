@@ -1,4 +1,4 @@
-FROM registry.hub.docker.com/library/python:3.9
+FROM docker.io/library/python:3.9
 
 ARG SUSHY_TOOLS_VERSION="0.21.0"
 ARG DEBIAN_FRONTEND=noninteractive
