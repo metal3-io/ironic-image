@@ -30,7 +30,7 @@ export INSPECTOR_HTPASSWD=${INSPECTOR_HTPASSWD:-${HTTP_BASIC_HTPASSWD:-}}
 
 function build_j2_config() {
   CONFIG_FILE=$1
-python3 -c 'import os; import sys; import jinja2; sys.stdout.write(jinja2.Template(sys.stdin.read()).render(env=os.environ))' < $CONFIG_FILE.j2
+  python3 -c 'import os; import sys; import jinja2; sys.stdout.write(jinja2.Template(sys.stdin.read()).render(env=os.environ))' < $CONFIG_FILE.j2
 }
 
 # Merge with the original configuration file from the package.

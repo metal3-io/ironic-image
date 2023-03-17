@@ -38,8 +38,6 @@ if [ "$IRONIC_INSPECTOR_TLS_SETUP" = "true" ]; then
     if [[ "${INSPECTOR_REVERSE_PROXY_SETUP}" == "true" ]]; then
       render_j2_config $INSPECTOR_ORIG_HTTPD_CONFIG $INSPECTOR_RESULT_HTTPD_CONFIG
     fi
-    # Add user 'apache' to the group `ironic-inspector`, so httpd can access /etc/ironic-inspector and read the pasword file
-    usermod -aG ironic-inspector apache
 else
     export INSPECTOR_REVERSE_PROXY_SETUP="false" # If TLS is not used, we have no reason to use the reverse proxy
 fi
@@ -48,8 +46,6 @@ if [ "$IRONIC_TLS_SETUP" = "true" ]; then
     if [[ "${IRONIC_REVERSE_PROXY_SETUP}" == "true" ]]; then
       render_j2_config /etc/httpd-ironic-api.conf.j2 /etc/httpd/conf.d/ironic.conf
     fi
-    # Add user 'apache' to the group `ironic-inspector`, so httpd can access /etc/ironic-inspector and read the pasword file
-    usermod -aG ironic apache
 else
     export IRONIC_REVERSE_PROXY_SETUP="false" # If TLS is not used, we have no reason to use the reverse proxy
 fi
@@ -77,6 +73,11 @@ sed -i -e 's|\(^[[:space:]]*\)\(DocumentRoot\)\(.*\)|\1\2 "/shared/html"|' \
 # Log to std out/err
 sed -i -e 's%^ \+CustomLog.*%    CustomLog /dev/stderr combined%g' /etc/httpd/conf/httpd.conf
 sed -i -e 's%^ErrorLog.*%ErrorLog /dev/stderr%g' /etc/httpd/conf/httpd.conf
+
+# put pidfile somewhere we can write as nonroot
+cat <<'EOF' >>/etc/httpd/conf/httpd.conf
+PidFile /var/tmp/httpd.pid
+EOF
 
 if [ "$IRONIC_VMEDIA_TLS_SETUP" = "true" ]; then
     render_j2_config /etc/httpd-vmedia.conf.j2 /etc/httpd/conf.d/vmedia.conf
