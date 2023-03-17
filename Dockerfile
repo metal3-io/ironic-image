@@ -34,7 +34,7 @@ ARG SUSHY_SOURCE
 COPY sources /sources/
 
 COPY ironic-${INSTALL_TYPE}-list ${PKGS_LIST} ${EXTRA_PKGS_LIST:-$PKGS_LIST} ${PATCH_LIST:-$PKGS_LIST} /tmp/
-COPY prepare-image.sh patch-image.sh /bin/
+COPY prepare-image.sh patch-image.sh configure-nonroot.sh /bin/
 
 RUN prepare-image.sh && \
   rm -f /bin/prepare-image.sh
@@ -64,3 +64,6 @@ RUN mkdir -p /var/lib/ironic /var/lib/ironic-inspector && \
 COPY ironic-inspector-config/ironic-inspector.conf.j2 /etc/ironic-inspector/
 COPY ironic-inspector-config/inspector-apache.conf.j2 /etc/httpd/conf.d/
 
+# configure non-root user and set relevant permissions
+RUN configure-nonroot.sh && \
+  rm -f /bin/configure-nonroot.sh
