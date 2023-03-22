@@ -1,5 +1,8 @@
 #!/usr/bin/bash
 
+set -eux
+
+# shellcheck disable=SC1091
 . /bin/ironic-common.sh
 
 export HTTP_PORT=${HTTP_PORT:-"80"}
@@ -11,7 +14,6 @@ if [[ "${DNS_IP:-}" == "provisioning" ]]; then
     export DNS_IP="$IRONIC_URL_HOST"
 fi
 
-
 mkdir -p /shared/tftpboot
 mkdir -p /shared/tftpboot/arm64-efi
 mkdir -p /shared/html/images
@@ -22,10 +24,14 @@ cp /tftpboot/undionly.kpxe /tftpboot/snponly.efi /shared/tftpboot
 cp /tftpboot/arm64-efi/snponly.efi /shared/tftpboot/arm64-efi
 
 # Template and write dnsmasq.conf
-python3 -c 'import os; import sys; import jinja2; sys.stdout.write(jinja2.Template(sys.stdin.read()).render(env=os.environ))' </etc/dnsmasq.conf.j2 >/etc/dnsmasq.conf
+# we template via /tmp as sed otherwise creates temp files in /etc directory
+# where we can't write
+python3 -c 'import os; import sys; import jinja2; sys.stdout.write(jinja2.Template(sys.stdin.read()).render(env=os.environ))' </etc/dnsmasq.conf.j2 >/tmp/dnsmasq.conf
 
 for iface in $( echo "$DNSMASQ_EXCEPT_INTERFACE" | tr ',' ' '); do
-    sed -i -e "/^interface=.*/ a\except-interface=${iface}" /etc/dnsmasq.conf
+    sed -i -e "/^interface=.*/ a\except-interface=${iface}" /tmp/dnsmasq.conf
 done
+cat /tmp/dnsmasq.conf > /etc/dnsmasq.conf
+rm /tmp/dnsmasq.conf
 
 exec /usr/sbin/dnsmasq -d -q -C /etc/dnsmasq.conf
