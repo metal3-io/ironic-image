@@ -37,7 +37,7 @@ if [[ $INSTALL_TYPE == "source" ]]; then
 
     python3 -c 'import os; import sys; import jinja2; sys.stdout.write(jinja2.Template(sys.stdin.read()).render(env=os.environ, path=os.path))' < "${IRONIC_PKG_LIST}" > "${IRONIC_PKG_LIST_FINAL}"
 
-    if [[ -n $SUSHY_SOURCE ]]; then
+    if [[ -n ${SUSHY_SOURCE:-} ]]; then
         curl -L ${UPPER_CONSTRAINTS_FILE:-"https://releases.openstack.org/constraints/upper/master"} -o /tmp/sushy-constraints.txt
         UPPER_CONSTRAINTS_FILE="/tmp/sushy-constraints.txt"
         sed -i '/^sushy===/d' $UPPER_CONSTRAINTS_FILE
