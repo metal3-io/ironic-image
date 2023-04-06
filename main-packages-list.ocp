@@ -12,9 +12,9 @@ ipxe-bootimgs-aarch64
 ipxe-bootimgs-x86
 ipxe-roms-qemu
 mod_ssl
-openstack-ironic >= 1:21.2.0-0.20221209211422.b70b418.el9
-openstack-ironic-api >= 1:21.2.0-0.20221209211422.b70b418.el9
-openstack-ironic-conductor >= 1:21.2.0-0.20221209211422.b70b418.el9
+openstack-ironic >= 1:21.3.1-0.20230308192801.b90ca64.el9
+openstack-ironic-api >= 1:21.3.1-0.20230308192801.b90ca64.el9
+openstack-ironic-conductor >= 1:21.3.1-0.20230308192801.b90ca64.el9
 openstack-ironic-inspector >= 11.2.0-0.20221128164644.d83454c.el9
 python3-cinderclient >= 9.1.0-0.20221128151726.730a8c7.el9
 python3-debtcollector >= 2.5.0-0.20221128140303.a6b46c5.el9
@@ -35,7 +35,7 @@ python3-oslo-context >= 5.0.0-0.20221128142633.f388eb9.el
 python3-oslo-db >= 12.2.0-0.20221128163146.a191d2e.el9
 python3-oslo-i18n >= 5.1.0-0.20221128135758.b031d17.el9
 python3-oslo-log >= 5.0.0-0.20221128143137.6401da7.el9
-python3-oslo-messaging >= 14.0.0-0.20221128151928.e44f286.el9
+python3-oslo-messaging >= 14.1.0-0.20230308164807.9f710ce.el9
 python3-oslo-policy >= 4.0.0-0.20221128143837.5bd767b.el9
 python3-oslo-serialization >= 5.0.0-0.20221128142424.dd2a819.el9
 python3-oslo-service >= 3.0.0-0.20221128144658.a27acfe.el9
