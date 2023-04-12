@@ -6,16 +6,24 @@
 
 wait_for_interface_or_ip
 
-export HTTP_PORT=${HTTP_PORT:-6386}
+export IRONIC_PROXY_PORT=${IRONIC_PROXY_PORT:-${HTTP_PORT:-6386}}
+export IRONIC_INSPECTOR_PROXY_PORT=${IRONIC_INSPECTOR_PROXY_PORT:-}
 export IRONIC_UPSTREAM_IP=${IRONIC_UPSTREAM_IP:-$IRONIC_IP}
 export IRONIC_UPSTREAM_PORT=${IRONIC_UPSTREAM_PORT:-6385}
 export IRONIC_UPSTREAM_PROTO=${IRONIC_UPSTREAM_PROTO:-$IRONIC_SCHEME}
+export IRONIC_INSPECTOR_UPSTREAM_IP=${IRONIC_INSPECTOR_UPSTREAM_IP:-$IRONIC_IP}
+export IRONIC_INSPECTOR_UPSTREAM_PORT=${IRONIC_INSPECTOR_UPSTREAM_PORT:-5050}
+export IRONIC_INSPECTOR_UPSTREAM_PROTO=${IRONIC_INSPECTOR_UPSTREAM_PROTO:-$IRONIC_UPSTREAM_PROTO}
 
 if [[ "$IRONIC_UPSTREAM_IP" =~ .*:.* ]]; then
     export IRONIC_UPSTREAM_IP="[$IRONIC_UPSTREAM_IP]"
 fi
 
-sed -i 's/^Listen .*$/Listen [::]:'"$HTTP_PORT"'/' /etc/httpd/conf/httpd.conf
+if [[ "$IRONIC_INSPECTOR_UPSTREAM_IP" =~ .*:.* ]]; then
+    export IRONIC_INSPECTOR_UPSTREAM_IP="[$IRONIC_INSPECTOR_UPSTREAM_IP]"
+fi
+
+sed -i 's/^Listen .*$/Listen [::]:'"$IRONIC_PROXY_PORT"'/' /etc/httpd/conf/httpd.conf
 # Log to std out/err
 sed -i -e 's%^ \+CustomLog.*%    CustomLog /dev/stderr combined%g' /etc/httpd/conf/httpd.conf
 sed -i -e 's%^ErrorLog.*%ErrorLog /dev/stderr%g' /etc/httpd/conf/httpd.conf

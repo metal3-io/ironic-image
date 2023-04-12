@@ -1,4 +1,4 @@
-<VirtualHost *:{{ env.HTTP_PORT }}>
+<VirtualHost *:{{ env.IRONIC_PROXY_PORT }}>
 
     ErrorLog /dev/stderr
     LogLevel debug
@@ -29,3 +29,37 @@
     {% endif %}
 </VirtualHost>
 
+{% if env.IRONIC_INSPECTOR_PROXY_PORT %}
+Listen {{ env.IRONIC_INSPECTOR_PROXY_PORT }}
+
+<VirtualHost *:{{ env.IRONIC_INSPECTOR_PROXY_PORT }}>
+
+    ErrorLog /dev/stderr
+    LogLevel debug
+    CustomLog /dev/stdout combined
+
+    ProxyPass "/"  "{{ env.IRONIC_INSPECTOR_UPSTREAM_PROTO }}://{{ env.IRONIC_INSPECTOR_UPSTREAM_IP }}:{{ env.IRONIC_INSPECTOR_UPSTREAM_PORT }}/"
+    ProxyPassReverse "/"  "{{ env.IRONIC_INSPECTOR_UPSTREAM_PROTO }}://{{ env.IRONIC_INSPECTOR_UPSTREAM_IP }}:{{ env.IRONIC_INSPECTOR_UPSTREAM_PORT }}/"
+    {% if env.IRONIC_INSPECTOR_UPSTREAM_PROTO == "https" %}
+    SSLProxyEngine On
+
+    {% if env.IRONIC_INSPECTOR_INSECURE == "true" %}
+    SSLProxyVerify none
+    SSLProxyCheckPeerExpire off
+    {% else %}
+    SSLProxyCACertificateFile {{ env.IRONIC_INSPECTOR_CERT_FILE }}
+    SSLProxyVerify require
+    SSLProxyCheckPeerExpire on
+    {% endif %}
+    SSLProxyCheckPeerName off
+
+    {% endif %}
+
+    {% if env.IRONIC_INSPECTOR_TLS_SETUP == "true" %}
+    SSLEngine on
+    SSLProtocol {{ env.IRONIC_SSL_PROTOCOL }}
+    SSLCertificateFile {{ env.IRONIC_INSPECTOR_CERT_FILE }}
+    SSLCertificateKeyFile {{ env.IRONIC_INSPECTOR_KEY_FILE }}
+    {% endif %}
+</VirtualHost>
+{% endif %}
