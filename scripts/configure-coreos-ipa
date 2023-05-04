@@ -1,5 +1,6 @@
 #!/usr/bin/bash
 
+# shellcheck disable=SC1091
 . /bin/ironic-common.sh
 . /bin/coreos-ipa-common.sh
 
@@ -16,7 +17,7 @@ IRONIC_CERT_FILE=/certs/ironic/tls.crt
 
 wait_for_interface_or_ip
 
-if [ -f "$IRONIC_CERT_FILE" ]; then
+if [[ -f "$IRONIC_CERT_FILE" ]]; then
     export IRONIC_BASE_URL="https://${IRONIC_URL_HOST}"
 else
     export IRONIC_BASE_URL="http://${IRONIC_URL_HOST}"
@@ -24,8 +25,8 @@ fi
 
 render_j2_config /tmp/ironic-python-agent.ign.j2 "$IGNITION_FILE"
 # Print the generated ignition for debugging purposes.
-cat "$IGNITION_FILE" | sed '/authfile/,+1 s/data:.*"/<redacted>"/'
+sed '/authfile/,+1 s/data:.*"/<redacted>"/' "$IGNITION_FILE"
 
-if [ -f "$ISO_FILE" ]; then
+if [[ -f "$ISO_FILE" ]]; then
     coreos-installer iso ignition embed -i "$IGNITION_FILE" -f "$ISO_FILE"
 fi
