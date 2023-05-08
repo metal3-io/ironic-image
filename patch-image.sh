@@ -6,10 +6,10 @@ VARS="PROJECT REFSPEC GIT_HOST"
 
 dnf install -y python3-pip
 
-while IFS= read -r line
-do
-    IFS=' ' read -r $VARS <<< $line
-    PROJ_NAME=$(echo $PROJECT | cut -d "/" -f2)
+while IFS= read -r line; do
+    # shellcheck disable=SC2086,SC2229
+    IFS=' ' read -r $VARS <<< "$line"
+    PROJ_NAME=$(echo "$PROJECT" | cut -d "/" -f2)
     PROJ_URL="${GIT_HOST:-"https://opendev.org"}/$PROJECT"
 
     cd /tmp

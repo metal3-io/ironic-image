@@ -5,8 +5,8 @@ set -eux
 # shellcheck disable=SC1091
 . /bin/ironic-common.sh
 
-export HTTP_PORT=${HTTP_PORT:-"80"}
-DNSMASQ_EXCEPT_INTERFACE=${DNSMASQ_EXCEPT_INTERFACE:-"lo"}
+export HTTP_PORT=${HTTP_PORT:-80}
+DNSMASQ_EXCEPT_INTERFACE=${DNSMASQ_EXCEPT_INTERFACE:-lo}
 export DNS_PORT=${DNS_PORT:-0}
 
 wait_for_interface_or_ip
@@ -26,7 +26,7 @@ cp /tftpboot/undionly.kpxe /tftpboot/snponly.efi /shared/tftpboot
 # where we can't write
 python3 -c 'import os; import sys; import jinja2; sys.stdout.write(jinja2.Template(sys.stdin.read()).render(env=os.environ))' </etc/dnsmasq.conf.j2 >/tmp/dnsmasq.conf
 
-for iface in $( echo "$DNSMASQ_EXCEPT_INTERFACE" | tr ',' ' '); do
+for iface in $(echo "$DNSMASQ_EXCEPT_INTERFACE" | tr ',' ' '); do
     sed -i -e "/^interface=.*/ a\except-interface=${iface}" /tmp/dnsmasq.conf
 done
 cat /tmp/dnsmasq.conf > /etc/dnsmasq.conf

@@ -14,7 +14,7 @@ RUN git clone --depth 1 --branch v1.21.1 https://github.com/ipxe/ipxe.git && \
       cd ipxe/src && \
       ARCH=$(uname -m | sed 's/aarch/arm/') && \
       # NOTE(elfosardo): warning should not be treated as errors by default
-      NO_WERROR=1 make bin/undionly.kpxe bin-$ARCH-efi/snponly.efi
+      NO_WERROR=1 make bin/undionly.kpxe "bin-$ARCH-efi/snponly.efi"
 
 COPY prepare-efi.sh /bin/
 RUN prepare-efi.sh centos
