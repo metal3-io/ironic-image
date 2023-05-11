@@ -12,9 +12,9 @@ if [ $(uname -m) = "x86_64" ]; then
     dnf install -y syslinux-nonlinux;
 fi
 
-if [[ -n ${EXTRA_PKGS_LIST:-} ]]; then
-    if [[ -s /tmp/${EXTRA_PKGS_LIST} ]]; then
-        xargs -rtd'\n' dnf install -y < /tmp/${EXTRA_PKGS_LIST}
+if [[ -n "${EXTRA_PKGS_LIST:-}" ]]; then
+    if [[ -s "/tmp/${EXTRA_PKGS_LIST}" ]]; then
+        xargs -rtd'\n' dnf install -y < /tmp/"${EXTRA_PKGS_LIST}"
     fi
 fi
 
