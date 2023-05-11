@@ -1,23 +1,24 @@
 #!/usr/bin/bash
 
 IRONIC_CERT_FILE=${IRONIC_CERT_FILE:-/certs/ironic/tls.crt}
-export HTTP_PORT=${HTTP_PORT:-"80"}
+export HTTP_PORT=${HTTP_PORT:-80}
 
 # Whether to enable fast_track provisioning or not
 IRONIC_FAST_TRACK=${IRONIC_FAST_TRACK:-true}
 
 wait_for_interface_or_ip
 
+# shellcheck disable=SC2174
 mkdir -pm 0777 /shared/html
 
-if [ -f "$IRONIC_CERT_FILE" ]; then
+if [[ -f "$IRONIC_CERT_FILE" ]]; then
     IRONIC_BASE_URL="https://${IRONIC_URL_HOST}"
 else
     IRONIC_BASE_URL="http://${IRONIC_URL_HOST}"
 fi
 
 INSPECTOR_EXTRA_ARGS=" ipa-inspection-callback-url=${IRONIC_BASE_URL}:${IRONIC_INSPECTOR_ACCESS_PORT}/v1/continue"
-if [[ $IRONIC_FAST_TRACK == true ]]; then
+if [[ "$IRONIC_FAST_TRACK" == "true" ]]; then
     INSPECTOR_EXTRA_ARGS+=" ipa-api-url=${IRONIC_BASE_URL}:${IRONIC_ACCESS_PORT}"
 fi
 export INSPECTOR_EXTRA_ARGS
