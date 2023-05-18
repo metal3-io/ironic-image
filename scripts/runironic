@@ -15,4 +15,13 @@ configure_restart_on_certificate_update "${IRONIC_TLS_SETUP}" ironic "${IRONIC_C
 
 configure_ironic_auth
 
+if [[ -d "${BMC_CACERTS_PATH}" ]]; then
+    # shellcheck disable=SC2034
+    watchmedo shell-command \
+        --patterns="*" \
+        --ignore-directories \
+        --command='cat "${BMC_CACERTS_PATH}"/* > "${BMC_CACERT_FILE}"' \
+        "${BMC_CACERTS_PATH}" &
+fi
+
 exec /usr/bin/ironic --config-dir "${IRONIC_CONF_DIR}"

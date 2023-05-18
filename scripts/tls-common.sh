@@ -17,6 +17,8 @@ export IPXE_KEY_FILE=/certs/ipxe/tls.key
 export RESTART_CONTAINER_CERTIFICATE_UPDATED=${RESTART_CONTAINER_CERTIFICATE_UPDATED:-"false"}
 
 export MARIADB_CACERT_FILE=/certs/ca/mariadb/tls.crt
+export BMC_CACERTS_PATH=/certs/ca/bmc
+export BMC_CACERT_FILE=/conf/bmc-tls.pem
 
 export IPXE_TLS_PORT="${IPXE_TLS_PORT:-8084}"
 
@@ -109,3 +111,10 @@ configure_restart_on_certificate_update()
             done &
     fi
 }
+
+if [ -d "${BMC_CACERTS_PATH}" ]; then
+    export BMC_TLS_ENABLED="true"
+    cat "${BMC_CACERTS_PATH}"/* > "${BMC_CACERT_FILE}"
+else
+    export BMC_TLS_ENABLED="false"
+fi
