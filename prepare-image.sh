@@ -10,6 +10,8 @@ echo "tsflags=nodocs" >> /etc/dnf/dnf.conf
 
 dnf install -y python3 python3-requests 'dnf-command(config-manager)'
 
+# NOTE(elfosardo): building the container using ironic RPMs is
+# now deprecated and it will be removed in the future.
 # RPM install #
 if [[ "$INSTALL_TYPE" == "rpm" ]]; then
     curl https://raw.githubusercontent.com/openstack/tripleo-repos/master/plugins/module_utils/tripleo_repos/main.py | python3 - -b master current-tripleo

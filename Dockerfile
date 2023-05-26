@@ -24,7 +24,7 @@ FROM $BASE_IMAGE
 ENV PKGS_LIST=main-packages-list.txt
 ARG EXTRA_PKGS_LIST
 ARG PATCH_LIST
-ARG INSTALL_TYPE=rpm
+ARG INSTALL_TYPE=source
 
 # build arguments for source build customization
 ARG IRONIC_SOURCE
