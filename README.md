@@ -70,7 +70,8 @@ functionality:
    parameters to nodes running IPA
 - `GATEWAY_IP` - gateway IP address to use for ironic dnsmasq(dhcpd)
 - `DNS_IP` - DNS IP address to use for ironic dnsmasq(dhcpd)
-- `IRONIC_IPA_COLLECTORS` - Use a custom set of collectors to be run on inspection. (default `default,extra-hardware,logs`)
+- `IRONIC_IPA_COLLECTORS` - Use a custom set of collectors to be run on
+   inspection. (default `default,extra-hardware,logs`)
 
 The ironic configuration can be overridden by various environment variables.
 The following can serve as an example:
