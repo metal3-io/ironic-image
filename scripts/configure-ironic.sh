@@ -38,6 +38,9 @@ export IRONIC_AUTOMATED_CLEAN=${IRONIC_AUTOMATED_CLEAN:-true}
 # Wheter to enable the sensor data collection
 export SEND_SENSOR_DATA=${SEND_SENSOR_DATA:-false}
 
+# Set of collectors that should be used with IPA inspection
+export IRONIC_IPA_COLLECTORS=${IRONIC_IPA_COLLECTORS:-default,extra-hardware,logs}
+
 wait_for_interface_or_ip
 
 export IRONIC_BASE_URL="${IRONIC_SCHEME}://${IRONIC_URL_HOST}:${IRONIC_ACCESS_PORT}"
