@@ -82,15 +82,18 @@ The following can serve as an example:
    callback from the ramdisk doing the cleaning
 - `OS_PXE__BOOT_RETRY_TIMEOUT=1200` - timeout (seconds) to enable boot retries.
 
-## Build Ironic Image from source
+## Build Ironic Image from RPMs
 
-Normally the ironic image is built using RPMs coming from the RDO project.
-It is possible to build it using source code setting the **INSTALL_TYPE**
-argument to **source** at build time; for example:
+The ironic image is built using RPMs for system software and source
+code for ironic specific software and libraries.
+It is possible to build it using RPMs from RDO project code setting the **INSTALL_TYPE**
+argument to **rpm** at build time; for example:
 
 ```bash
-podman build -t ironic-image -f Dockerfile --build-arg INSTALL_TYPE=source
+podman build -t ironic-image -f Dockerfile --build-arg INSTALL_TYPE=rpm
 ```
+
+## Custom source for ironic software
 
 When building the ironic image from source, it is also possible to specify a
 different source for ironic, ironic-inspector or the sushy library using the
