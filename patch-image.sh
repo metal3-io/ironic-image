@@ -4,7 +4,7 @@ set -ex
 PATCH_FILE="/tmp/${PATCH_LIST}"
 VARS="PROJECT REFSPEC GIT_HOST"
 
-dnf install -y python3-pip
+dnf install -y python3-pip git-core
 
 while IFS= read -r line; do
     # shellcheck disable=SC2086,SC2229
@@ -22,4 +22,5 @@ while IFS= read -r line; do
     pip3 install --prefix /usr dist/*.tar.gz
 done < "$PATCH_FILE"
 
+dnf remove -y python3-pip git-core
 cd /
