@@ -89,6 +89,7 @@ usermod -aG ironic-inspector apache
 dnf clean all
 rm -rf /var/cache/{yum,dnf}/*
 
+#test
 # apply patches if present #
 if [[ -n "${PATCH_LIST:-}" ]]; then
     if [[ -s "/tmp/${PATCH_LIST}" ]]; then
