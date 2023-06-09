@@ -86,9 +86,6 @@ rm -f /usr/share/ironic/ironic-dist.conf /etc/ironic-inspector/inspector-dist.co
 usermod -aG ironic apache
 usermod -aG ironic-inspector apache
 
-dnf clean all
-rm -rf /var/cache/{yum,dnf}/*
-
 # apply patches if present #
 if [[ -n "${PATCH_LIST:-}" ]]; then
     if [[ -s "/tmp/${PATCH_LIST}" ]]; then
@@ -96,3 +93,6 @@ if [[ -n "${PATCH_LIST:-}" ]]; then
     fi
 fi
 rm -f /bin/patch-image.sh
+
+dnf clean all
+rm -rf /var/cache/{yum,dnf}/*
