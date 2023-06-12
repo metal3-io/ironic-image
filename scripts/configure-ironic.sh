@@ -17,7 +17,16 @@ export IRONIC_INSPECTOR_VLAN_INTERFACES=${IRONIC_INSPECTOR_VLAN_INTERFACES:-all}
 . /bin/ironic-common.sh
 
 export HTTP_PORT=${HTTP_PORT:-80}
-export MARIADB_PASSWORD=${MARIADB_PASSWORD:-change_me}
+
+MARIADB_PASSWORD=${MARIADB_PASSWORD:-change_me}
+MARIADB_DATABASE=${MARIADB_DATABASE:-ironic}
+MARIADB_USER=${MARIADB_USER:-ironic}
+MARIADB_HOST=${MARIADB_HOST:-127.0.0.1}
+export MARIADB_CONNECTION="mysql+pymysql://${MARIADB_USER}:${MARIADB_PASSWORD}@${MARIADB_HOST}/${MARIADB_DATABASE}?charset=utf8"
+if [[ "$MARIADB_TLS_ENABLED" == "true" ]]; then
+    export MARIADB_CONNECTION="${MARIADB_CONNECTION}&ssl=on&ssl_ca=${MARIADB_CACERT_FILE}"
+fi
+
 # TODO(dtantsur): remove the explicit default once we get
 # https://review.opendev.org/761185 in the repositories
 NUMPROC="$(grep -c "^processor" /proc/cpuinfo)"
