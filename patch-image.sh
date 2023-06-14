@@ -18,9 +18,12 @@ while IFS= read -r line; do
     git fetch "$PROJ_URL" "$REFSPEC"
     git checkout FETCH_HEAD
 
+    /usr/bin/python3 -m pip install --upgrade pip
+    pip3 install -U setuptools
+
     SKIP_GENERATE_AUTHORS=1 SKIP_WRITE_GIT_CHANGELOG=1 python3 setup.py sdist
     pip3 install --prefix /usr dist/*.tar.gz
 done < "$PATCH_FILE"
 
-dnf remove -y python3-pip git-core
+dnf remove -y python3-pip git-core setuptools
 cd /
