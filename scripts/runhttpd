@@ -16,7 +16,7 @@ export INSPECTOR_REVERSE_PROXY_SETUP=${INSPECTOR_REVERSE_PROXY_SETUP:-false}
 IRONIC_FAST_TRACK=${IRONIC_FAST_TRACK:-true}
 
 # Set of collectors that should be used with IPA inspection
-export IRONIC_IPA_COLLECTORS=${IRONIC_IPA_COLLECTORS:-default,extra-hardware,logs}
+export IRONIC_IPA_COLLECTORS=${IRONIC_IPA_COLLECTORS:-default,logs}
 
 wait_for_interface_or_ip
 

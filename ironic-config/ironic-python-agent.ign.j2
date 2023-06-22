@@ -20,7 +20,7 @@ inspection_callback_url = {{ env.IRONIC_BASE_URL }}:{{ env.IRONIC_INSPECTOR_ACCE
 
 collect_lldp = True
 enable_vlan_interfaces = {{ env.IRONIC_INSPECTOR_VLAN_INTERFACES }}
-inspection_collectors = default,extra-hardware,logs
+inspection_collectors = default,logs
 inspection_dhcp_all_interfaces = True
 {% endset -%}
 
