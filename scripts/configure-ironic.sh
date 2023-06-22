@@ -50,7 +50,7 @@ export IRONIC_AUTOMATED_CLEAN=${IRONIC_AUTOMATED_CLEAN:-true}
 export SEND_SENSOR_DATA=${SEND_SENSOR_DATA:-false}
 
 # Set of collectors that should be used with IPA inspection
-export IRONIC_IPA_COLLECTORS=${IRONIC_IPA_COLLECTORS:-default,extra-hardware,logs}
+export IRONIC_IPA_COLLECTORS=${IRONIC_IPA_COLLECTORS:-default,logs}
 
 wait_for_interface_or_ip
 
