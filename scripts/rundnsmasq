@@ -4,6 +4,8 @@ set -eux
 
 # shellcheck disable=SC1091
 . /bin/ironic-common.sh
+# shellcheck disable=SC1091
+. /bin/tls-common.sh
 
 export HTTP_PORT=${HTTP_PORT:-80}
 DNSMASQ_EXCEPT_INTERFACE=${DNSMASQ_EXCEPT_INTERFACE:-lo}
@@ -19,7 +21,13 @@ mkdir -p /shared/html/images
 mkdir -p /shared/html/pxelinux.cfg
 
 # Copy files to shared mount
-cp /tftpboot/undionly.kpxe /tftpboot/snponly.efi /shared/tftpboot
+if [[ -r "${IPXE_CUSTOM_FIRMWARE_DIR}" ]]; then
+    cp "${IPXE_CUSTOM_FIRMWARE_DIR}/undionly.kpxe" \
+        "${IPXE_CUSTOM_FIRMWARE_DIR}/snponly.efi" \
+        "/shared/tftpboot"
+else
+    cp /tftpboot/undionly.kpxe /tftpboot/snponly.efi /shared/tftpboot
+fi
 
 # Template and write dnsmasq.conf
 # we template via /tmp as sed otherwise creates temp files in /etc directory

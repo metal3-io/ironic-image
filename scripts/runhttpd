@@ -79,6 +79,16 @@ if [[ "$IRONIC_VMEDIA_TLS_SETUP" == "true" ]]; then
     render_j2_config /etc/httpd-vmedia.conf.j2 /etc/httpd/conf.d/vmedia.conf
 fi
 
+# Render httpd TLS configuration for /shared/html
+if [[ "$IPXE_TLS_SETUP" == "true" ]]; then
+    mkdir -p /shared/html/custom-ipxe
+    chmod 0777 /shared/html/custom-ipxe
+    render_j2_config "/etc/httpd-ipxe.conf.j2" "/etc/httpd/conf.d/ipxe.conf"
+    cp "${IPXE_CUSTOM_FIRMWARE_DIR}/undionly.kpxe" \
+       "${IPXE_CUSTOM_FIRMWARE_DIR}/snponly.efi" \
+       "/shared/html/custom-ipxe"
+fi
+
 # Set up inotify to kill the container (restart) whenever cert files for ironic inspector change
 if [[ "$IRONIC_INSPECTOR_TLS_SETUP" == "true" ]] && [[ "${RESTART_CONTAINER_CERTIFICATE_UPDATED}" == "true" ]]; then
     # shellcheck disable=SC2034

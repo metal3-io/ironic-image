@@ -208,6 +208,7 @@ kernel_append_params = nofb nomodeset vga=normal ipa-insecure=1 {% if env.IRONIC
 enable_netboot_fallback = true
 # Enable the fallback path to ironic-inspector
 ipxe_fallback_script = inspector.ipxe
+ipxe_config_template = /tmp/ipxe_config.template
 
 [redfish]
 use_swift = false
