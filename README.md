@@ -52,6 +52,9 @@ functionality:
 - `DNSMASQ_EXCEPT_INTERFACE` - interfaces to exclude when providing DHCP address
   (default `lo`)
 - `HTTP_PORT` - port used by http server (default `80`)
+- `HTTPD_SERVE_NODE_IMAGES` - used by runhttpd script, controls access
+   to the `/shared/html/images` directory via the default virtual host
+   `(HTTP_PORT)`.  (default `true`)
 - `DHCP_RANGE` - dhcp range to use for provisioning (default
    `172.22.0.10-172.22.0.100`)
 - `DHCP_HOSTS` - a `;` separated list of `dhcp-host` entries, e.g. known MAC
@@ -72,6 +75,8 @@ functionality:
 - `DNS_IP` - DNS IP address to use for ironic dnsmasq(dhcpd)
 - `IRONIC_IPA_COLLECTORS` - Use a custom set of collectors to be run on
    inspection. (default `default,logs`)
+- `HTTPD_ENABLE_SENDFILE` - Whether to activate the EnableSendfile apache
+   directive for httpd `(default, false)`
 
 The ironic configuration can be overridden by various environment variables.
 The following can serve as an example:
