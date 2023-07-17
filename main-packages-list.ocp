@@ -12,9 +12,9 @@ ipxe-bootimgs-aarch64
 ipxe-bootimgs-x86
 ipxe-roms-qemu
 mod_ssl
-openstack-ironic >= 1:21.5.0-0.20230607120551.82f9bad.el9
-openstack-ironic-api >= 1:21.5.0-0.20230607120551.82f9bad.el9
-openstack-ironic-conductor >= 1:21.5.0-0.20230607120551.82f9bad.el9
+openstack-ironic >= 1:21.5.0-0.20230714120536.b5dd85a.el9
+openstack-ironic-api >= 1:21.5.0-0.20230714120536.b5dd85a.el9
+openstack-ironic-conductor >= 1:21.5.0-0.20230714120536.b5dd85a.el9
 openstack-ironic-inspector >= 11.5.0-0.20230511190615.da8836d.el9
 python3-automaton >= 3.1.0-0.20230608140652.a4f7631.el9
 python3-cinderclient >= 9.3.0-0.20230608143053.f7a612e.el9
