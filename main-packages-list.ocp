@@ -12,10 +12,10 @@ ipxe-bootimgs-aarch64
 ipxe-bootimgs-x86
 ipxe-roms-qemu
 mod_ssl
-openstack-ironic >= 1:21.5.0-0.20230714120536.b5dd85a.el9
-openstack-ironic-api >= 1:21.5.0-0.20230714120536.b5dd85a.el9
-openstack-ironic-conductor >= 1:21.5.0-0.20230714120536.b5dd85a.el9
-openstack-ironic-inspector >= 11.5.0-0.20230511190615.da8836d.el9
+openstack-ironic >= 1:21.5.0-0.20230731152221.537060c.el9
+openstack-ironic-api >= 1:21.5.0-0.20230731152221.537060c.el9
+openstack-ironic-conductor >= 1:21.5.0-0.20230731152221.537060c.el9
+openstack-ironic-inspector >= 11.5.0-0.20230706175125.193aa0d.el9
 python3-automaton >= 3.1.0-0.20230608140652.a4f7631.el9
 python3-cinderclient >= 9.3.0-0.20230608143053.f7a612e.el9
 python3-cliff >= 4.3.0-0.20230608150702.72e81d7.el9
@@ -26,8 +26,8 @@ python3-flask >= 2:2.0.1-4.el9.2
 python3-futurist >= 2.4.1-0.20230308173923.159d752.el9
 python3-gunicorn >= 20.0.4-2.el9
 python3-glanceclient >= 4.3.0-0.20230608143056.52fb6b2.el9
-python3-ironic-lib >= 5.4.1-0.20230511160530.0df3587.el9
-python3-ironic-prometheus-exporter >= 4.2.0-0.20230425150548.c52f0a7.el9
+python3-ironic-lib >= 5.4.1-0.20230706172632.25d8671.el9
+python3-ironic-prometheus-exporter >= 4.1.1-0.20230614150617.7b35627.el9
 python3-ironicclient >= 4.9.0-0.20211209154934.6f1be06.el9
 python3-jinja2 >= 2-3.0.1-2.el9.1
 python3-keystoneauth1 >= 5.2.0-0.20230608152518.2e40bbf.el9
@@ -55,7 +55,7 @@ python3-proliantutils >= 2.14.1-0.20230608154738.3de2844.el9
 python3-pyghmi >= 1.5.14-2.1.el9ost
 python3-scciclient >= 0.12.3-0.20230308201513.0940a71.el9
 python3-stevedore >= 5.1.0-0.20230608154210.2d99ccc.el9
-python3-sushy >= 4.5.0-0.20230505140622.8fec952.el9
+python3-sushy >= 4.5.0-0.20230719180619.146ed33.el9
 python3-sushy-oem-idrac >= 5.0.0-0.20230308202122.da9a0e4.el9
 python3-tooz >= 4.1.0-0.20230608154038.d5bf20c.el9
 python3-werkzeug >= 2.0.3-4.el9
