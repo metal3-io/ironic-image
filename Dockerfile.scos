@@ -15,7 +15,7 @@ COPY ${PKGS_LIST} ${EXTRA_PKGS_LIST:-$PKGS_LIST} /tmp/
 COPY prepare-image.sh prepare-ipxe.sh configure-nonroot.sh /bin/
 
 # Configure OpenStack repos
-RUN sed -i 's/ >=.*//g' /tmp/main-packages-list.ocp && \
+RUN sed -E -i 's/( =.*| >=.*)//g' /tmp/main-packages-list.ocp && \
     dnf install --setopt=install_weak_deps=False --setopt=tsflags=nodocs -y python3 python3-requests && \
     curl https://raw.githubusercontent.com/openstack/tripleo-repos/master/plugins/module_utils/tripleo_repos/main.py | python3 - -b master current-tripleo
 
