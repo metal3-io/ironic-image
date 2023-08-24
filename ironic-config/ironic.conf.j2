@@ -99,6 +99,7 @@ connection = sqlite:////var/lib/ironic/ironic.sqlite
 # crash. In our case we restart the container from scratch, so we can save some
 # IO by not doing syncs all the time.
 sqlite_synchronous = False
+connection_debug = 100
 {% else %}
 connection = {{ env.MARIADB_CONNECTION }}
 {% endif %}
