@@ -94,5 +94,8 @@ if [[ -n "${PATCH_LIST:-}" ]]; then
 fi
 rm -f /bin/patch-image.sh
 
+# https://github.com/metal3-io/cluster-api-provider-metal3/issues/1082
+pip install 'SQLAlchemy>=1.4.46,<2.0'
+
 dnf clean all
 rm -rf /var/cache/{yum,dnf}/*
