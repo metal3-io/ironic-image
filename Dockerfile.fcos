@@ -16,8 +16,8 @@ COPY prepare-image.sh prepare-ipxe.sh configure-nonroot.sh /bin/
 
 # Configure OpenStack repos
 RUN sed -E -i 's/( =.*| >=.*)//g' /tmp/main-packages-list.ocp && \
-    dnf install --setopt=install_weak_deps=False --setopt=tsflags=nodocs -y python3 python3-requests && \
-    curl https://raw.githubusercontent.com/openstack/tripleo-repos/master/plugins/module_utils/tripleo_repos/main.py | python3 - -b master current-tripleo
+    curl -o /etc/yum.repos.d/delorean.repo https://trunk.rdoproject.org/centos9-master/puppet-passed-ci/delorean.repo && \
+    curl -o /etc/yum.repos.d/delorean-deps.repo https://trunk.rdoproject.org/centos9-master/delorean-deps.repo
 
 RUN prepare-image.sh && \
     rm -f /bin/prepare-image.sh && \
