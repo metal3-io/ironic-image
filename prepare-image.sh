@@ -8,13 +8,15 @@ echo "install_weak_deps=False" >> /etc/dnf/dnf.conf
 # Tell RPM to skip installing documentation
 echo "tsflags=nodocs" >> /etc/dnf/dnf.conf
 
-dnf install -y python3 python3-requests 'dnf-command(config-manager)'
+dnf install -y 'dnf-command(config-manager)'
 
 # NOTE(elfosardo): building the container using ironic RPMs is
 # now deprecated and it will be removed in the future.
 # RPM install #
 if [[ "$INSTALL_TYPE" == "rpm" ]]; then
-    curl https://raw.githubusercontent.com/openstack/tripleo-repos/master/plugins/module_utils/tripleo_repos/main.py | python3 - -b master current-tripleo
+    curl -o /etc/yum.repos.d/delorean.repo https://trunk.rdoproject.org/centos9-master/puppet-passed-ci/delorean.repo && \
+    curl -o /etc/yum.repos.d/delorean-deps.repo https://trunk.rdoproject.org/centos9-master/delorean-deps.repo
+
     # NOTE(elfosardo): enable CRB repo for more python3 dependencies
     dnf config-manager --set-enabled crb
     dnf upgrade -y
