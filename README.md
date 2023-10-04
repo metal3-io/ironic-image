@@ -103,12 +103,13 @@ podman build -t ironic-image -f Dockerfile --build-arg INSTALL_TYPE=rpm
 ## Custom source for ironic software
 
 When building the ironic image from source, it is also possible to specify a
-different source for ironic, ironic-inspector or the sushy library using the
-build arguments **IRONIC_SOURCE**, **IRONIC_INSPECTOR_SOURCE**, and
-**SUSHY_SOURCE**. The accepted formats are gerrit refs, like
-_refs/changes/89/860689/2_, commit hashes, like
-_a1fe6cb41e6f0a1ed0a43ba5e17745714f206f1f_, or a local directory
-that needs to be under the sources/ directory in the container context.
+different source for ironic, ironic-inspector, ironic-lib or the sushy library
+using the build arguments **IRONIC_SOURCE**, **IRONIC_INSPECTOR_SOURCE**,
+**IRONIC_LIB_SOURCE**, and **SUSHY_SOURCE**.
+The accepted formats are gerrit refs, like _refs/changes/89/860689/2_,
+commit hashes, like _a1fe6cb41e6f0a1ed0a43ba5e17745714f206f1f_,
+repo tags or branches, or a local directory that needs to be under the
+sources/ directory in the container context.
 An example of a full command installing ironic from a gerrit patch is:
 
 ```bash
