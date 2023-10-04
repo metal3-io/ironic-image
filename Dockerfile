@@ -29,6 +29,7 @@ ARG INSTALL_TYPE=source
 # build arguments for source build customization
 ARG IRONIC_SOURCE
 ARG IRONIC_INSPECTOR_SOURCE
+ARG IRONIC_LIB_SOURCE
 ARG SUSHY_SOURCE
 
 COPY sources /sources/
