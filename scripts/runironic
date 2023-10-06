@@ -8,9 +8,6 @@ export IRONIC_EXPOSE_JSON_RPC=${IRONIC_EXPOSE_JSON_RPC:-false}
 # shellcheck disable=SC1091
 . /bin/configure-ironic.sh
 
-export IRONIC_HTPASSWD=${IRONIC_HTPASSWD:-}
-export IRONIC_REVERSE_PROXY_SETUP=${IRONIC_REVERSE_PROXY_SETUP:-false}
-
 # Ramdisk logs
 mkdir -p /shared/log/ironic/deploy
 
@@ -21,18 +18,6 @@ if [[ "$IRONIC_TLS_SETUP" == "true" ]] && [[ "${RESTART_CONTAINER_CERTIFICATE_UP
     inotifywait -m -e delete_self "${IRONIC_CERT_FILE}" | while read -r file event; do
         kill $(pgrep ironic)
     done &
-fi
-
-CONFIG=/etc/ironic/ironic.conf
-
-# Configure HTTP basic auth for API server
-HTPASSWD_FILE=/etc/ironic/htpasswd
-if [[ -n "${IRONIC_HTPASSWD}" ]]; then
-    printf "%s\n" "${IRONIC_HTPASSWD}" >"${HTPASSWD_FILE}"
-    if [[ "$IRONIC_REVERSE_PROXY_SETUP" == "false" ]]; then
-        crudini --set "$CONFIG" DEFAULT auth_strategy http_basic
-        crudini --set "$CONFIG" DEFAULT http_basic_auth_user_file "${HTPASSWD_FILE}"
-    fi
 fi
 
 exec /usr/bin/ironic

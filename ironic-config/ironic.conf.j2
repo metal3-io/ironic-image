@@ -110,8 +110,10 @@ connection = sqlite:////var/lib/ironic/ironic.sqlite
 # crash. In our case we restart the container from scratch, so we can save some
 # IO by not doing syncs all the time.
 sqlite_synchronous = False
+{% elif env.MARIADB_TLS_ENABLED == "true" %}
+connection = mysql+pymysql://ironic:{{ env.MARIADB_PASSWORD }}@127.0.0.1/ironic?charset=utf8&ssl=on&ssl_ca={{ env.MARIADB_CACERT_FILE }}
 {% else %}
-connection = {{ env.MARIADB_CONNECTION }}
+connection = mysql+pymysql://ironic:{{ env.MARIADB_PASSWORD }}@127.0.0.1/ironic?charset=utf8
 {% endif %}
 
 [deploy]
@@ -146,7 +148,7 @@ insecure = {{ env.IRONIC_INSPECTOR_INSECURE }}
 # NOTE(dtantsur): keep inspection arguments synchronized with inspector.ipxe
 # Also keep in mind that only parameters unique for inspection go here.
 # No need to duplicate pxe_append_params/kernel_append_params.
-extra_kernel_params = ipa-inspection-collectors={{ env.IRONIC_IPA_COLLECTORS }} ipa-enable-vlan-interfaces={{ env.IRONIC_INSPECTOR_VLAN_INTERFACES }} ipa-inspection-dhcp-all-interfaces=1 ipa-collect-lldp=1
+extra_kernel_params = ipa-inspection-collectors=default,extra-hardware,logs ipa-enable-vlan-interfaces={{ env.IRONIC_INSPECTOR_VLAN_INTERFACES }} ipa-inspection-dhcp-all-interfaces=1 ipa-collect-lldp=1
 {% if env.IRONIC_INSPECTOR_CALLBACK_ENDPOINT_OVERRIDE %}
 callback_endpoint_override = {{ env.IRONIC_INSPECTOR_CALLBACK_ENDPOINT_OVERRIDE }}
 {% endif %}
@@ -212,7 +214,7 @@ images_path = /shared/html/tmp
 instance_master_path = /shared/html/master_images
 tftp_master_path = /shared/tftpboot/master_images
 tftp_root = /shared/tftpboot
-kernel_append_params = nofb nomodeset vga=normal ipa-insecure=1 {% if env.IRONIC_RAMDISK_SSH_KEY %}sshkey="{{ env.IRONIC_RAMDISK_SSH_KEY|trim }}"{% endif %} {{ env.IRONIC_KERNEL_PARAMS|trim }} systemd.journald.forward_to_console=yes
+kernel_append_params = nofb nomodeset vga=normal ipa-insecure=1 {% if env.IRONIC_RAMDISK_SSH_KEY %}sshkey="{{ env.IRONIC_RAMDISK_SSH_KEY|trim }}"{% endif %} {{ env.IRONIC_KERNEL_PARAMS|trim }}
 # This makes networking boot templates generated even for nodes using local
 # boot (the default), ensuring that they boot correctly even if they start
 # netbooting for some reason (e.g. with the noop management interface).
@@ -222,14 +224,14 @@ ipxe_fallback_script = inspector.ipxe
 
 [redfish]
 use_swift = false
-kernel_append_params = nofb nomodeset vga=normal ipa-insecure=1 {% if env.IRONIC_RAMDISK_SSH_KEY %}sshkey="{{ env.IRONIC_RAMDISK_SSH_KEY|trim }}"{% endif %} {{ env.IRONIC_KERNEL_PARAMS|trim }} systemd.journald.forward_to_console=yes
+kernel_append_params = nofb nomodeset vga=normal ipa-insecure=1 {% if env.IRONIC_RAMDISK_SSH_KEY %}sshkey="{{ env.IRONIC_RAMDISK_SSH_KEY|trim }}"{% endif %} {{ env.IRONIC_KERNEL_PARAMS|trim }}
 
 [ilo]
-kernel_append_params = nofb nomodeset vga=normal ipa-insecure=1 {% if env.IRONIC_RAMDISK_SSH_KEY %}sshkey="{{ env.IRONIC_RAMDISK_SSH_KEY|trim }}"{% endif %} {{ env.IRONIC_KERNEL_PARAMS|trim }} systemd.journald.forward_to_console=yes
+kernel_append_params = nofb nomodeset vga=normal ipa-insecure=1 {% if env.IRONIC_RAMDISK_SSH_KEY %}sshkey="{{ env.IRONIC_RAMDISK_SSH_KEY|trim }}"{% endif %} {{ env.IRONIC_KERNEL_PARAMS|trim }}
 use_web_server_for_images = true
 
 [irmc]
-kernel_append_params = nofb nomodeset vga=normal ipa-insecure=1 {% if env.IRONIC_RAMDISK_SSH_KEY %}sshkey="{{ env.IRONIC_RAMDISK_SSH_KEY|trim }}"{% endif %} {{ env.IRONIC_KERNEL_PARAMS|trim }} systemd.journald.forward_to_console=yes
+kernel_append_params = nofb nomodeset vga=normal ipa-insecure=1 {% if env.IRONIC_RAMDISK_SSH_KEY %}sshkey="{{ env.IRONIC_RAMDISK_SSH_KEY|trim }}"{% endif %} {{ env.IRONIC_KERNEL_PARAMS|trim }}
 
 [service_catalog]
 endpoint_override = {{ env.IRONIC_BASE_URL }}

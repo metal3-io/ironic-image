@@ -7,7 +7,7 @@ export IRONIC_DEPLOYMENT="API"
 
 export IRONIC_REVERSE_PROXY_SETUP=false
 
-python3 -c 'import os; import sys; import jinja2; sys.stdout.write(jinja2.Template(sys.stdin.read()).render(env=os.environ))' < /tmp/httpd-ironic-api.conf.j2 > /etc/httpd/conf.d/ironic.conf
+python3 -c 'import os; import sys; import jinja2; sys.stdout.write(jinja2.Template(sys.stdin.read()).render(env=os.environ))' < /etc/httpd-ironic-api.conf.j2 > /etc/httpd/conf.d/ironic.conf
 
 # shellcheck disable=SC1091
 . /bin/runhttpd

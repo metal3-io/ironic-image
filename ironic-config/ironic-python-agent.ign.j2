@@ -1,0 +1,66 @@
+{% set service %}
+[Unit]
+Description=Ironic Agent
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+TimeoutStartSec=0
+ExecStartPre=/bin/podman pull {{ env.IRONIC_AGENT_IMAGE }} {{ env.IRONIC_AGENT_PODMAN_FLAGS }} {% if env.IRONIC_AGENT_PULL_SECRET %}--authfile=/etc/authfile.json{% endif %}
+ExecStart=/bin/podman run --privileged --network host --mount type=bind,src=/etc/ironic-python-agent.conf,dst=/etc/ironic-python-agent/ignition.conf --mount type=bind,src=/dev,dst=/dev --mount type=bind,src=/sys,dst=/sys --mount type=bind,src=/,dst=/mnt/coreos --name ironic-agent {{ env.IRONIC_AGENT_IMAGE }}
+
+[Install]
+WantedBy=multi-user.target
+{% endset -%}
+
+{% set ipa_config %}
+[DEFAULT]
+api_url = {{ env.IRONIC_BASE_URL }}:{{ env.IRONIC_ACCESS_PORT }}
+inspection_callback_url = {{ env.IRONIC_BASE_URL }}:{{ env.IRONIC_INSPECTOR_ACCESS_PORT }}/v1/continue
+
+collect_lldp = True
+enable_vlan_interfaces = {{ env.IRONIC_INSPECTOR_VLAN_INTERFACES }}
+inspection_collectors = default,extra-hardware,logs
+inspection_dhcp_all_interfaces = True
+{% endset -%}
+
+
+{
+  "ignition": {
+    "version": "3.0.0"
+  },
+  {% if env.IRONIC_RAMDISK_SSH_KEY %}
+  "passwd": {
+    "users": [
+      {
+        "name": "core",
+        "sshAuthorizedKeys": [
+          "{{ env.IRONIC_RAMDISK_SSH_KEY | trim }}"
+        ]
+      }
+    ]
+  },
+  {% endif -%}
+  "storage": {
+    "files": [
+      {
+        "path": "/etc/ironic-python-agent.conf",
+        "contents": {"source": "data:,{{ ipa_config | urlencode }}"}
+      }{% if env.IRONIC_AGENT_PULL_SECRET %},
+      {
+        "path": "/etc/authfile.json",
+        "contents": {"source": "data:;base64,{{ env.IRONIC_AGENT_PULL_SECRET | trim }}"}
+      }
+      {% endif %}
+    ]
+  },
+  "systemd": {
+    "units": [
+      {
+        "contents": "{{ service | trim | replace('\n', '\\n') }}",
+        "enabled": true,
+        "name": "ironic-agent.service"
+      }
+    ]
+  }
+}

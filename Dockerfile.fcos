@@ -30,14 +30,13 @@ COPY scripts/* /bin/
 COPY --from=builder /tmp/esp.img /tmp/uefi_esp.img
 
 COPY ironic-config/ironic.conf.j2 /etc/ironic/
-COPY ironic-config/inspector.ipxe.j2 ironic-config/httpd-ironic-api.conf.j2 /tmp/
-
-# DNSMASQ #
 COPY ironic-config/dnsmasq.conf.j2 /etc/
+COPY ironic-config/inspector.ipxe.j2 ironic-config/ironic-python-agent.ign.j2 /tmp/
 
 # Custom httpd config, removes all but the bare minimum needed modules
-COPY ironic-config/httpd.conf.j2 /etc/httpd/conf/
+COPY ironic-config/httpd.conf /etc/httpd/conf.d/
 COPY ironic-config/httpd-modules.conf /etc/httpd/conf.modules.d/
+COPY ironic-config/apache2-ironic-api.conf.j2 /etc/httpd-ironic-api.conf.j2
 COPY ironic-config/apache2-vmedia.conf.j2 /etc/httpd-vmedia.conf.j2
 COPY ironic-config/apache2-proxy.conf.j2 /etc/httpd-proxy.conf.j2
 

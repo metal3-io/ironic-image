@@ -17,16 +17,7 @@ export IRONIC_INSPECTOR_VLAN_INTERFACES=${IRONIC_INSPECTOR_VLAN_INTERFACES:-all}
 . /bin/ironic-common.sh
 
 export HTTP_PORT=${HTTP_PORT:-80}
-
-MARIADB_PASSWORD=${MARIADB_PASSWORD:-change_me}
-MARIADB_DATABASE=${MARIADB_DATABASE:-ironic}
-MARIADB_USER=${MARIADB_USER:-ironic}
-MARIADB_HOST=${MARIADB_HOST:-127.0.0.1}
-export MARIADB_CONNECTION="mysql+pymysql://${MARIADB_USER}:${MARIADB_PASSWORD}@${MARIADB_HOST}/${MARIADB_DATABASE}?charset=utf8"
-if [[ "$MARIADB_TLS_ENABLED" == "true" ]]; then
-    export MARIADB_CONNECTION="${MARIADB_CONNECTION}&ssl=on&ssl_ca=${MARIADB_CACERT_FILE}"
-fi
-
+export MARIADB_PASSWORD=${MARIADB_PASSWORD:-change_me}
 # TODO(dtantsur): remove the explicit default once we get
 # https://review.opendev.org/761185 in the repositories
 NUMPROC="$(grep -c "^processor" /proc/cpuinfo)"
@@ -47,13 +38,10 @@ export IRONIC_AUTOMATED_CLEAN=${IRONIC_AUTOMATED_CLEAN:-true}
 # Wheter to enable the sensor data collection
 export SEND_SENSOR_DATA=${SEND_SENSOR_DATA:-false}
 
-# Set of collectors that should be used with IPA inspection
-export IRONIC_IPA_COLLECTORS=${IRONIC_IPA_COLLECTORS:-default,extra-hardware,logs}
-
 wait_for_interface_or_ip
 
-export IRONIC_BASE_URL=${IRONIC_BASE_URL:-"${IRONIC_SCHEME}://${IRONIC_URL_HOST}:${IRONIC_ACCESS_PORT}"}
-export IRONIC_INSPECTOR_BASE_URL=${IRONIC_INSPECTOR_BASE_URL:-"${IRONIC_INSPECTOR_SCHEME}://${IRONIC_URL_HOST}:${IRONIC_INSPECTOR_ACCESS_PORT}"}
+export IRONIC_BASE_URL="${IRONIC_SCHEME}://${IRONIC_URL_HOST}:${IRONIC_ACCESS_PORT}"
+export IRONIC_INSPECTOR_BASE_URL="${IRONIC_INSPECTOR_SCHEME}://${IRONIC_URL_HOST}:${IRONIC_INSPECTOR_ACCESS_PORT}"
 
 if [[ -n "$IRONIC_EXTERNAL_IP" ]]; then
     export IRONIC_EXTERNAL_CALLBACK_URL="${IRONIC_SCHEME}://${IRONIC_EXTERNAL_IP}:${IRONIC_ACCESS_PORT}"

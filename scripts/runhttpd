@@ -12,18 +12,8 @@ INSPECTOR_RESULT_HTTPD_CONFIG=/etc/httpd/conf.d/ironic-inspector.conf
 export IRONIC_REVERSE_PROXY_SETUP=${IRONIC_REVERSE_PROXY_SETUP:-false}
 export INSPECTOR_REVERSE_PROXY_SETUP=${INSPECTOR_REVERSE_PROXY_SETUP:-false}
 
-# In Metal3 context they are called node images in Ironic context they are
-# called user images.
-export HTTPD_SERVE_NODE_IMAGES="${HTTPD_SERVE_NODE_IMAGES:-true}"
-
 # Whether to enable fast_track provisioning or not
 IRONIC_FAST_TRACK=${IRONIC_FAST_TRACK:-true}
-
-# Whether to activate the EnableSendfile apache directive for httpd
-HTTPD_ENABLE_SENDFILE="${HTTPD_ENABLE_SENDFILE:-false}"
-
-# Set of collectors that should be used with IPA inspection
-export IRONIC_IPA_COLLECTORS=${IRONIC_IPA_COLLECTORS:-default,extra-hardware,logs}
 
 wait_for_interface_or_ip
 
@@ -44,10 +34,6 @@ export INSPECTOR_EXTRA_ARGS
 # Copy files to shared mount
 render_j2_config /tmp/inspector.ipxe.j2 /shared/html/inspector.ipxe
 cp /tmp/uefi_esp.img /shared/html/uefi_esp.img
-mv /etc/httpd/conf/httpd.conf /etc/httpd/conf/httpd.conf.example
-
-# Render the core httpd config
-render_j2_config /etc/httpd/conf/httpd.conf.j2 /etc/httpd/conf/httpd.conf
 
 if [[ "$IRONIC_INSPECTOR_TLS_SETUP" == "true" ]]; then
     if [[ "${INSPECTOR_REVERSE_PROXY_SETUP}" == "true" ]]; then
@@ -59,7 +45,7 @@ fi
 
 if [[ "$IRONIC_TLS_SETUP" == "true" ]]; then
     if [[ "${IRONIC_REVERSE_PROXY_SETUP}" == "true" ]]; then
-        render_j2_config /tmp/httpd-ironic-api.conf.j2 /etc/httpd/conf.d/ironic.conf
+        render_j2_config /etc/httpd-ironic-api.conf.j2 /etc/httpd/conf.d/ironic.conf
     fi
 else
     export IRONIC_REVERSE_PROXY_SETUP="false" # If TLS is not used, we have no reason to use the reverse proxy
@@ -68,21 +54,36 @@ fi
 export IRONIC_HTPASSWD=${IRONIC_HTPASSWD:-${HTTP_BASIC_HTPASSWD:-}}
 export INSPECTOR_HTPASSWD=${INSPECTOR_HTPASSWD:-${HTTP_BASIC_HTPASSWD:-}}
 
-# Set basic auth credentials for Ironic API server
+# Configure HTTP basic auth for API server
 if [[ -n "${IRONIC_HTPASSWD:-}" ]]; then
     printf "%s\n" "${IRONIC_HTPASSWD}" > /etc/ironic/htpasswd
 fi
-# Set basic auth credentials for Ironic Inspector server
 if [[ -n "${INSPECTOR_HTPASSWD:-}" ]]; then
     printf "%s\n" "${INSPECTOR_HTPASSWD}" > /etc/ironic-inspector/htpasswd
 fi
 
-# Render httpd TLS configuration for /shared/html/<redifsh;ilo>
+if [[ "${LISTEN_ALL_INTERFACES}" == "true" ]]; then
+    sed -i 's/^Listen .*$/Listen [::]:'"$HTTP_PORT"'/' /etc/httpd/conf/httpd.conf
+else
+    sed -i 's/^Listen .*$/Listen '"$IRONIC_URL_HOST"':'"$HTTP_PORT"'/' /etc/httpd/conf/httpd.conf
+fi
+sed -i -e 's|\(^[[:space:]]*\)\(DocumentRoot\)\(.*\)|\1\2 "/shared/html"|' \
+    -e 's|<Directory "/var/www/html">|<Directory "/shared/html">|' \
+    -e 's|<Directory "/var/www">|<Directory "/shared">|' /etc/httpd/conf/httpd.conf
+
+# Log to std out/err
+sed -i -e 's%^ \+CustomLog.*%    CustomLog /dev/stderr combined%g' /etc/httpd/conf/httpd.conf
+sed -i -e 's%^ErrorLog.*%ErrorLog /dev/stderr%g' /etc/httpd/conf/httpd.conf
+
+# put pidfile somewhere we can write as nonroot
+cat <<'EOF' >>/etc/httpd/conf/httpd.conf
+PidFile /var/tmp/httpd.pid
+EOF
+
 if [[ "$IRONIC_VMEDIA_TLS_SETUP" == "true" ]]; then
     render_j2_config /etc/httpd-vmedia.conf.j2 /etc/httpd/conf.d/vmedia.conf
 fi
 
-# Set up inotify to kill the container (restart) whenever cert files for ironic inspector change
 if [[ "$IRONIC_INSPECTOR_TLS_SETUP" == "true" ]] && [[ "${RESTART_CONTAINER_CERTIFICATE_UPDATED}" == "true" ]]; then
     # shellcheck disable=SC2034
     inotifywait -m -e delete_self "${IRONIC_INSPECTOR_CERT_FILE}" | while read -r file event; do
@@ -90,7 +91,6 @@ if [[ "$IRONIC_INSPECTOR_TLS_SETUP" == "true" ]] && [[ "${RESTART_CONTAINER_CERT
     done &
 fi
 
-# Set up inotify to kill the container (restart) whenever cert files for ironic api change
 if [[ "$IRONIC_TLS_SETUP" == "true" ]] && [[ "${RESTART_CONTAINER_CERTIFICATE_UPDATED}" == "true" ]]; then
     # shellcheck disable=SC2034
     inotifywait -m -e delete_self "${IRONIC_CERT_FILE}" | while read -r file event; do
@@ -98,7 +98,6 @@ if [[ "$IRONIC_TLS_SETUP" == "true" ]] && [[ "${RESTART_CONTAINER_CERTIFICATE_UP
     done &
 fi
 
-# Set up inotify to kill the container (restart) whenever cert of httpd for /shared/html/<redifsh;ilo> path change
 if [[ "$IRONIC_VMEDIA_TLS_SETUP" == "true" ]] && [[ "${RESTART_CONTAINER_CERTIFICATE_UPDATED}" == "true" ]]; then
     # shellcheck disable=SC2034
     inotifywait -m -e delete_self "${IRONIC_VMEDIA_CERT_FILE}" | while read -r file event; do
