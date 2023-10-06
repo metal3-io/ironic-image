@@ -11,11 +11,10 @@
 # under the License.
 
 
-{% if env.LISTEN_ALL_INTERFACES | lower == "true" %}
 Listen {{ env.IRONIC_INSPECTOR_LISTEN_PORT }}
+{% if env.LISTEN_ALL_INTERFACES | lower == "true" %}
  <VirtualHost *:{{ env.IRONIC_INSPECTOR_LISTEN_PORT }}>
 {% else %}
-Listen {{ env.IRONIC_URL_HOST }}:{{ env.IRONIC_INSPECTOR_LISTEN_PORT }}
  <VirtualHost {{ env.IRONIC_URL_HOST }}:{{ env.IRONIC_INSPECTOR_LISTEN_PORT }}>
 {% endif %}
     {% if env.IRONIC_INSPECTOR_PRIVATE_PORT == "unix" %}

@@ -18,7 +18,7 @@ get_provisioning_interface()
     local interface="provisioning"
     for mac in ${PROVISIONING_MACS//,/ }; do
         if ip -br link show up | grep -qi "$mac"; then
-            interface="$(ip -br link show up | grep -i "$mac" | cut -f 1 -d ' ' | cut -f 1 -d '@')"
+            interface="$(ip -br link show up | grep -i "$mac" | cut -f 1 -d ' ')"
             break
         fi
     done

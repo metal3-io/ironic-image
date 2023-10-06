@@ -10,13 +10,12 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+Listen {{ env.IRONIC_LISTEN_PORT }}
 
 {% if env.LISTEN_ALL_INTERFACES | lower == "true" %}
-Listen {{ env.IRONIC_LISTEN_PORT }}
- <VirtualHost *:{{ env.IRONIC_LISTEN_PORT }}>
+<VirtualHost *:{{ env.IRONIC_LISTEN_PORT }}>
 {% else %}
-Listen {{ env.IRONIC_URL_HOST }}:{{ env.IRONIC_LISTEN_PORT }}
- <VirtualHost {{ env.IRONIC_URL_HOST }}:{{ env.IRONIC_LISTEN_PORT }}>
+<VirtualHost {{ env.IRONIC_URL_HOST }}:{{ env.IRONIC_LISTEN_PORT }}>
 {% endif %}
 
     {% if env.IRONIC_REVERSE_PROXY_SETUP | lower == "true" %}

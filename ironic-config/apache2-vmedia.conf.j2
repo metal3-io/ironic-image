@@ -9,15 +9,6 @@ Listen {{ env.VMEDIA_TLS_PORT }}
     SSLProtocol {{ env.IRONIC_VMEDIA_SSL_PROTOCOL }}
     SSLCertificateFile {{ env.IRONIC_VMEDIA_CERT_FILE }}
     SSLCertificateKeyFile {{ env.IRONIC_VMEDIA_KEY_FILE }}
-
-    <Directory ~ "/shared/html">
-         Order deny,allow
-         deny from all
-    </Directory>
-    <Directory ~ "/shared/html/(redfish|ilo)/">
-         Order allow,deny
-         allow from all
-    </Directory>
 </VirtualHost>
 
 <Location ~ "^/(redfish|ilo)/">
