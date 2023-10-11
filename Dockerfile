@@ -27,6 +27,7 @@ ARG PATCH_LIST
 ARG INSTALL_TYPE=source
 
 # build arguments for source build customization
+ARG UPPER_CONSTRAINTS_FILE
 ARG IRONIC_SOURCE
 ARG IRONIC_INSPECTOR_SOURCE
 ARG IRONIC_LIB_SOURCE
@@ -34,7 +35,7 @@ ARG SUSHY_SOURCE
 
 COPY sources /sources/
 
-COPY ironic-${INSTALL_TYPE}-list ${PKGS_LIST} ${EXTRA_PKGS_LIST:-$PKGS_LIST} ${PATCH_LIST:-$PKGS_LIST} /tmp/
+COPY ${UPPER_CONSTRAINTS_FILE} ironic-${INSTALL_TYPE}-list ${PKGS_LIST} ${EXTRA_PKGS_LIST:-$PKGS_LIST} ${PATCH_LIST:-$PKGS_LIST} /tmp/
 COPY prepare-image.sh patch-image.sh configure-nonroot.sh /bin/
 
 RUN prepare-image.sh && \

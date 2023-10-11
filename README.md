@@ -124,6 +124,12 @@ podman build -t ironic-image -f Dockerfile --build-arg INSTALL_TYPE=source \
     --build-arg IRONIC_SOURCE="ironic"
 ```
 
+It is also possible to specify an upper-constraints file using the
+**UPPER_CONSTRAINTS_FILE** argument. By default this is the upper-constraints.txt
+file found in the container context; the content of the file can be modified
+keeping the default name or it's possible to specify an entire different
+filename as far as it's in the container context.
+
 ## Apply project patches to the images during build
 
 When building the image, it is possible to specify a patch of one or more

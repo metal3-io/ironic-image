@@ -41,13 +41,24 @@ if [[ "$INSTALL_TYPE" == "source" ]]; then
 
     python3 -c 'import os; import sys; import jinja2; sys.stdout.write(jinja2.Template(sys.stdin.read()).render(env=os.environ, path=os.path))' < "${IRONIC_PKG_LIST}" > "${IRONIC_PKG_LIST_FINAL}"
 
-    if [[ -n ${SUSHY_SOURCE:-} ]]; then
-        curl -L "${UPPER_CONSTRAINTS_FILE:-https://releases.openstack.org/constraints/upper/master}" -o /tmp/sushy-constraints.txt
-        UPPER_CONSTRAINTS_FILE="/tmp/sushy-constraints.txt"
-        sed -i '/^sushy===/d' "$UPPER_CONSTRAINTS_FILE"
+    UPPER_CONSTRAINTS_PATH="/tmp/${UPPER_CONSTRAINTS_FILE:-}"
+
+    # NOTE(elfosardo): if the content of the upper-constraints file is empty,
+    # we give as assumed that we're on the master branch
+    if [[ ! -f "${UPPER_CONSTRAINTS_PATH}" ]]; then
+        UPPER_CONSTRAINTS_PATH="/tmp/upper-constraints.txt"
+        curl -L https://releases.openstack.org/constraints/upper/master -o "${UPPER_CONSTRAINTS_PATH}"
     fi
 
-    python3 -m pip install --ignore-installed --prefix /usr -r "$IRONIC_PKG_LIST_FINAL" -c "${UPPER_CONSTRAINTS_FILE:-https://releases.openstack.org/constraints/upper/master}"
+    if [[ -n ${SUSHY_SOURCE:-} ]]; then
+        sed -i '/^sushy===/d' "$UPPER_CONSTRAINTS_PATH"
+    fi
+
+    if [[ -n ${IRONIC_LIB_SOURCE:-} ]]; then
+        sed -i '/^ironic-lib===/d' "$UPPER_CONSTRAINTS_PATH"
+    fi
+
+    python3 -m pip install --ignore-installed --prefix /usr -r "$IRONIC_PKG_LIST_FINAL" -c "${UPPER_CONSTRAINTS_PATH}"
 
     # ironic and ironic-inspector system configuration
     mkdir -p /var/log/ironic /var/log/ironic-inspector /var/lib/ironic /var/lib/ironic-inspector
