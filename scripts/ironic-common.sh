@@ -38,7 +38,7 @@ wait_for_interface_or_ip()
         # Convert the address using ipcalc which strips out the subnet. For IPv6 addresses, this will give the short-form address
         IRONIC_IP="$(ipcalc "${PROVISIONING_IP}" | grep "^Address:" | awk '{print $2}')"
         export IRONIC_IP
-        until ip -br addr show | grep -q -F " ${IRONIC_IP}/"; do
+        until grep -F " ${IRONIC_IP}/" <(ip -br addr show); do
             echo "Waiting for ${IRONIC_IP} to be configured on an interface"
             sleep 1
         done
