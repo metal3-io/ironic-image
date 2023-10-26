@@ -19,9 +19,9 @@ INSPECTOR_GROUP="ironic-inspector"
 # we'll bind mount shared ca and ironic/inspector certificate dirs here
 # that need to have correct ownership as the entire ironic in BMO
 # deployment shares a single fsGroup in manifest's securityContext
-mkdir -p /certs
-chown "${IRONIC_USER}":"${INSPECTOR_GROUP}" /certs
-chmod 2775 /certs
+mkdir -p /certs/ca
+chown "${IRONIC_USER}":"${INSPECTOR_GROUP}" /certs{,/ca}
+chmod 2775 /certs{,/ca}
 
 # ironic, inspector and httpd related changes
 chown -R root:"${IRONIC_GROUP}" /etc/ironic /etc/httpd/conf /etc/httpd/conf.d
