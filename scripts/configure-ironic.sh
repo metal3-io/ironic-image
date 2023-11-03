@@ -15,6 +15,8 @@ export IRONIC_INSPECTOR_VLAN_INTERFACES=${IRONIC_INSPECTOR_VLAN_INTERFACES:-all}
 . /bin/tls-common.sh
 # shellcheck disable=SC1091
 . /bin/ironic-common.sh
+# shellcheck disable=SC1091
+. /bin/auth-common.sh
 
 export HTTP_PORT=${HTTP_PORT:-80}
 
@@ -77,34 +79,10 @@ env | grep "^OS_" || true
 mkdir -p /shared/html
 mkdir -p /shared/ironic_prometheus_exporter
 
-HTPASSWD_FILE=/etc/ironic/htpasswd
-export IRONIC_HTPASSWD=${IRONIC_HTPASSWD:-${HTTP_BASIC_HTPASSWD:-}}
-# The user can provide HTTP_BASIC_HTPASSWD and HTTP_BASIC_HTPASSWD_RPC. If
-# - we are running conductor and HTTP_BASIC_HTPASSWD is set,
-#   use HTTP_BASIC_HTPASSWD for RPC.
-export JSON_RPC_AUTH_STRATEGY="noauth"
-if [[ -n "${IRONIC_HTPASSWD}" ]]; then
-    if [[ "$IRONIC_DEPLOYMENT" == "Conductor" ]]; then
-        export JSON_RPC_AUTH_STRATEGY="http_basic"
-        printf "%s\n" "${IRONIC_HTPASSWD}" > "${HTPASSWD_FILE}-rpc"
-    else
-        printf "%s\n" "${IRONIC_HTPASSWD}" > "${HTPASSWD_FILE}"
-    fi
-fi
+configure_json_rpc_auth
 
 # The original ironic.conf is empty, and can be found in ironic.conf_orig
 render_j2_config /etc/ironic/ironic.conf.j2 /etc/ironic/ironic.conf
-
-# Configure auth for clients
-configure_client_basic_auth()
-{
-    local auth_config_file="/auth/$1/auth-config"
-    if [[ -f "${auth_config_file}" ]]; then
-        # Merge configurations in the "auth" directory into the default ironic configuration file because there is no way to choose the configuration file
-        # when running the api as a WSGI app.
-        crudini --merge "/etc/ironic/ironic.conf" < "${auth_config_file}"
-    fi
-}
 
 configure_client_basic_auth ironic-inspector
 configure_client_basic_auth ironic-rpc

@@ -3,6 +3,7 @@
 # shellcheck disable=SC1091
 . /bin/tls-common.sh
 . /bin/ironic-common.sh
+. /bin/auth-common.sh
 
 export HTTP_PORT=${HTTP_PORT:-80}
 export VMEDIA_TLS_PORT=${VMEDIA_TLS_PORT:-8083}
@@ -62,17 +63,7 @@ else
     export IRONIC_REVERSE_PROXY_SETUP="false" # If TLS is not used, we have no reason to use the reverse proxy
 fi
 
-export IRONIC_HTPASSWD=${IRONIC_HTPASSWD:-${HTTP_BASIC_HTPASSWD:-}}
-export INSPECTOR_HTPASSWD=${INSPECTOR_HTPASSWD:-${HTTP_BASIC_HTPASSWD:-}}
-
-# Set basic auth credentials for Ironic API server
-if [[ -n "${IRONIC_HTPASSWD:-}" ]]; then
-    printf "%s\n" "${IRONIC_HTPASSWD}" > /etc/ironic/htpasswd
-fi
-# Set basic auth credentials for Ironic Inspector server
-if [[ -n "${INSPECTOR_HTPASSWD:-}" ]]; then
-    printf "%s\n" "${INSPECTOR_HTPASSWD}" > /etc/ironic-inspector/htpasswd
-fi
+write_htpasswd_files
 
 # Render httpd TLS configuration for /shared/html/<redifsh;ilo>
 if [[ "$IRONIC_VMEDIA_TLS_SETUP" == "true" ]]; then
