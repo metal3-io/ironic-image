@@ -15,6 +15,7 @@ enabled_management_interfaces = ipmitool,idrac,irmc,fake,redfish,idrac-redfish,i
 enabled_power_interfaces = ipmitool,idrac,irmc,fake,redfish,idrac-redfish,ibmc,ilo
 enabled_raid_interfaces = no-raid,irmc,agent,fake,ibmc,idrac-wsman,redfish,idrac-redfish,ilo5
 enabled_vendor_interfaces = no-vendor,ipmitool,idrac,idrac-redfish,redfish,ilo,fake,ibmc
+enabled_firmware_interfaces = no-firmware,fake,redfish
 {% if env.IRONIC_EXPOSE_JSON_RPC | lower == "true" %}
 rpc_transport = json-rpc
 {% else %}
