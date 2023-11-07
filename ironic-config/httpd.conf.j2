@@ -8,8 +8,6 @@ Include conf.modules.d/*.conf
 User apache
 Group apache
 
-ServerName {{ env.IRONIC_URL_HOST }}:{{ env.HTTP_PORT }}
-
 <Directory />
     AllowOverride none
     Require all denied
