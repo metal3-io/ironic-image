@@ -26,7 +26,7 @@ configure_json_rpc_auth()
 {
     export JSON_RPC_AUTH_STRATEGY="noauth"
     if [[ -n "${IRONIC_HTPASSWD}" ]]; then
-        if [[ "$IRONIC_DEPLOYMENT" == "Conductor" ]]; then
+        if [[ "${IRONIC_DEPLOYMENT}" == "Conductor" ]]; then
             export JSON_RPC_AUTH_STRATEGY="http_basic"
             printf "%s\n" "${IRONIC_HTPASSWD}" > "${IRONIC_HTPASSWD_FILE}-rpc"
         else
@@ -41,9 +41,9 @@ configure_ironic_auth()
     # Configure HTTP basic auth for API server
     if [[ -n "${IRONIC_HTPASSWD}" ]]; then
         printf "%s\n" "${IRONIC_HTPASSWD}" > "${IRONIC_HTPASSWD_FILE}"
-        if [[ "$IRONIC_REVERSE_PROXY_SETUP" == "false" ]]; then
-            crudini --set "$config" DEFAULT auth_strategy http_basic
-            crudini --set "$config" DEFAULT http_basic_auth_user_file "${IRONIC_HTPASSWD_FILE}"
+        if [[ "${IRONIC_REVERSE_PROXY_SETUP}" == "false" ]]; then
+            crudini --set "${config}" DEFAULT auth_strategy http_basic
+            crudini --set "${config}" DEFAULT http_basic_auth_user_file "${IRONIC_HTPASSWD_FILE}"
         fi
     fi
 }
@@ -53,9 +53,9 @@ configure_inspector_auth()
     local config=/etc/ironic-inspector/ironic-inspector.conf
     if [[ -n "${INSPECTOR_HTPASSWD}" ]]; then
         printf "%s\n" "${INSPECTOR_HTPASSWD}" > "${INSPECTOR_HTPASSWD_FILE}"
-        if [[ "$INSPECTOR_REVERSE_PROXY_SETUP" == "false" ]]; then
-            crudini --set "$config" DEFAULT auth_strategy http_basic
-            crudini --set "$config" DEFAULT http_basic_auth_user_file "${INSPECTOR_HTPASSWD_FILE}"
+        if [[ "${INSPECTOR_REVERSE_PROXY_SETUP}" == "false" ]]; then
+            crudini --set "${config}" DEFAULT auth_strategy http_basic
+            crudini --set "${config}" DEFAULT http_basic_auth_user_file "${INSPECTOR_HTPASSWD_FILE}"
         fi
     fi
 }
