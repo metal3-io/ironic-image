@@ -184,6 +184,9 @@ insecure = {{ env.IRONIC_INSECURE }}
 {% endif %}
 {% endif %}
 
+[nova]
+send_power_notifications = false
+
 [oslo_messaging_notifications]
 driver = prometheus_exporter
 location = /shared/ironic_prometheus_exporter
