@@ -31,6 +31,7 @@ python3-ironic-prometheus-exporter >= 4.3.0-0.20231002134531.b3e0de8.el9
 python3-ironicclient >= 4.9.0-0.20211209154934.6f1be06.el9
 python3-jinja2 >= 2-3.0.1-2.el9.1
 python3-keystoneauth1 >= 5.3.0-0.20231026134545.e6f3999.el9
+python3-markupsafe >= 2.1.1-4.el9
 python3-mod_wsgi
 python3-msgpack >= 0.6.2-2.el9
 python3-openstacksdk >= 1.2.0-0.20230720175432.b7ff031.el9
@@ -59,7 +60,7 @@ python3-stevedore >= 5.1.0-0.20230720161334.2d99ccc.el9
 python3-sushy = 4.5.0-0.20231016154537.1b8e0be.el9
 python3-sushy-oem-idrac >= 5.0.0-0.20230720142539.da9a0e4.el9
 python3-tooz >= 4.2.0-0.20231026133434.bed303e.el9
-python3-werkzeug >= 2.0.3-4.el9
+python3-werkzeug >= 2.2.3-2.el9
 python3-zipp >= 0.5.1-3.el9
 qemu-img
 sqlite
