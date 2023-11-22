@@ -31,7 +31,7 @@ my_ip = {{ env.IRONIC_IP }}
 # If we run both API and conductor in the same pod, use localhost
 host = localhost
 {% else %}
-host = {{ env.IRONIC_URL_HOST }}
+host = {{ env.IRONIC_CONDUCTOR_HOST }}
 {% endif %}
 
 # If a path to a certificate is defined, use that first for webserver
