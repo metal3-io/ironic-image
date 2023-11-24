@@ -9,5 +9,6 @@ RUN apt-get update && \
     pip3 install --no-cache-dir \
         sushy-tools==${SUSHY_TOOLS_VERSION} libvirt-python
 
-CMD /usr/local/bin/sushy-emulator -i :: \
-        --config /root/sushy/conf.py --debug
+COPY redfish-emulator.sh /usr/local/bin/
+
+CMD /usr/local/bin/redfish-emulator.sh
