@@ -67,6 +67,12 @@ if [[ -n "$IRONIC_EXTERNAL_IP" ]]; then
     export IRONIC_INSPECTOR_CALLBACK_ENDPOINT_OVERRIDE="https://${IRONIC_EXTERNAL_IP}:${IRONIC_INSPECTOR_ACCESS_PORT}"
 fi
 
+IMAGE_CACHE_PREFIX=/shared/html/images/ironic-python-agent
+if [[ -f "${IMAGE_CACHE_PREFIX}.kernel" ]] && [[ -f "${IMAGE_CACHE_PREFIX}.initramfs" ]]; then
+    export IRONIC_DEFAULT_KERNEL="${IMAGE_CACHE_PREFIX}.kernel"
+    export IRONIC_DEFAULT_RAMDISK="${IMAGE_CACHE_PREFIX}.initramfs"
+fi
+
 if [[ -f /etc/ironic/ironic.conf ]]; then
     # Make a copy of the original supposed empty configuration file
     cp /etc/ironic/ironic.conf /etc/ironic/ironic.conf_orig
