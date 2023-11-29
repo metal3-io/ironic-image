@@ -92,6 +92,12 @@ verify_step_priority_override = management.clear_job_queue:90
 node_history = False
 # Provide for a timeout longer than 60 seconds for certain vendor's hardware
 power_state_change_timeout = 120
+{% if env.IRONIC_DEFAULT_KERNEL is defined %}
+deploy_kernel = file://{{ env.IRONIC_DEFAULT_KERNEL }}
+{% endif %}
+{% if env.IRONIC_DEFAULT_RAMDISK is defined %}
+deploy_ramdisk = file://{{ env.IRONIC_DEFAULT_RAMDISK }}
+{% endif %}
 
 [database]
 {% if env.IRONIC_USE_MARIADB | lower == "false" %}
