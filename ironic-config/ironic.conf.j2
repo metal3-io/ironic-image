@@ -10,11 +10,11 @@ enabled_deploy_interfaces = direct,fake,ramdisk,custom-agent
 # NOTE(dtantsur): when changing this, make sure to update the driver
 # dependencies in Dockerfile.
 enabled_hardware_types = ipmi,idrac,irmc,fake-hardware,redfish,ibmc,manual-management,ilo,ilo5
-enabled_inspect_interfaces = inspector,idrac,irmc,fake,redfish,ilo
-enabled_management_interfaces = ipmitool,idrac,irmc,fake,redfish,idrac-redfish,ibmc,ilo,ilo5,noop
-enabled_power_interfaces = ipmitool,idrac,irmc,fake,redfish,idrac-redfish,ibmc,ilo
+enabled_inspect_interfaces = inspector,idrac-wsman,irmc,fake,redfish,ilo
+enabled_management_interfaces = ipmitool,idrac-wsman,irmc,fake,redfish,idrac-redfish,ibmc,ilo,ilo5,noop
+enabled_power_interfaces = ipmitool,idrac-wsman,irmc,fake,redfish,idrac-redfish,ibmc,ilo
 enabled_raid_interfaces = no-raid,irmc,agent,fake,ibmc,idrac-wsman,redfish,idrac-redfish,ilo5
-enabled_vendor_interfaces = no-vendor,ipmitool,idrac,idrac-redfish,redfish,ilo,fake,ibmc
+enabled_vendor_interfaces = no-vendor,ipmitool,idrac-wsman,idrac-redfish,redfish,ilo,fake,ibmc
 enabled_firmware_interfaces = no-firmware,fake,redfish
 {% if env.IRONIC_EXPOSE_JSON_RPC | lower == "true" %}
 rpc_transport = json-rpc
