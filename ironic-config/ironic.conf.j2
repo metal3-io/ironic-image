@@ -2,7 +2,7 @@
 auth_strategy = noauth
 debug = true
 default_deploy_interface = direct
-default_inspect_interface = inspector
+default_inspect_interface = {% if env.USE_IRONIC_INSPECTOR == "true" %}inspector{% else %}agent{% endif %}
 default_network_interface = noop
 enabled_bios_interfaces = idrac-wsman,no-bios,redfish,idrac-redfish,irmc,ilo
 enabled_boot_interfaces = ipxe,ilo-ipxe,pxe,ilo-pxe,fake,redfish-virtual-media,idrac-redfish-virtual-media,ilo-virtual-media
@@ -10,7 +10,7 @@ enabled_deploy_interfaces = direct,fake,ramdisk,custom-agent
 # NOTE(dtantsur): when changing this, make sure to update the driver
 # dependencies in Dockerfile.
 enabled_hardware_types = ipmi,idrac,irmc,fake-hardware,redfish,ibmc,manual-management,ilo,ilo5
-enabled_inspect_interfaces = inspector,idrac-wsman,irmc,fake,redfish,ilo
+enabled_inspect_interfaces = {% if env.USE_IRONIC_INSPECTOR == "true" %}inspector{% else %}agent{% endif %},idrac-wsman,irmc,fake,redfish,ilo
 enabled_management_interfaces = ipmitool,idrac-wsman,irmc,fake,redfish,idrac-redfish,ibmc,ilo,ilo5,noop
 enabled_power_interfaces = ipmitool,idrac-wsman,irmc,fake,redfish,idrac-redfish,ibmc,ilo
 enabled_raid_interfaces = no-raid,irmc,agent,fake,ibmc,idrac-wsman,redfish,idrac-redfish,ilo5
@@ -133,18 +133,25 @@ external_callback_url = {{ env.IRONIC_EXTERNAL_CALLBACK_URL }}
 dhcp_provider = none
 
 [inspector]
-endpoint_override = {{ env.IRONIC_INSPECTOR_BASE_URL }}
 power_off = {{ false if env.IRONIC_FAST_TRACK == "true" else true }}
-{% if env.IRONIC_INSPECTOR_TLS_SETUP == "true" %}
-cafile = {{ env.IRONIC_INSPECTOR_CACERT_FILE }}
-insecure = {{ env.IRONIC_INSPECTOR_INSECURE }}
-{% endif %}
 # NOTE(dtantsur): keep inspection arguments synchronized with inspector.ipxe
 # Also keep in mind that only parameters unique for inspection go here.
 # No need to duplicate pxe_append_params/kernel_append_params.
 extra_kernel_params = ipa-inspection-collectors={{ env.IRONIC_IPA_COLLECTORS }} ipa-enable-vlan-interfaces={{ env.IRONIC_INSPECTOR_VLAN_INTERFACES }} ipa-inspection-dhcp-all-interfaces=1 ipa-collect-lldp=1
+
+{% if env.USE_IRONIC_INSPECTOR == "true" %}
+endpoint_override = {{ env.IRONIC_INSPECTOR_BASE_URL }}
+{% if env.IRONIC_INSPECTOR_TLS_SETUP == "true" %}
+cafile = {{ env.IRONIC_INSPECTOR_CACERT_FILE }}
+insecure = {{ env.IRONIC_INSPECTOR_INSECURE }}
+{% endif %}
 {% if env.IRONIC_INSPECTOR_CALLBACK_ENDPOINT_OVERRIDE %}
 callback_endpoint_override = {{ env.IRONIC_INSPECTOR_CALLBACK_ENDPOINT_OVERRIDE }}
+{% endif %}
+{% else %}
+hooks = $default_hooks,parse-lldp
+add_ports = all
+keep_ports = present
 {% endif %}
 
 [ipmi]
@@ -212,7 +219,7 @@ kernel_append_params = nofb nomodeset vga=normal ipa-insecure=1 {% if env.IRONIC
 # boot (the default), ensuring that they boot correctly even if they start
 # netbooting for some reason (e.g. with the noop management interface).
 enable_netboot_fallback = true
-# Enable the fallback path to ironic-inspector
+# Enable the fallback path to in-band inspection
 ipxe_fallback_script = inspector.ipxe
 
 [redfish]

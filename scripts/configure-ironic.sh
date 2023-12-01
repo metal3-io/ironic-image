@@ -93,7 +93,9 @@ configure_json_rpc_auth
 # The original ironic.conf is empty, and can be found in ironic.conf_orig
 render_j2_config /etc/ironic/ironic.conf.j2 /etc/ironic/ironic.conf
 
-configure_client_basic_auth ironic-inspector
+if [[ "${USE_IRONIC_INSPECTOR}" == "true" ]]; then
+    configure_client_basic_auth ironic-inspector
+fi
 configure_client_basic_auth ironic-rpc
 
 # Make sure ironic traffic bypasses any proxies

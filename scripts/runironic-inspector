@@ -14,6 +14,11 @@ export INSPECTOR_REVERSE_PROXY_SETUP=${INSPECTOR_REVERSE_PROXY_SETUP:-false}
 # shellcheck disable=SC1091
 . /bin/auth-common.sh
 
+if [[ "$USE_IRONIC_INSPECTOR" == "false" ]]; then
+    echo "FATAL: ironic-inspector is disabled via USE_IRONIC_INSPECTOR"
+    exit 1
+fi
+
 wait_for_interface_or_ip
 
 IRONIC_INSPECTOR_PORT=${IRONIC_INSPECTOR_ACCESS_PORT}
