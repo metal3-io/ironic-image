@@ -29,7 +29,7 @@ fi
 # ``Cannot initialize '::'``
 # This is due to the conversion table missing codepage 850, included in glibc-gconv-extra
 # shellcheck disable=SC2086
-dnf install -y grub2 shim dosfstools mtools glibc-gconv-extra $PACKAGES
+dnf install -y grub2 shim dosfstools mtools glibc-gconv-extra grub2-efi-x64 grub2-efi-aa64
 
 ## TODO(TheJulia): At some point we may want to try and make the size
 ## of the ESP image file to be sized smaller for the files that need to
@@ -40,6 +40,8 @@ mkfs.msdos -F 12 -n 'ESP_IMAGE' "$DEST"
 
 mmd -i "$DEST" EFI
 mmd -i "$DEST" EFI/BOOT
-mcopy -i "$DEST" -v "/boot/efi/EFI/BOOT/$BOOTEFI" ::EFI/BOOT
-mcopy -i "$DEST" -v "/boot/efi/EFI/$OS/$GRUBEFI" ::EFI/BOOT
+mcopy -i "$DEST" -v "/boot/efi/EFI/BOOT/BOOTX64.EFI" ::EFI/BOOT
+mcopy -i "$DEST" -v "/boot/efi/EFI/BOOT/BOOTAA64.EFI" ::EFI/BOOT
+mcopy -i "$DEST" -v "/boot/efi/EFI/$OS/grubx64.efi" ::EFI/BOOT
+mcopy -i "$DEST" -v "/boot/efi/EFI/$OS/grubaa64.efi" ::EFI/BOOT
 mdir -i "$DEST" ::EFI/BOOT
