@@ -1,0 +1,35 @@
+Listen {{ env.IPXE_TLS_PORT }}
+
+<VirtualHost *:{{ env.IPXE_TLS_PORT }}>
+    ErrorLog /dev/stderr
+    LogLevel debug
+    CustomLog /dev/stdout combined
+
+    SSLEngine on
+    SSLProtocol {{ env.IPXE_SSL_PROTOCOL }}
+    SSLCertificateFile {{ env.IPXE_CERT_FILE }}
+    SSLCertificateKeyFile {{ env.IPXE_KEY_FILE }}
+
+    <Directory "/shared/html">
+        Order Allow,Deny
+        Allow from all
+    </Directory>
+    <Directory "/shared/html/(redfish|ilo|images)/">
+        Order Deny,Allow
+        Deny from all
+    </Directory>
+</VirtualHost>
+
+<Location ~ "^/grub.*/">
+    SSLRequireSSL
+</Location>
+<Location ~ "^/pxelinux.cfg/">
+    SSLRequireSSL
+</Location>
+<Location ~ "^/.*\.conf/">
+    SSLRequireSSL
+</Location>
+<Location ~ "^/(([0-9]|[a-z]).*-){4}([0-9]|[a-z]).*/">
+    SSLRequireSSL
+</Location>
+
