@@ -8,6 +8,8 @@ FROM $BASE_IMAGE AS ironic-builder
 
 RUN dnf install -y gcc git make xz-devel
 
+RUN echo "This is a test!"
+
 WORKDIR /tmp
 
 RUN git clone --depth 1 --branch v1.21.1 https://github.com/ipxe/ipxe.git && \
