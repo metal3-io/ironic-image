@@ -221,7 +221,9 @@ kernel_append_params = nofb nomodeset vga=normal ipa-insecure=1 {% if env.IRONIC
 enable_netboot_fallback = true
 # Enable the fallback path to in-band inspection
 ipxe_fallback_script = inspector.ipxe
+{% if env.IPXE_TLS_SETUP | lower == "true" %}
 ipxe_config_template = /tmp/ipxe_config.template
+{% endif %}
 
 [redfish]
 use_swift = false
