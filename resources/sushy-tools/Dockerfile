@@ -1,6 +1,6 @@
 FROM docker.io/library/python:3.9
 
-ARG SUSHY_TOOLS_VERSION="1.0.1"
+ARG SUSHY_TOOLS_VERSION="1.1.0"
 ARG DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update && \
