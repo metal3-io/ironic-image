@@ -79,7 +79,7 @@ Listen {{ env.IRONIC_URL_HOST }}:{{ env.IRONIC_LISTEN_PORT }}
         Require all granted
     </Location>
 
-    <Location ~ "^/(v1/)?(lookup|heartbeat)" >
+    <Location ~ "^/(v1/)?(lookup|heartbeat|continue_inspection)" >
         Require all granted
     </Location>
 </VirtualHost>

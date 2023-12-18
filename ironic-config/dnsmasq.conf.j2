@@ -29,14 +29,24 @@ dhcp-option=option{% if ":" in env["DNS_IP"] %}6{% endif %}:dns-server,{{ env["D
 # IPv4 Configuration:
 dhcp-match=ipxe,175
 # Client is already running iPXE; move to next stage of chainloading
+{%- if env.IPXE_TLS_SETUP == "true"  %}
+# iPXE with (U)EFI
+dhcp-boot=tag:efi,tag:ipxe,http://{{ env.IRONIC_URL_HOST }}:{{ env.HTTP_PORT }}/custom-ipxe/snponly.efi
+# iPXE with BIOS
+dhcp-boot=tag:ipxe,http://{{ env.IRONIC_URL_HOST }}:{{ env.HTTP_PORT }}/custom-ipxe/undionly.kpxe
+{% else %}
 dhcp-boot=tag:ipxe,http://{{ env.IRONIC_URL_HOST }}:{{ env.HTTP_PORT }}/boot.ipxe
+{% endif %}
 
 # Note: Need to test EFI booting
 dhcp-match=set:efi,option:client-arch,7
 dhcp-match=set:efi,option:client-arch,9
 dhcp-match=set:efi_arm,option:client-arch,11
 
-# Client is PXE booting over EFI without iPXE ROM; send EFI version of iPXE chainloader for x86
+# Client is PXE booting over EFI without iPXE ROM; send EFI version of iPXE chainloader do the same also if iPXE ROM boots but TLS is enabled
+{%- if env.IPXE_TLS_SETUP == "true"  %}
+dhcp-boot=tag:efi,tag:ipxe,snponly.efi
+{% endif %}
 dhcp-boot=tag:efi,tag:!ipxe,snponly.efi
 
 # Client is PXE booting over EFI without iPXE ROM; send EFI version of iPXE chainloader for aarch64

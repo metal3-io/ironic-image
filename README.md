@@ -3,9 +3,6 @@ Metal3 Ironic Container
 
 This repo contains the files needed to build the Ironic images used by Metal3.
 
-Description
------------
-
 ## Description
 
 When updated, builds are automatically triggered on
@@ -76,6 +73,9 @@ functionality:
    inspection. (default `default,logs`)
 - `HTTPD_ENABLE_SENDFILE` - Whether to activate the EnableSendfile apache
    directive for httpd `(default, false)`
+- `IRONIC_CONDUCTOR_HOST` - Host name of the current conductor (only makes
+   sense to change for a multinode setup). Defaults to the IP address used
+   for provisioning.
 
 The ironic configuration can be overridden by various environment variables.
 The following can serve as an example:

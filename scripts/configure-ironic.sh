@@ -15,6 +15,8 @@ export IRONIC_INSPECTOR_VLAN_INTERFACES=${IRONIC_INSPECTOR_VLAN_INTERFACES:-all}
 . /bin/tls-common.sh
 # shellcheck disable=SC1091
 . /bin/ironic-common.sh
+# shellcheck disable=SC1091
+. /bin/auth-common.sh
 
 export HTTP_PORT=${HTTP_PORT:-80}
 
@@ -52,6 +54,9 @@ export IRONIC_IPA_COLLECTORS=${IRONIC_IPA_COLLECTORS:-default,extra-hardware,log
 
 wait_for_interface_or_ip
 
+# Hostname to use for the current conductor instance.
+export IRONIC_CONDUCTOR_HOST=${IRONIC_CONDUCTOR_HOST:-${IRONIC_URL_HOST}}
+
 export IRONIC_BASE_URL=${IRONIC_BASE_URL:-"${IRONIC_SCHEME}://${IRONIC_URL_HOST}:${IRONIC_ACCESS_PORT}"}
 export IRONIC_INSPECTOR_BASE_URL=${IRONIC_INSPECTOR_BASE_URL:-"${IRONIC_INSPECTOR_SCHEME}://${IRONIC_URL_HOST}:${IRONIC_INSPECTOR_ACCESS_PORT}"}
 
@@ -63,6 +68,12 @@ if [[ -n "$IRONIC_EXTERNAL_IP" ]]; then
         export IRONIC_EXTERNAL_HTTP_URL="http://${IRONIC_EXTERNAL_IP}:${HTTP_PORT}"
     fi
     export IRONIC_INSPECTOR_CALLBACK_ENDPOINT_OVERRIDE="https://${IRONIC_EXTERNAL_IP}:${IRONIC_INSPECTOR_ACCESS_PORT}"
+fi
+
+IMAGE_CACHE_PREFIX=/shared/html/images/ironic-python-agent
+if [[ -f "${IMAGE_CACHE_PREFIX}.kernel" ]] && [[ -f "${IMAGE_CACHE_PREFIX}.initramfs" ]]; then
+    export IRONIC_DEFAULT_KERNEL="${IMAGE_CACHE_PREFIX}.kernel"
+    export IRONIC_DEFAULT_RAMDISK="${IMAGE_CACHE_PREFIX}.initramfs"
 fi
 
 if [[ -f /etc/ironic/ironic.conf ]]; then
@@ -77,38 +88,16 @@ env | grep "^OS_" || true
 mkdir -p /shared/html
 mkdir -p /shared/ironic_prometheus_exporter
 
-HTPASSWD_FILE=/etc/ironic/htpasswd
-export IRONIC_HTPASSWD=${IRONIC_HTPASSWD:-${HTTP_BASIC_HTPASSWD:-}}
-# The user can provide HTTP_BASIC_HTPASSWD and HTTP_BASIC_HTPASSWD_RPC. If
-# - we are running conductor and HTTP_BASIC_HTPASSWD is set,
-#   use HTTP_BASIC_HTPASSWD for RPC.
-export JSON_RPC_AUTH_STRATEGY="noauth"
-if [[ -n "${IRONIC_HTPASSWD}" ]]; then
-    if [[ "$IRONIC_DEPLOYMENT" == "Conductor" ]]; then
-        export JSON_RPC_AUTH_STRATEGY="http_basic"
-        printf "%s\n" "${IRONIC_HTPASSWD}" > "${HTPASSWD_FILE}-rpc"
-    else
-        printf "%s\n" "${IRONIC_HTPASSWD}" > "${HTPASSWD_FILE}"
-    fi
-fi
+configure_json_rpc_auth
 
 . /bin/coreos-ipa-common.sh
 
 # The original ironic.conf is empty, and can be found in ironic.conf_orig
 render_j2_config /etc/ironic/ironic.conf.j2 /etc/ironic/ironic.conf
 
-# Configure auth for clients
-configure_client_basic_auth()
-{
-    local auth_config_file="/auth/$1/auth-config"
-    if [[ -f "${auth_config_file}" ]]; then
-        # Merge configurations in the "auth" directory into the default ironic configuration file because there is no way to choose the configuration file
-        # when running the api as a WSGI app.
-        crudini --merge "/etc/ironic/ironic.conf" < "${auth_config_file}"
-    fi
-}
-
-configure_client_basic_auth ironic-inspector
+if [[ "${USE_IRONIC_INSPECTOR}" == "true" ]]; then
+    configure_client_basic_auth ironic-inspector
+fi
 configure_client_basic_auth ironic-rpc
 
 # Make sure ironic traffic bypasses any proxies
