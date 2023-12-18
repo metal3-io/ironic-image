@@ -5,7 +5,6 @@ export IRONIC_KEY_FILE=/certs/ironic/tls.key
 export IRONIC_CACERT_FILE=/certs/ca/ironic/tls.crt
 export IRONIC_INSECURE=${IRONIC_INSECURE:-false}
 export IRONIC_SSL_PROTOCOL=${IRONIC_SSL_PROTOCOL:-"-ALL +TLSv1.2 +TLSv1.3"}
-export IPXE_SSL_PROTOCOL=${IPXE_SSL_PROTOCOL:-"-ALL +TLSv1.2 +TLSv1.3"}
 export IRONIC_VMEDIA_SSL_PROTOCOL=${IRONIC_VMEDIA_SSL_PROTOCOL:-"ALL"}
 
 export IRONIC_INSPECTOR_CERT_FILE=/certs/ironic-inspector/tls.crt
@@ -16,21 +15,14 @@ export IRONIC_INSPECTOR_INSECURE=${IRONIC_INSPECTOR_INSECURE:-$IRONIC_INSECURE}
 export IRONIC_VMEDIA_CERT_FILE=/certs/vmedia/tls.crt
 export IRONIC_VMEDIA_KEY_FILE=/certs/vmedia/tls.key
 
-export IPXE_CERT_FILE=/certs/ipxe/tls.crt
-export IPXE_KEY_FILE=/certs/ipxe/tls.key
-
 export RESTART_CONTAINER_CERTIFICATE_UPDATED=${RESTART_CONTAINER_CERTIFICATE_UPDATED:-"false"}
 
 export MARIADB_CACERT_FILE=/certs/ca/mariadb/tls.crt
-
-export IPXE_TLS_PORT="${IPXE_TLS_PORT:-8084}"
 
 mkdir -p /certs/ironic
 mkdir -p /certs/ironic-inspector
 mkdir -p /certs/ca/ironic
 mkdir -p /certs/ca/ironic-inspector
-mkdir -p /certs/ipxe
-mkdir -p /certs/vmedia
 
 if [[ -f "$IRONIC_CERT_FILE" ]] && [[ ! -f "$IRONIC_KEY_FILE" ]]; then
     echo "Missing TLS Certificate key file $IRONIC_KEY_FILE"
@@ -55,15 +47,6 @@ if [[ -f "$IRONIC_VMEDIA_CERT_FILE" ]] && [[ ! -f "$IRONIC_VMEDIA_KEY_FILE" ]]; 
     exit 1
 fi
 if [[ ! -f "$IRONIC_VMEDIA_CERT_FILE" ]] && [[ -f "$IRONIC_VMEDIA_KEY_FILE" ]]; then
-    echo "Missing TLS Certificate file $IRONIC_VMEDIA_CERT_FILE"
-    exit 1
-fi
-
-if [[ -f "$IPXE_CERT_FILE" ]] && [[ ! -f "$IPXE_KEY_FILE" ]]; then
-    echo "Missing TLS Certificate key file $IRONIC_IPXE_CERT_FILE"
-    exit 1
-fi
-if [[ ! -f "$IPXE_CERT_FILE" ]] && [[ -f "$IRONIC_VMEDIA_KEY_FILE" ]]; then
     echo "Missing TLS Certificate file $IRONIC_VMEDIA_CERT_FILE"
     exit 1
 fi
@@ -109,14 +92,6 @@ if [[ -f "$IRONIC_VMEDIA_CERT_FILE" ]]; then
 else
     export IRONIC_VMEDIA_SCHEME="http"
     export IRONIC_VMEDIA_TLS_SETUP="false"
-fi
-
-if [[ -f "$IPXE_CERT_FILE" ]]; then
-    export IPXE_SCHEME="https"
-    export IPXE_TLS_SETUP="true"
-else
-    export IPXE_SCHEME="http"
-    export IPXE_TLS_SETUP="false"
 fi
 
 if [[ -f "$MARIADB_CACERT_FILE" ]]; then
