@@ -6,6 +6,7 @@ IRONIC_IP="${IRONIC_IP:-}"
 PROVISIONING_INTERFACE="${PROVISIONING_INTERFACE:-}"
 PROVISIONING_IP="${PROVISIONING_IP:-}"
 PROVISIONING_MACS="${PROVISIONING_MACS:-}"
+IPXE_CUSTOM_FIRMWARE_DIR="${IPXE_CUSTOM_FIRMWARE_DIR:-/shared/custom_ipxe_firmware}"
 
 get_provisioning_interface()
 {
@@ -16,12 +17,20 @@ get_provisioning_interface()
     fi
 
     local interface="provisioning"
+
+    if [[ -n "${PROVISIONING_IP}" ]]; then
+        if ip -br addr show | grep -qi " ${PROVISIONING_IP}/"; then
+            interface="$(ip -br addr show | grep -i " ${PROVISIONING_IP}/" | cut -f 1 -d ' ' | cut -f 1 -d '@')"
+        fi
+    fi
+
     for mac in ${PROVISIONING_MACS//,/ }; do
         if ip -br link show up | grep -qi "$mac"; then
             interface="$(ip -br link show up | grep -i "$mac" | cut -f 1 -d ' ' | cut -f 1 -d '@')"
             break
         fi
     done
+
     echo "$interface"
 }
 
@@ -92,3 +101,11 @@ export IRONIC_LISTEN_PORT=${IRONIC_LISTEN_PORT:-$IRONIC_ACCESS_PORT}
 
 export IRONIC_INSPECTOR_ACCESS_PORT=${IRONIC_INSPECTOR_ACCESS_PORT:-5050}
 export IRONIC_INSPECTOR_LISTEN_PORT=${IRONIC_INSPECTOR_LISTEN_PORT:-$IRONIC_INSPECTOR_ACCESS_PORT}
+
+# If this is false, built-in inspection is used.
+export USE_IRONIC_INSPECTOR=${USE_IRONIC_INSPECTOR:-true}
+export IRONIC_INSPECTOR_ENABLE_DISCOVERY=${IRONIC_INSPECTOR_ENABLE_DISCOVERY:-false}
+if [[ "${USE_IRONIC_INSPECTOR}" != "true" ]] && [[ "${IRONIC_INSPECTOR_ENABLE_DISCOVERY}" == "true" ]]; then
+    echo "Discovery is only supported with ironic-inspector at this point"
+    exit 1
+fi
