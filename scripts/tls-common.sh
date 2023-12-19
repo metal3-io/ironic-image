@@ -60,11 +60,11 @@ if [[ ! -f "$IRONIC_VMEDIA_CERT_FILE" ]] && [[ -f "$IRONIC_VMEDIA_KEY_FILE" ]]; 
 fi
 
 if [[ -f "$IPXE_CERT_FILE" ]] && [[ ! -f "$IPXE_KEY_FILE" ]]; then
-    echo "Missing TLS Certificate key file $IRONIC_IPXE_CERT_FILE"
+    echo "Missing TLS Certificate key file $IPXE_KEY_FILE"
     exit 1
 fi
-if [[ ! -f "$IPXE_CERT_FILE" ]] && [[ -f "$IRONIC_VMEDIA_KEY_FILE" ]]; then
-    echo "Missing TLS Certificate file $IRONIC_VMEDIA_CERT_FILE"
+if [[ ! -f "$IPXE_CERT_FILE" ]] && [[ -f "$IPXE_KEY_FILE" ]]; then
+    echo "Missing TLS Certificate file $IPXE_CERT_FILE"
     exit 1
 fi
 
