@@ -8,11 +8,16 @@ RUN prepare-efi.sh redhat
 
 FROM registry.ci.openshift.org/ocp/builder:rhel-9-base-openshift-4.16
 
+ENV REMOTE_SOURCES=${REMOTE_SOURCES:-.}
+ENV REMOTE_SOURCES_DIR=${REMOTE_SOURCES_DIR:-.}
 ENV PKGS_LIST=main-packages-list.ocp
 ARG EXTRA_PKGS_LIST
 
 COPY ${PKGS_LIST} ${EXTRA_PKGS_LIST:-$PKGS_LIST} /tmp/
 COPY prepare-image.sh prepare-ipxe.sh configure-nonroot.sh /bin/
+
+# some cachito magic
+COPY $REMOTE_SOURCES $REMOTE_SOURCES_DIR
 
 RUN prepare-image.sh && \
     rm -f /bin/prepare-image.sh && \
