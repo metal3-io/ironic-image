@@ -9,6 +9,8 @@
 # which we provide via "setcap", and "allowPrivilegeEscalation: true" in
 # manifest.
 
+# do not merge - test
+
 set -eux
 
 # user and group are from ironic rpms (uid 997, gid 994)
