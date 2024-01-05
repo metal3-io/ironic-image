@@ -30,11 +30,7 @@ wait_for_interface_or_ip
 
 IRONIC_BASE_URL="${IRONIC_SCHEME}://${IRONIC_URL_HOST}"
 
-if [[ "${USE_IRONIC_INSPECTOR}" == "true" ]]; then
-    INSPECTOR_EXTRA_ARGS=" ipa-inspection-callback-url=${IRONIC_BASE_URL}:${IRONIC_INSPECTOR_ACCESS_PORT}/v1/continue"
-else
-    INSPECTOR_EXTRA_ARGS=" ipa-inspection-callback-url=${IRONIC_BASE_URL}:${IRONIC_ACCESS_PORT}/v1/continue_inspection"
-fi
+INSPECTOR_EXTRA_ARGS=" ipa-inspection-callback-url=${IRONIC_BASE_URL}:${IRONIC_INSPECTOR_ACCESS_PORT}/v1/continue"
 
 if [[ "$IRONIC_FAST_TRACK" == "true" ]]; then
     INSPECTOR_EXTRA_ARGS+=" ipa-api-url=${IRONIC_BASE_URL}:${IRONIC_ACCESS_PORT}"
