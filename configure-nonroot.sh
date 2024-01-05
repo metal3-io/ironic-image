@@ -17,8 +17,9 @@ IRONIC_GROUP="ironic"
 INSPECTOR_GROUP="ironic-inspector"
 
 # most containers mount /shared but dnsmasq can live without it
-mkdir -p /shared
-chown "${IRONIC_USER}":"${INSPECTOR_GROUP}" /shared
+mkdir -p /shared{,/html}
+chown "${IRONIC_USER}":"${INSPECTOR_GROUP}" /shared{,/html}
+chmod 0777 /shared/html
 
 # we'll bind mount shared ca and ironic/inspector certificate dirs here
 # that need to have correct ownership as the entire ironic in BMO

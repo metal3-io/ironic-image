@@ -28,9 +28,6 @@ export IRONIC_IPA_COLLECTORS=${IRONIC_IPA_COLLECTORS:-default,logs}
 
 wait_for_interface_or_ip
 
-mkdir -p /shared/html
-chmod 0777 /shared/html
-
 IRONIC_BASE_URL="${IRONIC_SCHEME}://${IRONIC_URL_HOST}"
 
 if [[ "${USE_IRONIC_INSPECTOR}" == "true" ]]; then

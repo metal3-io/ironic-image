@@ -14,11 +14,6 @@ export INSPECTOR_REVERSE_PROXY_SETUP=${INSPECTOR_REVERSE_PROXY_SETUP:-false}
 # shellcheck disable=SC1091
 . /bin/auth-common.sh
 
-if [[ "$USE_IRONIC_INSPECTOR" == "false" ]]; then
-    echo "FATAL: ironic-inspector is disabled via USE_IRONIC_INSPECTOR"
-    exit 1
-fi
-
 wait_for_interface_or_ip
 
 IRONIC_INSPECTOR_PORT=${IRONIC_INSPECTOR_ACCESS_PORT}
@@ -38,6 +33,15 @@ build_j2_config()
     local CONFIG_FILE="$1"
     python3 -c 'import os; import sys; import jinja2; sys.stdout.write(jinja2.Template(sys.stdin.read()).render(env=os.environ))' < "$CONFIG_FILE.j2"
 }
+
+if [[ "$USE_IRONIC_INSPECTOR" == "false" ]]; then
+    # Compatibility with existing preprovisioning image controllers
+    render_j2_config /etc/httpd-inspector-compat.conf.j2 /etc/httpd/conf.d/inspector-compat.conf
+    mv /etc/httpd/conf/httpd.conf /etc/httpd/conf/httpd.conf.example
+    export HTTP_PORT="${IRONIC_INSPECTOR_LISTEN_PORT}"
+    render_j2_config /etc/httpd/conf/httpd.conf.j2 /etc/httpd/conf/httpd.conf
+    exec /usr/sbin/httpd -DFOREGROUND
+fi
 
 # Merge with the original configuration file from the package.
 build_j2_config "$CONFIG" | crudini --merge "$CONFIG"
