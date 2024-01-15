@@ -2,8 +2,10 @@ name: build-images-action
 on:
   push:
     branches:
-      - main
+      - 'main'
       - 'release-*'
+    tags:
+      - 'v*'
 permissions: {}
 jobs:
   build:
@@ -22,8 +24,7 @@ jobs:
           job_name: "metal3_ironic_container_image_building"
           job_params: |
             {
-              "BUILD_CONTAINER_IMAGE_NAME": "ironic",
-              "BUILD_CONTAINER_IMAGE_BRANCH": "${{ github.ref }}"
+              "BUILD_CONTAINER_IMAGE_GIT_REFERENCE": "${{ github.ref }}"
             }
           job_timeout: "1000"
       - name: build sushy-tools image
@@ -35,8 +36,7 @@ jobs:
           job_name: "metal3_sushy-tools_container_image_building"
           job_params: |
             {
-              "BUILD_CONTAINER_IMAGE_NAME": "sushy-tools",
-              "BUILD_CONTAINER_IMAGE_BRANCH": "${{ github.ref }}"
+              "BUILD_CONTAINER_IMAGE_GIT_REFERENCE": "${{ github.ref }}"
             }
           job_timeout: "1000"
       - name: build vbmc image
@@ -48,7 +48,6 @@ jobs:
           job_name: "metal3_vbmc_container_image_building"
           job_params: |
             {
-              "BUILD_CONTAINER_IMAGE_NAME": "vbmc",
-              "BUILD_CONTAINER_IMAGE_BRANCH": "${{ github.ref }}"
+              "BUILD_CONTAINER_IMAGE_GIT_REFERENCE": "${{ github.ref }}"
             }
           job_timeout: "1000"
