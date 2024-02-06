@@ -105,6 +105,8 @@ argument to **rpm** at build time; for example:
 podman build -t ironic-image -f Dockerfile --build-arg INSTALL_TYPE=rpm
 ```
 
+## TEST
+
 ## Custom source for ironic software
 
 When building the ironic image from source, it is also possible to specify a

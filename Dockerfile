@@ -19,6 +19,8 @@ RUN git clone --depth 1 --branch v1.21.1 https://github.com/ipxe/ipxe.git && \
 COPY prepare-efi.sh /bin/
 RUN prepare-efi.sh centos
 
+### TEST
+
 FROM $BASE_IMAGE
 
 ENV PKGS_LIST=main-packages-list.txt
