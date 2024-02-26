@@ -45,6 +45,8 @@ functionality:
 - `PROVISIONING_INTERFACE` - interface to use for ironic, dnsmasq(dhcpd) and
    httpd (default provisioning, this is calculated if the above
    `PROVISIONING_MACS` is provided)
+- `PROVISIONING_IP` - the specific IP to use (instead of calculating it based on
+  the `PROVISIONING_INTERFACE`)
 - `DNSMASQ_EXCEPT_INTERFACE` - interfaces to exclude when providing DHCP address
   (default `lo`)
 - `HTTP_PORT` - port used by http server (default `80`)
@@ -76,6 +78,14 @@ functionality:
 - `IRONIC_CONDUCTOR_HOST` - Host name of the current conductor (only makes
    sense to change for a multinode setup). Defaults to the IP address used
    for provisioning.
+- `IRONIC_EXTERNAL_IP` - Optional external IP if Ironic is not accessible on
+  `PROVISIONING_IP`.
+- `IRONIC_EXTERNAL_CALLBACK_URL` - Override Ironic's external callback URL.
+  Defaults to use `IRONIC_EXTERNAL_IP` if available.
+- `IRONIC_EXTERNAL_HTTP_URL` - Override Ironic's external http URL. Defaults to
+  use `IRONIC_EXTERNAL_IP` if available.
+- `IRONIC_INSPECTOR_CALLBACK_ENDPOINT_OVERRIDE` - Override Inspector's callback
+  URL. Defaults to use `IRONIC_EXTERNAL_IP` if available.
 
 The ironic configuration can be overridden by various environment variables.
 The following can serve as an example:
