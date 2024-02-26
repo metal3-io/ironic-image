@@ -1,0 +1,2 @@
+ironic @ git+https://github.com/openshift/openstack-ironic@1c35a03e7f7a5327f965ed2afac4e478aad1ed53
+ironic-inspector @ git+https://github.com/openshift/openstack-ironic-inspector@4d300358409742e531ec503d3af0a0fd06849a01
