@@ -144,6 +144,10 @@ external_callback_url = {{ env.IRONIC_EXTERNAL_CALLBACK_URL }}
 dhcp_provider = none
 
 [inspector]
+# NOTE(dtantsur): we properly configure the "unmanaged" inspection boot (i.e.
+# booting IPA through a separate inspector.ipxe rather than the driver's boot
+# interface), so managed boot is not required.
+require_managed_boot = False
 power_off = {{ false if env.IRONIC_FAST_TRACK == "true" else true }}
 # NOTE(dtantsur): keep inspection arguments synchronized with inspector.ipxe
 # Also keep in mind that only parameters unique for inspection go here.
