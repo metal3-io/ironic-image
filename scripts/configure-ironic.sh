@@ -9,7 +9,7 @@ IRONIC_EXTERNAL_IP="${IRONIC_EXTERNAL_IP:-}"
 #   all - all VLANs on all interfaces using LLDP information
 #   <interface> - all VLANs on a particular interface using LLDP information
 #   <interface.vlan> - a particular VLAN on an interface, not relying on LLDP
-export IRONIC_INSPECTOR_VLAN_INTERFACES=${IRONIC_INSPECTOR_VLAN_INTERFACES:-all}
+export IRONIC_ENABLE_VLAN_INTERFACES=${IRONIC_ENABLE_VLAN_INTERFACES:-${IRONIC_INSPECTOR_VLAN_INTERFACES:-all}}
 
 # shellcheck disable=SC1091
 . /bin/tls-common.sh
