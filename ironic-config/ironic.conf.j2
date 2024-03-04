@@ -158,6 +158,10 @@ add_ports = all
 keep_ports = present
 {% endif %}
 
+[auto_discovery]
+enabled = {{ env.IRONIC_INSPECTOR_ENABLE_DISCOVERY }}
+driver = ipmi
+
 [ipmi]
 # use_ipmitool_retries transfers the responsibility of retrying to ipmitool
 # when supported. If set to false, then ipmitool is called as follows :
