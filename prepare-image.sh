@@ -28,8 +28,6 @@ if [[ "$INSTALL_TYPE" == "source" ]]; then
     # emulate uid/gid configuration to match rpm install
     IRONIC_UID=997
     IRONIC_GID=994
-    INSPECTOR_UID=996
-    INSPECTOR_GID=993
     BUILD_DEPS="python3-devel gcc git-core python3-setuptools python3-jinja2"
     dnf upgrade -y
     # NOTE(dtantsur): pip is a requirement of python3 in CentOS
@@ -60,12 +58,10 @@ if [[ "$INSTALL_TYPE" == "source" ]]; then
 
     python3 -m pip install --ignore-installed --prefix /usr -r "$IRONIC_PKG_LIST_FINAL" -c "${UPPER_CONSTRAINTS_PATH}"
 
-    # ironic and ironic-inspector system configuration
-    mkdir -p /var/log/ironic /var/log/ironic-inspector /var/lib/ironic /var/lib/ironic-inspector
+    # ironic system configuration
+    mkdir -p /var/log/ironic /var/lib/ironic
     getent group ironic > /dev/null || groupadd -r ironic -g "${IRONIC_GID}"
     getent passwd ironic > /dev/null || useradd -r -g ironic -u "${IRONIC_UID}" -s /sbin/nologin ironic -d /var/lib/ironic
-    getent group ironic-inspector > /dev/null || groupadd -r ironic-inspector -g "${INSPECTOR_GID}"
-    getent passwd ironic-inspector > /dev/null || useradd -r -g ironic-inspector -u "${INSPECTOR_UID}" -s /sbin/nologin ironic-inspector -d /var/lib/ironic-inspector
 
     # clean installed build dependencies
     # shellcheck disable=SC2086
@@ -93,11 +89,10 @@ chown ironic:ironic /var/log/ironic
 rm -f /etc/httpd/conf.d/ssl.conf /etc/httpd/conf.d/autoindex.conf /etc/httpd/conf.d/welcome.conf /etc/httpd/conf.modules.d/*.conf
 
 # RDO-provided configuration forces creating log files
-rm -f /usr/share/ironic/ironic-dist.conf /etc/ironic-inspector/inspector-dist.conf
+rm -f /usr/share/ironic/ironic-dist.conf
 
-# add ironic and ironic-inspector to apache group
+# add ironic to apache group
 usermod -aG ironic apache
-usermod -aG ironic-inspector apache
 
 # apply patches if present #
 if [[ -n "${PATCH_LIST:-}" ]]; then

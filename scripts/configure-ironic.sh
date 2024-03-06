@@ -56,7 +56,6 @@ wait_for_interface_or_ip
 export IRONIC_CONDUCTOR_HOST=${IRONIC_CONDUCTOR_HOST:-${IRONIC_URL_HOST}}
 
 export IRONIC_BASE_URL=${IRONIC_BASE_URL:-"${IRONIC_SCHEME}://${IRONIC_URL_HOST}:${IRONIC_ACCESS_PORT}"}
-export IRONIC_INSPECTOR_BASE_URL=${IRONIC_INSPECTOR_BASE_URL:-"${IRONIC_INSPECTOR_SCHEME}://${IRONIC_URL_HOST}:${IRONIC_INSPECTOR_ACCESS_PORT}"}
 
 if [[ -n "$IRONIC_EXTERNAL_IP" ]]; then
     export IRONIC_EXTERNAL_CALLBACK_URL=${IRONIC_EXTERNAL_CALLBACK_URL:-"${IRONIC_SCHEME}://${IRONIC_EXTERNAL_IP}:${IRONIC_ACCESS_PORT}"}
@@ -65,7 +64,6 @@ if [[ -n "$IRONIC_EXTERNAL_IP" ]]; then
     else
         export IRONIC_EXTERNAL_HTTP_URL=${IRONIC_EXTERNAL_HTTP_URL:-"http://${IRONIC_EXTERNAL_IP}:${HTTP_PORT}"}
     fi
-    export IRONIC_INSPECTOR_CALLBACK_ENDPOINT_OVERRIDE=${IRONIC_INSPECTOR_CALLBACK_ENDPOINT_OVERRIDE:-"https://${IRONIC_EXTERNAL_IP}:${IRONIC_INSPECTOR_ACCESS_PORT}"}
 fi
 
 IMAGE_CACHE_PREFIX=/shared/html/images/ironic-python-agent
@@ -91,9 +89,6 @@ configure_json_rpc_auth
 # The original ironic.conf is empty, and can be found in ironic.conf_orig
 render_j2_config /etc/ironic/ironic.conf.j2 /etc/ironic/ironic.conf
 
-if [[ "${USE_IRONIC_INSPECTOR}" == "true" ]]; then
-    configure_client_basic_auth ironic-inspector
-fi
 configure_client_basic_auth ironic-rpc
 
 # Make sure ironic traffic bypasses any proxies

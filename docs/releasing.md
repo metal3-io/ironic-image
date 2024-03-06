@@ -15,12 +15,10 @@ Things you should check before making a release:
   [Metal3 release process](https://github.com/metal3-io/metal3-docs/blob/main/processes/releasing.md)
   for high-level process and possible follow-up actions
 - Verify the latest bugfix or stable branches (which is the most recent) in ironic
-  and ironic-inspector upstream repositories;
+  upstream repository;
 - Verify compatibility with latest sushy and ironic-lib upstream releases or master
-  branches based on ironic and ironic-inspector bugfix or stable requirements
-  and constraints
-- Verify openstack upper-constraints compatibility with ironic and ironic-inspector
-  bugfix or stable branches
+  branches based on ironic bugfix or stable requirements and constraints
+- Verify openstack upper-constraints compatibility with ironic bugfix or stable branches
 - Verify any other direct or indirect dependency is uplifted to close any public
   vulnerabilities
 
@@ -63,8 +61,7 @@ or if using existing repository, verify your intended remote is set to
      to replace the placeholder; if the ironic branch is a stable branch
      we should use the corresponding file from the same stable branch, in
      case of a bugfix branch we can use the current one from master
-   - Pin ironic and ironic-inspector to match the corresponding bugfix or
-     stable branches
+   - Pin ironic to match the corresponding bugfix or stable branches
 
 ### Tags
 
