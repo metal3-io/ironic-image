@@ -90,8 +90,6 @@ functionality:
   Defaults to use `IRONIC_EXTERNAL_IP` if available.
 - `IRONIC_EXTERNAL_HTTP_URL` - Override Ironic's external http URL. Defaults to
   use `IRONIC_EXTERNAL_IP` if available.
-- `IRONIC_INSPECTOR_CALLBACK_ENDPOINT_OVERRIDE` - Override Inspector's callback
-  URL. Defaults to use `IRONIC_EXTERNAL_IP` if available.
 - `IRONIC_ENABLE_VLAN_INTERFACES` - Which VLAN interfaces to enable on the
   agent start-up. Can be a list of interfaces or a special value `all`.
   Defaults to `all`.
@@ -121,9 +119,8 @@ podman build -t ironic-image -f Dockerfile --build-arg INSTALL_TYPE=rpm
 ## Custom source for ironic software
 
 When building the ironic image from source, it is also possible to specify a
-different source for ironic, ironic-inspector, ironic-lib or the sushy library
-using the build arguments **IRONIC_SOURCE**, **IRONIC_INSPECTOR_SOURCE**,
-**IRONIC_LIB_SOURCE**, and **SUSHY_SOURCE**.
+different source for ironic, ironic-lib or the sushy library using the build
+arguments **IRONIC_SOURCE**, **IRONIC_LIB_SOURCE**, and **SUSHY_SOURCE**.
 The accepted formats are gerrit refs, like _refs/changes/89/860689/2_,
 commit hashes, like _a1fe6cb41e6f0a1ed0a43ba5e17745714f206f1f_,
 repo tags or branches, or a local directory that needs to be under the
