@@ -30,9 +30,11 @@ configure_client_basic_auth()
 
 configure_json_rpc_auth()
 {
-    export JSON_RPC_AUTH_STRATEGY="noauth"
-    if [[ -n "${IRONIC_HTPASSWD}" && "${IRONIC_EXPOSE_JSON_RPC}" == "true" ]]; then
-        export JSON_RPC_AUTH_STRATEGY="http_basic"
+    if [[ "${IRONIC_EXPOSE_JSON_RPC}" == "true" ]]; then
+        if [[ -z "${IRONIC_HTPASSWD}" ]]; then
+            echo "FATAL: enabling JSON RPC requires authentication"
+            exit 1
+        fi
         printf "%s\n" "${IRONIC_HTPASSWD}" > "${IRONIC_HTPASSWD_FILE}-rpc"
     fi
 }
