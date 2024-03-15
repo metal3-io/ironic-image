@@ -4,9 +4,15 @@ set -euxo pipefail
 
 export IRONIC_HTPASSWD=${IRONIC_HTPASSWD:-${HTTP_BASIC_HTPASSWD:-}}
 export INSPECTOR_HTPASSWD=${INSPECTOR_HTPASSWD:-${HTTP_BASIC_HTPASSWD:-}}
-export IRONIC_DEPLOYMENT="${IRONIC_DEPLOYMENT:-}"
 export IRONIC_REVERSE_PROXY_SETUP=${IRONIC_REVERSE_PROXY_SETUP:-false}
 export INSPECTOR_REVERSE_PROXY_SETUP=${INSPECTOR_REVERSE_PROXY_SETUP:-false}
+
+# Backward compatibility
+if [[ "${IRONIC_DEPLOYMENT:-}" == "Conductor" ]]; then
+    export IRONIC_EXPOSE_JSON_RPC=true
+else
+    export IRONIC_EXPOSE_JSON_RPC="${IRONIC_EXPOSE_JSON_RPC:-false}"
+fi
 
 IRONIC_HTPASSWD_FILE=/etc/ironic/htpasswd
 INSPECTOR_HTPASSWD_FILE=/etc/ironic-inspector/htpasswd
@@ -25,13 +31,9 @@ configure_client_basic_auth()
 configure_json_rpc_auth()
 {
     export JSON_RPC_AUTH_STRATEGY="noauth"
-    if [[ -n "${IRONIC_HTPASSWD}" ]]; then
-        if [[ "${IRONIC_DEPLOYMENT}" == "Conductor" ]]; then
-            export JSON_RPC_AUTH_STRATEGY="http_basic"
-            printf "%s\n" "${IRONIC_HTPASSWD}" > "${IRONIC_HTPASSWD_FILE}-rpc"
-        else
-            printf "%s\n" "${IRONIC_HTPASSWD}" > "${IRONIC_HTPASSWD_FILE}"
-        fi
+    if [[ -n "${IRONIC_HTPASSWD}" && "${IRONIC_EXPOSE_JSON_RPC}" == "true" ]]; then
+        export JSON_RPC_AUTH_STRATEGY="http_basic"
+        printf "%s\n" "${IRONIC_HTPASSWD}" > "${IRONIC_HTPASSWD_FILE}-rpc"
     fi
 }
 

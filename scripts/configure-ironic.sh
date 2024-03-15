@@ -2,7 +2,6 @@
 
 set -euxo pipefail
 
-IRONIC_DEPLOYMENT="${IRONIC_DEPLOYMENT:-}"
 IRONIC_EXTERNAL_IP="${IRONIC_EXTERNAL_IP:-}"
 
 # Define the VLAN interfaces to be included in introspection report, e.g.
@@ -38,7 +37,6 @@ fi
 export NUMWORKERS=${NUMWORKERS:-$NUMPROC}
 
 export IRONIC_USE_MARIADB=${IRONIC_USE_MARIADB:-true}
-export IRONIC_EXPOSE_JSON_RPC=${IRONIC_EXPOSE_JSON_RPC:-true}
 
 # Whether to enable fast_track provisioning or not
 export IRONIC_FAST_TRACK=${IRONIC_FAST_TRACK:-true}

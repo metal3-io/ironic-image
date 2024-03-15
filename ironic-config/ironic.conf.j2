@@ -25,7 +25,7 @@ use_stderr = true
 # NOTE(dtantsur): the default md5 is not compatible with FIPS mode
 hash_ring_algorithm = sha256
 my_ip = {{ env.IRONIC_IP }}
-{% if env.IRONIC_DEPLOYMENT == "Conductor" and env.JSON_RPC_AUTH_STRATEGY == "noauth" %}
+{% if env.IRONIC_EXPOSE_JSON_RPC | lower == "true" and env.JSON_RPC_AUTH_STRATEGY == "noauth" %}
 # if access is unauthenticated, we bind only to localhost - use that as the
 # host name also, so that the client can find the server
 # If we run both API and conductor in the same pod, use localhost
@@ -191,7 +191,7 @@ cipher_suite_versions = 3,17
 # containers are in host networking.
 auth_strategy = {{ env.JSON_RPC_AUTH_STRATEGY }}
 http_basic_auth_user_file = /etc/ironic/htpasswd-rpc
-{% if env.IRONIC_DEPLOYMENT == "Conductor" and env.JSON_RPC_AUTH_STRATEGY == "noauth" %}
+{% if env.JSON_RPC_AUTH_STRATEGY == "noauth" %}
 # if access is unauthenticated, we bind only to localhost - use that as the
 # host name also, so that the client can find the server
 host_ip = localhost
