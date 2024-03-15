@@ -22,8 +22,7 @@ configure_client_basic_auth()
     local auth_config_file="/auth/$1/auth-config"
     local dest="${2:-/etc/ironic/ironic.conf}"
     if [[ -f "${auth_config_file}" ]]; then
-        # Merge configurations in the "auth" directory into the default ironic configuration file because there is no way to choose the configuration file
-        # when running the api as a WSGI app.
+        # Merge configurations in the "auth" directory into the default ironic configuration file
         crudini --merge "${dest}" < "${auth_config_file}"
     fi
 }

@@ -29,7 +29,6 @@ Listen {{ env.IRONIC_URL_HOST }}:{{ env.IRONIC_LISTEN_PORT }}
 
     SetEnv APACHE_RUN_USER ironic
     SetEnv APACHE_RUN_GROUP ironic
-    WSGIProcessGroup ironic
 
     ErrorLog /dev/stderr
     LogLevel debug
