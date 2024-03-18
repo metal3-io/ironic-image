@@ -3,9 +3,7 @@ openstack-ironic
 openstack-ironic-api
 openstack-ironic-conductor
 openstack-ironic-inspector
-python3-dracclient
 python3-gunicorn
-python3-ibmcclient
 python3-ironic-prometheus-exporter
 python3-proliantutils
 python3-scciclient
