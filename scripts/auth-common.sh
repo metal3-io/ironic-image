@@ -4,9 +4,15 @@ set -euxo pipefail
 
 export IRONIC_HTPASSWD=${IRONIC_HTPASSWD:-${HTTP_BASIC_HTPASSWD:-}}
 export INSPECTOR_HTPASSWD=${INSPECTOR_HTPASSWD:-${HTTP_BASIC_HTPASSWD:-}}
-export IRONIC_DEPLOYMENT="${IRONIC_DEPLOYMENT:-}"
 export IRONIC_REVERSE_PROXY_SETUP=${IRONIC_REVERSE_PROXY_SETUP:-false}
 export INSPECTOR_REVERSE_PROXY_SETUP=${INSPECTOR_REVERSE_PROXY_SETUP:-false}
+
+# Backward compatibility
+if [[ "${IRONIC_DEPLOYMENT:-}" == "Conductor" ]]; then
+    export IRONIC_EXPOSE_JSON_RPC=true
+else
+    export IRONIC_EXPOSE_JSON_RPC="${IRONIC_EXPOSE_JSON_RPC:-false}"
+fi
 
 IRONIC_HTPASSWD_FILE=/etc/ironic/htpasswd
 INSPECTOR_HTPASSWD_FILE=/etc/ironic-inspector/htpasswd
@@ -16,22 +22,19 @@ configure_client_basic_auth()
     local auth_config_file="/auth/$1/auth-config"
     local dest="${2:-/etc/ironic/ironic.conf}"
     if [[ -f "${auth_config_file}" ]]; then
-        # Merge configurations in the "auth" directory into the default ironic configuration file because there is no way to choose the configuration file
-        # when running the api as a WSGI app.
+        # Merge configurations in the "auth" directory into the default ironic configuration file
         crudini --merge "${dest}" < "${auth_config_file}"
     fi
 }
 
 configure_json_rpc_auth()
 {
-    export JSON_RPC_AUTH_STRATEGY="noauth"
-    if [[ -n "${IRONIC_HTPASSWD}" ]]; then
-        if [[ "${IRONIC_DEPLOYMENT}" == "Conductor" ]]; then
-            export JSON_RPC_AUTH_STRATEGY="http_basic"
-            printf "%s\n" "${IRONIC_HTPASSWD}" > "${IRONIC_HTPASSWD_FILE}-rpc"
-        else
-            printf "%s\n" "${IRONIC_HTPASSWD}" > "${IRONIC_HTPASSWD_FILE}"
+    if [[ "${IRONIC_EXPOSE_JSON_RPC}" == "true" ]]; then
+        if [[ -z "${IRONIC_HTPASSWD}" ]]; then
+            echo "FATAL: enabling JSON RPC requires authentication"
+            exit 1
         fi
+        printf "%s\n" "${IRONIC_HTPASSWD}" > "${IRONIC_HTPASSWD_FILE}-rpc"
     fi
 }
 

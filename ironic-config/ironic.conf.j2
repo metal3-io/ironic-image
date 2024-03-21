@@ -25,14 +25,7 @@ use_stderr = true
 # NOTE(dtantsur): the default md5 is not compatible with FIPS mode
 hash_ring_algorithm = sha256
 my_ip = {{ env.IRONIC_IP }}
-{% if env.IRONIC_DEPLOYMENT == "Conductor" and env.JSON_RPC_AUTH_STRATEGY == "noauth" %}
-# if access is unauthenticated, we bind only to localhost - use that as the
-# host name also, so that the client can find the server
-# If we run both API and conductor in the same pod, use localhost
-host = localhost
-{% else %}
 host = {{ env.IRONIC_CONDUCTOR_HOST }}
-{% endif %}
 
 # If a path to a certificate is defined, use that first for webserver
 {% if env.WEBSERVER_CACERT_FILE %}
@@ -189,15 +182,9 @@ cipher_suite_versions = 3,17
 # authentication over localhost, using the same credentials as API, to prevent
 # unauthenticated connections from other processes in the same host since the
 # containers are in host networking.
-auth_strategy = {{ env.JSON_RPC_AUTH_STRATEGY }}
+auth_strategy = http_basic
 http_basic_auth_user_file = /etc/ironic/htpasswd-rpc
-{% if env.IRONIC_DEPLOYMENT == "Conductor" and env.JSON_RPC_AUTH_STRATEGY == "noauth" %}
-# if access is unauthenticated, we bind only to localhost - use that as the
-# host name also, so that the client can find the server
-host_ip = localhost
-{% else %}
 host_ip = {% if env.LISTEN_ALL_INTERFACES | lower == "true" %}::{% else %}{{ env.IRONIC_IP }}{% endif %}
-{% endif %}
 {% if env.IRONIC_TLS_SETUP == "true" %}
 use_ssl = true
 cafile = {{ env.IRONIC_CACERT_FILE }}

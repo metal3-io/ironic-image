@@ -8,7 +8,6 @@ iproute
 mod_ssl
 procps
 python3-jinja2
-python3-mod_wsgi
 qemu-img
 sqlite
 syslinux-nonlinux
