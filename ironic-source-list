@@ -30,8 +30,6 @@ ironic-lib
 ironic-prometheus-exporter
 proliantutils
 PyMySQL>=0.8.0
-python-dracclient
-python-ibmcclient
 python-scciclient
 {% if env.SUSHY_SOURCE %}
     {% if path.isdir('/sources/' + env.SUSHY_SOURCE) %}
