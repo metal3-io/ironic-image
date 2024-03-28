@@ -66,7 +66,7 @@ python3-pycdlib
 python3-pyghmi >= 1.5.14-2.1.el9ost
 python3-scciclient >= 0.12.3-0.20230308201513.0940a71.el9
 python3-stevedore >= 5.1.0-0.20231218163929.2d99ccc.el9
-python3-sushy >= 4.7.1-0.20240118192507.435e7d1.el9
+python3-sushy >= 5.1.0-0.20240318172512.cbb4daf.el9
 python3-sushy-oem-idrac >= 5.0.0-0.20231218155726.da9a0e4.el9
 python3-tooz >= 4.2.0-0.20231214201931.bed303e.el9
 python3-werkzeug >= 2.2.3-2.el9
