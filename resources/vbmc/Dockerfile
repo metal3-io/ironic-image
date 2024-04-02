@@ -1,15 +1,15 @@
-ARG BASE_IMAGE=quay.io/centos/centos:stream9
+ARG BASE_IMAGE=docker.io/library/python:3.9.18-slim-bookworm
 
 FROM $BASE_IMAGE
 
-# Configure OpenStack repos from RDO https://www.rdoproject.org
-RUN dnf upgrade -y && \
-  dnf install -y dnf-plugins-core && \
-  dnf config-manager --enable crb && \
-  curl https://trunk.rdoproject.org/centos9-master/puppet-passed-ci/delorean.repo -o /etc/yum.repos.d/rdo.repo && \
-  curl https://trunk.rdoproject.org/centos9-master/delorean-deps.repo -o /etc/yum.repos.d/rdo-deps.repo && \
-  dnf install -y python3-virtualbmc && \
-  dnf clean all && \
-  rm -rf /var/cache/{yum,dnf}/*
+ARG VIRTUALBMC_VERSION="3.1.0"
+ARG DEBIAN_FRONTEND=noninteractive
 
-CMD /usr/bin/vbmcd --foreground
+RUN apt-get update && \
+    apt-get install -y libvirt-dev ssh gcc && \
+    apt-get clean && \
+    pip3 install --no-cache-dir \
+        virtualbmc=="${VIRTUALBMC_VERSION}" && \
+    apt-get --purge autoremove -y gcc
+
+CMD /usr/local/bin/vbmcd --foreground
