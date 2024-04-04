@@ -44,4 +44,9 @@ chmod 2775 /var/lib/dnsmasq
 touch /var/lib/dnsmasq/dnsmasq.leases
 chmod 664 /etc/dnsmasq.conf /var/lib/dnsmasq/dnsmasq.leases
 
+# probes that are created before start
+touch /bin/ironic-{readi,live}ness
+chown root:"${IRONIC_GROUP}" /bin/ironic-{readi,live}ness
+chmod 775 /bin/ironic-{readi,live}ness
+
 setcap "cap_net_raw,cap_net_admin,cap_net_bind_service=+eip" /usr/sbin/dnsmasq

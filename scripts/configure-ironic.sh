@@ -98,3 +98,20 @@ configure_client_basic_auth ironic-rpc
 
 # Make sure ironic traffic bypasses any proxies
 export NO_PROXY="${NO_PROXY:-},$IRONIC_IP"
+
+PROBE_CURL_ARGS=
+if [[ "${IRONIC_REVERSE_PROXY_SETUP}" == "true" ]]; then
+    if [[ "${IRONIC_PRIVATE_PORT}" == "unix" ]]; then
+        PROBE_URL="http://127.0.0.1:6385"
+        PROBE_CURL_ARGS="--unix-socket /shared/ironic.sock"
+    else
+        PROBE_URL="http://127.0.0.1:${IRONIC_PRIVATE_PORT}"
+    fi
+else
+        PROBE_URL="${IRONIC_BASE_URL}"
+fi
+export PROBE_CURL_ARGS
+export PROBE_URL
+
+PROBE_KIND=readiness render_j2_config /bin/ironic-probe.j2 /bin/ironic-readiness
+PROBE_KIND=liveness render_j2_config /bin/ironic-probe.j2 /bin/ironic-liveness
