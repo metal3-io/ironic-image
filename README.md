@@ -46,6 +46,7 @@ the following images:
 The following environment variables can be passed in to customize run-time
 functionality:
 
+- test
 - `PROVISIONING_MACS` - a comma seperated list of mac address of the master
    nodes (used to determine the `PROVISIONING_INTERFACE`)
 - `PROVISIONING_INTERFACE` - interface to use for ironic, dnsmasq(dhcpd) and
