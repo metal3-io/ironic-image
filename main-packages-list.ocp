@@ -18,7 +18,7 @@ python3-cliff >= 4.5.0-0.20240219142400.156e1eb.el9
 python3-construct
 python3-debtcollector >= 2.5.0-0.20231214185855.a6b46c5.el9
 python3-dracclient >= 8.0.0-0.20231214182834.9c7499c.el9
-python3-eventlet >= 0.33.1-5.el9
+python3-eventlet >= 0.33.1-6.el9
 python3-flask >= 2:2.0.1-4.el9.2
 python3-futurist >= 2.4.1-0.20230720141142.159d752.el9
 python3-glanceclient >= 4.4.0-0.20231026133336.62e6fc8.el9
