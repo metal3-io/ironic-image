@@ -2,77 +2,15 @@
 
 set -euxo pipefail
 
-IRONIC_PKG_LIST="/tmp/ironic-${INSTALL_TYPE}-list"
-
 echo "install_weak_deps=False" >> /etc/dnf/dnf.conf
 # Tell RPM to skip installing documentation
 echo "tsflags=nodocs" >> /etc/dnf/dnf.conf
 
-dnf install -y 'dnf-command(config-manager)'
-
-# NOTE(elfosardo): building the container using ironic RPMs is
-# now deprecated and it will be removed in the future.
-# RPM install #
-if [[ "$INSTALL_TYPE" == "rpm" ]]; then
-    curl -o /etc/yum.repos.d/delorean.repo https://trunk.rdoproject.org/centos9-master/puppet-passed-ci/delorean.repo && \
-    curl -o /etc/yum.repos.d/delorean-deps.repo https://trunk.rdoproject.org/centos9-master/delorean-deps.repo
-
-    # NOTE(elfosardo): enable CRB repo for more python3 dependencies
-    dnf config-manager --set-enabled crb
-    dnf upgrade -y
-    xargs -rtd'\n' dnf install -y < "$IRONIC_PKG_LIST"
+dnf upgrade -y
+xargs -rtd'\n' dnf install -y < /tmp/${PKGS_LIST}
+if [ $(uname -m) = "x86_64" ]; then
+    dnf install -y syslinux-nonlinux;
 fi
-
-# SOURCE install #
-if [[ "$INSTALL_TYPE" == "source" ]]; then
-    # emulate uid/gid configuration to match rpm install
-    IRONIC_UID=997
-    IRONIC_GID=994
-    INSPECTOR_UID=996
-    INSPECTOR_GID=993
-    BUILD_DEPS="python3-devel gcc git-core python3-setuptools python3-jinja2"
-    dnf upgrade -y
-    # NOTE(dtantsur): pip is a requirement of python3 in CentOS
-    # shellcheck disable=SC2086
-    dnf install -y python3-pip $BUILD_DEPS
-    python3 -m pip install pip==21.3.1
-
-    IRONIC_PKG_LIST_FINAL="/tmp/ironic-${INSTALL_TYPE}-list-final"
-
-    python3 -c 'import os; import sys; import jinja2; sys.stdout.write(jinja2.Template(sys.stdin.read()).render(env=os.environ, path=os.path))' < "${IRONIC_PKG_LIST}" > "${IRONIC_PKG_LIST_FINAL}"
-
-    UPPER_CONSTRAINTS_PATH="/tmp/${UPPER_CONSTRAINTS_FILE:-}"
-
-    # NOTE(elfosardo): if the content of the upper-constraints file is empty,
-    # we give as assumed that we're on the master branch
-    if [[ ! -f "${UPPER_CONSTRAINTS_PATH}" ]]; then
-        UPPER_CONSTRAINTS_PATH="/tmp/upper-constraints.txt"
-        curl -L https://releases.openstack.org/constraints/upper/master -o "${UPPER_CONSTRAINTS_PATH}"
-    fi
-
-    if [[ -n ${SUSHY_SOURCE:-} ]]; then
-        sed -i '/^sushy===/d' "$UPPER_CONSTRAINTS_PATH"
-    fi
-
-    if [[ -n ${IRONIC_LIB_SOURCE:-} ]]; then
-        sed -i '/^ironic-lib===/d' "$UPPER_CONSTRAINTS_PATH"
-    fi
-
-    python3 -m pip install --ignore-installed --prefix /usr -r "$IRONIC_PKG_LIST_FINAL" -c "${UPPER_CONSTRAINTS_PATH}"
-
-    # ironic and ironic-inspector system configuration
-    mkdir -p /var/log/ironic /var/log/ironic-inspector /var/lib/ironic /var/lib/ironic-inspector
-    getent group ironic > /dev/null || groupadd -r ironic -g "${IRONIC_GID}"
-    getent passwd ironic > /dev/null || useradd -r -g ironic -u "${IRONIC_UID}" -s /sbin/nologin ironic -d /var/lib/ironic
-    getent group ironic-inspector > /dev/null || groupadd -r ironic-inspector -g "${INSPECTOR_GID}"
-    getent passwd ironic-inspector > /dev/null || useradd -r -g ironic-inspector -u "${INSPECTOR_UID}" -s /sbin/nologin ironic-inspector -d /var/lib/ironic-inspector
-
-    # clean installed build dependencies
-    # shellcheck disable=SC2086
-    dnf remove -y $BUILD_DEPS
-fi
-
-xargs -rtd'\n' dnf install -y < /tmp/"${PKGS_LIST}"
 
 if [[ -n "${EXTRA_PKGS_LIST:-}" ]]; then
     if [[ -s "/tmp/${EXTRA_PKGS_LIST}" ]]; then
@@ -80,13 +18,48 @@ if [[ -n "${EXTRA_PKGS_LIST:-}" ]]; then
     fi
 fi
 
-dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
-dnf config-manager --set-disabled epel
-dnf install -y --enablerepo=epel inotify-tools
+### cachito magic works for OCP only
+if  [[ -f /tmp/main-packages-list.ocp ]]; then
 
-# NOTE(elfosardo): we need to reinstall tzdata as the base CS9 container removes
-# its content, for more info see https://bugzilla.redhat.com/show_bug.cgi?id=2052861
-dnf reinstall -y tzdata
+    REQS="${REMOTE_SOURCES_DIR}/requirements.cachito"
+
+    ls -la "${REMOTE_SOURCES_DIR}/" # DEBUG
+
+    # load cachito variables only if they're available
+    if [[ -d "${REMOTE_SOURCES_DIR}/cachito-gomod-with-deps" ]]; then
+        source "${REMOTE_SOURCES_DIR}/cachito-gomod-with-deps/cachito.env"
+        REQS="${REMOTE_SOURCES_DIR}/cachito-gomod-with-deps/app/requirements.cachito"
+    fi
+
+    ### source install ###
+    BUILD_DEPS="python3-devel gcc gcc-c++"
+
+    dnf install -y python3-pip python3-setuptools $BUILD_DEPS
+
+    # NOTE(elfosardo): --no-index is used to install the packages emulating
+    # an isolated environment in CI. Do not use the option for downstream
+    # builds.
+    PIP_OPTIONS=""
+    if [[ ! -d "${REMOTE_SOURCES_DIR}/cachito-gomod-with-deps" ]]; then
+        PIP_OPTIONS="--no-index"
+    fi
+    python3 -m pip install $PIP_OPTIONS --prefix /usr -r "${REQS}"
+
+    # ironic and ironic-inspector system configuration
+    mkdir -p /var/log/ironic /var/log/ironic-inspector /var/lib/ironic /var/lib/ironic-inspector
+    getent group ironic >/dev/null || groupadd -r ironic
+    getent passwd ironic >/dev/null || useradd -r -g ironic -s /sbin/nologin ironic -d /var/lib/ironic
+    getent group ironic-inspector >/dev/null || groupadd -r ironic-inspector
+    getent passwd ironic-inspector >/dev/null || useradd -r -g ironic-inspector -s /sbin/nologin ironic-inspector -d /var/lib/ironic-inspector
+
+    dnf remove -y $BUILD_DEPS
+
+    if [[ -d "${REMOTE_SOURCES_DIR}/cachito-gomod-with-deps" ]]; then
+        rm -rf $REMOTE_SOURCES_DIR
+    fi
+
+fi
+###
 
 chown ironic:ironic /var/log/ironic
 # This file is generated after installing mod_ssl and it affects our configuration
@@ -98,14 +71,6 @@ rm -f /usr/share/ironic/ironic-dist.conf /etc/ironic-inspector/inspector-dist.co
 # add ironic and ironic-inspector to apache group
 usermod -aG ironic apache
 usermod -aG ironic-inspector apache
-
-# apply patches if present #
-if [[ -n "${PATCH_LIST:-}" ]]; then
-    if [[ -s "/tmp/${PATCH_LIST}" ]]; then
-        /bin/patch-image.sh
-    fi
-fi
-rm -f /bin/patch-image.sh
 
 dnf clean all
 rm -rf /var/cache/{yum,dnf}/*

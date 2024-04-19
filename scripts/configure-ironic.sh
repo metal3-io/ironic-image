@@ -88,6 +88,8 @@ mkdir -p /shared/ironic_prometheus_exporter
 
 configure_json_rpc_auth
 
+. /bin/coreos-ipa-common.sh
+
 # The original ironic.conf is empty, and can be found in ironic.conf_orig
 render_j2_config /etc/ironic/ironic.conf.j2 /etc/ironic/ironic.conf
 

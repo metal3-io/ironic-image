@@ -44,6 +44,9 @@ if [[ "$IRONIC_FAST_TRACK" == "true" ]]; then
 fi
 export INSPECTOR_EXTRA_ARGS
 
+# shellcheck disable=SC1091
+. /bin/coreos-ipa-common.sh
+
 # Copy files to shared mount
 render_j2_config /tmp/inspector.ipxe.j2 /shared/html/inspector.ipxe
 cp /tmp/uefi_esp.img /shared/html/uefi_esp.img

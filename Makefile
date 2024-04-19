@@ -1,8 +1,9 @@
-.PHONY: help
-help:
-	@echo "Targets:"
-	@echo "  docker -- build the docker image"
+.PHONY: build-ocp
 
-.PHONY: docker
-docker:
-	docker build . -f Dockerfile
+build-ocp:
+	podman build -f Dockerfile.ocp
+
+.PHONY: check-reqs
+
+check-reqs:
+	./tools/check-requirements.sh

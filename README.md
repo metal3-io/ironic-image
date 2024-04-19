@@ -1,13 +1,7 @@
-# Metal3 Ironic Container
+Metal3 Ironic Container
+=======================
 
 This repo contains the files needed to build the Ironic images used by Metal3.
-
-## Build Status
-
-[![CLOMonitor](https://img.shields.io/endpoint?url=https://clomonitor.io/api/projects/cncf/metal3-io/badge)](https://clomonitor.io/projects/cncf/metal3-io)
-[![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/metal3-io/ironic-image/badge)](https://securityscorecards.dev/viewer/?uri=github.com/metal3-io/ironic-image)
-[![Ubuntu daily main build status](https://jenkins.nordix.org/buildStatus/icon?job=metal3_daily_main_integration_test_ubuntu&subject=Ubuntu%20daily%20main)](https://jenkins.nordix.org/view/Metal3/job/metal3_daily_main_integration_test_ubuntu/)
-[![CentOS daily main build status](https://jenkins.nordix.org/buildStatus/icon?job=metal3_daily_main_integration_test_centos&subject=CentOS%20daily%20main)](https://jenkins.nordix.org/view/Metal3/job/metal3_daily_main_integration_test_centos/)
 
 ## Description
 
@@ -106,74 +100,3 @@ The following can serve as an example:
 - `OS_CONDUCTOR__CLEAN_CALLBACK_TIMEOUT=1800` - timeout (seconds) to wait for a
    callback from the ramdisk doing the cleaning
 - `OS_PXE__BOOT_RETRY_TIMEOUT=1200` - timeout (seconds) to enable boot retries.
-
-## Build Ironic Image from RPMs
-
-The ironic image is built using RPMs for system software and source
-code for ironic specific software and libraries.
-It is possible to build it using RPMs from RDO project code setting the **INSTALL_TYPE**
-argument to **rpm** at build time; for example:
-
-```bash
-podman build -t ironic-image -f Dockerfile --build-arg INSTALL_TYPE=rpm
-```
-
-## Custom source for ironic software
-
-When building the ironic image from source, it is also possible to specify a
-different source for ironic, ironic-inspector, ironic-lib or the sushy library
-using the build arguments **IRONIC_SOURCE**, **IRONIC_INSPECTOR_SOURCE**,
-**IRONIC_LIB_SOURCE**, and **SUSHY_SOURCE**.
-The accepted formats are gerrit refs, like _refs/changes/89/860689/2_,
-commit hashes, like _a1fe6cb41e6f0a1ed0a43ba5e17745714f206f1f_,
-repo tags or branches, or a local directory that needs to be under the
-sources/ directory in the container context.
-An example of a full command installing ironic from a gerrit patch is:
-
-```bash
-podman build -t ironic-image -f Dockerfile --build-arg INSTALL_TYPE=source \
-    --build-arg IRONIC_SOURCE="refs/changes/89/860689/2"
-```
-
-An example using the local directory _sources/ironic_:
-
-```bash
-podman build -t ironic-image -f Dockerfile --build-arg INSTALL_TYPE=source \
-    --build-arg IRONIC_SOURCE="ironic"
-```
-
-It is also possible to specify an upper-constraints file using the
-**UPPER_CONSTRAINTS_FILE** argument. By default this is the upper-constraints.txt
-file found in the container context; the content of the file can be modified
-keeping the default name or it's possible to specify an entire different
-filename as far as it's in the container context.
-
-## Apply project patches to the images during build
-
-When building the image, it is possible to specify a patch of one or more
-upstream projects to apply to the image using the **PATCH_LIST** argument in
-the cli command, for example:
-
-```bash
-podman build -t ironic-image -f Dockerfile --build-arg \
-    PATCH_LIST=my-patch-list
-```
-
-The **PATCH_LIST** argument is a path to a file under the image context.
-Its format is a simple text file that contains references to upstream patches
-for the ironic projects.
-Each line of the file is in the form:
-    **project_dir refspec (git_host)**
-where:
-
-- **project_dir** is the last part of the project url including the
-  organization, for example for ironic is _openstack/ironic_
-- **refspec** is the gerrit refspec of the patch we want to test, for example if
-  you want to apply the patch at
-  <https://review.opendev.org/c/openstack/ironic/+/800084>
-  the refspec will be _refs/changes/84/800084/22_
-  Using multiple refspecs is convenient in case we need to test patches that
-  are connected to each other, either on the same project or on different
-  projects.
-- **git_host** (optional) is the git host from which the project will be cloned.
-  If unset, `https://opendev.org` is used.

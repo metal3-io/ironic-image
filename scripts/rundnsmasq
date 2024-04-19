@@ -17,6 +17,7 @@ if [[ "${DNS_IP:-}" == "provisioning" ]]; then
 fi
 
 mkdir -p /shared/tftpboot
+mkdir -p /shared/tftpboot/arm64-efi
 mkdir -p /shared/html/images
 mkdir -p /shared/html/pxelinux.cfg
 
@@ -27,6 +28,7 @@ if [[ -r "${IPXE_CUSTOM_FIRMWARE_DIR}" ]]; then
         "/shared/tftpboot"
 else
     cp /tftpboot/undionly.kpxe /tftpboot/snponly.efi /shared/tftpboot
+    cp /tftpboot/arm64-efi/snponly.efi /shared/tftpboot/arm64-efi
 fi
 
 # Template and write dnsmasq.conf
