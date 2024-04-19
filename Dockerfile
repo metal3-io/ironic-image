@@ -29,7 +29,6 @@ ARG INSTALL_TYPE=source
 # build arguments for source build customization
 ARG UPPER_CONSTRAINTS_FILE
 ARG IRONIC_SOURCE
-ARG IRONIC_INSPECTOR_SOURCE
 ARG IRONIC_LIB_SOURCE
 ARG SUSHY_SOURCE
 
@@ -59,14 +58,10 @@ COPY ironic-config/httpd-modules.conf /etc/httpd/conf.modules.d/
 COPY ironic-config/apache2-vmedia.conf.j2 /etc/httpd-vmedia.conf.j2
 COPY ironic-config/apache2-ipxe.conf.j2 /etc/httpd-ipxe.conf.j2
 
-# IRONIC-INSPECTOR #
-RUN mkdir -p /var/lib/ironic /var/lib/ironic-inspector && \
+# DATABASE
+RUN mkdir -p /var/lib/ironic && \
   sqlite3 /var/lib/ironic/ironic.db "pragma journal_mode=wal" && \
-  sqlite3 /var/lib/ironic-inspector/ironic-inspector.db "pragma journal_mode=wal" && \
   dnf remove -y sqlite
-
-COPY ironic-inspector-config/ironic-inspector.conf.j2 /etc/ironic-inspector/
-COPY ironic-inspector-config/inspector-apache.conf.j2 /etc/httpd/conf.d/
 
 # configure non-root user and set relevant permissions
 RUN configure-nonroot.sh && \
