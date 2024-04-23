@@ -1,4 +1,6 @@
-ironic @ git+https://github.com/openshift/openstack-ironic@eaf6752a63e612985e332fe908e25a62b49a5598
+ironic @ git+https://github.com/openshift/openstack-ironic@e1e56c5731acf45165fb9d9e2fb4d4f16a5c7465
 ironic-inspector @ git+https://github.com/openshift/openstack-ironic-inspector@4d300358409742e531ec503d3af0a0fd06849a01
 ironic-lib @ git+https://github.com/openshift/openstack-ironic-lib@61ca0b756a1246b2dd0832ecb9610dcb21a76013
 sushy @ git+https://github.com/openshift/openstack-sushy@f24e565782f3c4cd706a28d8454474a0ceeca5dd
+### dependencies ###
+microversion-parse @ git+https://opendev.org/openstack/microversion-parse@1.0.1
