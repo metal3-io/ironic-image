@@ -15,11 +15,11 @@ fi
 set +x
 IRONIC_HTPASSWD_FILE=/etc/ironic/htpasswd
 if [[ -f "/auth/ironic/username" ]]; then
-    read -r IRONIC_HTPASSWD_USERNAME<"/auth/ironic/username"
+    IRONIC_HTPASSWD_USERNAME=$(</auth/ironic/username)
 fi
 IRONIC_HTPASSWD_USERNAME=${IRONIC_HTPASSWD_USERNAME:-}
 if [[ -f "/auth/ironic/password" ]]; then
-    read -r IRONIC_HTPASSWD_PASSWORD<"/auth/ironic/password"
+    IRONIC_HTPASSWD_PASSWORD=$(</auth/ironic/password)
 fi
 IRONIC_HTPASSWD_PASSWORD=${IRONIC_HTPASSWD_PASSWORD:-}
 if [[ -n "${IRONIC_HTPASSWD_USERNAME}" ]]; then
