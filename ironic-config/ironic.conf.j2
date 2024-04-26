@@ -53,9 +53,7 @@ max_command_attempts = 30
 {% if env.IRONIC_REVERSE_PROXY_SETUP == "true" %}
 {% if env.IRONIC_PRIVATE_PORT == "unix" %}
 unix_socket = /shared/ironic.sock
-# NOTE(dtantsur): this is not ideal, but since the socket is accessed from
-# another container, we need to make it world-writeable.
-unix_socket_mode = 0666
+unix_socket_mode = 0660
 {% else %}
 host_ip = 127.0.0.1
 port = {{ env.IRONIC_PRIVATE_PORT }}
