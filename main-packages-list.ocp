@@ -22,8 +22,6 @@ python3-eventlet >= 0.33.1-6.el9
 python3-flask >= 2:2.0.1-4.el9.2
 python3-futurist >= 2.4.1-0.20230720141142.159d752.el9
 python3-glanceclient >= 4.4.0-0.20231026133336.62e6fc8.el9
-python3-gunicorn >= 20.0.4-4.el9
-python3-ironic-prometheus-exporter >= 4.3.0-0.20231002134531.b3e0de8.el9
 python3-ironicclient >= 4.9.0-0.20211209154934.6f1be06.el9
 python3-jinja2 >= 2-3.0.1-2.el9.1
 python3-jsonpath-rw
