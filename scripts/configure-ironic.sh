@@ -2,14 +2,13 @@
 
 set -euxo pipefail
 
-IRONIC_DEPLOYMENT="${IRONIC_DEPLOYMENT:-}"
 IRONIC_EXTERNAL_IP="${IRONIC_EXTERNAL_IP:-}"
 
 # Define the VLAN interfaces to be included in introspection report, e.g.
 #   all - all VLANs on all interfaces using LLDP information
 #   <interface> - all VLANs on a particular interface using LLDP information
 #   <interface.vlan> - a particular VLAN on an interface, not relying on LLDP
-export IRONIC_INSPECTOR_VLAN_INTERFACES=${IRONIC_INSPECTOR_VLAN_INTERFACES:-all}
+export IRONIC_ENABLE_VLAN_INTERFACES=${IRONIC_ENABLE_VLAN_INTERFACES:-${IRONIC_INSPECTOR_VLAN_INTERFACES:-all}}
 
 # shellcheck disable=SC1091
 . /bin/tls-common.sh
@@ -38,7 +37,6 @@ fi
 export NUMWORKERS=${NUMWORKERS:-$NUMPROC}
 
 export IRONIC_USE_MARIADB=${IRONIC_USE_MARIADB:-true}
-export IRONIC_EXPOSE_JSON_RPC=${IRONIC_EXPOSE_JSON_RPC:-true}
 
 # Whether to enable fast_track provisioning or not
 export IRONIC_FAST_TRACK=${IRONIC_FAST_TRACK:-true}
@@ -102,3 +100,20 @@ configure_client_basic_auth ironic-rpc
 
 # Make sure ironic traffic bypasses any proxies
 export NO_PROXY="${NO_PROXY:-},$IRONIC_IP"
+
+PROBE_CURL_ARGS=
+if [[ "${IRONIC_REVERSE_PROXY_SETUP}" == "true" ]]; then
+    if [[ "${IRONIC_PRIVATE_PORT}" == "unix" ]]; then
+        PROBE_URL="http://127.0.0.1:6385"
+        PROBE_CURL_ARGS="--unix-socket /shared/ironic.sock"
+    else
+        PROBE_URL="http://127.0.0.1:${IRONIC_PRIVATE_PORT}"
+    fi
+else
+        PROBE_URL="${IRONIC_BASE_URL}"
+fi
+export PROBE_CURL_ARGS
+export PROBE_URL
+
+PROBE_KIND=readiness render_j2_config /bin/ironic-probe.j2 /bin/ironic-readiness
+PROBE_KIND=liveness render_j2_config /bin/ironic-probe.j2 /bin/ironic-liveness

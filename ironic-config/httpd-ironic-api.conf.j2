@@ -19,8 +19,6 @@ Listen {{ env.IRONIC_URL_HOST }}:{{ env.IRONIC_LISTEN_PORT }}
  <VirtualHost {{ env.IRONIC_URL_HOST }}:{{ env.IRONIC_LISTEN_PORT }}>
 {% endif %}
 
-    {% if env.IRONIC_REVERSE_PROXY_SETUP | lower == "true" %}
-
     {% if env.IRONIC_PRIVATE_PORT == "unix" %}
     ProxyPass "/"  "unix:/shared/ironic.sock|http://127.0.0.1/"
     ProxyPassReverse "/"  "unix:/shared/ironic.sock|http://127.0.0.1/"
@@ -29,14 +27,8 @@ Listen {{ env.IRONIC_URL_HOST }}:{{ env.IRONIC_LISTEN_PORT }}
     ProxyPassReverse "/"  "http://127.0.0.1:{{ env.IRONIC_PRIVATE_PORT }}/"
     {% endif %}
 
-    {% else %}
-    WSGIDaemonProcess ironic user=ironic group=ironic threads=10 display-name=%{GROUP}
-    WSGIScriptAlias / /usr/bin/ironic-api-wsgi
-    {% endif %}
-
     SetEnv APACHE_RUN_USER ironic
     SetEnv APACHE_RUN_GROUP ironic
-    WSGIProcessGroup ironic
 
     ErrorLog /dev/stderr
     LogLevel debug
@@ -49,7 +41,6 @@ Listen {{ env.IRONIC_URL_HOST }}:{{ env.IRONIC_LISTEN_PORT }}
     SSLCertificateKeyFile {{ env.IRONIC_KEY_FILE }}
 {% endif %}
 
-    {% if env.IRONIC_REVERSE_PROXY_SETUP | lower == "true" %}
     <Location />
          {% if "IRONIC_HTPASSWD" in env and env.IRONIC_HTPASSWD | length %}
             AuthType Basic
@@ -58,22 +49,6 @@ Listen {{ env.IRONIC_URL_HOST }}:{{ env.IRONIC_LISTEN_PORT }}
             Require valid-user
          {% endif %}
     </Location>
-    {% else %}
-    <Directory /usr/bin >
-        WSGIProcessGroup ironic
-        WSGIApplicationGroup %{GLOBAL}
-        AllowOverride None
-
-        {% if "IRONIC_HTPASSWD" in env and env.IRONIC_HTPASSWD | length %}
-        AuthType Basic
-        AuthName "Restricted WSGI area"
-        AuthUserFile "/etc/ironic/htpasswd"
-        Require valid-user
-        {% else %}
-        Require all granted
-        {% endif %}
-    </Directory>
-    {% endif %}
 
     <Location ~ "^/(v1/?)?$" >
         Require all granted

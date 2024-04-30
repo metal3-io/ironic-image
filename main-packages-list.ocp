@@ -17,7 +17,6 @@ python3-cinderclient >= 9.4.0-0.20231214204912.f1f14df.el9
 python3-cliff >= 4.5.0-0.20240219142400.156e1eb.el9
 python3-construct
 python3-debtcollector >= 2.5.0-0.20231214185855.a6b46c5.el9
-python3-dracclient >= 8.0.0-0.20231214182834.9c7499c.el9
 python3-eventlet >= 0.33.1-6.el9
 python3-flask >= 2:2.0.1-4.el9.2
 python3-futurist >= 2.4.1-0.20230720141142.159d752.el9
@@ -31,7 +30,6 @@ python3-keystoneclient >= 5.3.0-0.20240219143223.83dfa1e.el9
 python3-keystonemiddleware >= 10.4.1-0.20231214203310.d36c86c.el9
 python3-markupsafe >= 2.1.1-4.el9
 python3-microversion-parse >= 1.0.1-0.20240424173932.2c36df6.el9
-python3-mod_wsgi
 python3-msgpack >= 0.6.2-2.el9
 python3-netaddr >= 0.9.0-2.el9
 python3-openstacksdk >= 2.1.0-0.20240219143936.ed4117f.el9

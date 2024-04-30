@@ -103,9 +103,5 @@ export IRONIC_INSPECTOR_ACCESS_PORT=${IRONIC_INSPECTOR_ACCESS_PORT:-5050}
 export IRONIC_INSPECTOR_LISTEN_PORT=${IRONIC_INSPECTOR_LISTEN_PORT:-$IRONIC_INSPECTOR_ACCESS_PORT}
 
 # If this is false, built-in inspection is used.
-export USE_IRONIC_INSPECTOR=${USE_IRONIC_INSPECTOR:-true}
+export USE_IRONIC_INSPECTOR=${USE_IRONIC_INSPECTOR:-false}
 export IRONIC_INSPECTOR_ENABLE_DISCOVERY=${IRONIC_INSPECTOR_ENABLE_DISCOVERY:-false}
-if [[ "${USE_IRONIC_INSPECTOR}" != "true" ]] && [[ "${IRONIC_INSPECTOR_ENABLE_DISCOVERY}" == "true" ]]; then
-    echo "Discovery is only supported with ironic-inspector at this point"
-    exit 1
-fi

@@ -86,6 +86,9 @@ functionality:
   use `IRONIC_EXTERNAL_IP` if available.
 - `IRONIC_INSPECTOR_CALLBACK_ENDPOINT_OVERRIDE` - Override Inspector's callback
   URL. Defaults to use `IRONIC_EXTERNAL_IP` if available.
+- `IRONIC_ENABLE_VLAN_INTERFACES` - Which VLAN interfaces to enable on the
+  agent start-up. Can be a list of interfaces or a special value `all`.
+  Defaults to `all`.
 
 The ironic configuration can be overridden by various environment variables.
 The following can serve as an example:

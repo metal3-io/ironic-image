@@ -9,17 +9,17 @@ debug = true
 default_deploy_interface = direct
 default_inspect_interface = {% if env.USE_IRONIC_INSPECTOR == "true" %}inspector{% else %}agent{% endif %}
 default_network_interface = noop
-enabled_bios_interfaces = idrac-wsman,no-bios,redfish,idrac-redfish,irmc,ilo
+enabled_bios_interfaces = no-bios,redfish,idrac-redfish,irmc,ilo
 enabled_boot_interfaces = ipxe,ilo-ipxe,pxe,ilo-pxe,fake,redfish-virtual-media,idrac-redfish-virtual-media,ilo-virtual-media
 enabled_deploy_interfaces = direct,fake,ramdisk,custom-agent
 # NOTE(dtantsur): when changing this, make sure to update the driver
 # dependencies in Dockerfile.
 enabled_hardware_types = ipmi,idrac,irmc,fake-hardware,redfish,manual-management,ilo,ilo5
-enabled_inspect_interfaces = {% if env.USE_IRONIC_INSPECTOR == "true" %}inspector{% else %}agent{% endif %},idrac-wsman,irmc,fake,redfish,ilo
-enabled_management_interfaces = ipmitool,idrac-wsman,irmc,fake,redfish,idrac-redfish,ilo,ilo5,noop
-enabled_power_interfaces = ipmitool,idrac-wsman,irmc,fake,redfish,idrac-redfish,ilo
-enabled_raid_interfaces = no-raid,irmc,agent,fake,idrac-wsman,redfish,idrac-redfish,ilo5
-enabled_vendor_interfaces = no-vendor,ipmitool,idrac-wsman,idrac-redfish,redfish,ilo,fake
+enabled_inspect_interfaces = {% if env.USE_IRONIC_INSPECTOR == "true" %}inspector{% else %}agent{% endif %},irmc,fake,redfish,ilo
+enabled_management_interfaces = ipmitool,irmc,fake,redfish,idrac-redfish,ilo,ilo5,noop
+enabled_power_interfaces = ipmitool,irmc,fake,redfish,idrac-redfish,ilo
+enabled_raid_interfaces = no-raid,irmc,agent,fake,redfish,idrac-redfish,ilo5
+enabled_vendor_interfaces = no-vendor,ipmitool,idrac-redfish,redfish,ilo,fake
 enabled_firmware_interfaces = no-firmware,fake,redfish
 {% if env.IRONIC_EXPOSE_JSON_RPC | lower == "true" %}
 rpc_transport = json-rpc
@@ -30,14 +30,7 @@ use_stderr = true
 # NOTE(dtantsur): the default md5 is not compatible with FIPS mode
 hash_ring_algorithm = sha256
 my_ip = {{ env.IRONIC_IP }}
-{% if env.IRONIC_DEPLOYMENT == "Conductor" and env.JSON_RPC_AUTH_STRATEGY == "noauth" %}
-# if access is unauthenticated, we bind only to localhost - use that as the
-# host name also, so that the client can find the server
-# If we run both API and conductor in the same pod, use localhost
-host = localhost
-{% else %}
 host = {{ env.IRONIC_CONDUCTOR_HOST }}
-{% endif %}
 
 # If a path to a certificate is defined, use that first for webserver
 {% if env.WEBSERVER_CACERT_FILE %}
@@ -152,7 +145,7 @@ power_off = {{ false if env.IRONIC_FAST_TRACK == "true" else true }}
 # NOTE(dtantsur): keep inspection arguments synchronized with inspector.ipxe
 # Also keep in mind that only parameters unique for inspection go here.
 # No need to duplicate pxe_append_params/kernel_append_params.
-extra_kernel_params = ipa-inspection-collectors={{ env.IRONIC_IPA_COLLECTORS }} ipa-enable-vlan-interfaces={{ env.IRONIC_INSPECTOR_VLAN_INTERFACES }} ipa-inspection-dhcp-all-interfaces=1 ipa-collect-lldp=1
+extra_kernel_params = ipa-inspection-collectors={{ env.IRONIC_IPA_COLLECTORS }} ipa-enable-vlan-interfaces={{ env.IRONIC_ENABLE_VLAN_INTERFACES }} ipa-inspection-dhcp-all-interfaces=1 ipa-collect-lldp=1
 
 {% if env.USE_IRONIC_INSPECTOR == "true" %}
 endpoint_override = {{ env.IRONIC_INSPECTOR_BASE_URL }}
@@ -168,6 +161,10 @@ hooks = $default_hooks,parse-lldp
 add_ports = all
 keep_ports = present
 {% endif %}
+
+[auto_discovery]
+enabled = {{ env.IRONIC_INSPECTOR_ENABLE_DISCOVERY }}
+driver = ipmi
 
 [ipmi]
 # use_ipmitool_retries transfers the responsibility of retrying to ipmitool
@@ -200,15 +197,9 @@ cipher_suite_versions = 3,17
 # authentication over localhost, using the same credentials as API, to prevent
 # unauthenticated connections from other processes in the same host since the
 # containers are in host networking.
-auth_strategy = {{ env.JSON_RPC_AUTH_STRATEGY }}
+auth_strategy = http_basic
 http_basic_auth_user_file = /etc/ironic/htpasswd-rpc
-{% if env.IRONIC_DEPLOYMENT == "Conductor" and env.JSON_RPC_AUTH_STRATEGY == "noauth" %}
-# if access is unauthenticated, we bind only to localhost - use that as the
-# host name also, so that the client can find the server
-host_ip = localhost
-{% else %}
 host_ip = {% if env.LISTEN_ALL_INTERFACES | lower == "true" %}::{% else %}{{ env.IRONIC_IP }}{% endif %}
-{% endif %}
 {% if env.IRONIC_TLS_SETUP == "true" %}
 use_ssl = true
 cafile = {{ env.IRONIC_CACERT_FILE }}

@@ -1,9 +1,7 @@
 #!/usr/bin/bash
 
-# These settings must go before configure-ironic since it has different
-# defaults.
+# This setting must go before configure-ironic since it has different defaults.
 export IRONIC_USE_MARIADB=${IRONIC_USE_MARIADB:-false}
-export IRONIC_EXPOSE_JSON_RPC=${IRONIC_EXPOSE_JSON_RPC:-false}
 
 # shellcheck disable=SC1091
 . /bin/configure-ironic.sh
