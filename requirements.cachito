@@ -2,3 +2,5 @@ ironic @ git+https://github.com/openshift/openstack-ironic@1e15afd063fc7cdce1c50
 ironic-inspector @ git+https://github.com/openshift/openstack-ironic-inspector@323caaf82d8be1370a25b294eef6ba10be45baef
 ironic-lib @ git+https://github.com/openshift/openstack-ironic-lib@e3eaf180bae38004979bfe339c0be0f65396cbf1
 sushy @ git+https://github.com/openshift/openstack-sushy@9da48cbc8802e5febf33440b3e5a0e86747a2eef
+
+# DEPENDENCIES

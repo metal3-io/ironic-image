@@ -49,7 +49,20 @@ if  [[ -f /tmp/main-packages-list.ocp ]]; then
     if [[ ! -d "${REMOTE_SOURCES_DIR}/cachito-gomod-with-deps" ]]; then
         PIP_OPTIONS="$PIP_OPTIONS --no-index"
     fi
-    python3 -m pip install $PIP_OPTIONS --prefix /usr -r "${REQS}"
+
+    # NOTE(elfosardo): download all the libraries and dependencies first, removing
+    # --no-index but using --no-deps to avoid chain-downloading packages.
+    # This forces to download only the packages specified in the requirements file,
+    # but we leave the --no-index in the installation phase to again avoid
+    # downloading unexpected packages and install only the downloaded ones.
+    # This is done to allow testing any source code package in CI emulating
+    # the cachito downstream build pipeline.
+    # See https://issues.redhat.com/browse/METAL-1049 for more details.
+    PIP_SOURCES_DIR="all_sources"
+    mkdir $PIP_SOURCES_DIR
+    python3 -m pip download --no-deps -r "${REQS}" -d $PIP_SOURCES_DIR
+    python3 -m pip install $PIP_OPTIONS --prefix /usr -r "${REQS}" -f $PIP_SOURCES_DIR
+
     # NOTE(janders) since we set --no-compile at install time, we need to
     # compile post-install (see RHEL-29028)
     python3 -m compileall --invalidation-mode=timestamp /usr
@@ -62,6 +75,7 @@ if  [[ -f /tmp/main-packages-list.ocp ]]; then
     getent passwd ironic-inspector >/dev/null || useradd -r -g ironic-inspector -s /sbin/nologin ironic-inspector -d /var/lib/ironic-inspector
 
     dnf remove -y $BUILD_DEPS
+    rm -fr $PIP_SOURCES_DIR
 
     if [[ -d "${REMOTE_SOURCES_DIR}/cachito-gomod-with-deps" ]]; then
         rm -rf $REMOTE_SOURCES_DIR
