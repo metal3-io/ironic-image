@@ -12,35 +12,17 @@ else
     export IRONIC_EXPOSE_JSON_RPC="${IRONIC_EXPOSE_JSON_RPC:-false}"
 fi
 
-set +x
 IRONIC_HTPASSWD_FILE=/etc/ironic/htpasswd
-if [[ -f "/auth/ironic/username" ]]; then
-    IRONIC_HTPASSWD_USERNAME=$(</auth/ironic/username)
-fi
-IRONIC_HTPASSWD_USERNAME=${IRONIC_HTPASSWD_USERNAME:-}
-if [[ -f "/auth/ironic/password" ]]; then
-    IRONIC_HTPASSWD_PASSWORD=$(</auth/ironic/password)
-fi
-IRONIC_HTPASSWD_PASSWORD=${IRONIC_HTPASSWD_PASSWORD:-}
-if [[ -n "${IRONIC_HTPASSWD_USERNAME}" ]]; then
-    IRONIC_HTPASSWD="$(htpasswd -n -b -B "${IRONIC_HTPASSWD_USERNAME}" "${IRONIC_HTPASSWD_PASSWORD}")"
+if [[ -f "/auth/ironic/htpasswd" ]]; then
+    IRONIC_HTPASSWD=$(</auth/ironic/htpasswd)
 fi
 export IRONIC_HTPASSWD=${IRONIC_HTPASSWD:-${HTTP_BASIC_HTPASSWD:-}}
 
 INSPECTOR_HTPASSWD_FILE=/etc/ironic-inspector/htpasswd
-if [[ -f "/auth/inspector/username" ]]; then
-    read -r INSPECTOR_HTPASSWD_USERNAME<"/auth/inspector/username"
-fi
-INSPECTOR_HTPASSWD_USERNAME=${INSPECTOR_HTPASSWD_USERNAME:-}
-if [[ -f "/auth/inspector/password" ]]; then
-    read -r INSPECTOR_HTPASSWD_PASSWORD<"/auth/inspector/password"
-fi
-INSPECTOR_HTPASSWD_PASSWORD=${INSPECTOR_HTPASSWD_PASSWORD:-}
-if [[ -n "${INSPECTOR_HTPASSWD_USERNAME}" ]]; then
-    INSPECTOR_HTPASSWD="$(htpasswd -n -b -B "${INSPECTOR_HTPASSWD_USERNAME}" "${INSPECTOR_HTPASSWD_PASSWORD}")"
+if [[ -f "/auth/inspector/htpasswd" ]]; then
+    INSPECTOR_HTPASSWD=$(</auth/inspector/htpasswd)
 fi
 export INSPECTOR_HTPASSWD=${INSPECTOR_HTPASSWD:-${HTTP_BASIC_HTPASSWD:-}}
-set -x
 
 configure_client_basic_auth()
 {
