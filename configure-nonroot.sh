@@ -23,7 +23,7 @@ chown "${IRONIC_USER}":"${IRONIC_GROUP}" /shared
 # that need to have correct ownership as the entire ironic in BMO
 # deployment shares a single fsGroup in manifest's securityContext
 mkdir -p /certs/ca
-chown "${IRONIC_USER}":"${IRONIC_GROUP}" /certs{,/ca}
+chown -R "${IRONIC_USER}":"${IRONIC_GROUP}" /certs{,/ca}
 chmod 2775 /certs{,/ca}
 
 # ironic and httpd related changes
