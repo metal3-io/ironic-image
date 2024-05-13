@@ -22,6 +22,9 @@ fi
 if  [[ -f /tmp/main-packages-list.ocp ]]; then
 
     REQS="${REMOTE_SOURCES_DIR}/requirements.cachito"
+    IRONIC_UID=1002
+    IRONIC_GID=1003
+    INSPECTOR_GID=1004
 
     ls -la "${REMOTE_SOURCES_DIR}/" # DEBUG
 
@@ -47,9 +50,9 @@ if  [[ -f /tmp/main-packages-list.ocp ]]; then
 
     # ironic and ironic-inspector system configuration
     mkdir -p /var/log/ironic /var/log/ironic-inspector /var/lib/ironic /var/lib/ironic-inspector
-    getent group ironic >/dev/null || groupadd -r ironic
-    getent passwd ironic >/dev/null || useradd -r -g ironic -s /sbin/nologin ironic -d /var/lib/ironic
-    getent group ironic-inspector >/dev/null || groupadd -r ironic-inspector
+    getent group ironic >/dev/null || groupadd -r -g "${IRONIC_GID}" ironic
+    getent passwd ironic >/dev/null || useradd -r -g ironic -s /sbin/nologin -u "${IRONIC_UID}" ironic -d /var/lib/ironic
+    getent group ironic-inspector >/dev/null || groupadd -r -g "${INSPECTOR_GID}" ironic-inspector
     getent passwd ironic-inspector >/dev/null || useradd -r -g ironic-inspector -s /sbin/nologin ironic-inspector -d /var/lib/ironic-inspector
 
     dnf remove -y $BUILD_DEPS
