@@ -1,22 +1,17 @@
 # See the OWNERS docs at https://go.k8s.io/owners
 
 approvers:
- - derekhiggins
- - dtantsur
- - elfosardo
- - iurygregory
+- ironic-image-maintainers
 
 reviewers:
- - lentzi90
- - Rozzii
- - tuminoid
- - zaneb
+- ironic-image-maintainers
+- ironic-image-reviewers
 
 emeritus_reviewers:
- - maelk
- - namnx228
- - stbenjam
+- maelk
+- namnx228
+- stbenjam
 
 emeritus_approvers:
- - bfournie
- - hardys
+- bfournie
+- hardys
