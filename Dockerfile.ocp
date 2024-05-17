@@ -1,12 +1,12 @@
 # Please ensure this file is kept in sync with Dockerfile.okd
-FROM registry.ci.openshift.org/ocp/builder:rhel-9-base-openshift-4.16 AS builder
+FROM registry.ci.openshift.org/ocp/builder:rhel-9-base-openshift-4.17 AS builder
 
 WORKDIR /tmp
 
 COPY prepare-efi.sh /bin/
 RUN prepare-efi.sh redhat
 
-FROM registry.ci.openshift.org/ocp/builder:rhel-9-base-openshift-4.16
+FROM registry.ci.openshift.org/ocp/builder:rhel-9-base-openshift-4.17
 
 ENV REMOTE_SOURCES=${REMOTE_SOURCES:-"requirements*.cachito"}
 ENV REMOTE_SOURCES_DIR=${REMOTE_SOURCES_DIR:-"/remote_sources_dir/"}
