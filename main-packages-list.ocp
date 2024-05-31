@@ -12,60 +12,60 @@ ipxe-bootimgs-aarch64
 ipxe-bootimgs-x86
 ipxe-roms-qemu
 mod_ssl
-python3-automaton >= 3.2.0-0.20231214191506.9255778.el9
-python3-cliff >= 4.5.0-0.20240219142400.156e1eb.el9
+python3-automaton >= 3.2.0-0.20240522151206.9255778.el9
+python3-cliff >= 4.6.0-0.20240522152608.b6119d5.el9
 python3-construct
-python3-debtcollector >= 2.5.0-0.20231214185855.a6b46c5.el9
+python3-debtcollector >= 3.0.0-0.20240522153257.0e6ce1c.el9
 python3-eventlet >= 0.33.1-6.el9
 python3-flask >= 2:2.0.1-4.el9.2
-python3-futurist >= 2.4.1-0.20230720141142.159d752.el9
+python3-futurist >= 3.0.0-0.20240522153313.4e14db5.el9
 python3-ironicclient >= 4.9.0-0.20211209154934.6f1be06.el9
 python3-jinja2 >= 2-3.0.1-2.el9.1
 python3-jsonpath-rw
 python3-jsonschema >= 4.0.0
-python3-keystoneauth1 >= 5.5.0-0.20240219144549.733a34b.el9
-python3-keystoneclient >= 5.3.0-0.20240219143223.83dfa1e.el9
-python3-keystonemiddleware >= 10.4.1-0.20231214203310.d36c86c.el9
+python3-keystoneauth1 >= 5.6.0-0.20240522155106.e071ad4.el9
+python3-keystoneclient >= 5.4.0-0.20240522161812.c66d778.el9
+python3-keystonemiddleware >= 10.6.0-0.20240522155516.b81c50f.el9
 python3-markupsafe >= 2.1.1-4.el9
 python3-microversion-parse >= 1.0.1-0.20240424173932.2c36df6.el9
 python3-msgpack >= 0.6.2-2.el9
 python3-netaddr >= 0.9.0-2.el9
-python3-openstacksdk >= 2.1.0-0.20240219143936.ed4117f.el9
-python3-os-traits >= 3.0.0-0.20231218162158.cff125c.el9
-python3-osc-lib >= 3.0.0-0.20240219141530.f0e64f7.el9
-python3-oslo-cache >= 3.6.0-0.20240219143729.3694193.el9
-python3-oslo-concurrency >= 5.3.0-0.20240219142059.bd96105.el9
-python3-oslo-config >= 9.3.0-0.20240219141530.2930db4.el9
-python3-oslo-context >= 5.3.0-0.20240118173150.8d25cad.el9
-python3-oslo-db >= 14.1.0-0.20231218180946.caebf76.el9
-python3-oslo-i18n >= 6.2.0-0.20240118173758.4bcda78.el9
-python3-oslo-log >= 5.4.0-0.20240118172027.b5b8c30.el9
-python3-oslo-messaging >= 14.3.1-0.20230608152013.0602d1a.el9
-python3-oslo-middleware >= 6.0.0-0.20240219142814.fdd7e46.el9
-python3-oslo-policy >= 4.2.1-0.20231218165109.37de6f3.el9
-python3-oslo-rootwrap >= 7.1.0-0.20231218164901.0660a66.el9
-python3-oslo-serialization >= 5.3.0-0.20240219144655.24d0f26.el9
-python3-oslo-service >= 3.3.0-0.20240219143010.3900aa7.el9
-python3-oslo-upgradecheck >= 2.2.0-0.20231218163225.cbee52e.el9
-python3-oslo-utils >= 7.0.0-0.20240219145208.701b096.el9
-python3-oslo-versionedobjects >= 3.2.0-0.20231218174336.6478669.el9
-python3-osprofiler >= 4.1.0-0.20231214195221.3c5fead.el9
+python3-openstacksdk >= 3.0.0-0.20240522164118.04cdd0a.el9
+python3-os-traits >= 3.0.0-0.20240522151907.cff125c.el9
+python3-osc-lib >= 3.0.1-0.20240522153856.73ecaa7.el9
+python3-oslo-cache >= 3.7.0-0.20240522163213.e8de6c9.el9
+python3-oslo-concurrency >= 6.0.0-0.20240522165021.53709ba.el9
+python3-oslo-config >= 9.4.0-0.20240522154012.882adf8.el9
+python3-oslo-context >= 5.5.0-0.20240522165316.e31a7a1.el9
+python3-oslo-db >= 15.0.0-0.20240522160508.3e1618f.el9
+python3-oslo-i18n >= 6.3.0-0.20240522155806.0531fb2.el9
+python3-oslo-log >= 5.5.1-0.20240522171319.a6c4f8a.el9
+python3-oslo-messaging >= 14.7.0-0.20240522161819.ebdc7db.el9
+python3-oslo-middleware >= 6.1.0-0.20240522163319.531f39e.el9
+python3-oslo-policy >= 4.3.0-0.20240522161210.4b7a6f7.el9
+python3-oslo-rootwrap >= 7.2.0-0.20240522160517.c6cf187.el9
+python3-oslo-serialization >= 5.4.0-0.20240522161219.548c7a3.el9
+python3-oslo-service >= 3.4.0-0.20240522164515.f425dd1.el9
+python3-oslo-upgradecheck >= 2.3.0-0.20240522160117.b6db590.el9
+python3-oslo-utils >= 7.1.0-0.20240522163915.17581b5.el9
+python3-oslo-versionedobjects >= 3.3.0-0.20240522154713.25db0cf.el9
+python3-osprofiler >= 4.1.0-0.20240522151957.3c5fead.el9
 python3-packaging >= 20.4-2.el9
 python3-paste >= 3.5.0-3.el9.1
 python3-paste-deploy >= 2.0.1-5.el9
 python3-pecan
 python3-pint >= 0.10.1-3.el9
-python3-proliantutils >= 2.16.2-0.20240325141527.f655e23.el9
+python3-proliantutils >= 2.16.2-0.20240522170920.f655e23.el9
 python3-psutil
 python3-pyasn1 >= 0.5.1-3.el9
 python3-pycdlib
 python3-pyghmi >= 1.5.14-2.1.el9ost
 python3-pysnmp-lextudio >= 5.0.26-2.el9
-python3-scciclient >= 0.16.0-0.20240325141527.73b4e3d.el9
+python3-scciclient >= 0.16.0-0.20240523142528.73b4e3d.el9
 python3-smi-lextudio >= 1.1.13-0.1.el9
-python3-stevedore >= 5.1.0-0.20231218163929.2d99ccc.el9
-python3-sushy-oem-idrac >= 5.0.1-0.20240423163051.4e51aef.el9
-python3-tooz >= 4.2.0-0.20231214201931.bed303e.el9
+python3-stevedore >= 5.2.0-0.20240522162412.21d601f.el9
+python3-sushy-oem-idrac >= 5.0.1-0.20240522171520.4e51aef.el9
+python3-tooz >= 6.1.0-0.20240522170322.3bce8e1.el9
 python3-werkzeug >= 2.2.3-2.el9
 python3-zeroconf >= 0.24.4-2.el9
 python3-zipp >= 0.5.1-3.el9
