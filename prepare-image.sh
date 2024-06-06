@@ -42,11 +42,17 @@ if  [[ -f /tmp/main-packages-list.ocp ]]; then
     # NOTE(elfosardo): --no-index is used to install the packages emulating
     # an isolated environment in CI. Do not use the option for downstream
     # builds.
-    PIP_OPTIONS=""
+    # NOTE(janders): adding --no-compile option to avoid issues in FIPS
+    # enabled environments. See https://issues.redhat.com/browse/RHEL-29028
+    # for more information
+    PIP_OPTIONS="--no-compile"
     if [[ ! -d "${REMOTE_SOURCES_DIR}/cachito-gomod-with-deps" ]]; then
-        PIP_OPTIONS="--no-index"
+        PIP_OPTIONS="$PIP_OPTIONS --no-index"
     fi
     python3 -m pip install $PIP_OPTIONS --prefix /usr -r "${REQS}"
+    # NOTE(janders) since we set --no-compile at install time, we need to
+    # compile post-install (see RHEL-29028)
+    python3 -m compileall --invalidation-mode=timestamp /usr
 
     # ironic and ironic-inspector system configuration
     mkdir -p /var/log/ironic /var/log/ironic-inspector /var/lib/ironic /var/lib/ironic-inspector
