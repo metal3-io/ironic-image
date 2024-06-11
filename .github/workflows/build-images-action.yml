@@ -31,7 +31,7 @@ jobs:
           {
             "BUILD_CONTAINER_IMAGE_GIT_REFERENCE": "${{ github.ref }}"
           }
-        job_timeout: "1000"
+        job_timeout: "3600"
     - name: build sushy-tools image
       uses: toptal/jenkins-job-trigger-action@137fff703dd260b52b53d3ba1960396415abc568 # 1.0.2
       with:
