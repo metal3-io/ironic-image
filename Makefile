@@ -1,8 +1,13 @@
-.PHONY: help
+SHELL=/usr/bin/env bash -o errexit
+
+.PHONY: help build
+
+export CONTAINER_ENGINE ?= podman
+
 help:
 	@echo "Targets:"
-	@echo "  docker -- build the docker image"
+	@echo "  build -- build the docker image"
 
-.PHONY: docker
-docker:
-	docker build . -f Dockerfile
+build:
+	$(CONTAINER_ENGINE) build . -f Dockerfile
+
