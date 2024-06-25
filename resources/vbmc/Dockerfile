@@ -8,7 +8,7 @@ ARG DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && \
     apt-get install -y libvirt-dev ssh gcc && \
     apt-get clean && \
-    pip3 install --no-cache-dir \
+    python3 -m pip install --no-cache-dir \
         virtualbmc=="${VIRTUALBMC_VERSION}" && \
     apt-get --purge autoremove -y gcc
 

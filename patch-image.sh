@@ -19,7 +19,7 @@ while IFS= read -r line; do
     git checkout FETCH_HEAD
 
     SKIP_GENERATE_AUTHORS=1 SKIP_WRITE_GIT_CHANGELOG=1 python3 setup.py sdist
-    pip3 install --prefix /usr dist/*.tar.gz
+    python3 -m pip install --prefix /usr dist/*.tar.gz
 done < "$PATCH_FILE"
 
 dnf remove -y python3-pip git-core
