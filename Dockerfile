@@ -12,6 +12,8 @@ WORKDIR /tmp
 
 RUN git clone --depth 1 --branch v1.21.1 https://github.com/ipxe/ipxe.git && \
       cd ipxe/src && \
+      # Enable HTTPS support
+      sed -i 's/#undef\tDOWNLOAD_PROTO_HTTPS/#define\tDOWNLOAD_PROTO_HTTPS/' config/general.h && \
       ARCH=$(uname -m | sed 's/aarch/arm/') && \
       # NOTE(elfosardo): warning should not be treated as errors by default
       NO_WERROR=1 make bin/undionly.kpxe "bin-$ARCH-efi/snponly.efi"
