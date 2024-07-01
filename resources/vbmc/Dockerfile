@@ -2,11 +2,14 @@ ARG BASE_IMAGE=quay.io/centos/centos:stream9
 
 FROM $BASE_IMAGE
 
-RUN dnf install -y python3 python3-requests python3-pip && \
-     curl https://raw.githubusercontent.com/openstack/tripleo-repos/master/plugins/module_utils/tripleo_repos/main.py | python3 - -b master current-tripleo && \
-     dnf upgrade -y && \
-     dnf install -y python3-virtualbmc && \
-     dnf clean all && \
-     rm -rf /var/cache/{yum,dnf}/*
+# Configure OpenStack repos from RDO https://www.rdoproject.org
+RUN dnf upgrade -y && \
+  dnf install -y dnf-plugins-core && \
+  dnf config-manager --enable crb && \
+  curl https://trunk.rdoproject.org/centos9-master/puppet-passed-ci/delorean.repo -o /etc/yum.repos.d/rdo.repo && \
+  curl https://trunk.rdoproject.org/centos9-master/delorean-deps.repo -o /etc/yum.repos.d/rdo-deps.repo && \
+  dnf install -y python3-virtualbmc && \
+  dnf clean all && \
+  rm -rf /var/cache/{yum,dnf}/*
 
 CMD /usr/bin/vbmcd --foreground
