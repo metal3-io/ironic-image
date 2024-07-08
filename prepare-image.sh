@@ -8,6 +8,9 @@ echo "install_weak_deps=False" >> /etc/dnf/dnf.conf
 # Tell RPM to skip installing documentation
 echo "tsflags=nodocs" >> /etc/dnf/dnf.conf
 
+# THIS IS A TEST!
+echo "THIS IS A TEST!"
+
 dnf install -y 'dnf-command(config-manager)'
 
 # NOTE(elfosardo): building the container using ironic RPMs is
