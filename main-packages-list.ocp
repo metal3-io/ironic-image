@@ -20,7 +20,7 @@ python3-eventlet >= 0.33.1-6.el9
 python3-flask >= 2:2.0.1-4.el9.2
 python3-futurist >= 3.0.0-0.20240522153313.4e14db5.el9
 python3-ironicclient >= 4.9.0-0.20211209154934.6f1be06.el9
-python3-jinja2 >= 2-3.0.1-2.el9.1
+python3-jinja2 >= 3.1.4-1.el9
 python3-jsonpath-rw
 python3-jsonschema >= 4.0.0
 python3-keystoneauth1 >= 5.6.0-0.20240522155106.e071ad4.el9
