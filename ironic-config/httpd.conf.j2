@@ -1,6 +1,6 @@
 ServerRoot "/etc/httpd"
 {%- if env.LISTEN_ALL_INTERFACES | lower == "true" %}
-Listen [::]:{{ env.HTTP_PORT }}
+Listen {{ env.HTTP_PORT }}
 {% else %}
 Listen {{ env.IRONIC_URL_HOST }}:{{ env.HTTP_PORT }}
 {% endif %}
