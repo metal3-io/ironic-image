@@ -7,20 +7,21 @@ auth_strategy = noauth
 {% endif %}
 debug = true
 default_deploy_interface = direct
-default_inspect_interface = {% if env.USE_IRONIC_INSPECTOR == "true" %}inspector{% else %}agent{% endif %}
+default_inspect_interface = agent
 default_network_interface = noop
 enabled_bios_interfaces = no-bios,redfish,idrac-redfish,irmc,ilo
 enabled_boot_interfaces = ipxe,ilo-ipxe,pxe,ilo-pxe,fake,redfish-virtual-media,idrac-redfish-virtual-media,ilo-virtual-media
 enabled_deploy_interfaces = direct,fake,ramdisk,custom-agent
+enabled_firmware_interfaces = no-firmware,fake,redfish
 # NOTE(dtantsur): when changing this, make sure to update the driver
 # dependencies in Dockerfile.
 enabled_hardware_types = ipmi,idrac,irmc,fake-hardware,redfish,manual-management,ilo,ilo5
-enabled_inspect_interfaces = {% if env.USE_IRONIC_INSPECTOR == "true" %}inspector{% else %}agent{% endif %},irmc,fake,redfish,ilo
+enabled_inspect_interfaces = agent,irmc,fake,redfish,ilo
 enabled_management_interfaces = ipmitool,irmc,fake,redfish,idrac-redfish,ilo,ilo5,noop
+enabled_network_interfaces = noop
 enabled_power_interfaces = ipmitool,irmc,fake,redfish,idrac-redfish,ilo
 enabled_raid_interfaces = no-raid,irmc,agent,fake,redfish,idrac-redfish,ilo5
 enabled_vendor_interfaces = no-vendor,ipmitool,idrac-redfish,redfish,ilo,fake
-enabled_firmware_interfaces = no-firmware,fake,redfish
 {% if env.IRONIC_EXPOSE_JSON_RPC | lower == "true" %}
 rpc_transport = json-rpc
 {% else %}
@@ -146,24 +147,12 @@ power_off = {{ false if env.IRONIC_FAST_TRACK == "true" else true }}
 # Also keep in mind that only parameters unique for inspection go here.
 # No need to duplicate pxe_append_params/kernel_append_params.
 extra_kernel_params = ipa-inspection-collectors={{ env.IRONIC_IPA_COLLECTORS }} ipa-enable-vlan-interfaces={{ env.IRONIC_ENABLE_VLAN_INTERFACES }} ipa-inspection-dhcp-all-interfaces=1 ipa-collect-lldp=1
-
-{% if env.USE_IRONIC_INSPECTOR == "true" %}
-endpoint_override = {{ env.IRONIC_INSPECTOR_BASE_URL }}
-{% if env.IRONIC_INSPECTOR_TLS_SETUP == "true" %}
-cafile = {{ env.IRONIC_INSPECTOR_CACERT_FILE }}
-insecure = {{ env.IRONIC_INSPECTOR_INSECURE }}
-{% endif %}
-{% if env.IRONIC_INSPECTOR_CALLBACK_ENDPOINT_OVERRIDE %}
-callback_endpoint_override = {{ env.IRONIC_INSPECTOR_CALLBACK_ENDPOINT_OVERRIDE }}
-{% endif %}
-{% else %}
 hooks = $default_hooks,parse-lldp
 add_ports = all
 keep_ports = present
-{% endif %}
 
 [auto_discovery]
-enabled = {{ env.IRONIC_INSPECTOR_ENABLE_DISCOVERY }}
+enabled = {{ env.IRONIC_ENABLE_DISCOVERY }}
 driver = ipmi
 
 [ipmi]

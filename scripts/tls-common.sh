@@ -8,11 +8,6 @@ export IRONIC_SSL_PROTOCOL=${IRONIC_SSL_PROTOCOL:-"-ALL +TLSv1.2 +TLSv1.3"}
 export IPXE_SSL_PROTOCOL=${IPXE_SSL_PROTOCOL:-"-ALL +TLSv1.2 +TLSv1.3"}
 export IRONIC_VMEDIA_SSL_PROTOCOL=${IRONIC_VMEDIA_SSL_PROTOCOL:-"ALL"}
 
-export IRONIC_INSPECTOR_CERT_FILE=/certs/ironic-inspector/tls.crt
-export IRONIC_INSPECTOR_KEY_FILE=/certs/ironic-inspector/tls.key
-export IRONIC_INSPECTOR_CACERT_FILE=/certs/ca/ironic-inspector/tls.crt
-export IRONIC_INSPECTOR_INSECURE=${IRONIC_INSPECTOR_INSECURE:-$IRONIC_INSECURE}
-
 export IRONIC_VMEDIA_CERT_FILE=/certs/vmedia/tls.crt
 export IRONIC_VMEDIA_KEY_FILE=/certs/vmedia/tls.key
 
@@ -26,9 +21,7 @@ export MARIADB_CACERT_FILE=/certs/ca/mariadb/tls.crt
 export IPXE_TLS_PORT="${IPXE_TLS_PORT:-8084}"
 
 mkdir -p /certs/ironic
-mkdir -p /certs/ironic-inspector
 mkdir -p /certs/ca/ironic
-mkdir -p /certs/ca/ironic-inspector
 mkdir -p /certs/ipxe
 mkdir -p /certs/vmedia
 
@@ -38,15 +31,6 @@ if [[ -f "$IRONIC_CERT_FILE" ]] && [[ ! -f "$IRONIC_KEY_FILE" ]]; then
 fi
 if [[ ! -f "$IRONIC_CERT_FILE" ]] && [[ -f "$IRONIC_KEY_FILE" ]]; then
     echo "Missing TLS Certificate file $IRONIC_CERT_FILE"
-    exit 1
-fi
-
-if [[ -f "$IRONIC_INSPECTOR_CERT_FILE" ]] && [[ ! -f "$IRONIC_INSPECTOR_KEY_FILE" ]]; then
-    echo "Missing TLS Certificate key file $IRONIC_INSPECTOR_KEY_FILE"
-    exit 1
-fi
-if [[ ! -f "$IRONIC_INSPECTOR_CERT_FILE" ]] && [[ -f "$IRONIC_INSPECTOR_KEY_FILE" ]]; then
-    echo "Missing TLS Certificate file $IRONIC_INSPECTOR_CERT_FILE"
     exit 1
 fi
 
@@ -90,17 +74,6 @@ if [[ -f "$IRONIC_CERT_FILE" ]] || [[ -f "$IRONIC_CACERT_FILE" ]]; then
 else
     export IRONIC_TLS_SETUP="false"
     export IRONIC_SCHEME="http"
-fi
-
-if [[ -f "$IRONIC_INSPECTOR_CERT_FILE" ]] || [[ -f "$IRONIC_INSPECTOR_CACERT_FILE" ]]; then
-    export IRONIC_INSPECTOR_TLS_SETUP="true"
-    export IRONIC_INSPECTOR_SCHEME="https"
-    if [[ ! -f "$IRONIC_INSPECTOR_CACERT_FILE" ]]; then
-        copy_atomic "$IRONIC_INSPECTOR_CERT_FILE" "$IRONIC_INSPECTOR_CACERT_FILE"
-    fi
-else
-    export IRONIC_INSPECTOR_TLS_SETUP="false"
-    export IRONIC_INSPECTOR_SCHEME="http"
 fi
 
 if [[ -f "$IRONIC_VMEDIA_CERT_FILE" ]]; then

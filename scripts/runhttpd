@@ -8,10 +8,7 @@
 export HTTP_PORT=${HTTP_PORT:-80}
 export VMEDIA_TLS_PORT=${VMEDIA_TLS_PORT:-8083}
 
-INSPECTOR_ORIG_HTTPD_CONFIG=/etc/httpd/conf.d/inspector-apache.conf.j2
-INSPECTOR_RESULT_HTTPD_CONFIG=/etc/httpd/conf.d/ironic-inspector.conf
 export IRONIC_REVERSE_PROXY_SETUP=${IRONIC_REVERSE_PROXY_SETUP:-false}
-export INSPECTOR_REVERSE_PROXY_SETUP=${INSPECTOR_REVERSE_PROXY_SETUP:-false}
 
 # In Metal3 context they are called node images in Ironic context they are
 # called user images.
@@ -33,16 +30,12 @@ chmod 0777 /shared/html
 
 IRONIC_BASE_URL="${IRONIC_SCHEME}://${IRONIC_URL_HOST}"
 
-if [[ "${USE_IRONIC_INSPECTOR}" == "true" ]]; then
-    INSPECTOR_EXTRA_ARGS=" ipa-inspection-callback-url=${IRONIC_BASE_URL}:${IRONIC_INSPECTOR_ACCESS_PORT}/v1/continue"
-else
-    INSPECTOR_EXTRA_ARGS=" ipa-inspection-callback-url=${IRONIC_BASE_URL}:${IRONIC_ACCESS_PORT}/v1/continue_inspection"
-fi
+INSPECTION_EXTRA_ARGS=" ipa-inspection-callback-url=${IRONIC_BASE_URL}:${IRONIC_ACCESS_PORT}/v1/continue_inspection"
 
 if [[ "$IRONIC_FAST_TRACK" == "true" ]]; then
-    INSPECTOR_EXTRA_ARGS+=" ipa-api-url=${IRONIC_BASE_URL}:${IRONIC_ACCESS_PORT}"
+    INSPECTION_EXTRA_ARGS+=" ipa-api-url=${IRONIC_BASE_URL}:${IRONIC_ACCESS_PORT}"
 fi
-export INSPECTOR_EXTRA_ARGS
+export INSPECTION_EXTRA_ARGS
 
 # shellcheck disable=SC1091
 . /bin/coreos-ipa-common.sh
@@ -54,14 +47,6 @@ mv /etc/httpd/conf/httpd.conf /etc/httpd/conf/httpd.conf.example
 
 # Render the core httpd config
 render_j2_config /etc/httpd/conf/httpd.conf.j2 /etc/httpd/conf/httpd.conf
-
-if [[ "$USE_IRONIC_INSPECTOR" == "true" ]] && [[ "$IRONIC_INSPECTOR_TLS_SETUP" == "true" ]]; then
-    if [[ "${INSPECTOR_REVERSE_PROXY_SETUP}" == "true" ]]; then
-        render_j2_config "$INSPECTOR_ORIG_HTTPD_CONFIG" "$INSPECTOR_RESULT_HTTPD_CONFIG"
-    fi
-else
-    export INSPECTOR_REVERSE_PROXY_SETUP="false" # If TLS is not used, we have no reason to use the reverse proxy
-fi
 
 if [[ "$IRONIC_TLS_SETUP" == "true" ]]; then
     if [[ "${IRONIC_REVERSE_PROXY_SETUP}" == "true" ]]; then
@@ -86,14 +71,6 @@ if [[ "$IPXE_TLS_SETUP" == "true" ]]; then
     cp "${IPXE_CUSTOM_FIRMWARE_DIR}/undionly.kpxe" \
        "${IPXE_CUSTOM_FIRMWARE_DIR}/snponly.efi" \
        "/shared/html/custom-ipxe"
-fi
-
-# Set up inotify to kill the container (restart) whenever cert files for ironic inspector change
-if [[ "$IRONIC_INSPECTOR_TLS_SETUP" == "true" ]] && [[ "${RESTART_CONTAINER_CERTIFICATE_UPDATED}" == "true" ]]; then
-    # shellcheck disable=SC2034
-    inotifywait -m -e delete_self "${IRONIC_INSPECTOR_CERT_FILE}" | while read -r file event; do
-        kill -WINCH $(pgrep httpd)
-    done &
 fi
 
 # Set up inotify to kill the container (restart) whenever cert files for ironic api change

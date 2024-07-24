@@ -24,7 +24,6 @@ if  [[ -f /tmp/main-packages-list.ocp ]]; then
     REQS="${REMOTE_SOURCES_DIR}/requirements.cachito"
     IRONIC_UID=1002
     IRONIC_GID=1003
-    INSPECTOR_GID=1004
 
     ls -la "${REMOTE_SOURCES_DIR}/" # DEBUG
 
@@ -67,12 +66,10 @@ if  [[ -f /tmp/main-packages-list.ocp ]]; then
     # compile post-install (see RHEL-29028)
     python3 -m compileall --invalidation-mode=timestamp /usr
 
-    # ironic and ironic-inspector system configuration
-    mkdir -p /var/log/ironic /var/log/ironic-inspector /var/lib/ironic /var/lib/ironic-inspector
+    # ironic system configuration
+    mkdir -p /var/log/ironic /var/lib/ironic
     getent group ironic >/dev/null || groupadd -r -g "${IRONIC_GID}" ironic
     getent passwd ironic >/dev/null || useradd -r -g ironic -s /sbin/nologin -u "${IRONIC_UID}" ironic -d /var/lib/ironic
-    getent group ironic-inspector >/dev/null || groupadd -r -g "${INSPECTOR_GID}" ironic-inspector
-    getent passwd ironic-inspector >/dev/null || useradd -r -g ironic-inspector -s /sbin/nologin ironic-inspector -d /var/lib/ironic-inspector
 
     dnf remove -y $BUILD_DEPS
     rm -fr $PIP_SOURCES_DIR
@@ -89,11 +86,10 @@ chown ironic:ironic /var/log/ironic
 rm -f /etc/httpd/conf.d/ssl.conf /etc/httpd/conf.d/autoindex.conf /etc/httpd/conf.d/welcome.conf /etc/httpd/conf.modules.d/*.conf
 
 # RDO-provided configuration forces creating log files
-rm -f /usr/share/ironic/ironic-dist.conf /etc/ironic-inspector/inspector-dist.conf
+rm -f /usr/share/ironic/ironic-dist.conf
 
-# add ironic and ironic-inspector to apache group
+# add ironic to apache group
 usermod -aG ironic apache
-usermod -aG ironic-inspector apache
 
 dnf clean all
 rm -rf /var/cache/{yum,dnf}/*
