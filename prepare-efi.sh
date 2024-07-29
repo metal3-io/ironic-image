@@ -10,10 +10,12 @@ if [[ "$ARCH" == "x86_64" ]]; then
     PACKAGES=grub2-efi-x64
     BOOTEFI=BOOTX64.EFI
     GRUBEFI=grubx64.efi
+    SHIM_PKG=shim-x64
 elif [[ "$ARCH" == "aarch64" ]]; then
     PACKAGES=grub2-efi-aa64
     BOOTEFI=BOOTAA64.EFI
     GRUBEFI=grubaa64.efi
+    SHIM_PKG=shim-aa64
 else
     echo "WARNING: don't know how to build an EFI image on $ARCH"
     touch "$DEST"
@@ -29,7 +31,7 @@ fi
 # ``Cannot initialize '::'``
 # This is due to the conversion table missing codepage 850, included in glibc-gconv-extra
 # shellcheck disable=SC2086
-dnf install -y grub2 shim dosfstools mtools glibc-gconv-extra $PACKAGES
+dnf install -y grub2 shim dosfstools mtools glibc-gconv-extra $PACKAGES $SHIM_PKG
 
 ## TODO(TheJulia): At some point we may want to try and make the size
 ## of the ESP image file to be sized smaller for the files that need to
