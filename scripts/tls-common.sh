@@ -77,10 +77,8 @@ else
 fi
 
 if [[ -f "$IRONIC_VMEDIA_CERT_FILE" ]]; then
-    export IRONIC_VMEDIA_SCHEME="https"
     export IRONIC_VMEDIA_TLS_SETUP="true"
 else
-    export IRONIC_VMEDIA_SCHEME="http"
     export IRONIC_VMEDIA_TLS_SETUP="false"
 fi
 
