@@ -80,6 +80,8 @@ dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarc
 dnf config-manager --set-disabled epel
 dnf install -y --enablerepo=epel inotify-tools
 
+dnf remove -y --noautoremove 'dnf-command(config-manager)'
+
 # NOTE(elfosardo): we need to reinstall tzdata as the base CS9 container removes
 # its content, for more info see https://bugzilla.redhat.com/show_bug.cgi?id=2052861
 dnf reinstall -y tzdata
