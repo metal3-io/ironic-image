@@ -6,12 +6,16 @@ ARG BASE_IMAGE=quay.io/centos/centos:stream9
 
 FROM $BASE_IMAGE AS ironic-builder
 
+ARG IPXE_COMMIT_HASH=9062544f6a0c69c249b90d21a08d05518aafc2ec
+
 RUN dnf install -y gcc git make xz-devel
 
 WORKDIR /tmp
 
-RUN git clone --depth 1 --branch v1.21.1 https://github.com/ipxe/ipxe.git && \
-      cd ipxe/src && \
+RUN git clone https://github.com/ipxe/ipxe.git && \
+      cd ipxe && \
+      git reset --hard $IPXE_COMMIT_HASH && \
+      cd src && \
       ARCH=$(uname -m | sed 's/aarch/arm/') && \
       # NOTE(elfosardo): warning should not be treated as errors by default
       NO_WERROR=1 make bin/undionly.kpxe "bin-$ARCH-efi/snponly.efi"
