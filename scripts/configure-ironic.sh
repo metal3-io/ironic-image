@@ -88,6 +88,11 @@ configure_json_rpc_auth
 
 . /bin/coreos-ipa-common.sh
 
+if [[ -f /proc/sys/crypto/fips_enabled ]]; then
+    ENABLE_FIPS_IPA=$(cat /proc/sys/crypto/fips_enabled)
+    export ENABLE_FIPS_IPA
+fi
+
 # The original ironic.conf is empty, and can be found in ironic.conf_orig
 render_j2_config /etc/ironic/ironic.conf.j2 /etc/ironic/ironic.conf
 

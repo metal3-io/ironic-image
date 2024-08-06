@@ -213,7 +213,9 @@ images_path = /shared/html/tmp
 instance_master_path = /shared/html/master_images
 tftp_master_path = /shared/tftpboot/master_images
 tftp_root = /shared/tftpboot
-kernel_append_params = nofb nomodeset vga=normal ipa-insecure=1 {% if env.IRONIC_RAMDISK_SSH_KEY %}sshkey="{{ env.IRONIC_RAMDISK_SSH_KEY|trim }}"{% endif %} {{ env.IRONIC_KERNEL_PARAMS|trim }} systemd.journald.forward_to_console=yes
+# https://issues.redhat.com//browse/OCPBUGS-39536
+# fips= is only applied it the value is 1 (see below also)
+kernel_append_params = nofb nomodeset vga=normal ipa-insecure=1 {%if env.ENABLE_FIPS_IPA == "1"%}fips=1 {% endif %}{% if env.IRONIC_RAMDISK_SSH_KEY %}sshkey="{{ env.IRONIC_RAMDISK_SSH_KEY|trim }}"{% endif %} {{ env.IRONIC_KERNEL_PARAMS|trim }} systemd.journald.forward_to_console=yes
 # This makes networking boot templates generated even for nodes using local
 # boot (the default), ensuring that they boot correctly even if they start
 # netbooting for some reason (e.g. with the noop management interface).
@@ -226,14 +228,14 @@ ipxe_config_template = /tmp/ipxe_config.template
 
 [redfish]
 use_swift = false
-kernel_append_params = nofb nomodeset vga=normal ipa-insecure=1 {% if env.IRONIC_RAMDISK_SSH_KEY %}sshkey="{{ env.IRONIC_RAMDISK_SSH_KEY|trim }}"{% endif %} {{ env.IRONIC_KERNEL_PARAMS|trim }} systemd.journald.forward_to_console=yes
+kernel_append_params = nofb nomodeset vga=normal ipa-insecure=1 {%if env.ENABLE_FIPS_IPA == "1"%}fips=1 {% endif %}{% if env.IRONIC_RAMDISK_SSH_KEY %}sshkey="{{ env.IRONIC_RAMDISK_SSH_KEY|trim }}"{% endif %} {{ env.IRONIC_KERNEL_PARAMS|trim }} systemd.journald.forward_to_console=yes
 
 [ilo]
-kernel_append_params = nofb nomodeset vga=normal ipa-insecure=1 {% if env.IRONIC_RAMDISK_SSH_KEY %}sshkey="{{ env.IRONIC_RAMDISK_SSH_KEY|trim }}"{% endif %} {{ env.IRONIC_KERNEL_PARAMS|trim }} systemd.journald.forward_to_console=yes
+kernel_append_params = nofb nomodeset vga=normal ipa-insecure=1 {%if env.ENABLE_FIPS_IPA == "1"%}fips=1 {% endif %}{% if env.IRONIC_RAMDISK_SSH_KEY %}sshkey="{{ env.IRONIC_RAMDISK_SSH_KEY|trim }}"{% endif %} {{ env.IRONIC_KERNEL_PARAMS|trim }} systemd.journald.forward_to_console=yes
 use_web_server_for_images = true
 
 [irmc]
-kernel_append_params = nofb nomodeset vga=normal ipa-insecure=1 {% if env.IRONIC_RAMDISK_SSH_KEY %}sshkey="{{ env.IRONIC_RAMDISK_SSH_KEY|trim }}"{% endif %} {{ env.IRONIC_KERNEL_PARAMS|trim }} systemd.journald.forward_to_console=yes
+kernel_append_params = nofb nomodeset vga=normal ipa-insecure=1 {%if env.ENABLE_FIPS_IPA == "1"%}fips=1 {% endif %}{% if env.IRONIC_RAMDISK_SSH_KEY %}sshkey="{{ env.IRONIC_RAMDISK_SSH_KEY|trim }}"{% endif %} {{ env.IRONIC_KERNEL_PARAMS|trim }} systemd.journald.forward_to_console=yes
 
 [service_catalog]
 endpoint_override = {{ env.IRONIC_BASE_URL }}
