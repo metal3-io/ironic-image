@@ -33,7 +33,7 @@ if [[ "$INSTALL_TYPE" == "source" ]]; then
     # NOTE(dtantsur): pip is a requirement of python3 in CentOS
     # shellcheck disable=SC2086
     dnf install -y python3-pip $BUILD_DEPS
-    python3 -m pip install pip==24.1
+    python3 -m pip install --no-cache-dir pip==24.1
 
     IRONIC_PKG_LIST_FINAL="/tmp/ironic-${INSTALL_TYPE}-list-final"
 
@@ -56,7 +56,7 @@ if [[ "$INSTALL_TYPE" == "source" ]]; then
         sed -i '/^ironic-lib===/d' "$UPPER_CONSTRAINTS_PATH"
     fi
 
-    python3 -m pip install --ignore-installed --prefix /usr -r "$IRONIC_PKG_LIST_FINAL" -c "${UPPER_CONSTRAINTS_PATH}"
+    python3 -m pip install --no-cache-dir --ignore-installed --prefix /usr -r "$IRONIC_PKG_LIST_FINAL" -c "${UPPER_CONSTRAINTS_PATH}"
 
     # ironic system configuration
     mkdir -p /var/log/ironic /var/lib/ironic
