@@ -84,12 +84,10 @@ env | grep "^OS_" || true
 mkdir -p /shared/html
 mkdir -p /shared/ironic_prometheus_exporter
 
-configure_json_rpc_auth
-
 # The original ironic.conf is empty, and can be found in ironic.conf_orig
 render_j2_config /etc/ironic/ironic.conf.j2 /etc/ironic/ironic.conf
 
-configure_client_basic_auth ironic-rpc
+configure_json_rpc_auth
 
 # Make sure ironic traffic bypasses any proxies
 export NO_PROXY="${NO_PROXY:-},$IRONIC_IP"
