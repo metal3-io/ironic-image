@@ -64,7 +64,7 @@ if  [[ -f /tmp/main-packages-list.ocp ]]; then
 
     # NOTE(janders) since we set --no-compile at install time, we need to
     # compile post-install (see RHEL-29028)
-    python3 -m compileall --invalidation-mode=timestamp /usr
+    python3 -m compileall --invalidation-mode=timestamp -q /usr
 
     # ironic system configuration
     mkdir -p /var/log/ironic /var/lib/ironic
