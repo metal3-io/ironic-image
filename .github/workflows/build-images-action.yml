@@ -11,6 +11,7 @@ on:
     tags:
     - 'v*'
 
+jobs:
   build_ironic:
     name: Build Ironic container image
     uses: metal3-io/project-infra/.github/workflows/container-image-build.yml@main
