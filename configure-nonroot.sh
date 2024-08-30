@@ -33,7 +33,7 @@ chmod 664 /etc/ironic/* /etc/httpd/conf/* /etc/httpd/conf.d/*
 
 chown -R root:"${IRONIC_GROUP}" /var/lib/ironic
 chmod 2775 /var/lib/ironic
-chmod 664 /var/lib/ironic/ironic.db
+chmod 664 /var/lib/ironic/ironic.sqlite
 
 # dnsmasq, and the capabilities required to run it as non-root user
 chown -R root:"${IRONIC_GROUP}" /etc/dnsmasq.conf /var/lib/dnsmasq
