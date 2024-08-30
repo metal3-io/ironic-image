@@ -3,16 +3,9 @@
 # Ramdisk logs path
 LOG_DIR="/shared/log/ironic/deploy"
 
-while :; do
-    if ! ls "${LOG_DIR}"/*.tar.gz 1> /dev/null 2>&1; then
-        continue
-    fi
-
-    for fn in "${LOG_DIR}"/*.tar.gz; do
-        echo "************ Contents of $fn ramdisk log file bundle **************"
-        tar -xOzvvf "$fn" | sed -e "s/^/$(basename "$fn"): /"
-        rm -f "$fn"
+inotifywait -m "${LOG_DIR}" -e close_write |
+    while read -r path _action file; do
+        echo "************ Contents of ${path}/${file} ramdisk log file bundle **************"
+        tar -xOzvvf "${path}/${file}" | sed -e "s/^/${file}: /"
+        rm -f "${path}/${file}"
     done
-
-    sleep 5
-done
