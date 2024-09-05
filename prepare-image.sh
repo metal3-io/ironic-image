@@ -16,7 +16,6 @@ dnf install -y 'dnf-command(config-manager)'
 if [[ "$INSTALL_TYPE" == "rpm" ]]; then
     curl -o /etc/yum.repos.d/delorean.repo https://trunk.rdoproject.org/centos9-master/puppet-passed-ci/delorean.repo && \
     curl -o /etc/yum.repos.d/delorean-deps.repo https://trunk.rdoproject.org/centos9-master/delorean-deps.repo
-
     # NOTE(elfosardo): enable CRB repo for more python3 dependencies
     dnf config-manager --set-enabled crb
     dnf upgrade -y
