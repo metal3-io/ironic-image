@@ -7,7 +7,7 @@ git+file:///sources/{{ env.IRONIC_SOURCE }}
 ironic @ git+https://opendev.org/openstack/ironic@{{ env.IRONIC_SOURCE }}
     {% endif %}
 {% else %}
-ironic @ git+https://review.opendev.org/openstack/ironic@refs/changes/85/928885/1
+ironic @ git+https://opendev.org/openstack/ironic
 {% endif %}
 {% if env.IRONIC_LIB_SOURCE %}
     {% if path.isdir('/sources/' + env.IRONIC_LIB_SOURCE) %}
