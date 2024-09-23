@@ -64,7 +64,7 @@ COPY ironic-config/apache2-ipxe.conf.j2 /etc/httpd-ipxe.conf.j2
 
 # DATABASE
 RUN mkdir -p /var/lib/ironic && \
-  sqlite3 /var/lib/ironic/ironic.db "pragma journal_mode=wal" && \
+  sqlite3 /var/lib/ironic/ironic.sqlite "pragma journal_mode=wal" && \
   dnf remove -y sqlite
 
 # configure non-root user and set relevant permissions
