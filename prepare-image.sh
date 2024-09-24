@@ -35,7 +35,11 @@ if [[ "$INSTALL_TYPE" == "source" ]]; then
     # NOTE(dtantsur): pip is a requirement of python3 in CentOS
     # shellcheck disable=SC2086
     dnf install -y python3-pip $BUILD_DEPS
-    python3 -m pip install pip==21.3.1
+    # NOTE(elfosardo): pinning pip and setuptools version to avoid
+    # incompatibilities and errors during packages installation;
+    # versions should be updated regularly, for example
+    # after cutting a release branch.
+    python3 -m pip install pip==21.3.1 setuptools==74.1.2
 
     IRONIC_PKG_LIST_FINAL="/tmp/ironic-${INSTALL_TYPE}-list-final"
 
