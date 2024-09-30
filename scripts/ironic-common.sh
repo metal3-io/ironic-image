@@ -87,8 +87,11 @@ run_ironic_dbsync()
         done
     else
         # SQLite does not support some statements. Fortunately, we can just create
-        # the schema in one go instead of going through an upgrade.
-        ironic-dbsync --config-file /etc/ironic/ironic.conf create_schema
+        # the schema in one go if not already created, instead of going through an upgrade
+        DB_VERSION="$(ironic-dbsync --config-file /etc/ironic/ironic.conf version)"
+        if [[ "${DB_VERSION}" == "None" ]]; then
+            ironic-dbsync --config-file /etc/ironic/ironic.conf create_schema
+        fi
     fi
 }
 
