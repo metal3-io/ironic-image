@@ -6,7 +6,7 @@ ARG BASE_IMAGE=quay.io/centos/centos:stream9
 
 FROM $BASE_IMAGE AS ironic-builder
 
-ARG IPXE_COMMIT_HASH=9062544f6a0c69c249b90d21a08d05518aafc2ec
+ARG IPXE_COMMIT_HASH=7147532c3fbf9a7061e74549f6f920a91ca9a80d
 
 RUN dnf install -y gcc git make xz-devel
 
