@@ -26,8 +26,6 @@ fi
 # SOURCE install #
 if [[ "$INSTALL_TYPE" == "source" ]]; then
     # emulate uid/gid configuration to match rpm install
-    IRONIC_UID=997
-    IRONIC_GID=994
     BUILD_DEPS="python3-devel gcc git-core python3-setuptools python3-jinja2"
     dnf upgrade -y
     # NOTE(dtantsur): pip is a requirement of python3 in CentOS
@@ -64,8 +62,8 @@ if [[ "$INSTALL_TYPE" == "source" ]]; then
 
     # ironic system configuration
     mkdir -p /var/log/ironic /var/lib/ironic
-    getent group ironic > /dev/null || groupadd -r ironic -g "${IRONIC_GID}"
-    getent passwd ironic > /dev/null || useradd -r -g ironic -u "${IRONIC_UID}" -s /sbin/nologin ironic -d /var/lib/ironic
+    getent group ironic > /dev/null || groupadd -r ironic
+    getent passwd ironic > /dev/null || useradd -r -g ironic -s /sbin/nologin ironic -d /var/lib/ironic
 
     # clean installed build dependencies
     # shellcheck disable=SC2086
@@ -80,9 +78,10 @@ if [[ -n "${EXTRA_PKGS_LIST:-}" ]]; then
     fi
 fi
 
-dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
-dnf config-manager --set-disabled epel
-dnf install -y --enablerepo=epel inotify-tools
+#dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
+#dnf config-manager --set-disabled epel
+#dnf install -y --enablerepo=epel inotify-tools
+dnf install -y https://rpmfind.net/linux/fedora/linux/releases/40/Everything/x86_64/os/Packages/i/inotify-tools-3.22.1.0-7.fc40.x86_64.rpm
 
 dnf remove -y --noautoremove 'dnf-command(config-manager)'
 
