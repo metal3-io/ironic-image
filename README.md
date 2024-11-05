@@ -105,20 +105,9 @@ The following can serve as an example:
    callback from the ramdisk doing the cleaning
 - `OS_PXE__BOOT_RETRY_TIMEOUT=1200` - timeout (seconds) to enable boot retries.
 
-## Build Ironic Image from RPMs
-
-The ironic image is built using RPMs for system software and source
-code for ironic specific software and libraries.
-It is possible to build it using RPMs from RDO project code setting the **INSTALL_TYPE**
-argument to **rpm** at build time; for example:
-
-```bash
-podman build -t ironic-image -f Dockerfile --build-arg INSTALL_TYPE=rpm
-```
-
 ## Custom source for ironic software
 
-When building the ironic image from source, it is also possible to specify a
+When building the ironic image, it is also possible to specify a
 different source for ironic, ironic-lib or the sushy library using the build
 arguments **IRONIC_SOURCE**, **IRONIC_LIB_SOURCE**, and **SUSHY_SOURCE**.
 The accepted formats are gerrit refs, like _refs/changes/89/860689/2_,
@@ -128,15 +117,13 @@ sources/ directory in the container context.
 An example of a full command installing ironic from a gerrit patch is:
 
 ```bash
-podman build -t ironic-image -f Dockerfile --build-arg INSTALL_TYPE=source \
-    --build-arg IRONIC_SOURCE="refs/changes/89/860689/2"
+podman build -t ironic-image -f Dockerfile --build-arg IRONIC_SOURCE="refs/changes/89/860689/2"
 ```
 
 An example using the local directory _sources/ironic_:
 
 ```bash
-podman build -t ironic-image -f Dockerfile --build-arg INSTALL_TYPE=source \
-    --build-arg IRONIC_SOURCE="ironic"
+podman build -t ironic-image -f Dockerfile --build-arg IRONIC_SOURCE="ironic"
 ```
 
 It is also possible to specify an upper-constraints file using the
@@ -152,8 +139,7 @@ upstream projects to apply to the image using the **PATCH_LIST** argument in
 the cli command, for example:
 
 ```bash
-podman build -t ironic-image -f Dockerfile --build-arg \
-    PATCH_LIST=my-patch-list
+podman build -t ironic-image -f Dockerfile --build-arg PATCH_LIST=my-patch-list
 ```
 
 The **PATCH_LIST** argument is a path to a file under the image context.
