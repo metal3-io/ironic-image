@@ -2,75 +2,58 @@
 
 set -euxo pipefail
 
-IRONIC_PKG_LIST="/tmp/ironic-${INSTALL_TYPE}-list"
-
 echo "install_weak_deps=False" >> /etc/dnf/dnf.conf
 # Tell RPM to skip installing documentation
 echo "tsflags=nodocs" >> /etc/dnf/dnf.conf
 
 dnf install -y 'dnf-command(config-manager)'
 
-# NOTE(elfosardo): building the container using ironic RPMs is
-# now deprecated and it will be removed in the future.
-# RPM install #
-if [[ "$INSTALL_TYPE" == "rpm" ]]; then
-    curl -o /etc/yum.repos.d/delorean.repo https://trunk.rdoproject.org/centos9-master/puppet-passed-ci/delorean.repo && \
-    curl -o /etc/yum.repos.d/delorean-deps.repo https://trunk.rdoproject.org/centos9-master/delorean-deps.repo
+# emulate uid/gid configuration to match rpm install
+IRONIC_UID=997
+IRONIC_GID=994
+BUILD_DEPS="python3-devel gcc git-core python3-setuptools python3-jinja2"
+dnf upgrade -y
+# NOTE(dtantsur): pip is a requirement of python3 in CentOS
+# shellcheck disable=SC2086
+dnf install -y python3-pip $BUILD_DEPS
+# NOTE(elfosardo): pinning pip and setuptools version to avoid
+# incompatibilities and errors during packages installation;
+# versions should be updated regularly, for example
+# after cutting a release branch.
+python3 -m pip install --no-cache-dir pip==24.1 setuptools==74.1.2
 
-    # NOTE(elfosardo): enable CRB repo for more python3 dependencies
-    dnf config-manager --set-enabled crb
-    dnf upgrade -y
-    xargs -rtd'\n' dnf install -y < "$IRONIC_PKG_LIST"
+IRONIC_PKG_LIST="/tmp/ironic-packages-list"
+IRONIC_PKG_LIST_FINAL="/tmp/ironic-packages-list-final"
+
+python3 -c 'import os; import sys; import jinja2; sys.stdout.write(jinja2.Template(sys.stdin.read()).render(env=os.environ, path=os.path))' < "${IRONIC_PKG_LIST}" > "${IRONIC_PKG_LIST_FINAL}"
+
+UPPER_CONSTRAINTS_PATH="/tmp/${UPPER_CONSTRAINTS_FILE:-}"
+
+# NOTE(elfosardo): if the content of the upper-constraints file is empty,
+# we give as assumed that we're on the master branch
+if [[ ! -s "${UPPER_CONSTRAINTS_PATH}" ]]; then
+    UPPER_CONSTRAINTS_PATH="/tmp/upper-constraints.txt"
+    curl -L https://releases.openstack.org/constraints/upper/master -o "${UPPER_CONSTRAINTS_PATH}"
 fi
 
-# SOURCE install #
-if [[ "$INSTALL_TYPE" == "source" ]]; then
-    # emulate uid/gid configuration to match rpm install
-    IRONIC_UID=997
-    IRONIC_GID=994
-    BUILD_DEPS="python3-devel gcc git-core python3-setuptools python3-jinja2"
-    dnf upgrade -y
-    # NOTE(dtantsur): pip is a requirement of python3 in CentOS
-    # shellcheck disable=SC2086
-    dnf install -y python3-pip $BUILD_DEPS
-    # NOTE(elfosardo): pinning pip and setuptools version to avoid
-    # incompatibilities and errors during packages installation;
-    # versions should be updated regularly, for example
-    # after cutting a release branch.
-    python3 -m pip install --no-cache-dir pip==24.1 setuptools==74.1.2
-
-    IRONIC_PKG_LIST_FINAL="/tmp/ironic-${INSTALL_TYPE}-list-final"
-
-    python3 -c 'import os; import sys; import jinja2; sys.stdout.write(jinja2.Template(sys.stdin.read()).render(env=os.environ, path=os.path))' < "${IRONIC_PKG_LIST}" > "${IRONIC_PKG_LIST_FINAL}"
-
-    UPPER_CONSTRAINTS_PATH="/tmp/${UPPER_CONSTRAINTS_FILE:-}"
-
-    # NOTE(elfosardo): if the content of the upper-constraints file is empty,
-    # we give as assumed that we're on the master branch
-    if [[ ! -s "${UPPER_CONSTRAINTS_PATH}" ]]; then
-        UPPER_CONSTRAINTS_PATH="/tmp/upper-constraints.txt"
-        curl -L https://releases.openstack.org/constraints/upper/master -o "${UPPER_CONSTRAINTS_PATH}"
-    fi
-
-    if [[ -n ${SUSHY_SOURCE:-} ]]; then
-        sed -i '/^sushy===/d' "$UPPER_CONSTRAINTS_PATH"
-    fi
-
-    if [[ -n ${IRONIC_LIB_SOURCE:-} ]]; then
-        sed -i '/^ironic-lib===/d' "$UPPER_CONSTRAINTS_PATH"
-    fi
-
-    python3 -m pip install --no-cache-dir --ignore-installed --prefix /usr -r "$IRONIC_PKG_LIST_FINAL" -c "${UPPER_CONSTRAINTS_PATH}"
-
-    # ironic system configuration
-    mkdir -p /var/log/ironic /var/lib/ironic
-    getent group ironic > /dev/null || groupadd -r ironic -g "${IRONIC_GID}"
-    getent passwd ironic > /dev/null || useradd -r -g ironic -u "${IRONIC_UID}" -s /sbin/nologin ironic -d /var/lib/ironic
-
-    # clean installed build dependencies
-    # shellcheck disable=SC2086
-    dnf remove -y $BUILD_DEPS
+if [[ -n ${SUSHY_SOURCE:-} ]]; then
+    sed -i '/^sushy===/d' "$UPPER_CONSTRAINTS_PATH"
 fi
+
+if [[ -n ${IRONIC_LIB_SOURCE:-} ]]; then
+    sed -i '/^ironic-lib===/d' "$UPPER_CONSTRAINTS_PATH"
+fi
+
+python3 -m pip install --no-cache-dir --ignore-installed --prefix /usr -r "$IRONIC_PKG_LIST_FINAL" -c "${UPPER_CONSTRAINTS_PATH}"
+
+# ironic system configuration
+mkdir -p /var/log/ironic /var/lib/ironic
+getent group ironic > /dev/null || groupadd -r ironic -g "${IRONIC_GID}"
+getent passwd ironic > /dev/null || useradd -r -g ironic -u "${IRONIC_UID}" -s /sbin/nologin ironic -d /var/lib/ironic
+
+# clean installed build dependencies
+# shellcheck disable=SC2086
+dnf remove -y $BUILD_DEPS
 
 xargs -rtd'\n' dnf install -y < /tmp/"${PKGS_LIST}"
 
