@@ -11,11 +11,20 @@ dnf install -y 'dnf-command(config-manager)'
 # emulate uid/gid configuration to match rpm install
 IRONIC_UID=997
 IRONIC_GID=994
-BUILD_DEPS="python3-devel gcc git-core python3-setuptools python3-jinja2"
+
+declare -a BUILD_DEPS=(
+    gcc 
+    git-core 
+    python3-devel 
+    python3-jinja2
+    python3-setuptools 
+)
+
 dnf upgrade -y
+
 # NOTE(dtantsur): pip is a requirement of python3 in CentOS
-# shellcheck disable=SC2086
-dnf install -y python3-pip $BUILD_DEPS
+dnf install -y python3-pip "${BUILD_DEPS[@]}"
+
 # NOTE(elfosardo): pinning pip and setuptools version to avoid
 # incompatibilities and errors during packages installation;
 # versions should be updated regularly, for example
@@ -37,14 +46,14 @@ if [[ ! -s "${UPPER_CONSTRAINTS_PATH}" ]]; then
 fi
 
 if [[ -n ${SUSHY_SOURCE:-} ]]; then
-    sed -i '/^sushy===/d' "$UPPER_CONSTRAINTS_PATH"
+    sed -i '/^sushy===/d' "${UPPER_CONSTRAINTS_PATH}"
 fi
 
 if [[ -n ${IRONIC_LIB_SOURCE:-} ]]; then
-    sed -i '/^ironic-lib===/d' "$UPPER_CONSTRAINTS_PATH"
+    sed -i '/^ironic-lib===/d' "${UPPER_CONSTRAINTS_PATH}"
 fi
 
-python3 -m pip install --no-cache-dir --ignore-installed --prefix /usr -r "$IRONIC_PKG_LIST_FINAL" -c "${UPPER_CONSTRAINTS_PATH}"
+python3 -m pip install --no-cache-dir --ignore-installed --prefix /usr -r "${IRONIC_PKG_LIST_FINAL}" -c "${UPPER_CONSTRAINTS_PATH}"
 
 # ironic system configuration
 mkdir -p /var/log/ironic /var/lib/ironic
@@ -52,8 +61,7 @@ getent group ironic > /dev/null || groupadd -r ironic -g "${IRONIC_GID}"
 getent passwd ironic > /dev/null || useradd -r -g ironic -u "${IRONIC_UID}" -s /sbin/nologin ironic -d /var/lib/ironic
 
 # clean installed build dependencies
-# shellcheck disable=SC2086
-dnf remove -y $BUILD_DEPS
+dnf remove -y "${BUILD_DEPS[@]}"
 
 xargs -rtd'\n' dnf install -y < /tmp/"${PKGS_LIST}"
 
