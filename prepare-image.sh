@@ -47,7 +47,7 @@ if [[ "$INSTALL_TYPE" == "source" ]]; then
 
     # NOTE(elfosardo): if the content of the upper-constraints file is empty,
     # we give as assumed that we're on the master branch
-    if [[ ! -f "${UPPER_CONSTRAINTS_PATH}" ]]; then
+    if [[ ! -s "${UPPER_CONSTRAINTS_PATH}" ]]; then
         UPPER_CONSTRAINTS_PATH="/tmp/upper-constraints.txt"
         curl -L https://releases.openstack.org/constraints/upper/master -o "${UPPER_CONSTRAINTS_PATH}"
     fi

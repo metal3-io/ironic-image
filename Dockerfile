@@ -31,8 +31,8 @@ ARG PATCH_LIST
 ARG INSTALL_TYPE=source
 
 # build arguments for source build customization
-ARG UPPER_CONSTRAINTS_FILE
 ARG IRONIC_SOURCE=bugfix/26.0
+ARG UPPER_CONSTRAINTS_FILE=upper-constraints.txt
 ARG IRONIC_LIB_SOURCE
 ARG SUSHY_SOURCE
 
