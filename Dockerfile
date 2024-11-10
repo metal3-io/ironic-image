@@ -1,4 +1,6 @@
-ARG BASE_IMAGE=quay.io/centos/centos:stream9
+# syntax=docker/dockerfile:1
+
+ARG BASE_IMAGE=quay.io/centos/centos:stream9@sha256:e5fdd83894773a25f22fbdf0b5253c63677d0cbaf8d3a8366b165a3ef5902964
 
 ## Build iPXE w/ IPv6 Support
 ## Note: we are pinning to a specific commit for reproducible builds.
@@ -7,25 +9,33 @@ ARG BASE_IMAGE=quay.io/centos/centos:stream9
 FROM $BASE_IMAGE AS ironic-builder
 
 ARG IPXE_COMMIT_HASH=119c415ee47aaef2717104fea493377aa9a65874
+ARG MAKEFLAGS="-j100"
 
-RUN dnf install -y gcc git make xz-devel
+SHELL ["/bin/bash", "-ex", "-o", "pipefail", "-c"]
+RUN dnf install -y gcc make git xz-devel
 
-WORKDIR /tmp
+WORKDIR /tmp/ipxe/src
 
-RUN git clone https://github.com/ipxe/ipxe.git && \
-      cd ipxe && \
-      git reset --hard $IPXE_COMMIT_HASH && \
-      cd src && \
-      ARCH=$(uname -m | sed 's/aarch/arm/') && \
-      # NOTE(elfosardo): warning should not be treated as errors by default
-      NO_WERROR=1 make bin/undionly.kpxe "bin-$ARCH-efi/snponly.efi"
+RUN curl -Lf https://github.com/ipxe/ipxe/archive/${IPXE_COMMIT_HASH}.tar.gz | \
+       tar -zx --strip-components=1 -C /tmp/ipxe && \
+    ARCH=$(uname -m | sed 's/aarch/arm/') && \
+    # NOTE(elfosardo): warning should not be treated as errors by default
+    NO_WERROR=1 make bin/undionly.kpxe "bin-$ARCH-efi/snponly.efi"
 
 COPY prepare-efi.sh /bin/
 RUN prepare-efi.sh centos
 
 FROM $BASE_IMAGE
 
-ENV PKGS_LIST=main-packages-list.txt
+LABEL org.opencontainers.image.url="https://github.com/metal3-io/ironic-image"
+LABEL org.opencontainers.image.title="Metal3 Ironic Container"
+LABEL org.opencontainers.image.description="Container image to run OpenStack Ironic as part of Metal³"
+LABEL org.opencontainers.image.documentation="https://github.com/metal3-io/ironic-image/blob/main/README.md"
+LABEL org.opencontainers.image.version="v26.0.1"
+LABEL org.opencontainers.image.vendor="Metal3-io"
+LABEL org.opencontainers.image.licenses="Apache License 2.0"
+
+ARG PKGS_LIST=main-packages-list.txt
 ARG EXTRA_PKGS_LIST
 ARG PATCH_LIST
 
@@ -39,9 +49,6 @@ COPY sources /sources/
 
 COPY ${UPPER_CONSTRAINTS_FILE} ironic-packages-list ${PKGS_LIST} ${EXTRA_PKGS_LIST:-$PKGS_LIST} ${PATCH_LIST:-$PKGS_LIST} /tmp/
 COPY prepare-image.sh patch-image.sh configure-nonroot.sh /bin/
-
-RUN prepare-image.sh && \
-  rm -f /bin/prepare-image.sh
 
 COPY scripts/ /bin/
 
@@ -61,11 +68,17 @@ COPY ironic-config/httpd-modules.conf /etc/httpd/conf.modules.d/
 COPY ironic-config/apache2-vmedia.conf.j2 /etc/httpd-vmedia.conf.j2
 COPY ironic-config/apache2-ipxe.conf.j2 /etc/httpd-ipxe.conf.j2
 
+SHELL ["/bin/bash", "-ex", "-o", "pipefail", "-c"]
+WORKDIR /var/lib/ironic
+RUN prepare-image.sh && \
 # DATABASE
-RUN mkdir -p /var/lib/ironic && \
   sqlite3 /var/lib/ironic/ironic.sqlite "pragma journal_mode=wal" && \
-  dnf remove -y sqlite
-
 # configure non-root user and set relevant permissions
-RUN configure-nonroot.sh && \
-  rm -f /bin/configure-nonroot.sh
+  configure-nonroot.sh && \
+  dnf remove -y sqlite && \
+  dnf clean all && \
+  rm -rf /bin/configure-nonroot.sh /bin/prepare-image.sh /var/cache/{yum,dnf}/*
+
+USER ironic
+WORKDIR /
+ENTRYPOINT ["/bin/bash"]
