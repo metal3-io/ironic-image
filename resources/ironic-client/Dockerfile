@@ -1,13 +1,14 @@
-FROM quay.io/centos/centos:stream9
+ARG BASE_IMAGE=docker.io/library/python:3.9-slim-bookworm
+
+FROM $BASE_IMAGE
 
 # Help people find the actual baremetal command
 COPY scripts/openstack /usr/bin/openstack
 
-RUN dnf install -y python3 python3-pip genisoimage && \
-    pip install python-ironicclient --prefix /usr --no-cache-dir && \
-    chmod +x /usr/bin/openstack && \
-    dnf update -y && \
-    dnf clean all && \
-    rm -rf /var/cache/{yum,dnf}/*
+RUN apt-get update && \
+    apt-get install -y genisoimage && \
+    apt-get clean && \
+    pip3 install --prefix /usr --no-cache-dir python-ironicclient && \
+    chmod +x /usr/bin/openstack
 
 ENTRYPOINT ["/usr/bin/baremetal"]
