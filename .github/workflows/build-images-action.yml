@@ -47,3 +47,15 @@ jobs:
       QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
       QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
       SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+  build_client:
+    name: build ironic-client image
+    if: github.repository == 'metal3-io/ironic-image'
+    uses: metal3-io/project-infra/.github/workflows/container-image-build.yml@main
+    with:
+      image-name: 'ironic-client'
+      dockerfile-directory: resources/ironic-client
+      pushImage: true
+    secrets:
+      QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
+      QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
+      SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}

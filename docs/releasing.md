@@ -137,7 +137,9 @@ For that, please continue following the instructions provided in
 
 ## Keeping sync with other images and tools
 
-- The [sushy-tools and vbmc](https://github.com/metal3-io/ironic-image/tree/main/resources)
+- The [sushy-tools](<https://github.com/metal3-io/ironic-image/tree/main/resources/sushy-tools>),
+  [vbmc](https://github.com/metal3-io/ironic-image/tree/main/resources/vbmc)
+  and [ironic-client](https://github.com/metal3-io/ironic-image/tree/main/resources/ironic-client)
   images won't be versioned, we expect them to work with any version.
 - The [ipa-downloader](https://github.com/metal3-io/ironic-ipa-downloader)
   image uses the [ironic-python-agent](https://opendev.org/openstack/ironic-python-agent)
