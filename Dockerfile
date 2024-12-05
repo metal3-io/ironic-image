@@ -1,4 +1,4 @@
-ARG BASE_IMAGE=quay.io/centos/centos:stream9
+ARG BASE_IMAGE=quay.io/centos-bootc/centos-bootc:stream10
 
 ## Build iPXE w/ IPv6 Support
 ## Note: we are pinning to a specific commit for reproducible builds.
@@ -18,7 +18,8 @@ RUN git clone https://github.com/ipxe/ipxe.git && \
       cd src && \
       ARCH=$(uname -m | sed 's/aarch/arm/') && \
       # NOTE(elfosardo): warning should not be treated as errors by default
-      NO_WERROR=1 make bin/undionly.kpxe "bin-$ARCH-efi/snponly.efi"
+      NO_WERROR=1 make bin/undionly.kpxe "bin-$ARCH-efi/snponly.efi" && \
+      ls -la
 
 COPY prepare-efi.sh /bin/
 RUN prepare-efi.sh centos
