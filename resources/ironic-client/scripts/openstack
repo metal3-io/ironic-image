@@ -1,0 +1,4 @@
+#!/bin/sh
+
+echo "Please use /usr/bin/baremetal instead"
+exit 1
