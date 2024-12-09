@@ -91,6 +91,8 @@ Next step is to clean up the release note manually.
 - If the release you're making is not a new major release, new minor release, or
   a new patch release from the latest release branch, uncheck the box for latest
   release.
+- Add link to upstream Ironic release notes and full commit range link.
+  [Prior art](https://github.com/metal3-io/ironic-image/releases/tag/v27.0.0)
 - Publish the release.
 
 ## Post-release actions for new release branches
@@ -110,13 +112,13 @@ least once in the PR targeting the branch in question.
 Update `README.md` with release specific information, both on `main` and in the
 new `release-X.Y` branch as necessary.
 
-<!-- No example PR yet. To be added when first release from branch is made -->
+[Prior art](https://github.com/metal3-io/ironic-image/pull/594)
 
 In the `release-X.Y` branch, update the build badges in the `README.md` to point
 to correct Jenkins jobs, so the build statuses of the release branch are
 visible.
 
-<!-- No example PR yet. To be added when first release from branch is made -->
+[Prior art](https://github.com/metal3-io/ironic-image/pull/595)
 
 ### Branches lifecycle
 
