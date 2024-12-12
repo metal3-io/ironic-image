@@ -8,7 +8,6 @@ echo "tsflags=nodocs" >> /etc/dnf/dnf.conf
 
 dnf install -y 'dnf-command(config-manager)'
 
-# emulate uid/gid configuration to match rpm install
 IRONIC_UID=997
 IRONIC_GID=994
 
@@ -57,6 +56,8 @@ python3 -m pip install --no-cache-dir --ignore-installed --prefix /usr -r "${IRO
 
 # ironic system configuration
 mkdir -p /var/log/ironic /var/lib/ironic
+#getent group "${IRONIC_GID}"
+#getent passwd "${IRONIC_UID}"
 getent group ironic > /dev/null || groupadd -r ironic -g "${IRONIC_GID}"
 getent passwd ironic > /dev/null || useradd -r -g ironic -u "${IRONIC_UID}" -s /sbin/nologin ironic -d /var/lib/ironic
 
@@ -71,9 +72,10 @@ if [[ -n "${EXTRA_PKGS_LIST:-}" ]]; then
     fi
 fi
 
-dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
-dnf config-manager --set-disabled epel
-dnf install -y --enablerepo=epel inotify-tools
+#dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-10.noarch.rpm
+#dnf config-manager --set-disabled epel
+#dnf install -y --enablerepo=epel inotify-tools
+dnf install -y https://rpmfind.net/linux/fedora/linux/releases/40/Everything/x86_64/os/Packages/i/inotify-tools-3.22.1.0-7.fc40.x86_64.rpm
 
 dnf remove -y --noautoremove 'dnf-command(config-manager)'
 
