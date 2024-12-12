@@ -92,6 +92,9 @@ deploy_kernel = file://{{ env.IRONIC_DEFAULT_KERNEL }}
 {% if env.IRONIC_DEFAULT_RAMDISK is defined %}
 deploy_ramdisk = file://{{ env.IRONIC_DEFAULT_RAMDISK }}
 {% endif %}
+{% if env.DISABLE_DEEP_IMAGE_INSPECTION | lower == "true" %}
+disable_deep_image_inspection = True
+{% endif %}
 
 [database]
 {% if env.IRONIC_USE_MARIADB | lower == "false" %}
