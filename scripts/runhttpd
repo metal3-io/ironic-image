@@ -72,18 +72,18 @@ fi
 
 # Set up inotify to kill the container (restart) whenever cert files for ironic api change
 if [[ "$IRONIC_TLS_SETUP" == "true" ]] && [[ "${RESTART_CONTAINER_CERTIFICATE_UPDATED}" == "true" ]]; then
-    # shellcheck disable=SC2034
-    inotifywait -m -e delete_self "${IRONIC_CERT_FILE}" | while read -r file event; do
-        kill -WINCH $(pgrep httpd)
-    done &
+    python3 -m pyinotify -e IN_DELETE_SELF -v "${IRONIC_CERT_FILE}" |
+        while read -r file event; do
+            kill -WINCH $(pgrep httpd)
+        done &
 fi
 
 # Set up inotify to kill the container (restart) whenever cert of httpd for /shared/html/<redifsh;ilo> path change
 if [[ "$IRONIC_VMEDIA_TLS_SETUP" == "true" ]] && [[ "${RESTART_CONTAINER_CERTIFICATE_UPDATED}" == "true" ]]; then
-    # shellcheck disable=SC2034
-    inotifywait -m -e delete_self "${IRONIC_VMEDIA_CERT_FILE}" | while read -r file event; do
-        kill -WINCH $(pgrep httpd)
-    done &
+    python3 -m pyinotify -e IN_DELETE_SELF -v "${IRONIC_VMEDIA_CERT_FILE}" |
+        while read -r file event; do
+            kill -WINCH $(pgrep httpd)
+        done &
 fi
 
 exec /usr/sbin/httpd -DFOREGROUND

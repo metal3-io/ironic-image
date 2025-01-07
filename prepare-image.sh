@@ -71,10 +71,6 @@ if [[ -n "${EXTRA_PKGS_LIST:-}" ]]; then
     fi
 fi
 
-dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
-dnf config-manager --set-disabled epel
-dnf install -y --enablerepo=epel inotify-tools
-
 dnf remove -y --noautoremove 'dnf-command(config-manager)'
 
 # NOTE(elfosardo): we need to reinstall tzdata as the base CS9 container removes
