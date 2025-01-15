@@ -16,7 +16,7 @@ Things you should check before making a release:
   for high-level process and possible follow-up actions
 - Verify the latest bugfix or stable branches (which is the most recent) in ironic
   upstream repository;
-- Verify compatibility with latest sushy and ironic-lib upstream releases or master
+- Verify compatibility with latest sushy upstream releases or master
   branches based on ironic bugfix or stable requirements and constraints
 - Verify openstack upper-constraints compatibility with ironic bugfix or stable branches
 - Verify any other direct or indirect dependency is uplifted to close any public

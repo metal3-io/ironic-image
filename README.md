@@ -108,8 +108,8 @@ The following can serve as an example:
 ## Custom source for ironic software
 
 When building the ironic image, it is also possible to specify a
-different source for ironic, ironic-lib or the sushy library using the build
-arguments **IRONIC_SOURCE**, **IRONIC_LIB_SOURCE**, and **SUSHY_SOURCE**.
+different source for ironic or the sushy library using the build
+arguments **IRONIC_SOURCE** and **SUSHY_SOURCE**.
 The accepted formats are gerrit refs, like _refs/changes/89/860689/2_,
 commit hashes, like _a1fe6cb41e6f0a1ed0a43ba5e17745714f206f1f_,
 repo tags or branches, or a local directory that needs to be under the
