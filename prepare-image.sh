@@ -49,10 +49,6 @@ if [[ -n ${SUSHY_SOURCE:-} ]]; then
     sed -i '/^sushy===/d' "${UPPER_CONSTRAINTS_PATH}"
 fi
 
-if [[ -n ${IRONIC_LIB_SOURCE:-} ]]; then
-    sed -i '/^ironic-lib===/d' "${UPPER_CONSTRAINTS_PATH}"
-fi
-
 python3 -m pip install --no-cache-dir --ignore-installed --prefix /usr -r "${IRONIC_PKG_LIST_FINAL}" -c "${UPPER_CONSTRAINTS_PATH}"
 
 # ironic system configuration
