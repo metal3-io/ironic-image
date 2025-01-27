@@ -19,13 +19,13 @@ get_provisioning_interface()
     local interface="provisioning"
 
     if [[ -n "${PROVISIONING_IP}" ]]; then
-        if ip -br addr show | grep -qi " ${PROVISIONING_IP}/"; then
+        if ip -br addr show | grep -i " ${PROVISIONING_IP}/" &>/dev/null; then
             interface="$(ip -br addr show | grep -i " ${PROVISIONING_IP}/" | cut -f 1 -d ' ' | cut -f 1 -d '@')"
         fi
     fi
 
     for mac in ${PROVISIONING_MACS//,/ }; do
-        if ip -br link show up | grep -qi "$mac"; then
+        if ip -br link show up | grep -i "$mac" &>/dev/null; then
             interface="$(ip -br link show up | grep -i "$mac" | cut -f 1 -d ' ' | cut -f 1 -d '@')"
             break
         fi
