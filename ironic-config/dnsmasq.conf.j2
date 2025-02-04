@@ -3,6 +3,7 @@ bind-dynamic
 enable-tftp
 tftp-root=/shared/tftpboot
 log-queries
+dhcp-leasefile=/data/dnsmasq/dnsmasq.leases
 
 # Configure listening for DNS (0 disables DNS)
 port={{ env.DNS_PORT }}
