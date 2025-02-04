@@ -20,4 +20,4 @@ fi
 
 configure_ironic_auth
 
-exec /usr/bin/ironic
+exec /usr/bin/ironic --config-dir "${IRONIC_CONF_DIR}"
