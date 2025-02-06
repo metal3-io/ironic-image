@@ -130,6 +130,20 @@ Ideally a new stable branch should be created as close as possible after
 an ironic stable or bugfix branch is created to avoid too much distance
 from it and therefore the risk to go back in time with the ironic code.
 
+## Ironic Standalone Operator updates
+
+[IrSO](https://github.com/metal3-io/ironic-standalone-operator) needs to be
+updated to support the new release branch. At the very least, the new branch
+must be added to
+
+- [API](https://github.com/metal3-io/ironic-standalone-operator/blob/e45e6be580c07fcca560dadb33bdd3006257ae87/api/v1alpha1/ironic_types.go#L23-L26)
+- [implemented
+  versions](https://github.com/metal3-io/ironic-standalone-operator/blob/main/pkg/ironic/version.go)
+
+If explicit upgrade actions are required, they must be implemented in the
+operator code as well. After that, an IrSO release will be prepared (release
+documentation to follow soon).
+
 ## Additional actions outside this repository
 
 Further additional actions may be required in the Metal3 project after
