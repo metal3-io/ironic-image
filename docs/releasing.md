@@ -120,7 +120,15 @@ visible.
 
 [Prior art](https://github.com/metal3-io/ironic-image/pull/595)
 
-### Branches lifecycle
+### Update supported versions in metal3-docs
+
+Supported ironic-image release branches in
+[Supported Release Versions/Ironic-Image](https://github.com/metal3-io/metal3-docs/blob/main/docs/user-guide/src/version_support.md#ironic-image)
+must be updated to reflect the latest changes.
+The [CI Test Matrix](https://github.com/metal3-io/metal3-docs/blob/main/docs/user-guide/src/version_support.md#ci-test-matrix)
+shoud not be changed because it's updated only after a new CAPM3 release.
+
+## Branches lifecycle
 
 Stable branches are maintained for 6 months after their creation unless
 specified differently at the moment of the branch creation.
