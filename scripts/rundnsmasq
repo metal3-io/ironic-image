@@ -13,7 +13,11 @@ export DNS_PORT=${DNS_PORT:-0}
 
 wait_for_interface_or_ip
 if [[ "${DNS_IP:-}" == "provisioning" ]]; then
-    export DNS_IP="$IRONIC_URL_HOST"
+    if [[ "$IPV" == "4" ]]; then
+      export DNS_IP="$IRONIC_IP"
+    else
+      export DNS_IP="[$IRONIC_IP]"
+    fi
 fi
 
 mkdir -p /shared/tftpboot
