@@ -126,7 +126,7 @@ Supported ironic-image release branches in
 [Supported Release Versions/Ironic-Image](https://github.com/metal3-io/metal3-docs/blob/main/docs/user-guide/src/version_support.md#ironic-image)
 must be updated to reflect the latest changes.
 The [CI Test Matrix](https://github.com/metal3-io/metal3-docs/blob/main/docs/user-guide/src/version_support.md#ci-test-matrix)
-shoud not be changed because it's updated only after a new CAPM3 release.
+should not be changed because it's updated only after a new CAPM3 release.
 
 ## Branches lifecycle
 
