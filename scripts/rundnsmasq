@@ -13,10 +13,10 @@ export DNS_PORT=${DNS_PORT:-0}
 
 wait_for_interface_or_ip
 if [[ "${DNS_IP:-}" == "provisioning" ]]; then
-    if [[ "$IPV" == "4" ]]; then
-      export DNS_IP="$IRONIC_IP"
+    if [[ "${IPV}" == "4" ]]; then
+      export DNS_IP="${IRONIC_IP}"
     else
-      export DNS_IP="[$IRONIC_IP]"
+      export DNS_IP="[${IRONIC_IP}]"
     fi
 fi
 
