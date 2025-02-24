@@ -2,7 +2,9 @@
 
 set -euxo pipefail
 
-IRONIC_IP="${IRONIC_IP:-}"
+# Export IRONIC_IP to avoid needing to lean on IRONIC_URL_HOST for consumption in
+# e.g. dnsmasq configuration
+export IRONIC_IP="${IRONIC_IP:-}"
 PROVISIONING_INTERFACE="${PROVISIONING_INTERFACE:-}"
 PROVISIONING_IP="${PROVISIONING_IP:-}"
 PROVISIONING_MACS="${PROVISIONING_MACS:-}"
@@ -69,6 +71,12 @@ wait_for_interface_or_ip()
         export IPV=4
         export IRONIC_URL_HOST="$IRONIC_IP"
     fi
+
+    # Avoid having to construct full URL multiple times while allowing
+    # the override of IRONIC_HTTP_URL for environments in which IRONIC_IP
+    # is unreachable from hosts being provisioned.
+    export IRONIC_HTTP_URL="${IRONIC_HTTP_URL:-http://${IRONIC_URL_HOST}:${HTTP_PORT}}"
+    export IRONIC_TFTP_URL="${IRONIC_TFTP_URL:-tftp://${IRONIC_URL_HOST}}"
 }
 
 render_j2_config()
@@ -100,5 +108,6 @@ export IRONIC_PRIVATE_PORT=${IRONIC_PRIVATE_PORT:-unix}
 
 export IRONIC_ACCESS_PORT=${IRONIC_ACCESS_PORT:-6385}
 export IRONIC_LISTEN_PORT=${IRONIC_LISTEN_PORT:-$IRONIC_ACCESS_PORT}
+export IRONIC_BASE_URL=${IRONIC_BASE_URL:-"${IRONIC_SCHEME}://${IRONIC_URL_HOST}:${IRONIC_ACCESS_PORT}"}
 
 export IRONIC_ENABLE_DISCOVERY=${IRONIC_ENABLE_DISCOVERY:-${IRONIC_INSPECTOR_ENABLE_DISCOVERY:-false}}
