@@ -55,8 +55,6 @@ wait_for_interface_or_ip
 # Hostname to use for the current conductor instance.
 export IRONIC_CONDUCTOR_HOST=${IRONIC_CONDUCTOR_HOST:-${IRONIC_URL_HOST}}
 
-export IRONIC_BASE_URL=${IRONIC_BASE_URL:-"${IRONIC_SCHEME}://${IRONIC_URL_HOST}:${IRONIC_ACCESS_PORT}"}
-
 if [[ -n "$IRONIC_EXTERNAL_IP" ]]; then
     export IRONIC_EXTERNAL_CALLBACK_URL=${IRONIC_EXTERNAL_CALLBACK_URL:-"${IRONIC_SCHEME}://${IRONIC_EXTERNAL_IP}:${IRONIC_ACCESS_PORT}"}
     if [[ "$IRONIC_VMEDIA_TLS_SETUP" == "true" ]]; then
