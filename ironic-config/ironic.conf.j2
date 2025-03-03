@@ -80,7 +80,7 @@ send_sensor_data = {{ env.SEND_SENSOR_DATA }}
 # Power state is checked every 60 seconds and BMC activity should
 # be avoided more often than once every sixty seconds.
 send_sensor_data_interval = 160
-bootloader = http://{{ env.IRONIC_URL_HOST }}:{{ env.HTTP_PORT }}/uefi_esp.img
+bootloader = {{ env.IRONIC_HTTP_URL }}/uefi_esp.img
 verify_step_priority_override = management.clear_job_queue:90
 # We don't use this feature, and it creates an additional load on the database
 node_history = False
@@ -112,7 +112,7 @@ default_boot_option = local
 erase_devices_metadata_priority = 10
 erase_devices_priority = 0
 http_root = /shared/html/
-http_url = http://{{ env.IRONIC_URL_HOST }}:{{ env.HTTP_PORT }}
+http_url = {{ env.IRONIC_HTTP_URL }}
 fast_track = {{ env.IRONIC_FAST_TRACK }}
 {% if env.IRONIC_BOOT_ISO_SOURCE %}
 ramdisk_image_download_source = {{ env.IRONIC_BOOT_ISO_SOURCE }}

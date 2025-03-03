@@ -31,11 +31,11 @@ dhcp-match=ipxe,175
 # Client is already running iPXE; move to next stage of chainloading
 {%- if env.IPXE_TLS_SETUP == "true"  %}
 # iPXE with (U)EFI
-dhcp-boot=tag:efi,tag:ipxe,http://{{ env.IRONIC_URL_HOST }}:{{ env.HTTP_PORT }}/custom-ipxe/snponly.efi
+dhcp-boot=tag:efi,tag:ipxe,{{ env.IRONIC_HTTP_URL }}/custom-ipxe/snponly.efi
 # iPXE with BIOS
-dhcp-boot=tag:ipxe,http://{{ env.IRONIC_URL_HOST }}:{{ env.HTTP_PORT }}/custom-ipxe/undionly.kpxe
+dhcp-boot=tag:ipxe,{{ env.IRONIC_HTTP_URL }}/custom-ipxe/undionly.kpxe
 {% else %}
-dhcp-boot=tag:ipxe,http://{{ env.IRONIC_URL_HOST }}:{{ env.HTTP_PORT }}/boot.ipxe
+dhcp-boot=tag:ipxe,{{ env.IRONIC_HTTP_URL }}/boot.ipxe
 {% endif %}
 
 # Note: Need to test EFI booting
@@ -59,8 +59,8 @@ ra-param={{ env.PROVISIONING_INTERFACE }},0,0
 
 dhcp-vendorclass=set:pxe6,enterprise:343,PXEClient
 dhcp-userclass=set:ipxe6,iPXE
-dhcp-option=tag:pxe6,option6:bootfile-url,tftp://{{ env.IRONIC_URL_HOST }}/snponly.efi
-dhcp-option=tag:ipxe6,option6:bootfile-url,http://{{ env.IRONIC_URL_HOST }}:{{ env.HTTP_PORT }}/boot.ipxe
+dhcp-option=tag:pxe6,option6:bootfile-url,{{ env.IRONIC_TFTP_URL }}/snponly.efi
+dhcp-option=tag:ipxe6,option6:bootfile-url,{{ env.IRONIC_HTTP_URL }}/boot.ipxe
 
 # It can be used when setting DNS or GW variables.
 {%- if env["GATEWAY_IP"] is undefined %}
