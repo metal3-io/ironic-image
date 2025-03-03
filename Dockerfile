@@ -1,4 +1,4 @@
-ARG BASE_IMAGE=quay.io/centos/centos:stream9
+ARG BASE_IMAGE=quay.io/centos/centos:stream10
 
 ## Build iPXE w/ IPv6 Support
 ## Note: we are pinning to a specific commit for reproducible builds.
