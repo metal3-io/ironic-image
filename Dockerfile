@@ -44,21 +44,26 @@ RUN prepare-image.sh && \
 
 COPY scripts/ /bin/
 
+RUN mv /bin/ironic-probe.sh /bin/ironic-readiness && \
+    cp /bin/ironic-readiness /bin/ironic-liveness && \
+    mkdir -p /conf /data/db /conf/ipxe
+
 # IRONIC #
 COPY --from=ironic-builder /tmp/ipxe/src/bin/undionly.kpxe /tmp/ipxe/src/bin-x86_64-efi/snponly.efi /tftpboot/
 COPY --from=ironic-builder /tmp/esp.img /tmp/uefi_esp.img
 
 COPY ironic-config/ironic.conf.j2 /etc/ironic/
-COPY ironic-config/inspector.ipxe.j2 ironic-config/httpd-ironic-api.conf.j2 ironic-config/ipxe_config.template /tmp/
+COPY ironic-config/inspector.ipxe.j2 ironic-config/httpd-ironic-api.conf.j2  /tmp/
+COPY ironic-config/ipxe_config.template /conf/ipxe
 
 # DNSMASQ
-COPY ironic-config/dnsmasq.conf.j2 /etc/
+COPY ironic-config/dnsmasq.conf.j2 /tmp/
 
 # Custom httpd config, removes all but the bare minimum needed modules
 COPY ironic-config/httpd.conf.j2 /etc/httpd/conf/
 COPY ironic-config/httpd-modules.conf /etc/httpd/conf.modules.d/
-COPY ironic-config/apache2-vmedia.conf.j2 /etc/httpd-vmedia.conf.j2
-COPY ironic-config/apache2-ipxe.conf.j2 /etc/httpd-ipxe.conf.j2
+COPY ironic-config/apache2-vmedia.conf.j2 /tmp/httpd-vmedia.conf.j2
+COPY ironic-config/apache2-ipxe.conf.j2 /tmp/httpd-ipxe.conf.j2
 
 # DATABASE
 RUN mkdir -p /var/lib/ironic && \
