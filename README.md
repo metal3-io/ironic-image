@@ -68,7 +68,9 @@ functionality:
 - `DHCP_IGNORE` - a set of tags on hosts that should be ignored and not allocate
    DHCP leases for, e.g. `tag:!known` to ignore any unknown hosts (empty by
    default)
-- `MARIADB_PASSWORD` - The database password
+- `MARIADB_PASSWORD` - The database password.
+   Deprecated. Instead, mount a secret with `password` (optionally with a
+   `username`) at `/auth/mariadb` mount point.
 - `OS_<section>_\_<name>=<value>` - This format can be used to set arbitary
    Ironic config options
 - `IRONIC_RAMDISK_SSH_KEY` - A public key to allow ssh access to nodes running
