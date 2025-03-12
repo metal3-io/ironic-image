@@ -28,13 +28,8 @@ if [[ "$MARIADB_TLS_ENABLED" == "true" ]]; then
     export MARIADB_CONNECTION="${MARIADB_CONNECTION}&ssl=on&ssl_ca=${MARIADB_CACERT_FILE}"
 fi
 
-# TODO(dtantsur): remove the explicit default once we get
-# https://review.opendev.org/761185 in the repositories
-NUMPROC="$(grep -c "^processor" /proc/cpuinfo)"
-if [[ "$NUMPROC" -lt 4 ]]; then
-    NUMPROC=4
-fi
-export NUMWORKERS=${NUMWORKERS:-$NUMPROC}
+# zero makes it do cpu number detection on Ironic side
+export NUMWORKERS=${NUMWORKERS:-0}
 
 export IRONIC_USE_MARIADB=${IRONIC_USE_MARIADB:-true}
 
