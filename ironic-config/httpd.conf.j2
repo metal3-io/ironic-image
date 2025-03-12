@@ -1,10 +1,10 @@
-ServerRoot "/etc/httpd"
+ServerRoot {{ env.HTTPD_DIR }}
 {%- if env.LISTEN_ALL_INTERFACES | lower == "true" %}
 Listen {{ env.HTTP_PORT }}
 {% else %}
 Listen {{ env.IRONIC_URL_HOST }}:{{ env.HTTP_PORT }}
 {% endif %}
-Include conf.modules.d/*.conf
+Include /etc/httpd/conf.modules.d/*.conf
 User apache
 Group apache
 

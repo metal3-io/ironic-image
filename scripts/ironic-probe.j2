@@ -1,9 +1,0 @@
-#!/bin/bash
-
-set -eu -o pipefail
-
-curl -sSf {{ env.PROBE_CURL_ARGS }} "{{ env.PROBE_URL }}"
-
-# TODO(dtantsur): when PROBE_KIND==readiness, try the conductor and driver API
-# to make sure the conductor is ready. This requires having access to secrets
-# since these endpoints are authenticated.

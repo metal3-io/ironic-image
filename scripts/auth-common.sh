@@ -4,6 +4,12 @@ set -euxo pipefail
 
 export IRONIC_REVERSE_PROXY_SETUP=${IRONIC_REVERSE_PROXY_SETUP:-false}
 
+# CUSTOM_CONFIG_DIR is also managed in the ironic-common.sh, in order to
+# keep auth-common and ironic-common separate (to stay consistent with the
+# architecture) part of the ironic-common logic had to be duplicated
+CUSTOM_CONFIG_DIR="${CUSTOM_CONFIG_DIR:-/conf}"
+IRONIC_CONF_DIR="${CUSTOM_CONFIG_DIR}/ironic"
+
 # Backward compatibility
 if [[ "${IRONIC_DEPLOYMENT:-}" == "Conductor" ]]; then
     export IRONIC_EXPOSE_JSON_RPC=true
@@ -11,7 +17,7 @@ else
     export IRONIC_EXPOSE_JSON_RPC="${IRONIC_EXPOSE_JSON_RPC:-false}"
 fi
 
-IRONIC_HTPASSWD_FILE=/etc/ironic/htpasswd
+IRONIC_HTPASSWD_FILE="${IRONIC_CONF_DIR}/htpasswd"
 if [[ -f "/auth/ironic/htpasswd" ]]; then
     IRONIC_HTPASSWD=$(</auth/ironic/htpasswd)
 fi
@@ -21,8 +27,7 @@ fi
 export IRONIC_HTPASSWD=${IRONIC_HTPASSWD:-${HTTP_BASIC_HTPASSWD:-}}
 export IRONIC_RPC_HTPASSWD=${IRONIC_RPC_HTPASSWD:-${IRONIC_HTPASSWD}}
 
-IRONIC_CONFIG=/etc/ironic/ironic.conf
-
+IRONIC_CONFIG="${IRONIC_CONF_DIR}/ironic.conf"
 
 configure_json_rpc_auth()
 {

@@ -27,6 +27,7 @@ use_stderr = true
 hash_ring_algorithm = sha256
 my_ip = {{ env.IRONIC_IP }}
 host = {{ env.IRONIC_CONDUCTOR_HOST }}
+tempdir = /data/tmp
 
 # If a path to a certificate is defined, use that first for webserver
 {% if env.WEBSERVER_CACERT_FILE %}
@@ -49,6 +50,7 @@ deploy_logs_local_path = /shared/log/ironic/deploy
 # retries here works around such problems without affecting the normal path.
 # See https://bugzilla.redhat.com/show_bug.cgi?id=1822763
 max_command_attempts = 30
+certificates_path = {{ env.IRONIC_GEN_CERT_DIR }}
 
 [api]
 {% if env.IRONIC_REVERSE_PROXY_SETUP == "true" %}
@@ -98,7 +100,7 @@ disable_deep_image_inspection = True
 
 [database]
 {% if env.IRONIC_USE_MARIADB | lower == "false" %}
-connection = sqlite:////var/lib/ironic/ironic.sqlite
+connection = {{ env.LOCAL_DB_URI }}
 # Synchronous mode is required for data integrity in case of operating system
 # crash. In our case we restart the container from scratch, so we can save some
 # IO by not doing syncs all the time.
@@ -209,7 +211,7 @@ enable_netboot_fallback = true
 # Enable the fallback path to in-band inspection
 ipxe_fallback_script = inspector.ipxe
 {% if env.IPXE_TLS_SETUP | lower == "true" %}
-ipxe_config_template = /tmp/ipxe_config.template
+ipxe_config_template = /conf/ipxe/ipxe_config.template
 {% endif %}
 
 [redfish]
