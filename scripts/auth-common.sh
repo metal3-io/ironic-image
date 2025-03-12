@@ -21,6 +21,16 @@ fi
 export IRONIC_HTPASSWD=${IRONIC_HTPASSWD:-${HTTP_BASIC_HTPASSWD:-}}
 export IRONIC_RPC_HTPASSWD=${IRONIC_RPC_HTPASSWD:-${IRONIC_HTPASSWD}}
 
+if [[ -n "${MARIADB_PASSWORD:-}" ]]; then
+    echo "WARNING: passing MARIADB_PASSWORD is deprecated, mount a secret under /auth/mariadb instead"
+elif [[ -f /auth/mariadb/password ]]; then
+    MARIADB_PASSWORD=$(</auth/mariadb/password)
+fi
+
+if [[ -z "${MARIADB_USER:-}" ]] && [[ -f /auth/mariadb/username ]]; then
+    MARIADB_USER=$(</auth/mariadb/username)
+fi
+
 IRONIC_CONFIG=/etc/ironic/ironic.conf
 
 
