@@ -97,14 +97,14 @@ disable_deep_image_inspection = True
 {% endif %}
 
 [database]
-{% if env.IRONIC_USE_MARIADB | lower == "false" %}
+{% if env.IRONIC_USE_MARIADB | lower == "true" %}
+connection = {{ env.MARIADB_CONNECTION }}
+{% else %}
 connection = sqlite:////var/lib/ironic/ironic.sqlite
 # Synchronous mode is required for data integrity in case of operating system
 # crash. In our case we restart the container from scratch, so we can save some
 # IO by not doing syncs all the time.
 sqlite_synchronous = False
-{% else %}
-connection = {{ env.MARIADB_CONNECTION }}
 {% endif %}
 
 [deploy]

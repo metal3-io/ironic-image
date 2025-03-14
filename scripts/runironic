@@ -1,8 +1,5 @@
 #!/usr/bin/bash
 
-# This setting must go before configure-ironic since it has different defaults.
-export IRONIC_USE_MARIADB=${IRONIC_USE_MARIADB:-false}
-
 # shellcheck disable=SC1091
 . /bin/configure-ironic.sh
 

@@ -70,9 +70,6 @@ functionality:
 - `DHCP_IGNORE` - a set of tags on hosts that should be ignored and not allocate
    DHCP leases for, e.g. `tag:!known` to ignore any unknown hosts (empty by
    default)
-- `MARIADB_PASSWORD` - The database password.
-   Deprecated. Instead, mount a secret with `password` (optionally with a
-   `username`) at `/auth/mariadb` mount point.
 - `OS_<section>_\_<name>=<value>` - This format can be used to set arbitary
    Ironic config options
 - `IRONIC_RAMDISK_SSH_KEY` - A public key to allow ssh access to nodes running
@@ -97,6 +94,20 @@ functionality:
 - `IRONIC_ENABLE_VLAN_INTERFACES` - Which VLAN interfaces to enable on the
   agent start-up. Can be a list of interfaces or a special value `all`.
   Defaults to `all`.
+
+MariaDB configuration:
+
+- `IRONIC_USE_MARIADB` - Whether to use an external MariaDB database instead of
+  a local SQLite file (default `false`)
+- `MARIADB_HOST` - Host name with an optional port of the MariaDB database
+  instance (must be provided if `IRONIC_USE_MARIADB` is `true`)
+- `MARIADB_DATABASE` - Database name to use (default `ironic`)
+- `MARIADB_USER` - User name to use when connecting to the database (default
+  `ironic`). The user must have privileges to create and update tables.
+  Can be provided via a secret mounted under `/auth/mariadb`.
+- `MARIADB_PASSWORD` - The database password.
+   Deprecated. Instead, mount a secret with `password` (optionally with a
+   `username`) under `/auth/mariadb` mount point.
 
 The ironic configuration can be overridden by various environment variables.
 The following can serve as an example:
