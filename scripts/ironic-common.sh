@@ -8,6 +8,8 @@ PROVISIONING_IP="${PROVISIONING_IP:-}"
 PROVISIONING_MACS="${PROVISIONING_MACS:-}"
 IPXE_CUSTOM_FIRMWARE_DIR="${IPXE_CUSTOM_FIRMWARE_DIR:-/shared/custom_ipxe_firmware}"
 
+export IRONIC_USE_MARIADB=${IRONIC_USE_MARIADB:-false}
+
 get_provisioning_interface()
 {
     if [[ -n "$PROVISIONING_INTERFACE" ]]; then
@@ -78,7 +80,7 @@ render_j2_config()
 
 run_ironic_dbsync()
 {
-    if [[ "${IRONIC_USE_MARIADB:-true}" == "true" ]]; then
+    if [[ "${IRONIC_USE_MARIADB}" == "true" ]]; then
         # It's possible for the dbsync to fail if mariadb is not up yet, so
         # retry until success
         until ironic-dbsync --config-file /etc/ironic/ironic.conf upgrade; do
