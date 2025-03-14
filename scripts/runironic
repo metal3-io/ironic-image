@@ -9,7 +9,10 @@ export IRONIC_USE_MARIADB=${IRONIC_USE_MARIADB:-false}
 # Ramdisk logs
 mkdir -p /shared/log/ironic/deploy
 
-run_ironic_dbsync
+# Allows skipping dbsync if it's done by an external job
+if [[ "${IRONIC_SKIP_DBSYNC:-false}" != true ]]; then
+    run_ironic_dbsync
+fi
 
 if [[ "$IRONIC_TLS_SETUP" == "true" ]] && [[ "${RESTART_CONTAINER_CERTIFICATE_UPDATED}" == "true" ]]; then
     python3 -m pyinotify -e IN_DELETE_SELF -v "${IRONIC_CERT_FILE}" |
