@@ -95,3 +95,21 @@ if [[ -f "$MARIADB_CACERT_FILE" ]]; then
 else
     export MARIADB_TLS_ENABLED="false"
 fi
+
+configure_restart_on_certificate_update()
+{
+    local enabled="$1"
+    local service="$2"
+    local cert_file="$3"
+    local signal="TERM"
+
+    if [[ "${enabled}" == "true" ]] && [[ "${RESTART_CONTAINER_CERTIFICATE_UPDATED}" == "true" ]]; then
+        if [[ "${service}" == httpd ]]; then
+            signal="WINCH"
+        fi
+        python3 -m pyinotify --raw-format -e IN_DELETE_SELF -v "${cert_file}" |
+            while read -r; do
+                pkill "-${signal}" "${service}"
+            done &
+    fi
+}

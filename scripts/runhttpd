@@ -71,19 +71,9 @@ if [[ "$IPXE_TLS_SETUP" == "true" ]]; then
 fi
 
 # Set up inotify to kill the container (restart) whenever cert files for ironic api change
-if [[ "$IRONIC_TLS_SETUP" == "true" ]] && [[ "${RESTART_CONTAINER_CERTIFICATE_UPDATED}" == "true" ]]; then
-    python3 -m pyinotify -e IN_DELETE_SELF -v "${IRONIC_CERT_FILE}" |
-        while read -r file event; do
-            kill -WINCH $(pgrep httpd)
-        done &
-fi
+configure_restart_on_certificate_update "${IRONIC_TLS_SETUP}" httpd "${IRONIC_CERT_FILE}"
 
 # Set up inotify to kill the container (restart) whenever cert of httpd for /shared/html/<redifsh;ilo> path change
-if [[ "$IRONIC_VMEDIA_TLS_SETUP" == "true" ]] && [[ "${RESTART_CONTAINER_CERTIFICATE_UPDATED}" == "true" ]]; then
-    python3 -m pyinotify -e IN_DELETE_SELF -v "${IRONIC_VMEDIA_CERT_FILE}" |
-        while read -r file event; do
-            kill -WINCH $(pgrep httpd)
-        done &
-fi
+configure_restart_on_certificate_update "${IRONIC_VMEDIA_TLS_SETUP}" httpd "${IRONIC_VMEDIA_CERT_FILE}"
 
 exec /usr/sbin/httpd -DFOREGROUND

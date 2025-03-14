@@ -8,12 +8,7 @@ mkdir -p /shared/log/ironic/deploy
 
 run_ironic_dbsync
 
-if [[ "$IRONIC_TLS_SETUP" == "true" ]] && [[ "${RESTART_CONTAINER_CERTIFICATE_UPDATED}" == "true" ]]; then
-    python3 -m pyinotify -e IN_DELETE_SELF -v "${IRONIC_CERT_FILE}" |
-        while read -r file event; do
-            kill $(pgrep ironic)
-        done &
-fi
+configure_restart_on_certificate_update "${IRONIC_TLS_SETUP}" ironic "${IRONIC_CERT_FILE}"
 
 configure_ironic_auth
 
