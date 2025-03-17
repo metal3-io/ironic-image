@@ -6,7 +6,10 @@
 # Ramdisk logs
 mkdir -p /shared/log/ironic/deploy
 
-run_ironic_dbsync
+# Allows skipping dbsync if it's done by an external job
+if [[ "${IRONIC_SKIP_DBSYNC:-false}" != true ]]; then
+    run_ironic_dbsync
+fi
 
 configure_restart_on_certificate_update "${IRONIC_TLS_SETUP}" ironic "${IRONIC_CERT_FILE}"
 
