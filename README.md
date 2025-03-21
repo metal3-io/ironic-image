@@ -94,6 +94,9 @@ functionality:
 - `IRONIC_ENABLE_VLAN_INTERFACES` - Which VLAN interfaces to enable on the
   agent start-up. Can be a list of interfaces or a special value `all`.
   Defaults to `all`.
+- `OS_DATABASE__MAX_POOL_SIZE` - Maximum number of SQL connections to
+  keep open in a pool.
+- `OS_DATABASE__MAX_OVERFLOW` - If set, use this value for max_overflow with SQLAlchemy.
 
 MariaDB configuration:
 
