@@ -32,12 +32,12 @@ fi
 # Template and write dnsmasq.conf
 # we template via /tmp as sed otherwise creates temp files in /etc directory
 # where we can't write
-python3 -c 'import os; import sys; import jinja2; sys.stdout.write(jinja2.Template(sys.stdin.read()).render(env=os.environ))' </etc/dnsmasq.conf.j2 >/tmp/dnsmasq.conf
+python3 -c 'import os; import sys; import jinja2; sys.stdout.write(jinja2.Template(sys.stdin.read()).render(env=os.environ))' <"/tmp/dnsmasq.conf.j2" >"${DNSMASQ_TEMP_DIR}/dnsmasq_temp.conf"
 
 for iface in $(echo "$DNSMASQ_EXCEPT_INTERFACE" | tr ',' ' '); do
-    sed -i -e "/^interface=.*/ a\except-interface=${iface}" /tmp/dnsmasq.conf
+    sed -i -e "/^interface=.*/ a\except-interface=${iface}" "${DNSMASQ_TEMP_DIR}/dnsmasq_temp.conf"
 done
-cat /tmp/dnsmasq.conf > /etc/dnsmasq.conf
-rm /tmp/dnsmasq.conf
+cat "${DNSMASQ_TEMP_DIR}/dnsmasq_temp.conf" > "${DNSMASQ_CONF_DIR}/dnsmasq.conf"
+rm "${DNSMASQ_TEMP_DIR}/dnsmasq_temp.conf"
 
-exec /usr/sbin/dnsmasq -d -q -C /etc/dnsmasq.conf
+exec /usr/sbin/dnsmasq -d -q -C "${DNSMASQ_CONF_DIR}/dnsmasq.conf"
