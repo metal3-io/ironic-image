@@ -28,12 +28,10 @@ wait_for_interface_or_ip
 mkdir -p /shared/html
 chmod 0777 /shared/html
 
-IRONIC_BASE_URL="${IRONIC_SCHEME}://${IRONIC_URL_HOST}"
-
-INSPECTOR_EXTRA_ARGS=" ipa-inspection-callback-url=${IRONIC_BASE_URL}:${IRONIC_ACCESS_PORT}/v1/continue_inspection"
+INSPECTOR_EXTRA_ARGS=" ipa-inspection-callback-url=${IRONIC_BASE_URL}/v1/continue_inspection"
 
 if [[ "$IRONIC_FAST_TRACK" == "true" ]]; then
-    INSPECTOR_EXTRA_ARGS+=" ipa-api-url=${IRONIC_BASE_URL}:${IRONIC_ACCESS_PORT}"
+    INSPECTOR_EXTRA_ARGS+=" ipa-api-url=${IRONIC_BASE_URL}"
 fi
 export INSPECTOR_EXTRA_ARGS
 
