@@ -19,6 +19,20 @@ Listen {{ env.IRONIC_URL_HOST }}:{{ env.IRONIC_LISTEN_PORT }}
  <VirtualHost {{ env.IRONIC_URL_HOST }}:{{ env.IRONIC_LISTEN_PORT }}>
 {% endif %}
 
+    DocumentRoot "/shared/html"
+
+    <Directory "/shared/html">
+        Require all denied
+    </Directory>
+
+    <Directory "/shared/html/images">
+        Require all granted
+    </Directory>
+
+    # Exclude /images from proxying
+    ProxyPass        "/images" !
+    ProxyPassReverse "/images" !
+
     {% if env.IRONIC_PRIVATE_PORT == "unix" %}
     ProxyPass "/"  "unix:/shared/ironic.sock|http://127.0.0.1/"
     ProxyPassReverse "/"  "unix:/shared/ironic.sock|http://127.0.0.1/"
@@ -41,6 +55,7 @@ Listen {{ env.IRONIC_URL_HOST }}:{{ env.IRONIC_LISTEN_PORT }}
     SSLCertificateKeyFile {{ env.IRONIC_KEY_FILE }}
 {% endif %}
 
+
     <Location />
          {% if "IRONIC_HTPASSWD" in env and env.IRONIC_HTPASSWD | length %}
             AuthType Basic
@@ -57,4 +72,9 @@ Listen {{ env.IRONIC_URL_HOST }}:{{ env.IRONIC_LISTEN_PORT }}
     <Location ~ "^/(v1/)?(lookup|heartbeat|continue_inspection)" >
         Require all granted
     </Location>
+
+    <Location ~ "^/images(/.*)?$">
+        Require all granted
+    </Location>
+
 </VirtualHost>
