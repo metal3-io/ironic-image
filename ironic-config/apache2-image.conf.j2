@@ -1,0 +1,25 @@
+Listen {{ env.IMAGE_SERVER_TLS_PORT }}
+
+<VirtualHost *:{{ env.IMAGE_SERVER_TLS_PORT }}>
+    ErrorLog /dev/stderr
+    LogLevel debug
+    CustomLog /dev/stdout combined
+
+    SSLEngine on
+    SSLProtocol {{ env.IMAGE_SERVER_SSL_PROTOCOL }}
+    SSLCertificateFile {{ env.IMAGE_SERVER_CERT_FILE }}
+    SSLCertificateKeyFile {{ env.IMAGE_SERVER_KEY_FILE }}
+
+    <Directory "/shared/html">
+        Require all denied
+    </Directory>
+    <Directory "/shared/html/images">
+        Require all granted
+    </Directory>
+
+    <LocationMatch "^/.*">
+        SSLRequireSSL
+    </LocationMatch>
+
+</VirtualHost>
+

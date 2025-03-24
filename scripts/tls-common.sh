@@ -1,12 +1,16 @@
 #!/bin/bash
 
-export IRONIC_CERT_FILE=/certs/ironic/tls.crt
-export IRONIC_KEY_FILE=/certs/ironic/tls.key
-export IRONIC_CACERT_FILE=/certs/ca/ironic/tls.crt
 export IRONIC_INSECURE=${IRONIC_INSECURE:-false}
 export IRONIC_SSL_PROTOCOL=${IRONIC_SSL_PROTOCOL:-"-ALL +TLSv1.2 +TLSv1.3"}
 export IPXE_SSL_PROTOCOL=${IPXE_SSL_PROTOCOL:-"-ALL +TLSv1.2 +TLSv1.3"}
+export IMAGE_SERVER_SSL_PROTOCOL=${IMAGE_SERVER_SSL_PROTOCOL:-"-ALL +TLSv1.2 +TLSv1.3"}
 export IRONIC_VMEDIA_SSL_PROTOCOL=${IRONIC_VMEDIA_SSL_PROTOCOL:-"ALL"}
+
+# Node image storage is using the same cert as the API
+export IRONIC_CERT_FILE=/certs/ironic/tls.crt
+export IRONIC_KEY_FILE=/certs/ironic/tls.key
+export IMAGE_SERVER_CERT_FILE="${IRONIC_CERT_FILE}"
+export IMAGE_SERVER_KEY_FILE="${IRONIC_KEY_FILE}"
 
 export IRONIC_VMEDIA_CERT_FILE=/certs/vmedia/tls.crt
 export IRONIC_VMEDIA_KEY_FILE=/certs/vmedia/tls.key
@@ -16,9 +20,18 @@ export IPXE_KEY_FILE=/certs/ipxe/tls.key
 
 export RESTART_CONTAINER_CERTIFICATE_UPDATED=${RESTART_CONTAINER_CERTIFICATE_UPDATED:-"false"}
 
+# By default every cert has to be signed with Ironic's
+# CA otherwise node image and IPA verification would fail
 export MARIADB_CACERT_FILE=/certs/ca/mariadb/tls.crt
+export IRONIC_CACERT_FILE=/certs/ca/ironic/tls.crt
 
 export IPXE_TLS_PORT="${IPXE_TLS_PORT:-8084}"
+export IMAGE_SERVER_TLS_PORT="${HTTPD_TLS_PORT:-8085}"
+
+# Used directly in the ironic.conf
+# Configures what CA or CA bundle is used for verifying
+# Node and IPA image urls
+export WEBSERVER_CACERT_FILE="${WEBSERVER_CACERT_FILE:-${IRONIC_CACERT_FILE}}"
 
 if [[ -f "$IRONIC_CERT_FILE" ]] && [[ ! -f "$IRONIC_KEY_FILE" ]]; then
     echo "Missing TLS Certificate key file $IRONIC_KEY_FILE"
@@ -44,6 +57,15 @@ if [[ -f "$IPXE_CERT_FILE" ]] && [[ ! -f "$IPXE_KEY_FILE" ]]; then
 fi
 if [[ ! -f "$IPXE_CERT_FILE" ]] && [[ -f "$IPXE_KEY_FILE" ]]; then
     echo "Missing TLS Certificate file $IPXE_CERT_FILE"
+    exit 1
+fi
+
+if [[ -f "$IMAGE_SERVER_CERT_FILE" ]] && [[ ! -f "$IMAGE_SERVER_KEY_FILE" ]]; then
+    echo "Missing TLS Certificate key file $IMAGE_SERVER_KEY_FILE"
+    exit 1
+fi
+if [[ ! -f "$IMAGE_SERVER_CERT_FILE" ]] && [[ -f "$IMAGE_SERVER_KEY_FILE" ]]; then
+    echo "Missing TLS Certificate file $IMAGE_SERVER_CERT_FILE"
     exit 1
 fi
 
@@ -86,11 +108,18 @@ else
     export IPXE_TLS_SETUP="false"
 fi
 
+if [[ -f "${IMAGE_SERVER_CERT_FILE}" ]]; then
+    export IMAGE_SERVER_TLS_SETUP="true"
+else
+    export IMAGE_SERVER_TLS_SETUP="false"
+fi
+
 if [[ -f "$MARIADB_CACERT_FILE" ]]; then
     export MARIADB_TLS_ENABLED="true"
 else
     export MARIADB_TLS_ENABLED="false"
 fi
+
 
 configure_restart_on_certificate_update()
 {
