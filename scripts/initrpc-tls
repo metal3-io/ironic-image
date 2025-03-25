@@ -1,0 +1,45 @@
+#!/usr/bin/bash
+
+set -euxo pipefail
+
+# shellcheck disable=SC1091
+. /bin/configure-ironic.sh
+
+IRONIC_RPC_AUTO_TLS=false
+if [[ -f "${IRONIC_RPC_CACERT_FILE}" ]]; then
+    if [[ ! -f "${IRONIC_RPC_CAKEY_FILE}" ]]; then
+        echo "FATAL: CA key is required for automated RPC TLS"
+        exit 1
+    fi
+    IRONIC_RPC_AUTO_TLS=true
+elif [[ "${IRONIC_RPC_INSECURE}" != "true" ]]; then
+    echo "FATAL: not providing an RPC CA is insecure, IRONIC_RPC_INSECURE must be set to true"
+    exit 1
+fi
+
+declare -a TLS_COMMON_ARGS=(
+    -new -subj /CN=ironic-rpc -nodes -newkey ec -pkeyopt ec_paramgen_curve:prime256v1
+)
+declare -a TLS_SUBJECT_ALT_NAME=(
+    # NOTE(dtantsur): it does not look like brackets are required for IPv6
+    -addext "subjectAltName = IP:${IRONIC_IP}"
+)
+# NOTE(dtantsur): the lifetime of certificates is very long on purpose:
+# 1) With a CA, the service restart will be triggered by the CA certificate
+# update, so the lifetime must simply be larger than one of the CA.
+# 2) Without a CA, it's an insecure configuration anyway.
+TLS_CERT_LIFETIME=3650
+
+
+if [[ "${IRONIC_RPC_AUTO_TLS}" == "true" ]]; then
+    echo "Generating a CSR for ${IRONIC_IP}"
+    openssl req "${TLS_COMMON_ARGS[@]}" "${TLS_SUBJECT_ALT_NAME[@]}" \
+        -keyout "${IRONIC_RPC_KEY_FILE}" -out /tmp/rpc.csr
+    echo "Signing the CSR with ${IRONIC_RPC_CACERT_FILE}"
+    openssl x509 -req -CA "${IRONIC_RPC_CACERT_FILE}" -CAkey "${IRONIC_RPC_CAKEY_FILE}" \
+        -in /tmp/rpc.csr -out "${IRONIC_RPC_CERT_FILE}" -days "${TLS_CERT_LIFETIME}" -CAcreateserial
+else
+    echo "Generating a self-signed certificate"
+    openssl req "${TLS_COMMON_ARGS[@]}" "${TLS_SUBJECT_ALT_NAME[@]}" \
+        -x509 -keyout "${IRONIC_RPC_KEY_FILE}" -out "${IRONIC_RPC_CERT_FILE}"
+fi
