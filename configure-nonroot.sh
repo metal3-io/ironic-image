@@ -18,6 +18,8 @@ IRONIC_GROUP="ironic"
 # most containers mount /shared but dnsmasq can live without it
 mkdir -p /shared
 chown "${IRONIC_USER}":"${IRONIC_GROUP}" /shared
+chown "${IRONIC_USER}":"${IRONIC_GROUP}" /data
+chown "${IRONIC_USER}":"${IRONIC_GROUP}" /conf
 
 # we'll bind mount shared ca and ironic certificate dirs here
 # that need to have correct ownership as the entire ironic in BMO

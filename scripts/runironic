@@ -15,4 +15,4 @@ configure_restart_on_certificate_update "${IRONIC_TLS_SETUP}" ironic "${IRONIC_C
 
 configure_ironic_auth
 
-exec /usr/bin/ironic
+exec /usr/bin/ironic --config-dir "${IRONIC_CONF_DIR}"
