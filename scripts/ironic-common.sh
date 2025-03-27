@@ -17,7 +17,6 @@ export DNSMASQ_TEMP_DIR="${CUSTOM_CONFIG_DIR}/dnsmasq"
 export HTTPD_DIR="${CUSTOM_CONFIG_DIR}/httpd"
 export HTTPD_CONF_DIR="${HTTPD_DIR}/conf"
 export HTTPD_CONF_DIR_D="${HTTPD_DIR}/conf.d"
-export IPXE_CONF_DIR="${CUSTOM_CONFIG_DIR}/ipxe"
 export IRONIC_CONF_DIR="${CUSTOM_CONFIG_DIR}/ironic"
 export IRONIC_DB_DIR="${CUSTOM_DATA_DIR}/db"
 export IRONIC_GEN_CERT_DIR="${CUSTOM_DATA_DIR}/auto_gen_certs"
@@ -26,8 +25,8 @@ export PROBE_CONF_DIR="${CUSTOM_CONFIG_DIR}/probes"
 
 mkdir -p "${IRONIC_CONF_DIR}" "${PROBE_CONF_DIR}" "${HTTPD_CONF_DIR}" \
     "${HTTPD_CONF_DIR_D}" "${DNSMASQ_CONF_DIR}" "${DNSMASQ_TEMP_DIR}" \
-    "${IRONIC_DB_DIR}" "${IRONIC_GEN_CERT_DIR}" "${IPXE_CONF_DIR}" \
-    "${DNSMASQ_DATA_DIR}" "${IRONIC_TMP_DATA_DIR}"
+    "${IRONIC_DB_DIR}" "${IRONIC_GEN_CERT_DIR}" "${DNSMASQ_DATA_DIR}" \
+    "${IRONIC_TMP_DATA_DIR}"
 
 export HTPASSWD_FILE="${IRONIC_CONF_DIR}/htpasswd"
 export LOCAL_DB_URI="sqlite:///${IRONIC_DB_DIR}/ironic.sqlite"

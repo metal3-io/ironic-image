@@ -80,5 +80,4 @@ configure_restart_on_certificate_update "${IRONIC_TLS_SETUP}" httpd "${IRONIC_CE
 # Set up inotify to kill the container (restart) whenever cert of httpd for /shared/html/<redifsh;ilo> path change
 configure_restart_on_certificate_update "${IRONIC_VMEDIA_TLS_SETUP}" httpd "${IRONIC_VMEDIA_CERT_FILE}"
 
-exec /usr/sbin/httpd -DFOREGROUND \
-     -f "${HTTPD_CONF_DIR}/httpd.conf"
+exec /usr/sbin/httpd -DFOREGROUND -f "${HTTPD_CONF_DIR}/httpd.conf"
