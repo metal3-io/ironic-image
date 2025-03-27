@@ -14,6 +14,12 @@ export IRONIC_VMEDIA_KEY_FILE=/certs/vmedia/tls.key
 export IPXE_CERT_FILE=/certs/ipxe/tls.crt
 export IPXE_KEY_FILE=/certs/ipxe/tls.key
 
+export IRONIC_RPC_CACERT_FILE=/certs/ca/rpc/tls.crt
+export IRONIC_RPC_CAKEY_FILE=/certs/ca/rpc/tls.key
+export IRONIC_RPC_CERT_FILE=/certs/rpc/tls.crt
+export IRONIC_RPC_KEY_FILE=/certs/rpc/tls.key
+export IRONIC_RPC_INSECURE=${IRONIC_RPC_INSECURE:-false}
+
 export RESTART_CONTAINER_CERTIFICATE_UPDATED=${RESTART_CONTAINER_CERTIFICATE_UPDATED:-"false"}
 
 export MARIADB_CACERT_FILE=/certs/ca/mariadb/tls.crt
@@ -49,6 +55,15 @@ if [[ -f "$IPXE_CERT_FILE" ]] && [[ ! -f "$IPXE_KEY_FILE" ]]; then
 fi
 if [[ ! -f "$IPXE_CERT_FILE" ]] && [[ -f "$IPXE_KEY_FILE" ]]; then
     echo "Missing TLS Certificate file $IPXE_CERT_FILE"
+    exit 1
+fi
+
+if [[ -f "$IRONIC_RPC_CERT_FILE" ]] && [[ ! -f "$IRONIC_RPC_KEY_FILE" ]]; then
+    echo "Missing TLS Certificate key file $IRONIC_RPC_KEY_FILE"
+    exit 1
+fi
+if [[ ! -f "$IRONIC_RPC_CERT_FILE" ]] && [[ -f "$IRONIC_RPC_KEY_FILE" ]]; then
+    echo "Missing TLS Certificate file $IRONIC_RPC_CERT_FILE"
     exit 1
 fi
 
