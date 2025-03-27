@@ -13,24 +13,12 @@ on:
 
 jobs:
   build_ironic:
-    name: Build Ironic container image with default base image
+    name: Build Ironic container image
     if: github.repository == 'metal3-io/ironic-image'
     uses: metal3-io/project-infra/.github/workflows/container-image-build.yml@main
     with:
       image-name: 'ironic'
       pushImage: true
-    secrets:
-      QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
-      QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
-      SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-  build_ironic_cs10:
-    name: Build Ironic container image based on CentOS Stream 10
-    if: github.repository == 'metal3-io/ironic-image'
-    uses: metal3-io/project-infra/.github/workflows/container-image-build.yml@main
-    with:
-      image-name: 'ironic_cs10'
-      pushImage: true
-      env.IMAGE_BUILD_ARGS: 'BASE_IMAGE=quay.io/centos/centos:stream10'
     secrets:
       QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
       QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
