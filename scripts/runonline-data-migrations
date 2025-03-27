@@ -7,4 +7,4 @@ set -euxo pipefail
 
 # NOTE(dtantsur): no retries here: this script is supposed to be run as a Job
 # that is retried on failure.
-exec ironic-dbsync --config-file /etc/ironic/ironic.conf online_data_migrations
+exec ironic-dbsync --config-file "${IRONIC_CONF_DIR}/ironic.conf" online_data_migrations
