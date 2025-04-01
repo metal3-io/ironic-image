@@ -10,6 +10,10 @@ updates:
     interval: "monthly"
     day: "friday"
   target-branch: main
+  ## group all action bumps into single PR
+  groups:
+    all-github-actions:
+      patterns: ["*"]
   commit-message:
     prefix: ":seedling:"
   labels:
