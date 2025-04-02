@@ -8,7 +8,9 @@ jobs:
   test:
     runs-on: ubuntu-latest
     env:
+      CLUSTER_TYPE: minikube
       LOGDIR: /tmp/logs
+      JUNIT_OUTPUT: /tmp/logs/report.xml
     steps:
     - name: Update repositories
       run: sudo apt-get update
@@ -28,11 +30,8 @@ jobs:
       uses: actions/setup-go@0aaccfd150d50ccaeb58ebd88d36e91967a5f35b # v5.4.0
       with:
         go-version: ${{ steps.vars.outputs.go_version }}
-    - name: Create a Kind cluster
-      uses: helm/kind-action@a1b0e391336a6ee6713a0583f8c6240d70863de3 # v1.12.0
-      with:
-        cluster_name: kind
-        config: ironic-standalone-operator/test/kind.yaml
+    - name: Setup a minikube cluster
+      uses: medyagh/setup-minikube@cea33675329b799adccc9526aa5daccc26cd5052 # v0.0.19
     - name: Prepare tests
       run: cd ironic-standalone-operator && ./test/prepare.sh
     - name: Run tests
@@ -47,4 +46,10 @@ jobs:
       with:
         name: functional
         path: /tmp/logs/*
+      if: always()
+    - name: Annotate failures
+      uses: mikepenz/action-junit-report@cf701569b05ccdd861a76b8607a66d76f6fd4857 # v5.5.1
+      with:
+        annotate_only: true
+        report_paths: /tmp/logs/report.xml
       if: always()
