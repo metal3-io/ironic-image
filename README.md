@@ -120,6 +120,18 @@ The following can serve as an example:
    callback from the ramdisk doing the cleaning
 - `OS_PXE__BOOT_RETRY_TIMEOUT=1200` - timeout (seconds) to enable boot retries.
 
+## Using a read-only root filesystem
+
+The ironic-image can operate with a read-only root filesystem. However,
+it needs a few directories to be mounted as writable `emptyDir` volumes:
+
+- `/conf` - location for rendered configuration files
+- `/data` - writable runtime data such as the database
+- `/tmp` - temporary directory
+
+This is in addition to the always required `/shared` volume that is used to
+share runtime data between Ironic and HTTPD.
+
 ## Custom source for ironic software
 
 When building the ironic image, it is also possible to specify a
