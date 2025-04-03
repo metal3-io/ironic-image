@@ -20,11 +20,6 @@ export MARIADB_CACERT_FILE=/certs/ca/mariadb/tls.crt
 
 export IPXE_TLS_PORT="${IPXE_TLS_PORT:-8084}"
 
-mkdir -p /certs/ironic
-mkdir -p /certs/ca/ironic
-mkdir -p /certs/ipxe
-mkdir -p /certs/vmedia
-
 if [[ -f "$IRONIC_CERT_FILE" ]] && [[ ! -f "$IRONIC_KEY_FILE" ]]; then
     echo "Missing TLS Certificate key file $IRONIC_KEY_FILE"
     exit 1
@@ -69,6 +64,7 @@ if [[ -f "$IRONIC_CERT_FILE" ]] || [[ -f "$IRONIC_CACERT_FILE" ]]; then
     export IRONIC_TLS_SETUP="true"
     export IRONIC_SCHEME="https"
     if [[ ! -f "$IRONIC_CACERT_FILE" ]]; then
+        mkdir -p "$(dirname "${IRONIC_CACERT_FILE}")"
         copy_atomic "$IRONIC_CERT_FILE" "$IRONIC_CACERT_FILE"
     fi
 else
