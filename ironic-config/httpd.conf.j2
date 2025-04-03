@@ -64,7 +64,7 @@ AddDefaultCharset UTF-8
     MIMEMagicFile conf/magic
 </IfModule>
 
-PidFile /var/tmp/httpd.pid
+PidFile {{ env.IRONIC_TMP_DATA_DIR }}/httpd.pid
 
 # EnableSendfile directive could speed up deployments but it could also cause
 # issues depending on the underlying file system, to learn more:

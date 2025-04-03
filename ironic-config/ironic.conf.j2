@@ -27,7 +27,6 @@ use_stderr = true
 hash_ring_algorithm = sha256
 my_ip = {{ env.IRONIC_IP }}
 host = {{ env.IRONIC_CONDUCTOR_HOST }}
-tempdir = {{ env.IRONIC_TMP_DATA_DIR }}
 
 # If a path to a certificate is defined, use that first for webserver
 {% if env.WEBSERVER_CACERT_FILE %}
@@ -211,7 +210,7 @@ enable_netboot_fallback = true
 # Enable the fallback path to in-band inspection
 ipxe_fallback_script = inspector.ipxe
 {% if env.IPXE_TLS_SETUP | lower == "true" %}
-ipxe_config_template = /tmp/ipxe_config.template
+ipxe_config_template = /templates/ipxe_config.template
 {% endif %}
 
 [redfish]
