@@ -36,8 +36,8 @@ fi
 export INSPECTOR_EXTRA_ARGS
 
 # Copy files to shared mount
-render_j2_config /tmp/inspector.ipxe.j2 /shared/html/inspector.ipxe
-cp /tmp/uefi_esp.img /shared/html/uefi_esp.img
+render_j2_config /templates/inspector.ipxe.j2 /shared/html/inspector.ipxe
+cp /templates/uefi_esp.img /shared/html/uefi_esp.img
 # cp -r /etc/httpd/* "${HTTPD_DIR}"
 if [[ -f "${HTTPD_CONF_DIR}/httpd.conf" ]]; then
     mv "${HTTPD_CONF_DIR}/httpd.conf" "${HTTPD_CONF_DIR}/httpd.conf.example"
@@ -49,7 +49,7 @@ render_j2_config "/etc/httpd/conf/httpd.conf.j2" \
 
 if [[ "$IRONIC_TLS_SETUP" == "true" ]]; then
     if [[ "${IRONIC_REVERSE_PROXY_SETUP}" == "true" ]]; then
-        render_j2_config "/tmp/httpd-ironic-api.conf.j2" \
+        render_j2_config "/templates/httpd-ironic-api.conf.j2" \
             "${HTTPD_CONF_DIR_D}/ironic.conf"
     fi
 else
@@ -60,7 +60,7 @@ write_htpasswd_files
 
 # Render httpd TLS configuration for /shared/html/<redifsh;ilo>
 if [[ "$IRONIC_VMEDIA_TLS_SETUP" == "true" ]]; then
-    render_j2_config "/tmp/httpd-vmedia.conf.j2" \
+    render_j2_config "/templates/httpd-vmedia.conf.j2" \
         "${HTTPD_CONF_DIR_D}/vmedia.conf"
 fi
 
@@ -68,7 +68,7 @@ fi
 if [[ "$IPXE_TLS_SETUP" == "true" ]]; then
     mkdir -p /shared/html/custom-ipxe
     chmod 0777 /shared/html/custom-ipxe
-    render_j2_config "/tmp/httpd-ipxe.conf.j2" "${HTTPD_CONF_DIR_D}/ipxe.conf"
+    render_j2_config "/templates/httpd-ipxe.conf.j2" "${HTTPD_CONF_DIR_D}/ipxe.conf"
     cp "${IPXE_CUSTOM_FIRMWARE_DIR}/undionly.kpxe" \
        "${IPXE_CUSTOM_FIRMWARE_DIR}/snponly.efi" \
        "/shared/html/custom-ipxe"
