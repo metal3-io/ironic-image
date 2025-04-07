@@ -13,19 +13,29 @@ RUN dnf install -y gcc git make xz-devel
 WORKDIR /tmp
 
 RUN git clone https://github.com/ipxe/ipxe.git && \
-      cd ipxe && \
-      git reset --hard $IPXE_COMMIT_HASH && \
-      cd src && \
-      ARCH=$(uname -m | sed 's/aarch/arm/') && \
-      # NOTE(elfosardo): warning should not be treated as errors by default
-      NO_WERROR=1 make bin/undionly.kpxe "bin-$ARCH-efi/snponly.efi"
+     cd ipxe && \
+     git reset --hard $IPXE_COMMIT_HASH && \
+     cd src && \
+     ARCH=$(uname -m | sed 's/aarch/arm/') && \
+     # NOTE(elfosardo): warning should not be treated as errors by default
+     NO_WERROR=1 make bin/undionly.kpxe "bin-$ARCH-efi/snponly.efi"
 
 COPY prepare-efi.sh /bin/
 RUN prepare-efi.sh centos
 
+# build actual image
 FROM $BASE_IMAGE
 
-ENV PKGS_LIST=main-packages-list.txt
+# image.version will be set by automation during build
+LABEL org.opencontainers.image.authors="metal3-dev@googlegroups.com"
+LABEL org.opencontainers.image.description="Container image to run OpenStack Ironic as part of Metal³"
+LABEL org.opencontainers.image.documentation="https://book.metal3.io/ironic/introduction"
+LABEL org.opencontainers.image.licenses="Apache License 2.0"
+LABEL org.opencontainers.image.title="Metal3 Ironic Container"
+LABEL org.opencontainers.image.url="https://github.com/metal3-io/ironic-image"
+LABEL org.opencontainers.image.vendor="Metal3-io"
+
+ARG PKGS_LIST=main-packages-list.txt
 ARG EXTRA_PKGS_LIST
 ARG PATCH_LIST
 
@@ -60,8 +70,8 @@ COPY ironic-config/apache2-ipxe.conf.j2 /templates/httpd-ipxe.conf.j2
 
 # DATABASE
 RUN mkdir -p /var/lib/ironic && \
-  sqlite3 /var/lib/ironic/ironic.sqlite "pragma journal_mode=wal" && \
-  dnf remove -y sqlite
+     sqlite3 /var/lib/ironic/ironic.sqlite "pragma journal_mode=wal" && \
+     dnf remove -y sqlite
 
 # configure non-root user and set relevant permissions
 RUN configure-nonroot.sh && rm -f /bin/configure-nonroot.sh
