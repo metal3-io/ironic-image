@@ -2,6 +2,15 @@ ARG BASE_IMAGE=docker.io/library/python:3.9.18-slim-bookworm
 
 FROM $BASE_IMAGE
 
+# image.version will be set by automation during build
+LABEL org.opencontainers.image.authors="metal3-dev@googlegroups.com"
+LABEL org.opencontainers.image.description="Metal3 VMBC container image"
+LABEL org.opencontainers.image.documentation="https://docs.openstack.org/virtualbmc/latest/"
+LABEL org.opencontainers.image.licenses="Apache License 2.0"
+LABEL org.opencontainers.image.title="Metal3 VMBC"
+LABEL org.opencontainers.image.url="https://github.com/metal3-io/ironic-image"
+LABEL org.opencontainers.image.vendor="Metal3-io"
+
 ARG VIRTUALBMC_VERSION="3.2.0"
 ARG DEBIAN_FRONTEND=noninteractive
 
