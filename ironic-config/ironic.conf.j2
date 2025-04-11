@@ -81,7 +81,7 @@ send_sensor_data = {{ env.SEND_SENSOR_DATA }}
 # Power state is checked every 60 seconds and BMC activity should
 # be avoided more often than once every sixty seconds.
 send_sensor_data_interval = 160
-bootloader = {{ env.IRONIC_HTTP_URL }}/uefi_esp.img
+bootloader = file:///templates/uefi_esp.img
 verify_step_priority_override = management.clear_job_queue:90
 # We don't use this feature, and it creates an additional load on the database
 node_history = False
