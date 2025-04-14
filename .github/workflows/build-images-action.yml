@@ -43,6 +43,8 @@ jobs:
       image-name: 'sushy-tools'
       dockerfile-directory: resources/sushy-tools
       pushImage: true
+      multiPlatform: true
+      platform: "linux/amd64,linux/arm64,linux/arm/v8"
     secrets:
       QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
       QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
