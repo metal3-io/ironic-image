@@ -32,6 +32,8 @@ jobs:
         go-version: ${{ steps.vars.outputs.go_version }}
     - name: Setup a minikube cluster
       uses: medyagh/setup-minikube@cea33675329b799adccc9526aa5daccc26cd5052 # v0.0.19
+      with:
+        start-args: "--ha"
     - name: Prepare tests
       run: cd ironic-standalone-operator && ./test/prepare.sh
     - name: Run tests

@@ -31,4 +31,4 @@ cd "${IRSO_PATH}/test"
 . testing.env
 export IRONIC_CUSTOM_VERSION=latest
 
-exec go test -timeout 60m
+exec go test -timeout 90m
