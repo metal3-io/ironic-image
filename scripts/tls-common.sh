@@ -103,7 +103,7 @@ configure_restart_on_certificate_update()
         if [[ "${service}" == httpd ]]; then
             signal="WINCH"
         fi
-        python3 -m pyinotify --raw-format -e IN_DELETE_SELF -v "${cert_file}" |
+        python3.12 -m pyinotify --raw-format -e IN_DELETE_SELF -v "${cert_file}" |
             while read -r; do
                 pkill "-${signal}" "${service}"
             done &
