@@ -15,26 +15,25 @@ IRONIC_GID=994
 declare -a BUILD_DEPS=(
     gcc
     git-core
-    python3-devel
-    python3-jinja2
-    python3-setuptools
+    python3.12-devel
+    python3.12-setuptools
 )
 
 dnf upgrade -y
 
 # NOTE(dtantsur): pip is a requirement of python3 in CentOS
-dnf install -y python3-pip "${BUILD_DEPS[@]}"
+dnf install -y python3.12-pip "${BUILD_DEPS[@]}"
 
 # NOTE(elfosardo): pinning pip and setuptools version to avoid
 # incompatibilities and errors during packages installation;
 # versions should be updated regularly, for example
 # after cutting a release branch.
-python3 -m pip install --no-cache-dir pip==24.1 setuptools==74.1.2
+python3.12 -m pip install --no-cache-dir pip==24.1 setuptools==74.1.2 jinja2 pyinotify
 
 IRONIC_PKG_LIST="/tmp/ironic-packages-list"
 IRONIC_PKG_LIST_FINAL="/tmp/ironic-packages-list-final"
 
-python3 -c 'import os; import sys; import jinja2; sys.stdout.write(jinja2.Template(sys.stdin.read()).render(env=os.environ, path=os.path))' < "${IRONIC_PKG_LIST}" > "${IRONIC_PKG_LIST_FINAL}"
+python3.12 -c 'import os; import sys; import jinja2; sys.stdout.write(jinja2.Template(sys.stdin.read()).render(env=os.environ, path=os.path))' < "${IRONIC_PKG_LIST}" > "${IRONIC_PKG_LIST_FINAL}"
 
 UPPER_CONSTRAINTS_PATH="/tmp/${UPPER_CONSTRAINTS_FILE:-}"
 
@@ -49,7 +48,7 @@ if [[ -n ${SUSHY_SOURCE:-} ]]; then
     sed -i '/^sushy===/d' "${UPPER_CONSTRAINTS_PATH}"
 fi
 
-python3 -m pip install --no-cache-dir --ignore-installed --prefix /usr -r "${IRONIC_PKG_LIST_FINAL}" -c "${UPPER_CONSTRAINTS_PATH}"
+python3.12 -m pip install --no-cache-dir --ignore-installed --prefix /usr -r "${IRONIC_PKG_LIST_FINAL}" -c "${UPPER_CONSTRAINTS_PATH}"
 
 # ironic system configuration
 mkdir -p /var/log/ironic /var/lib/ironic

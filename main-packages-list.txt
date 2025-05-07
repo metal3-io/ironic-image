@@ -7,8 +7,6 @@ ipmitool
 iproute
 mod_ssl
 procps
-python3-inotify
-python3-jinja2
 qemu-img
 sqlite
 syslinux-nonlinux
