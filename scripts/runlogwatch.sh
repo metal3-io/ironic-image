@@ -6,7 +6,7 @@ LOG_DIR="/shared/log/ironic/deploy"
 mkdir -p "${LOG_DIR}"
 
 # shellcheck disable=SC2034
-python3 -m pyinotify --raw-format -e IN_CLOSE_WRITE -v "${LOG_DIR}" |
+python3.12 -m pyinotify --raw-format -e IN_CLOSE_WRITE -v "${LOG_DIR}" |
     while read -r event dir mask maskname filename filepath pathname wd; do
         #NOTE(elfosardo): a pyinotify event looks like this:
         # <Event dir=False mask=0x8 maskname=IN_CLOSE_WRITE name=mylogs.gzip path=/shared/log/ironic/deploy pathname=/shared/log/ironic/deploy/mylogs.gzip wd=1 >
