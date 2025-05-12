@@ -15,40 +15,26 @@ def log(msg):
     print(msg, file=sys.stderr)
 
 
-parser = argparse.ArgumentParser()
-parser.add_argument("source")
-parser.add_argument("destination")
-args = parser.parse_args()
-
-# Visitor is an object that is currently responsible for handling new lines.
-# These objects are hierarchical: top level is host (Ironic node), second level
-# is specific source (file or command). Initially, visitor is None: such lines
-# are skipped.
-visitor = None
-
-# Skipped is the counter for initially skipped lines.Unfortunately, this may
-# include not just the inotify chatter but also useful lines if the logs have
-# been rotated. There is nothing that can be done here: the file name is only
-# available in the beginning of a dump.
-skipped = 0
-
-
 class VisitorEntry:
-    def __init__(self, dest, entry):
-        assert entry is not None
-        path = os.path.join(dest, entry)
+    """Visitor for one entry - one file in the output."""
+
+    def __init__(self, dest: str, entry_name: str):
+        assert entry_name is not None
+        path = os.path.join(dest, entry_name)
         os.makedirs(os.path.dirname(path), exist_ok=True)
-        self.file = open(path, "wt")
+        self.file = open(path, "w", encoding="utf-8")
 
     def close(self):
         self.file.close()
 
-    def __call__(self, line):
+    def __call__(self, line: str):
         self.file.write(f"{line}\n")
 
 
 class VisitorSingleRun:
-    def __init__(self, filename):
+    """Visitor for a single run - inspection, cleaning or deploy."""
+
+    def __init__(self, dest: str, filename: str):
         assert filename is not None
         self.filename = os.path.basename(filename)
         self.delim = f"{self.filename}.tar.gz:"
@@ -58,22 +44,21 @@ class VisitorSingleRun:
         # UUID_NAMESPACE~NAME_inspect_TS
         # UUID_NAMESPACE~NAME_INSTUUID_cleaning_TS
         # UUID_NAMESPACE~NAME_INSTUUID_TS
-        uuid, name, *rest, ts = self.filename.split("_")
-        stage = rest[-1]
+        _, name, *_, stage, ts = self.filename.split("_")
         if stage not in ("cleaning", "inspect"):
             stage = "deploy"
         log(f".. {stage} on node {name} at {ts}")
 
-        self.dest = os.path.join(args.destination, name, f"{stage}-{ts}")
+        self.dest = os.path.join(dest, name, f"{stage}-{ts}")
 
         # Visitor for the current entry (file from the ramdisk)
-        self.visitor = None
+        self.visitor: VisitorEntry = None
 
     def close(self):
         if self.visitor is not None:
             self.visitor.close()
 
-    def __call__(self, line):
+    def __call__(self, line: str):
         try:
             line = line.split(self.delim, 1)[1]
         except IndexError:
@@ -94,29 +79,55 @@ class VisitorSingleRun:
             self.visitor(line)
 
 
-with open(args.source) as fp:
-    for line in fp:
-        line = line.strip()
+def parse(source: str, dest: str):
+    """Parse the log file at source and unpack all entries at dest."""
+    # Visitor is an object that is currently responsible for handling new
+    # lines.  These objects are hierarchical: top level is host (Ironic node),
+    # second level is specific source (file or command). Initially, visitor is
+    # None: such lines are skipped.
+    visitor: VisitorSingleRun | None = None
 
-        if "pyinotify DEBUG" in line:
-            continue
+    # Skipped is the counter for initially skipped lines.Unfortunately, this
+    # may include not just the inotify chatter but also useful lines if the
+    # logs have been rotated. There is nothing that can be done here: the file
+    # name is only available in the beginning of a dump.
+    skipped = 0
 
-        line = EXTRACTION_TS.sub("", line, count=1)
+    with open(source, "r", encoding="utf-8") as fp:
+        for line in fp:
+            line = line.strip()
 
-        contents = CONTENTS.match(line)
-        if contents is not None:
+            if "pyinotify DEBUG" in line:
+                continue
+
+            line = EXTRACTION_TS.sub("", line, count=1)
+
+            contents = CONTENTS.match(line)
+            if contents is not None:
+                if visitor is None:
+                    if skipped > 0:
+                        log(f"Skipped {skipped} lines because they don't have "
+                            "any context")
+                    skipped = 0
+                else:
+                    visitor.close()
+                visitor = VisitorSingleRun(dest, contents.group("path"))
+                continue
+
             if visitor is None:
-                if skipped > 0:
-                    log(f"Skipped {skipped} lines because they don't have "
-                        "any context")
-                skipped = 0
-            else:
-                visitor.close()
-            visitor = VisitorSingleRun(contents.group("path"))
-            continue
+                skipped += 1
+                continue
 
-        if visitor is None:
-            skipped += 1
-            continue
+            visitor(line)
 
-        visitor(line)
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("source", help="source file")
+    parser.add_argument("destination", help="destination directory")
+    args = parser.parse_args()
+    parse(args.source, args.destination)
+
+
+if __name__ == '__main__':
+    sys.exit(main())
