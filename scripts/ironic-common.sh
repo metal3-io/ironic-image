@@ -108,7 +108,7 @@ wait_for_interface_or_ip()
 
 render_j2_config()
 {
-    python3 -c 'import os; import sys; import jinja2; sys.stdout.write(jinja2.Template(sys.stdin.read()).render(env=os.environ))' < "$1" > "$2"
+    python3.12 -c 'import os; import sys; import jinja2; sys.stdout.write(jinja2.Template(sys.stdin.read()).render(env=os.environ))' < "$1" > "$2"
 }
 
 run_ironic_dbsync()
