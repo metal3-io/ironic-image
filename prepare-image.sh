@@ -28,12 +28,7 @@ dnf install -y python3.12-pip "${BUILD_DEPS[@]}"
 # incompatibilities and errors during packages installation;
 # versions should be updated regularly, for example
 # after cutting a release branch.
-python3.12 -m pip install --no-cache-dir pip==24.1 setuptools==74.1.2 jinja2 pyinotify
-
-IRONIC_PKG_LIST="/tmp/ironic-packages-list"
-IRONIC_PKG_LIST_FINAL="/tmp/ironic-packages-list-final"
-
-python3.12 -c 'import os; import sys; import jinja2; sys.stdout.write(jinja2.Template(sys.stdin.read()).render(env=os.environ, path=os.path))' < "${IRONIC_PKG_LIST}" > "${IRONIC_PKG_LIST_FINAL}"
+python3.12 -m pip install --no-cache-dir pip==24.1 setuptools==74.1.2
 
 UPPER_CONSTRAINTS_PATH="/tmp/${UPPER_CONSTRAINTS_FILE:-}"
 
@@ -43,6 +38,14 @@ if [[ ! -s "${UPPER_CONSTRAINTS_PATH}" ]]; then
     UPPER_CONSTRAINTS_PATH="/tmp/upper-constraints.txt"
     curl -L https://releases.openstack.org/constraints/upper/master -o "${UPPER_CONSTRAINTS_PATH}"
 fi
+
+# NOTE(elfosardo): install dependencies constrained
+python3.12 -m pip install jinja2 pyinotify -c "${UPPER_CONSTRAINTS_PATH}"
+
+IRONIC_PKG_LIST="/tmp/ironic-packages-list"
+IRONIC_PKG_LIST_FINAL="/tmp/ironic-packages-list-final"
+
+python3.12 -c 'import os; import sys; import jinja2; sys.stdout.write(jinja2.Template(sys.stdin.read()).render(env=os.environ, path=os.path))' < "${IRONIC_PKG_LIST}" > "${IRONIC_PKG_LIST_FINAL}"
 
 if [[ -n ${SUSHY_SOURCE:-} ]]; then
     sed -i '/^sushy===/d' "${UPPER_CONSTRAINTS_PATH}"
