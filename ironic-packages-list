@@ -22,4 +22,3 @@ sushy @ git+https://opendev.org/openstack/sushy@{{ env.SUSHY_SOURCE }}
 {% else %}
 sushy
 {% endif %}
-sushy-oem-idrac
