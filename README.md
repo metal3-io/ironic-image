@@ -4,7 +4,7 @@ This repo contains the files needed to build the Ironic images used by Metal3.
 
 Supported base images are CentOS Stream 9 and CentOS Stream 10.
 
-## Build Status
+## Build Status 
 
 [![CLOMonitor](https://img.shields.io/endpoint?url=https://clomonitor.io/api/projects/cncf/metal3-io/badge)](https://clomonitor.io/projects/cncf/metal3-io)
 [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/metal3-io/ironic-image/badge)](https://securityscorecards.dev/viewer/?uri=github.com/metal3-io/ironic-image)
