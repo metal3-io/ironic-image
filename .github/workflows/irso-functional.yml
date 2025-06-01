@@ -27,7 +27,7 @@ jobs:
       id: vars
       run: echo "go_version=$(make -sC ironic-standalone-operator go-version)" >> $GITHUB_OUTPUT
     - name: Set up Go
-      uses: actions/setup-go@0aaccfd150d50ccaeb58ebd88d36e91967a5f35b # v5.4.0
+      uses: actions/setup-go@d35c59abb061a4a6fb18e82ac0862c26744d6ab5 # v5.5.0
       with:
         go-version: ${{ steps.vars.outputs.go_version }}
     - name: Setup a minikube cluster
@@ -50,7 +50,7 @@ jobs:
         path: /tmp/logs/*
       if: always()
     - name: Annotate failures
-      uses: mikepenz/action-junit-report@cf701569b05ccdd861a76b8607a66d76f6fd4857 # v5.5.1
+      uses: mikepenz/action-junit-report@65fe03598d8d251738592a497a9e8547a5c48eaa # v5.6.0
       with:
         annotate_only: true
         report_paths: /tmp/logs/report.xml
