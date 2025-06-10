@@ -71,7 +71,10 @@ functionality:
    DHCP leases for, e.g. `tag:!known` to ignore any unknown hosts (empty by
    default)
 - `OS_<section>_\_<name>=<value>` - This format can be used to set arbitary
-   Ironic config options
+   Ironic config options. These OS\_ environment variables take precedence over
+   configuration rendered from templates. For example, if both `SEND_SENSOR_DATA=true`
+   and `OS_SENSOR_DATA__SEND_SENSOR_DATA=false` are set, the OS_ variable value
+   (`false`) will be used at runtime.
 - `IRONIC_RAMDISK_SSH_KEY` - A single public key to allow ssh access as root to
    nodes running IPA, takes the format "ssh-rsa AAAAB3.....". This relies on the
    [dynamic-login](https://opendev.org/openstack/diskimage-builder/src/branch/master/diskimage_builder/elements/dynamic-login)
