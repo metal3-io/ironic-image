@@ -2,14 +2,17 @@
 
 export IRONIC_CERT_FILE=/certs/ironic/tls.crt
 export IRONIC_KEY_FILE=/certs/ironic/tls.key
-export IRONIC_CACERT_FILE=/certs/ca/ironic/tls.crt
 export IRONIC_INSECURE=${IRONIC_INSECURE:-false}
 export IRONIC_SSL_PROTOCOL=${IRONIC_SSL_PROTOCOL:-"-ALL +TLSv1.2 +TLSv1.3"}
 export IPXE_SSL_PROTOCOL=${IPXE_SSL_PROTOCOL:-"-ALL +TLSv1.2 +TLSv1.3"}
+export HTTPD_SSL_PROTOCOL=${HTTPD_SSL_PROTOCOL:-"-ALL +TLSv1.2 +TLSv1.3"}
 export IRONIC_VMEDIA_SSL_PROTOCOL=${IRONIC_VMEDIA_SSL_PROTOCOL:-"ALL"}
 
 export IRONIC_VMEDIA_CERT_FILE=/certs/vmedia/tls.crt
 export IRONIC_VMEDIA_KEY_FILE=/certs/vmedia/tls.key
+
+export HTTPD_CERT_FILE=/certs/httpd/tls.crt
+export HTTPD_KEY_FILE=/certs/httpd/tls.key
 
 export IPXE_CERT_FILE=/certs/ipxe/tls.crt
 export IPXE_KEY_FILE=/certs/ipxe/tls.key
@@ -17,8 +20,11 @@ export IPXE_KEY_FILE=/certs/ipxe/tls.key
 export RESTART_CONTAINER_CERTIFICATE_UPDATED=${RESTART_CONTAINER_CERTIFICATE_UPDATED:-"false"}
 
 export MARIADB_CACERT_FILE=/certs/ca/mariadb/tls.crt
+export IRONIC_CACERT_FILE=/certs/ca/ironic/tls.crt
+export HTTPD_CACERT_FILE=/certs/ca/httpd/tls.crt
 
 export IPXE_TLS_PORT="${IPXE_TLS_PORT:-8084}"
+export HTTPD_TLS_PORT="${HTTPD_TLS_PORT:-8085}"
 
 if [[ -f "$IRONIC_CERT_FILE" ]] && [[ ! -f "$IRONIC_KEY_FILE" ]]; then
     echo "Missing TLS Certificate key file $IRONIC_KEY_FILE"
@@ -44,6 +50,15 @@ if [[ -f "$IPXE_CERT_FILE" ]] && [[ ! -f "$IPXE_KEY_FILE" ]]; then
 fi
 if [[ ! -f "$IPXE_CERT_FILE" ]] && [[ -f "$IPXE_KEY_FILE" ]]; then
     echo "Missing TLS Certificate file $IPXE_CERT_FILE"
+    exit 1
+fi
+
+if [[ -f "$HTTPD_CERT_FILE" ]] && [[ ! -f "$HTTPD_KEY_FILE" ]]; then
+    echo "Missing TLS Certificate key file $HTTPD_KEY_FILE"
+    exit 1
+fi
+if [[ ! -f "$HTTPD_CERT_FILE" ]] && [[ -f "$HTTPD_KEY_FILE" ]]; then
+    echo "Missing TLS Certificate file $HTTPD_CERT_FILE"
     exit 1
 fi
 
@@ -90,6 +105,13 @@ if [[ -f "$MARIADB_CACERT_FILE" ]]; then
     export MARIADB_TLS_ENABLED="true"
 else
     export MARIADB_TLS_ENABLED="false"
+fi
+
+if [[ -f "${HTTPD_CACERT_FILE}" ]]; then
+    export HTTPD_TLS_SETUP="true"
+    export WEBSERVER_CACERT_FILE="/certs/ca/httpd/tls.crt"
+else
+    export HTTPD_TLS_SETUP="false"
 fi
 
 configure_restart_on_certificate_update()
