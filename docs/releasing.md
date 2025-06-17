@@ -1,13 +1,13 @@
-# Releasing ironic-image
+# ironic-image releasing
 
-This document explains how to prepare and publish a release for ironic-image, and
-how often a new release branch is created.
+This document details the steps to create a release for
+`ironic-image`.
 
 **NOTE**: Always follow
 [release documentation from the main branch](https://github.com/metal3-io/ironic-image/blob/main/docs/releasing.md).
 Release documentation in release branches may be outdated.
 
-## Pre-release actions
+## Before making a release
 
 Things you should check before making a release:
 
@@ -26,78 +26,145 @@ Things you should check before making a release:
 
 Creating a release requires repository `write` permissions for:
 
-- Tag pushing
 - Branch creation
-- GitHub Release publishing
 
 These permissions are implicit for the org admins and repository admins.
 A release team member gets permissions via `metal3-release-team`
 membership. This GitHub team has the required permissions in each repository
-to make a release. Adding person to the team provides the necessary
-rights  in all relevant repositories in the organization. Individual persons
-should not be given permissions directly.
+required to release Ironic-image. Adding person to the team gives him/her the
+necessary rights in all relevant repositories in the organization. Individual
+persons should not be given permissions directly.
+
+Patch releases don't require extra permissions.
 
 ## Process
 
-ironic-image uses [semantic versioning](https://semver.org). For version `vX.Y.Z`:
+Ironic-image uses [semantic versioning](https://semver.org).
+
+- Regular releases: `vx.y.z`
+- Beta releases: `vx.y.z-beta.w`
+- Release candidate releases: `vx.y.z-rc.w`
 
 ### Repository setup
 
 Clone the repository:
 `git clone git@github.com:metal3-io/ironic-image`
 
-or if using existing repository, verify your intended remote is set to
-`metal3-io`: `git remote -v`. For this document, we assume it is `origin`.
+or if using existing repository, make sure origin is set to the fork and
+upstream is set to `metal3-io`. Verify if your remote is set properly or not
+by using following command `git remote -v`.
 
-- If creating a new release branch, identify the commit you wish to create the
-  branch from, and create a branch `release-X.Y` where `X.Y` corresponds to the
-  ironic upstream release version, for example for `ironic 22.1` it's `release-22.1`:
-  `git checkout <sha> -b release-X.Y` and push it to remote:
-  `git push origin release-X.Y` to create it
-- If creating a new patch release, use existing branch `release-X.Y`:
-  `git checkout origin/release-X.Y`
-- Wait for the CI support to be configured, then in the newly created release branch:
-   - Add a copy of upper-constraints.txt from [Openstack Requirements](https://opendev.org/openstack/requirements)
-     to replace the placeholder; if the ironic branch is a stable branch
-     we should use the corresponding file from the same stable branch, in
-     case of a bugfix branch we can use the current one from master
-   - Pin ironic to match the corresponding bugfix or stable branches
+- Fetch the remote (`metal3-io`): `git fetch upstream`
+This makes sure that all the tags are accessible.
 
-### Tags
+### Preparing a branch
 
-First we create a primary release tag, that triggers release note creation and
-image building processes.
+Ironic-image requires a branch to be created and updated before the automation runs.
+If (and only if) you're creating a release `vx.y.0` (i.e. a minor release):
 
-- Create a signed, annotated tag with: `git tag -s -a vX.Y.Z -m vX.Y.Z`
-- Push the tags to the GitHub repository: `git push origin vX.Y.Z`
+- Switch to the main branch: `git checkout main`
 
-TODO(elfosardo): we should probably create an automated workflow with github
-actions as it's been done for other repositories like BMO
+- Identify the commit you wish to create the branch from, and create a branch
+  `release-x.y`: `git checkout <sha> -b release-x.y` and push it to remote:
+  `git push upstream release-x.y` to create it. Replace `upstream` with
+  the actual remote name for the upstream source (not your private fork).
+
+- Setup the CI for the new branch in the prow configuration.
+  [Prior art](https://github.com/metal3-io/project-infra/pull/976)
+
+Create a development branch (e.g. `prepare-x.y`) from the newly created branch:
+
+- Pin the constraints and source branch.
+   [Prior art](https://github.com/metal3-io/ironic-image/pull/655).
+
+- Commit your changes, push the new branch and create a pull request:
+   - The commit and PR title should be
+    :seedling: Pin constraints, prepare release-0.x:
+    -`git commit -S -s -m "Pin constraints, prepare release-x.y"`
+     where X.Y is the Ironic branch you used above
+    -`git push -u origin prepare-x.y`
+   - The pull request must target the new branch (`release-x.y`), not `main`!
+
+Wait for the pull request to be merged before proceeding.
+
+### Creating Release notes
+
+- Switch to the main branch: `git checkout main`
+
+- Create a new branch for the release notes**:
+  `git checkout origin/main -b release-notes-x.y.z`
+
+- Generate the release notes: `RELEASE_TAG=vx.y.z make release-notes`
+   - Replace `vx.y.z` with the new release tag you're creating.
+   - This command generates the release notes here
+    `releasenotes/<RELEASE_TAG>.md` .
+
+- Next step is to clean up the release note manually.
+   - If release is not a beta or release candidate, check for duplicates,
+    reverts, and incorrect classifications of PRs, and whatever release
+    creation tagged to be manually checked.
+   - For any superseded PRs (like same dependency uplifted multiple times, or
+    commit revertion) that provide no value to the release, move them to
+    Superseded section. This way the changes are acknowledged to be part of the
+    release, but not overwhelming the important changes contained by the
+    release.
+
+- Commit your changes, push the new branch and create a pull request:
+   - The commit and PR title should be 🚀 Release vx.y.z:
+     -`git commit -S -s -m ":rocket: Release vx.y.z"`
+     -`git push -u origin release-notes-x.y.z`
+   - Important! The commit should only contain the release notes file, nothing
+    else, otherwise automation will not work.
+
+- Ask maintainers and release team members to review your pull request.
+
+Once PR is merged following GitHub actions are triggered:
+
+- GitHub action `Create Release` runs following jobs:
+   - GitHub job `push_release_tags` will create and push the tags. This action
+    will also create release branch if its missing and release is `rc` or
+    minor.
+   - GitHub job `create draft release` creates draft release. Don't publish the
+    release until release tag is visible in. Running actions are visible on the
+    [Actions](https://github.com/metal3-io/ironic-image/actions)
+    page, and draft release will be visible on top of the
+    [Releases](https://github.com/metal3-io/ironic-image/releases).
+    If the release you're making is not a new major release, new minor release,
+    or a new patch release from the latest release branch, uncheck the box for
+    latest release. If it is a release candidate (RC) or a beta release,
+    tick pre-release box.
+   - GitHub job `build_ironic_image` build release images with the
+    release tag, and push them to Quay. Make sure the release tags are visible in
+    Quay tags pages:
+      - [Ironic Image](https://quay.io/repository/metal3-io/ironic-image?tab=tags)
+    If the new release tag is not available for any of the images, check if the
+    action has failed and retrigger as necessary.
 
 ### Release artifacts
 
-NOTE(elfosardo): TODO once we have an automated workflow
+We need to verify all release artifacts are correctly built or generated by the
+release workflow. You can use `./hack/verify-release.sh` to check for existence
+of release artifacts, which should include the following:
 
-### Release notes
+Git tags pushed:
 
-Next step is to clean up the release note manually.
+- Primary release tag: `v0.x.y`
+- Go module tags: `api/v0.x.y` and `test/v0.x.y`
 
-- Check for duplicates, reverts, and incorrect classifications of PRs, and
-  whatever release creation tagged to be manually checked.
-- For any superseded PRs (like same dependency uplifted multiple times, or
-  commit revertions) that provide no value to the release, move them to
-  Superseded section. This way the changes are acknowledged to be part of the
-  release, but not overwhelming the important changes contained by the release.
-- If the release you're making is not a new major release, new minor release, or
-  a new patch release from the latest release branch, uncheck the box for latest
-  release.
-- Add link to upstream Ironic release notes and full commit range link.
-  [Prior art](https://github.com/metal3-io/ironic-image/releases/tag/v27.0.0)
-- Publish the release.
+Container images built and tagged at Quay registry:
+
+- [ironic-image:vx.y.z](https://quay.io/repository/metal3-io/ironic-image?tab=tags)
+
+You can also check the draft release and its tags in the Github UI.
+
+### Make the release
+
+After everything is checked out, hit the `Publish` button your GitHub draft
+release!
 
 ## Post-release actions for new release branches
 
-Some post-release actions are needed when a new release branch is created.
+Some post-release actions are needed if new minor or major branch was created.
 
 ### Branch protection rules
 
@@ -106,37 +173,35 @@ settings after the previous release branch, with the exception of
 `Required tests` selection. Required tests can only be selected after new
 keywords are implemented in Jenkins JJB, and project-infra, and have been run at
 least once in the PR targeting the branch in question.
+Branch protection rules require user to have `admin` permissions in the repository.
 
-### Update README.md and build badges
+### Documentation
 
-Update `README.md` with release specific information, both on `main` and in the
-new `release-X.Y` branch as necessary.
+Update the [user guide](https://github.com/metal3-io/metal3-docs/tree/main/docs/user-guide/src):
 
-[Prior art](https://github.com/metal3-io/ironic-image/pull/594)
+- Update [supported versions](https://github.com/metal3-io/metal3-docs/blob/main/docs/user-guide/src/version_support.md)
+  with the new Ironic-image version.
 
-In the `release-X.Y` branch, update the build badges in the `README.md` to point
-to correct Jenkins jobs, so the build statuses of the release branch are
-visible.
+- Update `README.md` with release specific information, both on `main` and in the
+  new `release-X.Y` branch as necessary.
+  [Prior art](https://github.com/metal3-io/ironic-image/pull/594)
 
-[Prior art](https://github.com/metal3-io/ironic-image/pull/595)
+- In the `release-X.Y` branch, update the build badges in the `README.md` to point
+  to correct Jenkins jobs, so the build statuses of the release branch are
+  visible.
+  [Prior art](https://github.com/metal3-io/ironic-image/pull/595)
 
-### Update supported versions in metal3-docs
+### Update milestones
 
-Supported ironic-image release branches in
-[Supported Release Versions/Ironic-Image](https://github.com/metal3-io/metal3-docs/blob/main/docs/user-guide/src/version_support.md#ironic-image)
-must be updated to reflect the latest changes.
-The [CI Test Matrix](https://github.com/metal3-io/metal3-docs/blob/main/docs/user-guide/src/version_support.md#ci-test-matrix)
-should not be changed because it's updated only after a new CAPM3 release.
+- Make sure the next two milestones exist. For example, after 29.0 is out, 30.0
+  and 31.0 should exist in Github.
+- Set the next milestone date based on the expected release date, which usually
+  happens shortly after the next Ironic release.
+- Remove milestone date for passed milestones.
 
-## Branches lifecycle
+Milestones must also be updated in the Prow configuration.
 
-Stable branches are maintained for 6 months after their creation unless
-specified differently at the moment of the branch creation.
-We aim to cut 2-3 stable branches every year and release as often
-as possible to cover the majority of bug fixes and security updates.
-Ideally a new stable branch should be created as close as possible after
-an ironic stable or bugfix branch is created to avoid too much distance
-from it and therefore the risk to go back in time with the ironic code.
+[Prior art](https://github.com/metal3-io/project-infra/pull/976).
 
 ## Ironic Standalone Operator updates
 
@@ -149,8 +214,9 @@ must be added to
   versions](https://github.com/metal3-io/ironic-standalone-operator/blob/main/pkg/ironic/version.go)
 
 If explicit upgrade actions are required, they must be implemented in the
-operator code as well. After that, an IrSO release will be prepared (release
-documentation to follow soon).
+operator code as well. After that, an
+[IrSO release](https://github.com/metal3-io/ironic-standalone-operator/blob/main/docs/releasing.md)
+will be prepared.
 
 ## Additional actions outside this repository
 
@@ -165,6 +231,7 @@ For that, please continue following the instructions provided in
   [vbmc](https://github.com/metal3-io/ironic-image/tree/main/resources/vbmc)
   and [ironic-client](https://github.com/metal3-io/ironic-image/tree/main/resources/ironic-client)
   images won't be versioned, we expect them to work with any version.
+
 - The [ipa-downloader](https://github.com/metal3-io/ironic-ipa-downloader)
   image uses the [ironic-python-agent](https://opendev.org/openstack/ironic-python-agent)
   which is strictly tied to the ironic features. Despite that, considering
