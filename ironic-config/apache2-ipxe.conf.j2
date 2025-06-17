@@ -10,26 +10,17 @@ Listen {{ env.IPXE_TLS_PORT }}
     SSLCertificateFile {{ env.IPXE_CERT_FILE }}
     SSLCertificateKeyFile {{ env.IPXE_KEY_FILE }}
 
+    DocumentRoot "/shared/html"
     <Directory "/shared/html">
-        Order Allow,Deny
-        Allow from all
+        Options Indexes FollowSymLinks
+        Require all granted
     </Directory>
-    <Directory "/shared/html/(redfish|ilo|images)/">
-        Order Deny,Allow
-        Deny from all
+    <Directory ~ "/shared/html/(redfish|ilo|images)/">
+        Require all denied
     </Directory>
+
+    <Location ~ "^/.*">
+        SSLRequireSSL
+    </Location>
+
 </VirtualHost>
-
-<Location ~ "^/grub.*/">
-    SSLRequireSSL
-</Location>
-<Location ~ "^/pxelinux.cfg/">
-    SSLRequireSSL
-</Location>
-<Location ~ "^/.*\.conf/">
-    SSLRequireSSL
-</Location>
-<Location ~ "^/(([0-9]|[a-z]).*-){4}([0-9]|[a-z]).*/">
-    SSLRequireSSL
-</Location>
-

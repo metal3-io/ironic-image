@@ -63,6 +63,12 @@ if [[ "$IRONIC_VMEDIA_TLS_SETUP" == "true" ]]; then
         "${HTTPD_CONF_DIR_D}/vmedia.conf"
 fi
 
+# Render httpd TLS configuration for /shared/html/images
+if [[ "${HTTPD_TLS_SETUP}" == "true" ]]; then
+    render_j2_config "/templates/httpd-image.conf.j2" \
+        "${HTTPD_CONF_DIR_D}/image.conf"
+fi
+
 # Render httpd TLS configuration for /shared/html
 if [[ "$IPXE_TLS_SETUP" == "true" ]]; then
     mkdir -p /shared/html/custom-ipxe

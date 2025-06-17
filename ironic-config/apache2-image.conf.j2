@@ -1,0 +1,25 @@
+Listen {{ env.HTTPD_TLS_PORT }}
+
+<VirtualHost *:{{ env.HTTPD_TLS_PORT }}>
+    ErrorLog /dev/stderr
+    LogLevel debug
+    CustomLog /dev/stdout combined
+
+    SSLEngine on
+    SSLProtocol {{ env.HTTPD_SSL_PROTOCOL }}
+    SSLCertificateFile {{ env.HTTPD_CERT_FILE }}
+    SSLCertificateKeyFile {{ env.HTTPD_KEY_FILE }}
+
+    <Directory "/shared/html">
+        Require all denied
+    </Directory>
+    <Directory "/shared/html/images">
+        Require all granted
+    </Directory>
+
+    <Location ~ "^/.*">
+        SSLRequireSSL
+    </Location>
+
+</VirtualHost>
+
