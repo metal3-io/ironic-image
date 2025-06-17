@@ -118,8 +118,24 @@ jobs:
     if: github.repository == 'metal3-io/ironic-image'
     uses: metal3-io/project-infra/.github/workflows/container-image-build.yml@main
     with:
-      image-name: 'ironic-image'
+      image-name: 'ironic'
       pushImage: true
+      ref: ${{ needs.push_release_tags.outputs.release_tag }}
+    secrets:
+      QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
+      QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
+      SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+  build_ironic_image_cs10:
+    permissions:
+      contents: read
+    needs: push_release_tags
+    name: Build Ironic-image container image
+    if: github.repository == 'metal3-io/ironic-image'
+    uses: metal3-io/project-infra/.github/workflows/container-image-build.yml@main
+    with:
+      image-name: 'ironic_cs10'
+      pushImage: true
+      image-build-args: 'BASE_IMAGE=quay.io/centos/centos:stream10'
       ref: ${{ needs.push_release_tags.outputs.release_tag }}
     secrets:
       QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}

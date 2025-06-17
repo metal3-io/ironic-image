@@ -133,10 +133,11 @@ Once PR is merged following GitHub actions are triggered:
     or a new patch release from the latest release branch, uncheck the box for
     latest release. If it is a release candidate (RC) or a beta release,
     tick pre-release box.
-   - GitHub job `build_ironic_image` build release images with the
-    release tag, and push them to Quay. Make sure the release tags are visible in
-    Quay tags pages:
-      - [Ironic Image](https://quay.io/repository/metal3-io/ironic-image?tab=tags)
+   - GitHub jobs `build_ironic_image` and `build_ironic_image_cs10` build release
+    images with the release tag, and push them to Quay. Make sure the release
+    tags are visible in Quay tags pages:
+      - [Ironic CS9](https://quay.io/repository/metal3-io/ironic?tab=tags)
+      - [Ironic CS10](https://quay.io/repository/metal3-io/ironic_cs10?tab=tags)
     If the new release tag is not available for any of the images, check if the
     action has failed and retrigger as necessary.
 
@@ -153,7 +154,8 @@ Git tags pushed:
 
 Container images built and tagged at Quay registry:
 
-- [ironic-image:vx.y.z](https://quay.io/repository/metal3-io/ironic-image?tab=tags)
+- [ironic:vx.y.z](https://quay.io/repository/metal3-io/ironic?tab=tags)
+- [ironic_cs10:vx.y.z](https://quay.io/repository/metal3-io/ironic_cs10?tab=tags)
 
 You can also check the draft release and its tags in the Github UI.
 
