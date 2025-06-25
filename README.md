@@ -61,8 +61,8 @@ functionality:
 - `HTTPD_SERVE_NODE_IMAGES` - used by runhttpd script, controls access
    to the `/shared/html/images` directory via the default virtual host
    `(HTTP_PORT)`.  (default `true`)
-- `DHCP_RANGE` - dhcp range to use for provisioning (default
-   `172.22.0.10-172.22.0.100`)
+- `DHCP_RANGE` - dhcp range to use for provisioning (e.g.
+   `172.22.0.10,172.22.0.100`)
 - `DHCP_HOSTS` - a `;` separated list of `dhcp-host` entries, e.g. known MAC
    addresses like `00:20:e0:3b:13:af;00:20:e0:3b:14:af` (empty by default). For
    more details on `dhcp-host` see
