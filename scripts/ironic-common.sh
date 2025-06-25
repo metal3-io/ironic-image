@@ -101,7 +101,11 @@ wait_for_interface_or_ip()
     # Avoid having to construct full URL multiple times while allowing
     # the override of IRONIC_HTTP_URL for environments in which IRONIC_IP
     # is unreachable from hosts being provisioned.
-    export IRONIC_HTTP_URL="${IRONIC_HTTP_URL:-http://${IRONIC_URL_HOST}:${HTTP_PORT}}"
+    if [[ "${HTTPD_TLS_SETUP}" = "true" ]]; then
+        export IRONIC_HTTP_URL="${IRONIC_HTTP_URL:-https://${IRONIC_URL_HOST}:${HTTPD_TLS_PORT}}"
+    else
+        export IRONIC_HTTP_URL="${IRONIC_HTTP_URL:-http://${IRONIC_URL_HOST}:${HTTP_PORT}}"
+    fi
     export IRONIC_TFTP_URL="${IRONIC_TFTP_URL:-tftp://${IRONIC_URL_HOST}}"
     export IRONIC_BASE_URL=${IRONIC_BASE_URL:-"${IRONIC_SCHEME}://${IRONIC_URL_HOST}:${IRONIC_ACCESS_PORT}"}
 }

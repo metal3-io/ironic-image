@@ -2,8 +2,6 @@
 
 # shellcheck disable=SC1091
 . /bin/configure-ironic.sh
-# shellcheck disable=SC1091
-. /bin/ironic-common.sh
 
 FLASK_RUN_HOST=${FLASK_RUN_HOST:-0.0.0.0}
 FLASK_RUN_PORT=${FLASK_RUN_PORT:-9608}
