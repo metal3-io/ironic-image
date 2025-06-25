@@ -76,11 +76,6 @@ api_workers = {{ env.NUMWORKERS }}
 automated_clean = {{ env.IRONIC_AUTOMATED_CLEAN }}
 # NOTE(dtantsur): keep aligned with [pxe]boot_retry_timeout below.
 deploy_callback_timeout = 4800
-send_sensor_data = {{ env.SEND_SENSOR_DATA }}
-# NOTE(TheJulia): Do not lower this value below 120 seconds.
-# Power state is checked every 60 seconds and BMC activity should
-# be avoided more often than once every sixty seconds.
-send_sensor_data_interval = 160
 bootloader = file:///templates/uefi_esp.img
 verify_step_priority_override = management.clear_job_queue:90
 # We don't use this feature, and it creates an additional load on the database
@@ -191,10 +186,25 @@ insecure = {{ env.IRONIC_INSECURE }}
 [nova]
 send_power_notifications = false
 
+# Sections (oslo_messaging_notifications, sensor_data, metrics) required for sensor data collection using ironic-prometheus-exporter (IPE):
+{% if env.SEND_SENSOR_DATA | lower == "true" %}
 [oslo_messaging_notifications]
 driver = prometheus_exporter
 location = /shared/ironic_prometheus_exporter
 transport_url = fake://
+
+[sensor_data]
+send_sensor_data = {{ env.SEND_SENSOR_DATA }}
+# NOTE(TheJulia): Do not lower this value below 120 seconds.
+# Power state is checked every 60 seconds and BMC activity should
+# be avoided more often than once every sixty seconds.
+interval = 160
+# Additional sensor_data options can be configured via OS_ environment variables:
+# https://docs.openstack.org/ironic/latest/configuration/config.html#sensor-data
+
+[metrics]
+backend = collector
+{% endif %}
 
 [pxe]
 # NOTE(dtantsur): keep this value at least 3x lower than
