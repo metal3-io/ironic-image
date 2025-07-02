@@ -96,6 +96,9 @@ functionality:
 - `IRONIC_ENABLE_VLAN_INTERFACES` - Which VLAN interfaces to enable on the
   agent start-up. Can be a list of interfaces or a special value `all`.
   Defaults to `all`.
+- `DEPLOY_KERNEL_URL` and `DEPLOY_RAMDISK_URL` provide the default IPA kernel
+  and initramfs images. If they're not set, the images from IPA downloader are
+  used (if present).
 
 MariaDB configuration:
 
