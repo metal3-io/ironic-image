@@ -1,7 +1,7 @@
 #!/usr/bin/bash
 
-# Set dummy provisioning IP to avoid interface detection issues (not needed to run IPE to service `/metrics`)
-export PROVISIONING_IP="127.0.0.1"
+# Skip provisioning interface detection (not needed for exporter)
+export SKIP_PROVISIONING_INTERFACE=true
 # Set to true since running this script implies sensor data metrics are needed
 # ironic-prometheus-exporter (IPE) needs to read from oslo_messaging_notifications.location (i.e content under /shared) where Ironic writes to
 export SEND_SENSOR_DATA=true

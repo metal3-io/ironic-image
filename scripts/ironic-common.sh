@@ -8,6 +8,7 @@ export IRONIC_IP="${IRONIC_IP:-}"
 PROVISIONING_INTERFACE="${PROVISIONING_INTERFACE:-}"
 PROVISIONING_IP="${PROVISIONING_IP:-}"
 PROVISIONING_MACS="${PROVISIONING_MACS:-}"
+SKIP_PROVISIONING_INTERFACE="${SKIP_PROVISIONING_INTERFACE:-false}"
 IPXE_CUSTOM_FIRMWARE_DIR="${IPXE_CUSTOM_FIRMWARE_DIR:-/shared/custom_ipxe_firmware}"
 CUSTOM_CONFIG_DIR="${CUSTOM_CONFIG_DIR:-/conf}"
 CUSTOM_DATA_DIR="${CUSTOM_DATA_DIR:-/data}"
@@ -35,6 +36,12 @@ export IRONIC_USE_MARIADB=${IRONIC_USE_MARIADB:-false}
 
 get_provisioning_interface()
 {
+    # Skip provisioning interface detection if requested (e.g., for exporter)
+    if [[ "${SKIP_PROVISIONING_INTERFACE}" == "true" ]]; then
+        echo "skipped-interface-detection"
+        return
+    fi
+
     if [[ -n "$PROVISIONING_INTERFACE" ]]; then
         # don't override the PROVISIONING_INTERFACE if one is provided
         echo "$PROVISIONING_INTERFACE"
@@ -67,6 +74,12 @@ export LISTEN_ALL_INTERFACES="${LISTEN_ALL_INTERFACES:-true}"
 # Wait for the interface or IP to be up, sets $IRONIC_IP
 wait_for_interface_or_ip()
 {
+    # Skip interface/IP waiting if requested (e.g., for exporter)
+    if [[ "${SKIP_PROVISIONING_INTERFACE}" == "true" ]]; then
+        echo "Skipping provisioning interface detection"
+        return
+    fi
+
     # If $PROVISIONING_IP is specified, then we wait for that to become
     # available on an interface, otherwise we look at $PROVISIONING_INTERFACE
     # for an IP
