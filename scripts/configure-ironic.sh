@@ -64,9 +64,10 @@ if [[ -n "$IRONIC_EXTERNAL_IP" ]]; then
 fi
 
 IMAGE_CACHE_PREFIX=/shared/html/images/ironic-python-agent
-if [[ -f "${IMAGE_CACHE_PREFIX}.kernel" ]] && [[ -f "${IMAGE_CACHE_PREFIX}.initramfs" ]]; then
-    export IRONIC_DEFAULT_KERNEL="${IMAGE_CACHE_PREFIX}.kernel"
-    export IRONIC_DEFAULT_RAMDISK="${IMAGE_CACHE_PREFIX}.initramfs"
+if [[ -z "${DEPLOY_KERNEL_URL:-}" ]] && [[ -z "${DEPLOY_RAMDISK_URL:-}" ]] && \
+       [[ -f "${IMAGE_CACHE_PREFIX}.kernel" ]] && [[ -f "${IMAGE_CACHE_PREFIX}.initramfs" ]]; then
+    export DEPLOY_KERNEL_URL="file:///${IMAGE_CACHE_PREFIX}.kernel"
+    export DEPLOY_RAMDISK_URL="file:///${IMAGE_CACHE_PREFIX}.initramfs"
 fi
 
 if [[ -f "${IRONIC_CONF_DIR}/ironic.conf" ]]; then
