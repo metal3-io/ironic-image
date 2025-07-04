@@ -52,7 +52,11 @@ export IRONIC_IPA_COLLECTORS=${IRONIC_IPA_COLLECTORS:-default,logs}
 wait_for_interface_or_ip
 
 # Hostname to use for the current conductor instance.
-export IRONIC_CONDUCTOR_HOST=${IRONIC_CONDUCTOR_HOST:-${IRONIC_URL_HOST}}
+if [[ "${SKIP_PROVISIONING_INTERFACE:-false}" == "true" ]]; then
+    export IRONIC_CONDUCTOR_HOST=${IRONIC_CONDUCTOR_HOST:-${IRONIC_URL_HOST:-localhost}}
+else
+    export IRONIC_CONDUCTOR_HOST=${IRONIC_CONDUCTOR_HOST:-${IRONIC_URL_HOST}}
+fi
 
 if [[ -n "$IRONIC_EXTERNAL_IP" ]]; then
     export IRONIC_EXTERNAL_CALLBACK_URL=${IRONIC_EXTERNAL_CALLBACK_URL:-"${IRONIC_SCHEME}://${IRONIC_EXTERNAL_IP}:${IRONIC_ACCESS_PORT}"}
