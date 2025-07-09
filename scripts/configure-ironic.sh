@@ -66,8 +66,8 @@ fi
 IMAGE_CACHE_PREFIX=/shared/html/images/ironic-python-agent
 if [[ -z "${DEPLOY_KERNEL_URL:-}" ]] && [[ -z "${DEPLOY_RAMDISK_URL:-}" ]] && \
        [[ -f "${IMAGE_CACHE_PREFIX}.kernel" ]] && [[ -f "${IMAGE_CACHE_PREFIX}.initramfs" ]]; then
-    export DEPLOY_KERNEL_URL="file:///${IMAGE_CACHE_PREFIX}.kernel"
-    export DEPLOY_RAMDISK_URL="file:///${IMAGE_CACHE_PREFIX}.initramfs"
+    export DEPLOY_KERNEL_URL="file://${IMAGE_CACHE_PREFIX}.kernel"
+    export DEPLOY_RAMDISK_URL="file://${IMAGE_CACHE_PREFIX}.initramfs"
 fi
 
 if [[ -f "${IRONIC_CONF_DIR}/ironic.conf" ]]; then
