@@ -85,8 +85,14 @@ power_state_change_timeout = 120
 {% if env.DEPLOY_KERNEL_URL is defined %}
 deploy_kernel = {{ env.DEPLOY_KERNEL_URL }}
 {% endif %}
+{% if env.DEPLOY_KERNEL_BY_ARCH is defined %}
+deploy_kernel_by_arch = {{ env.DEPLOY_KERNEL_BY_ARCH }}
+{% endif %}
 {% if env.DEPLOY_RAMDISK_URL is defined %}
 deploy_ramdisk = {{ env.DEPLOY_RAMDISK_URL }}
+{% endif %}
+{% if env.DEPLOY_RAMDISK_BY_ARCH is defined %}
+deploy_ramdisk_by_arch = {{ env.DEPLOY_RAMDISK_BY_ARCH }}
 {% endif %}
 {% if env.DISABLE_DEEP_IMAGE_INSPECTION | lower == "true" %}
 disable_deep_image_inspection = True
