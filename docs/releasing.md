@@ -182,7 +182,17 @@ Branch protection rules require user to have `admin` permissions in the reposito
 Update the [user guide](https://github.com/metal3-io/metal3-docs/tree/main/docs/user-guide/src):
 
 - Update [supported versions](https://github.com/metal3-io/metal3-docs/blob/main/docs/user-guide/src/version_support.md)
-  with the new Ironic-image version.
+  with the new Ironic-image version. As a rule of thumb, the latest 3 stable
+  branches are Supported, but we keep testing older stable branches (usually
+  up to 2 beyond the Supported branches) based on the
+  [CI Test Matrix][ci-test-matrix].  
+  Please keep in mind that the ironic-image releases are strictly tied
+  to the [ironic releases](https://docs.openstack.org/releasenotes/ironic/)
+  and its bugfix and stable branches. While ironic stable branches have
+  a lifespan of 18 months, following this [schema](https://releases.openstack.org/),
+  the bugfix branches are supported for only 6 months after their creation;
+  for this reason it's not possible to guarantee backports of bug fixes
+  in older ironic-image branches.
 
 - Update `README.md` with release specific information, both on `main` and in the
   new `release-X.Y` branch as necessary.
@@ -212,8 +222,7 @@ updated to support the new release branch. At the very least, the new branch
 must be added to
 
 - [API](https://github.com/metal3-io/ironic-standalone-operator/blob/e45e6be580c07fcca560dadb33bdd3006257ae87/api/v1alpha1/ironic_types.go#L23-L26)
-- [implemented
-  versions](https://github.com/metal3-io/ironic-standalone-operator/blob/main/pkg/ironic/version.go)
+- [implemented versions](https://github.com/metal3-io/ironic-standalone-operator/blob/main/pkg/ironic/version.go)
 
 If explicit upgrade actions are required, they must be implemented in the
 operator code as well. After that, an
@@ -241,3 +250,5 @@ For that, please continue following the instructions provided in
   work with no versioning so we'll keep using the master version for the
   time being. In the future we re-evaluate this consideration and eventually
   move to a versioned ipa-downloader too.
+
+[ci-test-matrix]: https://github.com/metal3-io/metal3-docs/blob/main/docs/user-guide/src/version_support.md#ci-test-matrix
