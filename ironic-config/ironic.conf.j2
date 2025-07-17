@@ -76,7 +76,7 @@ api_workers = {{ env.NUMWORKERS }}
 automated_clean = {{ env.IRONIC_AUTOMATED_CLEAN }}
 # NOTE(dtantsur): keep aligned with [pxe]boot_retry_timeout below.
 deploy_callback_timeout = 4800
-bootloader = file:///templates/uefi_esp.img
+bootloader_by_arch = {{ env.BOOTLOADER_BY_ARCH }}
 verify_step_priority_override = management.clear_job_queue:90
 # We don't use this feature, and it creates an additional load on the database
 node_history = False

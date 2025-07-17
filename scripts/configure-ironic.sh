@@ -76,8 +76,10 @@ for var_arch in "${!DEPLOY_KERNEL_URL_@}"; do
     detected_arch["${IPA_ARCH,,}"]=1
 done
 for file_arch in "${IMAGE_CACHE_PREFIX}"_*.kernel; do
-    IPA_ARCH="$(basename "${file_arch#"${IMAGE_CACHE_PREFIX}"_}" .kernel)"
-    detected_arch["${IPA_ARCH}"]=1
+    if [[ -f "${file_arch}" ]]; then
+        IPA_ARCH="$(basename "${file_arch#"${IMAGE_CACHE_PREFIX}"_}" .kernel)"
+        detected_arch["${IPA_ARCH}"]=1
+    fi
 done
 
 DEPLOY_KERNEL_BY_ARCH=""
@@ -102,6 +104,13 @@ if [[ -f "${IRONIC_CONF_DIR}/ironic.conf" ]]; then
     # Make a copy of the original supposed empty configuration file
     cp "${IRONIC_CONF_DIR}/ironic.conf" "${IRONIC_CONF_DIR}/ironic.conf.orig"
 fi
+
+BOOTLOADER_BY_ARCH=""
+for bootloader in /templates/uefi_esp_*.img; do
+    BOOTLOADER_ARCH="$(basename "${bootloader#/templates/uefi_esp_}" .img)"
+    BOOTLOADER_BY_ARCH+="${BOOTLOADER_ARCH}:file://${bootloader},"
+done
+export BOOTLOADER_BY_ARCH
 
 # oslo.config also supports Config Opts From Environment, log them to stdout
 echo 'Options set from Environment variables'
