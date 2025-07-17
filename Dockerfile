@@ -58,7 +58,7 @@ RUN prepare-image.sh && rm -f /bin/prepare-image.sh
 
 # IRONIC #
 COPY --from=ironic-builder /tmp/ipxe/src/bin/undionly.kpxe /tmp/ipxe/src/bin-x86_64-efi/snponly.efi /tftpboot/
-COPY --from=ironic-builder /tmp/esp.img /templates/uefi_esp.img
+COPY --from=ironic-builder /tmp/uefi_esp*.img /templates/
 
 COPY ironic-config/ironic.conf.j2 /etc/ironic/
 
