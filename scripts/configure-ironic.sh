@@ -96,8 +96,8 @@ for IPA_ARCH in "${!detected_arch[@]}"; do
     DEPLOY_RAMDISK_BY_ARCH+="${!ramdisk_var:+${IPA_ARCH}:${!ramdisk_var},}"
 done
 if [[ -n "${DEPLOY_KERNEL_BY_ARCH}" ]] && [[ -n "${DEPLOY_RAMDISK_BY_ARCH}" ]]; then
-    export DEPLOY_KERNEL_BY_ARCH
-    export DEPLOY_RAMDISK_BY_ARCH
+    export DEPLOY_KERNEL_BY_ARCH="${DEPLOY_KERNEL_BY_ARCH%?}"
+    export DEPLOY_RAMDISK_BY_ARCH="${DEPLOY_RAMDISK_BY_ARCH%?}"
 fi
 
 if [[ -f "${IRONIC_CONF_DIR}/ironic.conf" ]]; then
@@ -110,7 +110,7 @@ for bootloader in /templates/uefi_esp_*.img; do
     BOOTLOADER_ARCH="$(basename "${bootloader#/templates/uefi_esp_}" .img)"
     BOOTLOADER_BY_ARCH+="${BOOTLOADER_ARCH}:file://${bootloader},"
 done
-export BOOTLOADER_BY_ARCH
+export BOOTLOADER_BY_ARCH="${BOOTLOADER_BY_ARCH%?}"
 
 # oslo.config also supports Config Opts From Environment, log them to stdout
 echo 'Options set from Environment variables'
