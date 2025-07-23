@@ -25,7 +25,13 @@ rpc_transport = none
 use_stderr = true
 # NOTE(dtantsur): the default md5 is not compatible with FIPS mode
 hash_ring_algorithm = sha256
+{% if env.ENABLE_IPV4 %}
 my_ip = {{ env.IRONIC_IP }}
+{% endif %}
+{% if env.ENABLE_IPV6 %}
+my_ipv6 = {{ env.IRONIC_IPV6 }}
+{% endif %}
+
 host = {{ env.IRONIC_CONDUCTOR_HOST }}
 
 # If a path to a certificate is defined, use that first for webserver
