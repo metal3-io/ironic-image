@@ -33,6 +33,63 @@ export LOCAL_DB_URI="sqlite:///${IRONIC_DB_DIR}/ironic.sqlite"
 
 export IRONIC_USE_MARIADB=${IRONIC_USE_MARIADB:-false}
 
+
+get_interface_of_ip()
+{
+    local IP_VERS=""
+
+    if [[ "$#" -gt 2 ]]; then
+        echo "${FUNCNAME}: too many parameters" >&2
+        return 1
+    fi
+
+    if [[ "$#" -eq 2 ]]; then
+        case $2 in
+        4|6)
+            local IP_VERS="-${2}"
+            ;;
+        *)
+            echo "${FUNCNAME}: the second parameter should be [4|6] (or missing for both)" >&2
+            return 2
+            ;;
+        esac
+    fi
+
+    local IP_ADDR=$1
+
+    # Convert the address using ipcalc which strips out the subnet.
+    # For IPv6 addresses, this will give the short-form address
+    IP_ADDR="$(ipcalc "${IP_ADDR}" | grep "^Address:" | awk '{print $2}')"
+
+    echo "$(ip $IP_VERS -br addr show scope global | grep -i " ${IP_ADDR}/" | cut -f 1 -d ' ' | cut -f 1 -d '@')"
+}
+
+get_ip_of_interface()
+{
+    local IP_VERS=""
+
+    if [[ "$#" -gt 2 ]]; then
+        echo "${FUNCNAME}: too many parameters" >&2
+        return 1
+    fi
+
+    if [[ "$#" -eq 2 ]]; then
+        case $2 in
+        4|6)
+            local IP_VERS="-${2}"
+            ;;
+        *)
+            echo "${FUNCNAME}: the second parameter should be [4|6] (or missing for both)" >&2
+            return 2
+            ;;
+        esac
+    fi
+
+    local IFACE=$1
+
+    echo "$(ip $IP_VERS -br addr show scope global up dev $IFACE | awk '{print $3}' | sed -e 's%/.*%%' | head -n 1)"
+}
+
 get_provisioning_interface()
 {
     if [[ -n "$PROVISIONING_INTERFACE" ]]; then
