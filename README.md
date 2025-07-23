@@ -55,6 +55,12 @@ functionality:
    `PROVISIONING_MACS` is provided)
 - `PROVISIONING_IP` - the specific IP to use (instead of calculating it based on
   the `PROVISIONING_INTERFACE`)
+- `IRONIC_URL_HOSTNAME` - a fully qualified name resolving to an IPv4 and/or IPv6
+  address, used for both binding and forming the required URLs; for the latter
+  purpose only, it can be used in combination with `PROVISIONING_INTERFACE`, which
+  would instead be used for the former. If the hostname has both IPv4 and IPv6
+  records, and both addresses are correctly assigned on the same network interface,
+  `IRONIC_URL_HOSTNAME` enables a dual-stack ironic image configuration.
 - `DNSMASQ_EXCEPT_INTERFACE` - interfaces to exclude when providing DHCP address
   (default `lo`)
 - `HTTP_PORT` - port used by http server (default `80`)
