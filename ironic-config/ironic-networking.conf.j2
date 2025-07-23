@@ -1,0 +1,28 @@
+[DEFAULT]
+debug = true
+auth_strategy = http_basic
+http_basic_auth_user_file = {{ env.IRONIC_RPC_HTPASSWD_FILE }}
+rpc_transport = json-rpc
+use_stderr = true
+
+[ironic_networking_json_rpc]
+auth_strategy = http_basic
+http_basic_auth_user_file = {{ env.IRONIC_RPC_HTPASSWD_FILE }}
+host_ip = {{ env.IRONIC_NETWORKING_JSON_RPC_HOST }}
+port = {{ env.IRONIC_NETWORKING_JSON_RPC_PORT }}
+{% if env.IRONIC_TLS_SETUP == "true" %}
+use_ssl = true
+cafile = {{ env.IRONIC_CACERT_FILE }}
+insecure = {{ env.IRONIC_INSECURE }}
+{% endif %}
+
+{% if env.IRONIC_TLS_SETUP == "true" %}
+[ssl]
+cert_file = {{ env.IRONIC_CERT_FILE }}
+key_file = {{ env.IRONIC_KEY_FILE }}
+{% endif %}
+
+[ironic_networking]
+enabled_switch_drivers = {{ env.IRONIC_NETWORKING_ENABLED_SWITCH_DRIVERS }}
+driver_config_dir = {{ env.IRONIC_NETWORKING_DRIVER_CONFIG_DIR }}
+switch_config_file = {{ env.IRONIC_NETWORKING_SWITCH_CONFIGS }}

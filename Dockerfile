@@ -61,11 +61,15 @@ FROM $BASE_IMAGE AS ironic-wheel-builder
 ARG UPPER_CONSTRAINTS_FILE=upper-constraints.txt
 ARG IRONIC_SOURCE=eda12b9caf56ce6c454b0ff75a8e50acfe5f5f58 # master
 ARG SUSHY_SOURCE
+ARG NGS_SOURCE=e10fe3898cb4bd69941ceab668692eaf3ce65ac7 # master
+ARG INSTALL_NGS=true
 ARG PIP_VERSION
 ARG SETUPTOOLS_VERSION
 
 ENV IRONIC_SOURCE=${IRONIC_SOURCE} \
     SUSHY_SOURCE=${SUSHY_SOURCE} \
+    NGS_SOURCE=${NGS_SOURCE} \
+    INSTALL_NGS=${INSTALL_NGS} \
     UPPER_CONSTRAINTS_FILE=${UPPER_CONSTRAINTS_FILE} \
     PIP_VERSION=${PIP_VERSION} \
     SETUPTOOLS_VERSION=${SETUPTOOLS_VERSION}
@@ -142,6 +146,7 @@ cp /tmp/ironic-config/inspector.ipxe.j2 /tmp/ironic-config/httpd-ironic-api.conf
    /templates/
 mkdir -p /etc/ironic
 cp /tmp/ironic-config/ironic.conf.j2 /etc/ironic/
+cp /tmp/ironic-config/ironic-networking.conf.j2 /etc/ironic/
 cp /tmp/ironic-config/httpd.conf.j2 /etc/httpd/conf/
 cp /tmp/ironic-config/httpd-modules.conf /etc/httpd/conf.modules.d/
 cp /tmp/ironic-config/apache2-vmedia.conf.j2 /templates/httpd-vmedia.conf.j2
