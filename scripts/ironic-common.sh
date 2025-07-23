@@ -128,14 +128,17 @@ wait_for_interface_or_ip()
     # available on an interface, otherwise we look at $PROVISIONING_INTERFACE
     # for an IP
     if [[ -n "${PROVISIONING_IP}" ]]; then
-        # Convert the address using ipcalc which strips out the subnet.
-        # For IPv6 addresses, this will give the short-form address
-        IRONIC_IP="$(ipcalc "${PROVISIONING_IP}" | grep "^Address:" | awk '{print $2}')"
-        export IRONIC_IP
-        until grep -F " ${IRONIC_IP}/" <(ip -br addr show); do
-            echo "Waiting for ${IRONIC_IP} to be configured on an interface"
+        local IFACE_OF_IP=""
+
+        until [[ -n "$IFACE_OF_IP" ]]; do
+            echo "Waiting for ${PROVISIONING_IP} to be configured on an interface..."
+            IFACE_OF_IP="$(get_interface_of_ip $PROVISIONING_IP)"
             sleep 1
         done
+
+        echo "Found $PROVISIONING_IP on interface \"${IFACE_OF_IP}\"!"
+
+        export PROVISIONING_INTERFACE="$IFACE_OF_IP"
     elif [[ -n "${PROVISIONING_INTERFACE}" ]]; then
         until [[ -n "$IRONIC_IP" ]]; do
             echo "Waiting for ${PROVISIONING_INTERFACE} interface to be configured"
