@@ -69,6 +69,32 @@ export PROVISIONING_INTERFACE
 
 export LISTEN_ALL_INTERFACES="${LISTEN_ALL_INTERFACES:-true}"
 
+get_interface_of_ip()
+{
+    local IP_VERS
+
+    if [[ "$#" -gt 2 ]]; then
+        echo "${FUNCNAME[0]}: too many parameters" >&2
+        return 1
+    fi
+
+    if [[ "$#" -eq 2 ]]; then
+        case $2 in
+        4|6)
+            local IP_VERS="-${2}"
+            ;;
+        *)
+            echo "${FUNCNAME[0]}: the second parameter should be [4|6] (or missing for both)" >&2
+            return 2
+            ;;
+        esac
+    fi
+
+    local IP_ADDR=$1
+
+    echo "$(ip "${IP_VERS}" -br addr show scope global | grep -i " ${IP_ADDR}/" | cut -f 1 -d ' ' | cut -f 1 -d '@')"
+}
+
 parse_ip_address()
 {
     if [[ "$#" -ne 1 ]]; then
@@ -95,16 +121,23 @@ wait_for_interface_or_ip()
     # available on an interface, otherwise we look at $PROVISIONING_INTERFACE
     # for an IP
     if [[ -n "${PROVISIONING_IP}" ]]; then
-        IRONIC_IP="$(parse_ip_address "${PROVISIONING_IP}")"
+        local PARSED_IP
+        PARSED_IP="$(parse_ip_address "${PROVISIONING_IP}")"
         if [[ -z "${IRONIC_IP}" ]]; then
             return 1
         fi
 
-        export IRONIC_IP
-        until grep -F " ${IRONIC_IP}/" <(ip -br addr show); do
-            echo "Waiting for ${IRONIC_IP} to be configured on an interface"
+        local IFACE_OF_IP=""
+        until [[ -n "${IFACE_OF_IP}" ]]; do
+            echo "Waiting for ${PROVISIONING_IP} to be configured on an interface..."
+            IFACE_OF_IP="$(get_interface_of_ip "${PARSED_IP}")"
             sleep 1
         done
+
+        echo "Found ${PROVISIONING_IP} on interface \"${IFACE_OF_IP}\"!"
+
+        export PROVISIONING_INTERFACE="${IFACE_OF_IP}"
+        export IRONIC_IP="${PARSED_IP}"
     else
         until [[ -n "$IRONIC_IP" ]]; do
             echo "Waiting for ${PROVISIONING_INTERFACE} interface to be configured"
