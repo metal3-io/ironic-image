@@ -1,0 +1,10 @@
+#!/usr/bin/bash
+
+# shellcheck disable=SC1091
+. /bin/configure-ironic-networking.sh
+
+configure_restart_on_certificate_update "${IRONIC_TLS_SETUP}" ironic-networking "${IRONIC_CERT_FILE}"
+
+# Dynamically written driver files will be written to the driver config dir
+# therefore we use --config-dir to scan all of those potential files.
+exec /usr/bin/ironic-networking --config-file "${IRONIC_CONF_DIR}/ironic.conf" --config-dir "${IRONIC_NETWORKING_DRIVER_CONFIG_DIR}"
