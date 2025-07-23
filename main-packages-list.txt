@@ -13,3 +13,4 @@ sqlite
 tar
 util-linux
 xorriso
+bind-utils
