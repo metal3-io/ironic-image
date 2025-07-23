@@ -12,7 +12,8 @@
 
 
 {% if env.LISTEN_ALL_INTERFACES | lower == "true" %}
-Listen {{ env.IRONIC_LISTEN_PORT }}
+Listen 0.0.0.0:{{ env.IRONIC_LISTEN_PORT }}
+Listen [::]:{{ env.IRONIC_LISTEN_PORT }}
  <VirtualHost *:{{ env.IRONIC_LISTEN_PORT }}>
 {% else %}
 {% if env.ENABLE_IPV4 %}
