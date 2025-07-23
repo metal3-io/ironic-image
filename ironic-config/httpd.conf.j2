@@ -1,6 +1,7 @@
 ServerRoot {{ env.HTTPD_DIR }}
 {%- if env.LISTEN_ALL_INTERFACES | lower == "true" %}
-Listen {{ env.HTTP_PORT }}
+Listen 0.0.0.0:{{ env.HTTP_PORT }}
+Listen [::]:{{ env.HTTP_PORT }}
 {% else %}
 {% if env.ENABLE_IPV4 %}
 Listen {{ env.IRONIC_IP }}:{{ env.HTTP_PORT }}
