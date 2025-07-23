@@ -15,8 +15,14 @@
 Listen {{ env.IRONIC_LISTEN_PORT }}
  <VirtualHost *:{{ env.IRONIC_LISTEN_PORT }}>
 {% else %}
-Listen {{ env.IRONIC_URL_HOST }}:{{ env.IRONIC_LISTEN_PORT }}
- <VirtualHost {{ env.IRONIC_URL_HOST }}:{{ env.IRONIC_LISTEN_PORT }}>
+{% if env.ENABLE_IPV4 %}
+Listen {{ env.IRONIC_IP }}:{{ env.IRONIC_LISTEN_PORT }}
+{% endif %}
+{% if env.ENABLE_IPV6 %}
+Listen [{{ env.IRONIC_IPV6 }}]:{{ env.IRONIC_LISTEN_PORT }}
+{% endif %}
+<VirtualHost {% if env.ENABLE_IPV4 %}{{ env.IRONIC_IP }}:{{ env.IRONIC_LISTEN_PORT }}{% endif %} {% if env.ENABLE_IPV6 %}[{{ env.IRONIC_IPV6 }}]:{{ env.IRONIC_LISTEN_PORT }}{% endif %}>
+{% endif %}
 {% endif %}
 
     DocumentRoot "/shared/html"
