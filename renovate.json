@@ -96,6 +96,20 @@
       ],
       "datasourceTemplate": "pypi",
       "depNameTemplate": "setuptools"
+    },
+    {
+      "customType": "regex",
+      "managerFilePatterns": [
+        "/^Dockerfile$/"
+      ],
+      "matchStrings": [
+        "ARG NGS_SOURCE=(?<currentDigest>[a-f0-9]{40})\\s+#\\s*(?<currentValue>[^\\n]+)"
+      ],
+      "datasourceTemplate": "git-refs",
+      "depNameTemplate": "networking-generic-switch",
+      "packageNameTemplate": "https://github.com/openstack/networking-generic-switch.git",
+      "versioningTemplate": "loose",
+      "autoReplaceStringTemplate": "ARG NGS_SOURCE={{#if newDigest}}{{{newDigest}}}{{else}}{{{newValue}}}{{/if}} # {{{currentValue}}}"
     }
   ]
 }
