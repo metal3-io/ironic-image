@@ -15,6 +15,8 @@ export IRONIC_ENABLE_VLAN_INTERFACES=${IRONIC_ENABLE_VLAN_INTERFACES:-${IRONIC_I
 # shellcheck disable=SC1091
 . /bin/ironic-common.sh
 # shellcheck disable=SC1091
+. /bin/ironic-networking-common.sh
+# shellcheck disable=SC1091
 . /bin/auth-common.sh
 
 if [[ "${IRONIC_USE_MARIADB}" == true ]]; then
@@ -96,7 +98,13 @@ fi
 render_j2_config "/etc/ironic/ironic.conf.j2" \
     "${IRONIC_CONF_DIR}/ironic.conf"
 
-configure_json_rpc_auth
+if [[ "${IRONIC_EXPOSE_JSON_RPC}" == "true" ]]; then
+    configure_json_rpc_auth
+fi
+
+if [[ "${IRONIC_NETWORKING_ENABLED}" == "true" ]]; then
+    configure_json_rpc_auth "ironic_networking_json_rpc"
+fi
 
 # Make sure ironic traffic bypasses any proxies
 export NO_PROXY="${NO_PROXY:-},$IRONIC_IP"
