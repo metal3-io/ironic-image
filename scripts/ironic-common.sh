@@ -5,6 +5,7 @@ set -euxo pipefail
 # Export IRONIC_IP to avoid needing to lean on IRONIC_URL_HOST for consumption in
 # e.g. dnsmasq configuration
 export IRONIC_IP="${IRONIC_IP:-}"
+export IRONIC_IPV6="${IRONIC_IPV6:-}"
 PROVISIONING_INTERFACE="${PROVISIONING_INTERFACE:-}"
 PROVISIONING_IP="${PROVISIONING_IP:-}"
 PROVISIONING_MACS="${PROVISIONING_MACS:-}"
@@ -133,26 +134,44 @@ wait_for_interface_or_ip()
         echo "Found $PROVISIONING_IP on interface \"${IFACE_OF_IP}\"!"
 
         export PROVISIONING_INTERFACE="$IFACE_OF_IP"
+	# If the IP contains a colon, then it's an IPv6 address
+        if [[ "$PROVISIONING_IP" =~ .*:.* ]]; then
+            export IRONIC_IPV6="$PROVISIONING_IP"
+        else
+            export IRONIC_IP="$PROVISIONING_IP"
+        fi
     elif [[ -n "${PROVISIONING_INTERFACE}" ]]; then
-        until [[ -n "$IRONIC_IP" ]]; do
-            echo "Waiting for ${PROVISIONING_INTERFACE} interface to be configured"
-            IRONIC_IP="$(ip -br add show scope global up dev "${PROVISIONING_INTERFACE}" | awk '{print $3}' | sed -e 's%/.*%%' | head -n 1)"
-            export IRONIC_IP
+        until [[ -n "$IRONIC_IPV6" ]] || [[ -n "$IRONIC_IP" ]]; do
+            echo "Waiting for ${PROVISIONING_INTERFACE} interface to be configured..."
+
+            export IRONIC_IPV6="$(get_ip_of_interface $PROVISIONING_INTERFACE 6)"
+            sleep 1
+
+            export IRONIC_IP="$(get_ip_of_interface $PROVISIONING_INTERFACE 4)"
             sleep 1
         done
+
+        # Add some debugging output
+        if [[ -n "$IRONIC_IPV6" ]]; then
+            echo "Found $IRONIC_IPV6 on interface \"${PROVISIONING_INTERFACE}\"!"
+        fi
+        if [[ -n "$IRONIC_IP" ]]; then
+            echo "Found $IRONIC_IP on interface \"${PROVISIONING_INTERFACE}\"!"
+        fi
     else
         echo "Cannot determine an interface or an IP for binding and creating URLs"
         return 1
     fi
 
-    # If the IP contains a colon, then it's an IPv6 address, and the HTTP
-    # host needs surrounding with brackets
-    if [[ "$IRONIC_IP" =~ .*:.* ]]; then
-        export IPV=6
-        export IRONIC_URL_HOST="[$IRONIC_IP]"
-    else
-        export IPV=4
+    # Define the URLs based on the what we have found,
+    # prioritize IPv6 for IRONIC_URL_HOST
+    if [[ -n "$IRONIC_IP" ]]; then
+        export ENABLE_IPV4=yes
         export IRONIC_URL_HOST="$IRONIC_IP"
+    fi
+    if [[ -n "$IRONIC_IPV6" ]]; then
+        export ENABLE_IPV6=yes
+        export IRONIC_URL_HOST="[$IRONIC_IPV6]" # The HTTP host needs surrounding with brackets
     fi
 
     # Avoid having to construct full URL multiple times while allowing
