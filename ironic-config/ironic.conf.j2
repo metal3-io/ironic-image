@@ -64,7 +64,7 @@ port = {{ env.IRONIC_PRIVATE_PORT }}
 {% endif %}
 public_endpoint = {{ env.IRONIC_BASE_URL }}
 {% else %}
-host_ip = {% if env.LISTEN_ALL_INTERFACES | lower == "true" %}::{% else %}{{ env.IRONIC_IP }}{% endif %}
+host_ip = {{ env.IRONIC_HOST_IP }}
 port = {{ env.IRONIC_LISTEN_PORT }}
 {% if env.IRONIC_TLS_SETUP == "true" %}
 enable_ssl_api = true
@@ -175,7 +175,7 @@ cipher_suite_versions = 3,17
 # containers are in host networking.
 auth_strategy = http_basic
 http_basic_auth_user_file = {{ env.IRONIC_RPC_HTPASSWD_FILE }}
-host_ip = {% if env.LISTEN_ALL_INTERFACES | lower == "true" %}::{% else %}{{ env.IRONIC_IP }}{% endif %}
+host_ip = {{ env.IRONIC_HOST_IP }}
 {% if env.IRONIC_TLS_SETUP == "true" %}
 use_ssl = true
 cafile = {{ env.IRONIC_CACERT_FILE }}
