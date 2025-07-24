@@ -53,6 +53,8 @@ wait_for_interface_or_ip
 
 if [[ "$(echo "$LISTEN_ALL_INTERFACES" | tr '[:upper:]' '[:lower:]')" == "true" ]]; then
 export IRONIC_HOST_IP="::"
+elif [[ -n env.ENABLE_IPV6 ]]; then
+export IRONIC_HOST_IP="$IRONIC_IPV6"
 else
 export IRONIC_HOST_IP="$IRONIC_IP"
 fi
