@@ -49,6 +49,12 @@ export IRONIC_IPA_COLLECTORS=${IRONIC_IPA_COLLECTORS:-default,logs}
 
 wait_for_interface_or_ip
 
+if [[ "$(echo "${LISTEN_ALL_INTERFACES}" | tr '[:upper:]' '[:lower:]')" == "true" ]]; then
+    export IRONIC_HOST_IP="::"
+else
+    export IRONIC_HOST_IP="${IRONIC_IP}"
+fi
+
 # Hostname to use for the current conductor instance.
 export IRONIC_CONDUCTOR_HOST=${IRONIC_CONDUCTOR_HOST:-${IRONIC_URL_HOST}}
 
