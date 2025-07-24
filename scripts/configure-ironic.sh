@@ -53,6 +53,14 @@ export IRONIC_IPA_COLLECTORS=${IRONIC_IPA_COLLECTORS:-default,logs}
 
 wait_for_interface_or_ip
 
+if [[ "$(echo "${LISTEN_ALL_INTERFACES}" | tr '[:upper:]' '[:lower:]')" == "true" ]]; then
+    export IRONIC_LISTEN_ADDRESS="::"
+elif [[ -n "${ENABLE_IPV6}" ]]; then
+    export IRONIC_LISTEN_ADDRESS="${IRONIC_IPV6}"
+else
+    export IRONIC_LISTEN_ADDRESS="${IRONIC_IP}"
+fi
+
 # Hostname to use for the current conductor instance.
 export IRONIC_CONDUCTOR_HOST=${IRONIC_CONDUCTOR_HOST:-${IRONIC_URL_HOST}}
 
