@@ -46,7 +46,7 @@ get_provisioning_interface()
         return
     fi
 
-    local interface="provisioning"
+    local interface=""
 
     for mac in ${PROVISIONING_MACS//,/ }; do
         if ip -br link show up | grep -i "$mac" &>/dev/null; then
@@ -138,13 +138,25 @@ wait_for_interface_or_ip()
 
         export PROVISIONING_INTERFACE="${IFACE_OF_IP}"
         export IRONIC_IP="${PARSED_IP}"
-    else
+    elif [[ -n "${IRONIC_IP}" ]]; then
+        local PARSED_IP
+        PARSED_IP="$(parse_ip_address "${IRONIC_IP}")"
+        if [[ -z "${PARSED_IP}" ]]; then
+            echo "ERROR: PROVISIONING_IP contains an invalid IP address, failed to start ironic"
+            exit 1
+        fi
+
+        export IRONIC_IP="${PARSED_IP}"
+    elif [[ -n "${PROVISIONING_INTERFACE}" ]]; then
         until [[ -n "$IRONIC_IP" ]]; do
             echo "Waiting for ${PROVISIONING_INTERFACE} interface to be configured"
             IRONIC_IP="$(ip -br addr show scope global up dev "${PROVISIONING_INTERFACE}" | awk '{print $3}' | sed -e 's%/.*%%' | head -n 1)"
             export IRONIC_IP
             sleep 1
         done
+    else
+        echo "ERROR: cannot determine an interface or an IP for binding and creating URLs"
+        return 1
     fi
 
     # If the IP contains a colon, then it's an IPv6 address, and the HTTP
