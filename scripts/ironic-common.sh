@@ -41,7 +41,7 @@ get_provisioning_interface()
         return
     fi
 
-    local interface="provisioning"
+    local interface=""
 
     if [[ -n "${PROVISIONING_IP}" ]]; then
         if ip -br addr show | grep -i " ${PROVISIONING_IP}/" &>/dev/null; then
@@ -79,13 +79,16 @@ wait_for_interface_or_ip()
             echo "Waiting for ${IRONIC_IP} to be configured on an interface"
             sleep 1
         done
-    else
+    elif [[ -n "${PROVISIONING_INTERFACE}" ]]; then
         until [[ -n "$IRONIC_IP" ]]; do
             echo "Waiting for ${PROVISIONING_INTERFACE} interface to be configured"
             IRONIC_IP="$(ip -br add show scope global up dev "${PROVISIONING_INTERFACE}" | awk '{print $3}' | sed -e 's%/.*%%' | head -n 1)"
             export IRONIC_IP
             sleep 1
         done
+    else
+        echo "Cannot determine an interface or an IP for binding and creating URLs"
+        return 1
     fi
 
     # If the IP contains a colon, then it's an IPv6 address, and the HTTP
