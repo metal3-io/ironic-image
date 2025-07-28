@@ -2,7 +2,12 @@ ServerRoot {{ env.HTTPD_DIR }}
 {%- if env.LISTEN_ALL_INTERFACES | lower == "true" %}
 Listen {{ env.HTTP_PORT }}
 {% else %}
-Listen {{ env.IRONIC_URL_HOST }}:{{ env.HTTP_PORT }}
+{% if env.ENABLE_IPV4 %}
+Listen {{ env.IRONIC_IP }}:{{ env.HTTP_PORT }}
+{% endif %}
+{% if env.ENABLE_IPV6 %}
+Listen [{{ env.IRONIC_IPV6 }}]:{{ env.HTTP_PORT }}
+{% endif %}
 {% endif %}
 Include /etc/httpd/conf.modules.d/*.conf
 User apache
