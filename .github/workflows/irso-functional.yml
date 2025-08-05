@@ -31,7 +31,7 @@ jobs:
       with:
         go-version: ${{ steps.vars.outputs.go_version }}
     - name: Setup a minikube cluster
-      uses: medyagh/setup-minikube@cea33675329b799adccc9526aa5daccc26cd5052 # v0.0.19
+      uses: medyagh/setup-minikube@e3c7f79eb1e997eabccc536a6cf318a2b0fe19d9 # v0.0.20
       with:
         start-args: "--ha"
     - name: Prepare tests
@@ -50,7 +50,7 @@ jobs:
         path: /tmp/logs/*
       if: always()
     - name: Annotate failures
-      uses: mikepenz/action-junit-report@a83fd2b5d58d4fc702e690c1ea688d702d28d281 # v5.6.1
+      uses: mikepenz/action-junit-report@3585e9575db828022551b4231f165eb59a0e74e3 # v5.6.2
       with:
         annotate_only: true
         report_paths: /tmp/logs/report.xml
