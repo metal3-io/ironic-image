@@ -37,7 +37,7 @@ dhcp-option=option{% if ":" in env["DNS_IP"] %}6{% endif %}:dns-server,{{ env["D
 {# Network boot options for IPv4 and IPv6 #}
 {%- if env.IPV == "4" or env.IPV is undefined %}
 # IPv4 Configuration:
-dhcp-match=ipxe,175
+dhcp-match=set:ipxe,175
 # Client is already running iPXE; move to next stage of chainloading
 {%- if env.IPXE_TLS_SETUP == "true"  %}
 # iPXE with (U)EFI
