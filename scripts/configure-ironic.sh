@@ -17,8 +17,6 @@ export IRONIC_ENABLE_VLAN_INTERFACES=${IRONIC_ENABLE_VLAN_INTERFACES:-${IRONIC_I
 # shellcheck disable=SC1091
 . /bin/auth-common.sh
 
-export HTTP_PORT=${HTTP_PORT:-80}
-
 if [[ "${IRONIC_USE_MARIADB}" == true ]]; then
     if [[ -z "${MARIADB_PASSWORD:-}" ]]; then
         echo "FATAL: IRONIC_USE_MARIADB requires password, mount a secret under /auth/mariadb"
