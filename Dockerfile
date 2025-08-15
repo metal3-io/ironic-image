@@ -67,6 +67,7 @@ COPY ironic-config/httpd.conf.j2 /etc/httpd/conf/
 COPY ironic-config/httpd-modules.conf /etc/httpd/conf.modules.d/
 COPY ironic-config/apache2-vmedia.conf.j2 /templates/httpd-vmedia.conf.j2
 COPY ironic-config/apache2-ipxe.conf.j2 /templates/httpd-ipxe.conf.j2
+COPY ironic-config/apache2-image.conf.j2 /templates/httpd-image.conf.j2
 
 # DATABASE
 RUN mkdir -p /var/lib/ironic && \
