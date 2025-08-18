@@ -40,8 +40,7 @@ if [[ ! -s "${UPPER_CONSTRAINTS_PATH}" ]]; then
 fi
 
 # NOTE(elfosardo): install dependencies constrained
-# also install pyasyncore to allow asyncore in Python 3.12
-python3.12 -m pip install jinja2 pyinotify pyasyncore -c "${UPPER_CONSTRAINTS_PATH}"
+python3.12 -m pip install jinja2 watchdog -c "${UPPER_CONSTRAINTS_PATH}"
 
 IRONIC_PKG_LIST="/tmp/ironic-packages-list"
 IRONIC_PKG_LIST_FINAL="/tmp/ironic-packages-list-final"
