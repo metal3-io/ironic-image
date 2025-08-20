@@ -1,5 +1,7 @@
 #!/usr/bin/bash
 
+# TEST CI
+
 set -euxo pipefail
 
 echo "install_weak_deps=False" >> /etc/dnf/dnf.conf
