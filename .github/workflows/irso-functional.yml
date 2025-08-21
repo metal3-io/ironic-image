@@ -11,6 +11,8 @@ jobs:
       CLUSTER_TYPE: minikube
       LOGDIR: /tmp/logs
       JUNIT_OUTPUT: /tmp/logs/report.xml
+      IRONIC_CUSTOM_IMAGE: localhost/ironic:test
+      IRONIC_CUSTOM_VERSION: latest
     steps:
     - name: Update repositories
       run: sudo apt-get update
@@ -35,11 +37,11 @@ jobs:
       with:
         start-args: "--ha"
     - name: Prepare tests
-      run: cd ironic-standalone-operator && ./test/prepare.sh
+      run: ironic-standalone-operator/test/prepare.sh
+    - name: Build and local the image
+      run: ironic-image/hack/prepare-irso-tests.sh
     - name: Run tests
-      run: ironic-image/hack/ci-e2e.sh
-      env:
-        IRSO_PATH: "${{ github.workspace }}/ironic-standalone-operator"
+      run: ironic-standalone-operator/test/run.sh
     - name: Collect logs
       run: ironic-standalone-operator/test/collect-logs.sh
       if: always()
