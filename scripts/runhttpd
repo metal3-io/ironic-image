@@ -5,7 +5,6 @@
 . /bin/ironic-common.sh
 . /bin/auth-common.sh
 
-export HTTP_PORT=${HTTP_PORT:-80}
 export VMEDIA_TLS_PORT=${VMEDIA_TLS_PORT:-8083}
 
 export IRONIC_REVERSE_PROXY_SETUP=${IRONIC_REVERSE_PROXY_SETUP:-false}
