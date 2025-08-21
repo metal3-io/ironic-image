@@ -101,11 +101,16 @@ configure_restart_on_certificate_update()
 
     if [[ "${enabled}" == "true" ]] && [[ "${RESTART_CONTAINER_CERTIFICATE_UPDATED}" == "true" ]]; then
         if [[ "${service}" == httpd ]]; then
+            # shellcheck disable=SC2034
             signal="WINCH"
         fi
-        python3.12 -m pyinotify --raw-format -e IN_DELETE_SELF -v "${cert_file}" |
-            while read -r; do
-                pkill "-${signal}" "${service}"
-            done &
+
+        # Use watchmedo to monitor certificate file deletion
+        # shellcheck disable=SC2016
+        watchmedo shell-command \
+            --patterns="$(basename "${cert_file}")" \
+            --ignore-directories \
+            --command='if [[ "${watch_event_type}" == "deleted" ]]; then pkill -'"${signal}"' '"${service}"'; fi' \
+            "$(dirname "${cert_file}")" &
     fi
 }
