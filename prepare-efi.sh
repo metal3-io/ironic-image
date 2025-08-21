@@ -31,9 +31,10 @@ build_efi() {
     # ``Error converting to codepage 850 Invalid argument``
     # ``Cannot initialize '::'``
     # This is due to the conversion table missing codepage 850, included in glibc-gconv-extra
-    dnf install -y grub2 shim dosfstools mtools glibc-gconv-extra
+    dnf install -y --allowerasing grub2 dosfstools mtools glibc-gconv-extra
+
     # grub2-efi-XXX and shim-XXX are architecture specific packages, so force the architecture here
-    dnf install -y --forcearch="$ARCH" "$GRUB_PKG" "$SHIM_PKG"
+    dnf install -y --allowerasing --forcearch="$ARCH" "$GRUB_PKG" "$SHIM_PKG"
 
     ## TODO(TheJulia): At some point we may want to try and make the size
     ## of the ESP image file to be sized smaller for the files that need to
@@ -47,6 +48,8 @@ build_efi() {
     mcopy -i "$DEST" -v "/boot/efi/EFI/BOOT/$BOOTEFI" ::EFI/BOOT
     mcopy -i "$DEST" -v "/boot/efi/EFI/$OS/$GRUBEFI" ::EFI/BOOT
     mdir -i "$DEST" ::EFI/BOOT
+
+    rpm -e --nodeps "$SHIM_PKG"
 }
 
 for ARCH in x86_64 aarch64; do
