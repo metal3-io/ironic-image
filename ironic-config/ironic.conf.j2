@@ -186,6 +186,7 @@ host_ip = {% if env.LISTEN_ALL_INTERFACES | lower == "true" %}::{% else %}{{ env
 use_ssl = true
 cafile = {{ env.IRONIC_CACERT_FILE }}
 insecure = {{ env.IRONIC_INSECURE }}
+port = {{ env.IRONIC_JSON_RPC_PORT }}
 {% endif %}
 {% endif %}
 
