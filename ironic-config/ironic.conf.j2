@@ -251,3 +251,8 @@ endpoint_override = {{ env.IRONIC_BASE_URL }}
 cert_file = {{ env.IRONIC_CERT_FILE }}
 key_file = {{ env.IRONIC_KEY_FILE }}
 {% endif %}
+
+[oci]
+{% if env.IRONIC_OCI_AUTH_CONFIG is defined %}
+authentication_config = {{ env.IRONIC_OCI_AUTH_CONFIG }}
+{% endif %}
