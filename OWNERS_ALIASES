@@ -2,13 +2,12 @@
 
 aliases:
   ironic-image-maintainers:
-  - derekhiggins
   - dtantsur
   - elfosardo
   - iurygregory
+  - Rozzii
 
   ironic-image-reviewers:
   - lentzi90
-  - Rozzii
   - tuminoid
   - zaneb
