@@ -93,9 +93,6 @@ if [[ -n "${PATCH_LIST:-}" ]]; then
 fi
 rm -f /bin/patch-image.sh
 
-dnf clean all
-rm -rf /var/cache/{yum,dnf}/*
-
 mv /bin/ironic-probe.sh /bin/ironic-readiness
 cp /bin/ironic-readiness /bin/ironic-liveness
 mkdir /data /conf
