@@ -69,8 +69,6 @@ if [[ -n "${EXTRA_PKGS_LIST:-}" ]]; then
     fi
 fi
 
-dnf remove -y --noautoremove 'dnf-command(config-manager)'
-
 # NOTE(elfosardo): we need to reinstall tzdata as the base CS9 container removes
 # its content, for more info see https://bugzilla.redhat.com/show_bug.cgi?id=2052861
 dnf reinstall -y tzdata
@@ -92,6 +90,8 @@ if [[ -n "${PATCH_LIST:-}" ]]; then
     fi
 fi
 rm -f /bin/patch-image.sh
+
+dnf remove -y --noautoremove 'dnf-command(config-manager)'
 
 dnf clean all
 rm -rf /var/cache/{yum,dnf}/*

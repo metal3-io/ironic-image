@@ -4,7 +4,12 @@ set -ex
 PATCH_FILE="/tmp/${PATCH_LIST}"
 VARS="PROJECT REFSPEC GIT_HOST"
 
-dnf install -y python3-pip git-core
+declare -a REQS=(
+    git-core
+    python3.12-pip
+)
+
+dnf install -y "${REQS[@]}"
 
 while IFS= read -r line; do
     # shellcheck disable=SC2086,SC2229
@@ -18,9 +23,10 @@ while IFS= read -r line; do
     git fetch "$PROJ_URL" "$REFSPEC"
     git checkout FETCH_HEAD
 
-    SKIP_GENERATE_AUTHORS=1 SKIP_WRITE_GIT_CHANGELOG=1 python3 setup.py sdist
-    python3 -m pip install --prefix /usr dist/*.tar.gz
+    SKIP_GENERATE_AUTHORS=1 SKIP_WRITE_GIT_CHANGELOG=1 python3.12 setup.py sdist
+    python3.12 -m pip install --prefix /usr dist/*.tar.gz
 done < "$PATCH_FILE"
 
-dnf remove -y python3-pip git-core
+dnf remove -y "${REQS[@]}"
+
 cd /
