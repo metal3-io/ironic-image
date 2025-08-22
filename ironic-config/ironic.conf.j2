@@ -235,13 +235,23 @@ ipxe_config_template = /templates/ipxe_config.template
 [redfish]
 use_swift = false
 kernel_append_params = nofb nomodeset vga=normal ipa-insecure=1 {% if env.ENABLE_FIPS_IPA %}fips={{ env.ENABLE_FIPS_IPA|trim }}{% endif %} {% if env.IRONIC_RAMDISK_SSH_KEY %}sshkey="{{ env.IRONIC_RAMDISK_SSH_KEY|trim }}"{% endif %} {{ env.IRONIC_KERNEL_PARAMS|trim }} systemd.journald.forward_to_console=yes
+{% if env.BMC_TLS_ENABLED == "true" %}
+# idrac uses the same options as the redfish driver
+verify_ca = {{ env.BMC_CACERT_FILE }}
+{% endif %}
 
 [ilo]
 kernel_append_params = nofb nomodeset vga=normal ipa-insecure=1 {% if env.ENABLE_FIPS_IPA %}fips={{ env.ENABLE_FIPS_IPA|trim }}{% endif %} {% if env.IRONIC_RAMDISK_SSH_KEY %}sshkey="{{ env.IRONIC_RAMDISK_SSH_KEY|trim }}"{% endif %} {{ env.IRONIC_KERNEL_PARAMS|trim }} systemd.journald.forward_to_console=yes
 use_web_server_for_images = true
+{% if env.BMC_TLS_ENABLED == "true" %}
+verify_ca = {{ env.BMC_CACERT_FILE }}
+{% endif %}
 
 [irmc]
 kernel_append_params = nofb nomodeset vga=normal ipa-insecure=1 {% if env.ENABLE_FIPS_IPA %}fips={{ env.ENABLE_FIPS_IPA|trim }}{% endif %} {% if env.IRONIC_RAMDISK_SSH_KEY %}sshkey="{{ env.IRONIC_RAMDISK_SSH_KEY|trim }}"{% endif %} {{ env.IRONIC_KERNEL_PARAMS|trim }} systemd.journald.forward_to_console=yes
+{% if env.BMC_TLS_ENABLED == "true" %}
+verify_ca = {{ env.BMC_CACERT_FILE }}
+{% endif %}
 
 [service_catalog]
 endpoint_override = {{ env.IRONIC_BASE_URL }}
