@@ -15,12 +15,13 @@ configure_restart_on_certificate_update "${IRONIC_TLS_SETUP}" ironic "${IRONIC_C
 
 configure_ironic_auth
 
-if [[ -d "$BMC_CACERT_PATH" ]]; then
+if [[ -d "${BMC_CACERT_PATH}" ]]; then
     # shellcheck disable=SC2034
-    python3.12 -m pyinotify --raw-format -e IN_MODIFY,IN_CREATE,IN_DELETE -v "${BMC_CACERT_PATH}" |
-        while read -r; do
-            cat "$BMC_CACERT_PATH"/* > "$BMC_CACERT_FILE"
-        done &
+    watchmedo shell-command \
+        --patterns="*" \
+        --ignore-directories \
+        --command='cat "${BMC_CACERT_PATH}"/* > "${BMC_CACERT_FILE}"' \
+        "${BMC_CACERT_PATH}" &
 fi
 
 exec /usr/bin/ironic --config-dir "${IRONIC_CONF_DIR}"
