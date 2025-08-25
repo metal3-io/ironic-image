@@ -2,14 +2,15 @@ SHELL=/usr/bin/env bash -o errexit
 
 .PHONY: help build
 
-export CONTAINER_ENGINE ?= podman
+export CONTAINER_RUNTIME ?= podman
 
 help:
 	@echo "Targets:"
 	@echo "  build -- build the docker image"
 
 build:
-	$(CONTAINER_ENGINE) build . -f Dockerfile
+	$(CONTAINER_RUNTIME) build . -f Dockerfile --build-arg BASE_IMAGE=quay.io/centos/centos:stream9
+	$(CONTAINER_RUNTIME) build . -f Dockerfile --build-arg BASE_IMAGE=quay.io/centos/centos:stream10
 
 ## --------------------------------------
 ## Release
