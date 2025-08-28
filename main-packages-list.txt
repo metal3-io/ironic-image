@@ -12,3 +12,4 @@ sqlite
 syslinux-nonlinux
 util-linux
 xorriso
+bind-utils
