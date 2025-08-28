@@ -40,6 +40,10 @@ fi
 
 IRONIC_CONFIG="${IRONIC_CONF_DIR}/ironic.conf"
 
+if [[ -z "${IRONIC_OCI_AUTH_CONFIG:-}" ]] && [[ -f "/auth/oci.json" ]]; then
+    export IRONIC_OCI_AUTH_CONFIG="/auth/oci.json"
+fi
+
 configure_json_rpc_auth()
 {
     if [[ "${IRONIC_EXPOSE_JSON_RPC}" != "true" ]]; then
