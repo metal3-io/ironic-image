@@ -7,7 +7,6 @@ set -eux
 # shellcheck disable=SC1091
 . /bin/tls-common.sh
 
-export HTTP_PORT=${HTTP_PORT:-80}
 DNSMASQ_EXCEPT_INTERFACE=${DNSMASQ_EXCEPT_INTERFACE:-lo}
 export DNS_PORT=${DNS_PORT:-0}
 
