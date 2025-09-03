@@ -102,6 +102,8 @@ functionality:
 - `DEPLOY_KERNEL_URL` and `DEPLOY_RAMDISK_URL` provide the default IPA kernel
   and initramfs images. If they're not set, the images from IPA downloader are
   used (if present).
+- `IRONIC_JSON_RPC_PORT` - port used by the ironic json-rpc service (default to
+  6189).
 
 The following mountpoints can be passed in to customize run-time
 functionality:
