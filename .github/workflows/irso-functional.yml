@@ -6,7 +6,7 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-latest-4-cores
+    runs-on: oracle-vm-4cpu-16gb-x86-64
     env:
       CLUSTER_TYPE: minikube
       LOGDIR: /tmp/logs
