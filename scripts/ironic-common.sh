@@ -5,9 +5,11 @@ set -euxo pipefail
 # Export IRONIC_IP to avoid needing to lean on IRONIC_URL_HOST for consumption in
 # e.g. dnsmasq configuration
 export IRONIC_IP="${IRONIC_IP:-}"
+export IRONIC_IPV6="${IRONIC_IPV6:-}"
 PROVISIONING_INTERFACE="${PROVISIONING_INTERFACE:-}"
 PROVISIONING_IP="${PROVISIONING_IP:-}"
 PROVISIONING_MACS="${PROVISIONING_MACS:-}"
+IRONIC_URL_HOSTNAME="${IRONIC_URL_HOSTNAME:-}"
 IPXE_CUSTOM_FIRMWARE_DIR="${IPXE_CUSTOM_FIRMWARE_DIR:-/shared/custom_ipxe_firmware}"
 CUSTOM_CONFIG_DIR="${CUSTOM_CONFIG_DIR:-/conf}"
 CUSTOM_DATA_DIR="${CUSTOM_DATA_DIR:-/data}"
@@ -35,6 +37,85 @@ export LOCAL_DB_URI="sqlite:///${IRONIC_DB_DIR}/ironic.sqlite"
 
 export IRONIC_USE_MARIADB=${IRONIC_USE_MARIADB:-false}
 
+
+get_ip_of_hostname()
+{
+    if [[ "$#" -ne 2 ]]; then
+        echo "${FUNCNAME}: two parameters required, $# provided" >&2
+        return 1
+    fi
+
+    case $2 in
+        4)
+            QUERY="a";;
+        6)
+            QUERY="aaaa";;
+        *)
+            echo "${FUNCNAME}: the second parameter should be <4|6> for A and AAAA records"
+            return 1;;
+    esac
+
+    local HOSTNAME=$1
+
+    echo "$(nslookup -type=${QUERY} $HOSTNAME | tail -n2 | grep -w "Address:" | cut -d " " -f2)"
+}
+
+get_interface_of_ip()
+{
+    local IP_VERS=""
+
+    if [[ "$#" -gt 2 ]]; then
+        echo "${FUNCNAME}: too many parameters" >&2
+        return 1
+    fi
+
+    if [[ "$#" -eq 2 ]]; then
+        case $2 in
+        4|6)
+            local IP_VERS="-${2}"
+            ;;
+        *)
+            echo "${FUNCNAME}: the second parameter should be [4|6] (or missing for both)" >&2
+            return 2
+            ;;
+        esac
+    fi
+
+    local IP_ADDR=$1
+
+    # Convert the address using ipcalc which strips out the subnet.
+    # For IPv6 addresses, this will give the short-form address
+    IP_ADDR="$(ipcalc "${IP_ADDR}" | grep "^Address:" | awk '{print $2}')"
+
+    echo "$(ip $IP_VERS -br addr show scope global | grep -i " ${IP_ADDR}/" | cut -f 1 -d ' ' | cut -f 1 -d '@')"
+}
+
+get_ip_of_interface()
+{
+    local IP_VERS=""
+
+    if [[ "$#" -gt 2 ]]; then
+        echo "${FUNCNAME}: too many parameters" >&2
+        return 1
+    fi
+
+    if [[ "$#" -eq 2 ]]; then
+        case $2 in
+        4|6)
+            local IP_VERS="-${2}"
+            ;;
+        *)
+            echo "${FUNCNAME}: the second parameter should be [4|6] (or missing for both)" >&2
+            return 2
+            ;;
+        esac
+    fi
+
+    local IFACE=$1
+
+    echo "$(ip $IP_VERS -br addr show scope global up dev $IFACE | awk '{print $3}' | sed -e 's%/.*%%' | head -n 1)"
+}
+
 get_provisioning_interface()
 {
     if [[ -n "$PROVISIONING_INTERFACE" ]]; then
@@ -43,13 +124,7 @@ get_provisioning_interface()
         return
     fi
 
-    local interface="provisioning"
-
-    if [[ -n "${PROVISIONING_IP}" ]]; then
-        if ip -br addr show | grep -i " ${PROVISIONING_IP}/" &>/dev/null; then
-            interface="$(ip -br addr show | grep -i " ${PROVISIONING_IP}/" | cut -f 1 -d ' ' | cut -f 1 -d '@')"
-        fi
-    fi
+    local interface=""
 
     for mac in ${PROVISIONING_MACS//,/ }; do
         if ip -br link show up | grep -i "$mac" &>/dev/null; then
@@ -73,31 +148,102 @@ wait_for_interface_or_ip()
     # available on an interface, otherwise we look at $PROVISIONING_INTERFACE
     # for an IP
     if [[ -n "${PROVISIONING_IP}" ]]; then
-        # Convert the address using ipcalc which strips out the subnet.
-        # For IPv6 addresses, this will give the short-form address
-        IRONIC_IP="$(ipcalc "${PROVISIONING_IP}" | grep "^Address:" | awk '{print $2}')"
-        export IRONIC_IP
-        until grep -F " ${IRONIC_IP}/" <(ip -br addr show); do
-            echo "Waiting for ${IRONIC_IP} to be configured on an interface"
+        local IFACE_OF_IP=""
+
+        until [[ -n "$IFACE_OF_IP" ]]; do
+            echo "Waiting for ${PROVISIONING_IP} to be configured on an interface..."
+            IFACE_OF_IP="$(get_interface_of_ip $PROVISIONING_IP)"
             sleep 1
         done
+
+        echo "Found $PROVISIONING_IP on interface \"${IFACE_OF_IP}\"!"
+
+        export PROVISIONING_INTERFACE="$IFACE_OF_IP"
+	# If the IP contains a colon, then it's an IPv6 address
+        if [[ "$PROVISIONING_IP" =~ .*:.* ]]; then
+            export IRONIC_IPV6="$PROVISIONING_IP"
+        else
+            export IRONIC_IP="$PROVISIONING_IP"
+        fi
+    elif [[ -n "${PROVISIONING_INTERFACE}" ]]; then
+        until [[ -n "$IRONIC_IPV6" ]] || [[ -n "$IRONIC_IP" ]]; do
+            echo "Waiting for ${PROVISIONING_INTERFACE} interface to be configured..."
+
+            export IRONIC_IPV6="$(get_ip_of_interface $PROVISIONING_INTERFACE 6)"
+            sleep 1
+
+            export IRONIC_IP="$(get_ip_of_interface $PROVISIONING_INTERFACE 4)"
+            sleep 1
+        done
+
+        if [[ -n "$IRONIC_IPV6" ]]; then
+            echo "Found $IRONIC_IPV6 on interface \"${PROVISIONING_INTERFACE}\"!"
+        fi
+        if [[ -n "$IRONIC_IP" ]]; then
+            echo "Found $IRONIC_IP on interface \"${PROVISIONING_INTERFACE}\"!"
+        fi
+    elif [[ -n "$IRONIC_URL_HOSTNAME" ]]; then
+        local IPV6_IFACE=""
+        local IPV4_IFACE=""
+        
+        # we should get at least one IP address
+        until [[ -n "$IPV6_IFACE" ]] || [[ -n "$IPV4_IFACE" ]]; do
+            local IPV6_RECORD=""
+            local IPV4_RECORD=""
+
+            IPV6_RECORD="$(get_ip_of_hostname $IRONIC_URL_HOSTNAME 6)"
+            IPV4_RECORD="$(get_ip_of_hostname $IRONIC_URL_HOSTNAME 4)"
+
+            # We couldn't get any IP
+            if [[ -z "$IPV4_RECORD" ]] && [[ -z "$IPV6_RECORD" ]]; then
+                echo "${FUNCNAME}: no valid IP found for hostname $IRONIC_URL_HOSTNAME" >&2
+                return 1
+            fi
+
+            echo "Waiting for ${IPV6_RECORD} to be configured on an interface"
+            IPV6_IFACE="$(get_interface_of_ip $IPV6_RECORD 6)"
+            sleep 1
+
+            echo "Waiting for ${IPV4_RECORD} to be configured on an interface"
+            IPV4_IFACE="$(get_interface_of_ip $IPV4_RECORD 4)"
+            sleep 1
+        done
+
+        # Add some debugging output
+        if [[ -n "$IPV6_IFACE" ]]; then
+            echo "Found $IPV6_RECORD on interface \"${IPV6_IFACE}\"!"
+            export IRONIC_IPV6="$IPV6_RECORD"
+        fi
+        if [[ -n "$IPV4_IFACE" ]]; then
+            echo "Found $IPV4_RECORD on interface \"${IPV4_IFACE}\"!"
+            export IRONIC_IP="$IPV4_RECORD"
+        fi
+
+        # Make sure both IPs are asigned to the same interface
+        if [[ -n "$IPV6_IFACE" ]] && [[ -n "$IPV4_IFACE" ]] && [[ "$IPV6_IFACE" != "$IPV4_IFACE" ]]; then
+            echo "Warning, the IPv4 and IPv6 addresses from \"${HOSTNAME}\" are assigned to different " \
+            "interfaces (\"${IPV6_IFACE}\" and \"${IPV4_IFACE}\")" >&2
+        fi
+
     else
-        until [[ -n "$IRONIC_IP" ]]; do
-            echo "Waiting for ${PROVISIONING_INTERFACE} interface to be configured"
-            IRONIC_IP="$(ip -br add show scope global up dev "${PROVISIONING_INTERFACE}" | awk '{print $3}' | sed -e 's%/.*%%' | head -n 1)"
-            export IRONIC_IP
-            sleep 1
-        done
+        echo "Cannot determine an interface or an IP for binding and creating URLs"
+        return 1
     fi
 
-    # If the IP contains a colon, then it's an IPv6 address, and the HTTP
-    # host needs surrounding with brackets
-    if [[ "$IRONIC_IP" =~ .*:.* ]]; then
-        export IPV=6
-        export IRONIC_URL_HOST="[$IRONIC_IP]"
-    else
-        export IPV=4
+    # Define the URLs based on the what we have found,
+    # prioritize IPv6 for IRONIC_URL_HOST
+    if [[ -n "$IRONIC_IP" ]]; then
+        export ENABLE_IPV4=yes
         export IRONIC_URL_HOST="$IRONIC_IP"
+    fi
+    if [[ -n "$IRONIC_IPV6" ]]; then
+        export ENABLE_IPV6=yes
+        export IRONIC_URL_HOST="[$IRONIC_IPV6]" # The HTTP host needs surrounding with brackets
+    fi
+
+    # Once determined if we have IPv4 and/or IPv6, override the hostname if provided
+    if [[ -n "$IRONIC_URL_HOSTNAME" ]]; then
+        IRONIC_URL_HOST=$IRONIC_URL_HOSTNAME
     fi
 
     # Avoid having to construct full URL multiple times while allowing
