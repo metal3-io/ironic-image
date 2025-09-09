@@ -24,6 +24,9 @@ export IRONIC_TMP_DATA_DIR="${CUSTOM_DATA_DIR}/tmp"
 export PROBE_CONF_DIR="${CUSTOM_CONFIG_DIR}/probes"
 
 export HTTP_PORT=${HTTP_PORT:-80}
+# NOTE(elfosardo): the default port for json_rpc in ironic is 8089, but
+# we need to use a different port to avoid conflicts with other services
+export IRONIC_JSON_RPC_PORT=${IRONIC_JSON_RPC_PORT:-6189}
 
 mkdir -p "${IRONIC_CONF_DIR}" "${PROBE_CONF_DIR}" "${HTTPD_CONF_DIR}" \
     "${HTTPD_CONF_DIR_D}" "${DNSMASQ_CONF_DIR}" "${DNSMASQ_TEMP_DIR}" \
