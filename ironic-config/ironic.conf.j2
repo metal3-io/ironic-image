@@ -119,6 +119,7 @@ erase_devices_priority = 0
 http_root = /shared/html/
 http_url = {{ env.IRONIC_HTTP_URL }}
 fast_track = {{ env.IRONIC_FAST_TRACK }}
+iso_master_path = /shared/html/master_iso_images
 {% if env.IRONIC_BOOT_ISO_SOURCE %}
 ramdisk_image_download_source = {{ env.IRONIC_BOOT_ISO_SOURCE }}
 {% endif %}
