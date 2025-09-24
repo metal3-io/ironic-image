@@ -93,9 +93,6 @@ rm -f /bin/patch-image.sh
 
 dnf remove -y --noautoremove 'dnf-command(config-manager)'
 
-dnf clean all
-rm -rf /var/cache/{yum,dnf}/*
-
 mv /bin/ironic-probe.sh /bin/ironic-readiness
 cp /bin/ironic-readiness /bin/ironic-liveness
 mkdir /data /conf
