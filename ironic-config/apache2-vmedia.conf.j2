@@ -10,6 +10,19 @@ Listen {{ env.VMEDIA_TLS_PORT }}
     SSLCertificateFile {{ env.IRONIC_VMEDIA_CERT_FILE }}
     SSLCertificateKeyFile {{ env.IRONIC_VMEDIA_KEY_FILE }}
 
+    {% if "IRONIC_VMEDIA_TLS_12_CIPHERS" in env and env.IRONIC_VMEDIA_TLS_12_CIPHERS %}
+    SSLCipherSuite {{ env.IRONIC_VMEDIA_TLS_12_CIPHERS }}
+    {% endif %}
+    {% if "IRONIC_VMEDIA_TLS_13_CIPHERS" in env and env.IRONIC_VMEDIA_TLS_13_CIPHERS %}
+    SSLCipherSuite TLSv1.3 {{ env.IRONIC_VMEDIA_TLS_13_CIPHERS }}
+    {% endif %}
+    {% if "IRONIC_VMEDIA_CURVES" in env and env.IRONIC_VMEDIA_CURVES %}
+    SSLOpenSSLConfCmd Curves {{ env.IRONIC_VMEDIA_CURVES }}
+    {% endif %}
+    {% if env.IRONIC_VMEDIA_TLS_ENFORCE_SERVER_CIPHER_ORDER | lower == "true" %}
+    SSLHonorCipherOrder on
+    {% endif %}
+
     <Directory ~ "/shared/html">
          Order deny,allow
          deny from all
