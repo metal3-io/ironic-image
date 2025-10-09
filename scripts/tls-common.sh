@@ -1,12 +1,13 @@
 #!/bin/bash
 
-export IRONIC_CERT_FILE=/certs/ironic/tls.crt
-export IRONIC_KEY_FILE=/certs/ironic/tls.key
-export IRONIC_CACERT_FILE=/certs/ca/ironic/tls.crt
 export IRONIC_INSECURE=${IRONIC_INSECURE:-false}
 export IRONIC_SSL_PROTOCOL=${IRONIC_SSL_PROTOCOL:-"-ALL +TLSv1.2 +TLSv1.3"}
 export IPXE_SSL_PROTOCOL=${IPXE_SSL_PROTOCOL:-"-ALL +TLSv1.2 +TLSv1.3"}
 export IRONIC_VMEDIA_SSL_PROTOCOL=${IRONIC_VMEDIA_SSL_PROTOCOL:-"ALL"}
+
+# Node image storage is using the same cert and port as the API
+export IRONIC_CERT_FILE=/certs/ironic/tls.crt
+export IRONIC_KEY_FILE=/certs/ironic/tls.key
 
 export IRONIC_VMEDIA_CERT_FILE=/certs/vmedia/tls.crt
 export IRONIC_VMEDIA_KEY_FILE=/certs/vmedia/tls.key
@@ -16,11 +17,19 @@ export IPXE_KEY_FILE=/certs/ipxe/tls.key
 
 export RESTART_CONTAINER_CERTIFICATE_UPDATED=${RESTART_CONTAINER_CERTIFICATE_UPDATED:-"false"}
 
+# By default every cert has to be signed with Ironic's
+# CA otherwise node image and IPA verification would fail
 export MARIADB_CACERT_FILE=/certs/ca/mariadb/tls.crt
 export BMC_CACERTS_PATH=/certs/ca/bmc
 export BMC_CACERT_FILE=/conf/bmc-tls.pem
+export IRONIC_CACERT_FILE=/certs/ca/ironic/tls.crt
 
 export IPXE_TLS_PORT="${IPXE_TLS_PORT:-8084}"
+
+# Used directly in the ironic.conf
+# Configures what CA or CA bundle is used for verifying
+# Node and IPA image urls
+export WEBSERVER_CACERT_FILE="${WEBSERVER_CACERT_FILE-${IRONIC_CACERT_FILE}}"
 
 if [[ -f "$IRONIC_CERT_FILE" ]] && [[ ! -f "$IRONIC_KEY_FILE" ]]; then
     echo "Missing TLS Certificate key file $IRONIC_KEY_FILE"

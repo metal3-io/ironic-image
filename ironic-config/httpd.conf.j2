@@ -16,18 +16,43 @@ Group apache
 DocumentRoot "/shared/html"
 
 <Directory "/shared/html">
+{%- if env.IPXE_TLS_SETUP | lower == "true" %}
     Options Indexes FollowSymLinks
-    AllowOverride None
+    Require all denied
+{%- else %}
+    Options Indexes FollowSymLinks
     Require all granted
+{%- endif %}
 </Directory>
 
-{%- if env.HTTPD_SERVE_NODE_IMAGES | lower == "true" %}
+<Directory ~ "/shared/html/(redfish|ilo)/">
+{%- if env.IRONIC_VMEDIA_TLS_SETUP | lower == "true" %}
+    Require all denied
+{%- else %}
+    Require all granted
+{%- endif %}
+</Directory>
+
+{%- set serve_img = env.HTTPD_SERVE_NODE_IMAGES | lower %}
+{%- set image_tls = env.IRONIC_TLS_SETUP | lower %}
 <Directory "/shared/html/images">
     Options Indexes FollowSymLinks
     AllowOverride None
+{%- if serve_img == "true" and image_tls != "true" %}
     Require all granted
+{%- else %}
+    Require all denied
+{%- endif %}
+
+    <FilesMatch "^ironic.*">
+{%- if env.IPXE_TLS_SETUP | lower == "true" %}
+        Require all denied
+{%- else %}
+        Require all granted
+{%- endif %}
+    </FilesMatch>
 </Directory>
-{% endif %}
+
 
 <IfModule dir_module>
     DirectoryIndex index.html

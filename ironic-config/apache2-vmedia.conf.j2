@@ -24,15 +24,15 @@ Listen {{ env.VMEDIA_TLS_PORT }}
     {% endif %}
 
     <Directory ~ "/shared/html">
-         Order deny,allow
-         deny from all
+        Require all denied
     </Directory>
     <Directory ~ "/shared/html/(redfish|ilo)/">
-         Order allow,deny
-         allow from all
+        Require all granted
     </Directory>
+
+    <Location ~ "^/.*">
+        SSLRequireSSL
+    </Location>
+
 </VirtualHost>
 
-<Location ~ "^/(redfish|ilo)/">
-    SSLRequireSSL
-</Location>
