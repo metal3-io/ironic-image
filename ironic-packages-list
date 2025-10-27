@@ -10,7 +10,6 @@ ironic @ git+https://opendev.org/openstack/ironic@{{ env.IRONIC_SOURCE }}
 ironic @ git+https://opendev.org/openstack/ironic
 {% endif %}
 ironic-prometheus-exporter
-proliantutils
 PyMySQL>=0.8.0
 python-scciclient
 {% if env.SUSHY_SOURCE %}
