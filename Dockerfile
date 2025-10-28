@@ -44,9 +44,6 @@ ARG UPPER_CONSTRAINTS_FILE=upper-constraints.txt
 ARG IRONIC_SOURCE=98c5fc671714c30c796c5a1b1fe92b7542df5818 # stable/2025.2
 ARG SUSHY_SOURCE
 
-# dummy variable: put the current date to trigger a rebuild
-ENV DUMMY_REBUILD_DATE="2025-10-15"
-
 COPY sources /sources/
 COPY ${UPPER_CONSTRAINTS_FILE} ironic-packages-list ${PKGS_LIST} \
      ${EXTRA_PKGS_LIST:-$PKGS_LIST} ${PATCH_LIST:-$PKGS_LIST} \
