@@ -6,8 +6,6 @@ echo "install_weak_deps=False" >> /etc/dnf/dnf.conf
 # Tell RPM to skip installing documentation
 echo "tsflags=nodocs" >> /etc/dnf/dnf.conf
 
-dnf install -y 'dnf-command(config-manager)'
-
 # emulate uid/gid configuration to match rpm install
 IRONIC_UID=997
 IRONIC_GID=994
@@ -90,8 +88,6 @@ if [[ -n "${PATCH_LIST:-}" ]]; then
     fi
 fi
 rm -f /bin/patch-image.sh
-
-dnf remove -y --noautoremove 'dnf-command(config-manager)'
 
 dnf clean all
 rm -rf /var/cache/{yum,dnf}/*
