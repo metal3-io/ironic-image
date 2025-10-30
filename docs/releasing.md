@@ -74,8 +74,13 @@ If (and only if) you're creating a release `vx.y.0` (i.e. a minor release):
 
 Create a development branch (e.g. `prepare-x.y`) from the newly created branch:
 
-- Pin the constraints and source branch.
+- Pin the constraints.
    [Prior art](https://github.com/metal3-io/ironic-image/pull/655).
+
+- Pin the `IRONIC_SOURCE` to specific SHA in the upstream release branch. It must
+   be in format `ARG IRONIC_SOURCE=<sha> # <branch_name>` for Renovate bot to
+   be able to update it automatically in the future.
+   [Prior art](https://github.com/metal3-io/ironic-image/pull/771)
 
 - Commit your changes, push the new branch and create a pull request:
    - The commit and PR title should be
@@ -186,6 +191,19 @@ don't allow major or minor bumps in release branches.
 
 [Prior art](https://github.com/metal3-io/ironic-image/pull/702)
 
+### Renovate configuration
+
+Renovate bot monitors Ironic upstream branches for updates and creates
+PRs when changes are detected. The configuration in `renovate.json` must be
+updated in the `main` branch to include the new release branch.
+
+Update `renovate.json` in `main` branch:
+
+- Add the new release branch (e.g., `release-32.0`) to the `baseBranchPatterns`
+   array
+- Add the new release branch to the `packageRules` section with the daily
+   schedule configuration matching other release branches
+
 ### Branch protection rules
 
 Branch protection rules need to be applied to the new release branch. Copy the
@@ -203,7 +221,7 @@ Update the [user guide](https://github.com/metal3-io/metal3-docs/tree/main/docs/
   with the new Ironic-image version. As a rule of thumb, the latest 3 stable
   branches are Supported, but we keep testing older stable branches (usually
   up to 2 beyond the Supported branches) based on the
-  [CI Test Matrix][ci-test-matrix].  
+  [CI Test Matrix][ci-test-matrix].
   Please keep in mind that the ironic-image releases are strictly tied
   to the [ironic releases](https://docs.openstack.org/releasenotes/ironic/)
   and its bugfix and stable branches. While ironic stable branches have
@@ -270,3 +288,5 @@ For that, please continue following the instructions provided in
   move to a versioned ipa-downloader too.
 
 [ci-test-matrix]: https://github.com/metal3-io/metal3-docs/blob/main/docs/user-guide/src/version_support.md#ci-test-matrix
+
+<!-- cspell:ignore revertion -->
