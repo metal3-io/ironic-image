@@ -1,24 +1,51 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "onboarding": false,
-  "requireConfig": "ignored",
-  "baseBranchPatterns": ["release-30.0", "release-31.0", "release-32.0"],
-  "enabledManagers": ["custom.regex"],
-  "schedule": ["after 12am and before 2am"],
+  "baseBranchPatterns": [
+    "main",
+    "release-30.0",
+    "release-31.0",
+    "release-32.0"
+  ],
+  "enabledManagers": [
+    "custom.regex"
+  ],
   "prCreation": "immediate",
   "prHourlyLimit": 0,
   "prConcurrentLimit": 0,
   "automerge": false,
+  "packageRules": [
+    {
+      "matchBaseBranches": [
+        "main"
+      ],
+      "schedule": [
+        "before 3am on Monday"
+      ]
+    },
+    {
+      "matchBaseBranches": [
+        "release-30.0",
+        "release-31.0",
+        "release-32.0"
+      ],
+      "schedule": [
+        "after 12am and before 2am"
+      ]
+    }
+  ],
   "customManagers": [
     {
       "customType": "regex",
-      "fileMatch": ["^Dockerfile$"],
+      "managerFilePatterns": [
+        "/^Dockerfile$/"
+      ],
       "matchStrings": [
         "ARG IRONIC_SOURCE=(?<currentDigest>[a-f0-9]{40})\\s+#\\s*(?<currentValue>[^\\n]+)"
       ],
       "datasourceTemplate": "git-refs",
       "depNameTemplate": "openstack-ironic",
       "packageNameTemplate": "https://opendev.org/openstack/ironic.git",
+      "versioningTemplate": "loose",
       "autoReplaceStringTemplate": "ARG IRONIC_SOURCE={{#if newDigest}}{{{newDigest}}}{{else}}{{{newValue}}}{{/if}} # {{{currentValue}}}"
     }
   ]
