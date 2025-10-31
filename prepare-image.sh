@@ -2,9 +2,11 @@
 
 set -euxo pipefail
 
-echo "install_weak_deps=False" >> /etc/dnf/dnf.conf
-# Tell RPM to skip installing documentation
-echo "tsflags=nodocs" >> /etc/dnf/dnf.conf
+cat >> /etc/dnf/dnf.conf<< EOF
+install_weak_deps=False
+tsflags=nodocs
+keepcache=1
+EOF
 
 # emulate uid/gid configuration to match rpm install
 IRONIC_UID=997
