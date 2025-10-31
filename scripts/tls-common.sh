@@ -26,11 +26,6 @@ export IRONIC_CACERT_FILE=/certs/ca/ironic/tls.crt
 
 export IPXE_TLS_PORT="${IPXE_TLS_PORT:-8084}"
 
-# Used directly in the ironic.conf
-# Configures what CA or CA bundle is used for verifying
-# Node and IPA image urls
-export WEBSERVER_CACERT_FILE="${WEBSERVER_CACERT_FILE-${IRONIC_CACERT_FILE}}"
-
 if [[ -f "$IRONIC_CERT_FILE" ]] && [[ ! -f "$IRONIC_KEY_FILE" ]]; then
     echo "Missing TLS Certificate key file $IRONIC_KEY_FILE"
     exit 1

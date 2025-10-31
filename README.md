@@ -105,9 +105,7 @@ functionality:
 - `IRONIC_JSON_RPC_PORT` - port used by the ironic json-rpc service (default to
   6189).
 - `WEBSERVER_CACERT_FILE` - Specifies the CA or CA bundle that will be used
-  by Ironic to verify disk and IPA images and also by IPA to download the
-  disk images, by default this will  point to Ironic's CA, if empty string
-  is passed then the system default CA bundle will be used
+  by Ironic to verify disk and IPA images.
 
 The following environment variables can be passed to customize the virtual
 media HTTP server configuration:
