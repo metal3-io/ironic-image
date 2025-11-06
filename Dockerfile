@@ -8,6 +8,7 @@ FROM $BASE_IMAGE AS ironic-builder
 
 ARG IPXE_COMMIT_HASH=e965f179e1654103eca33feed7a9cc4c51d91be6
 
+RUN dnf --version || microdnf install -y dnf
 RUN dnf install -y gcc git make xz-devel
 
 WORKDIR /tmp
@@ -54,6 +55,7 @@ COPY ironic-config/inspector.ipxe.j2 ironic-config/httpd-ironic-api.conf.j2 \
 COPY prepare-image.sh patch-image.sh configure-nonroot.sh /bin/
 COPY scripts/ /bin/
 
+RUN dnf --version || ln -s /usr/bin/microdnf /usr/bin/dnf
 RUN prepare-image.sh && rm -f /bin/prepare-image.sh
 
 # IRONIC #
