@@ -41,6 +41,10 @@ isolinux_bin = /usr/share/syslinux/isolinux.bin
 # the ESP provided in [conductor]bootloader.
 grub_config_path = EFI/centos/grub.cfg
 
+# NOTE(hroyrh): updating the default temp directory to fix device cross links
+# errors when hard linking
+tempdir = /shared/tmp
+
 [agent]
 deploy_logs_collect = always
 deploy_logs_local_path = /shared/log/ironic/deploy
