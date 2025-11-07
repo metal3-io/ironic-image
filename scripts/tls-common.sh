@@ -11,6 +11,7 @@ export IRONIC_KEY_FILE=/certs/ironic/tls.key
 
 export IRONIC_VMEDIA_CERT_FILE=/certs/vmedia/tls.crt
 export IRONIC_VMEDIA_KEY_FILE=/certs/vmedia/tls.key
+export IRONIC_VMEDIA_KEEP_HTTP="${IRONIC_VMEDIA_KEEP_HTTP:-"false"}"
 
 export IPXE_CERT_FILE=/certs/ipxe/tls.crt
 export IPXE_KEY_FILE=/certs/ipxe/tls.key
