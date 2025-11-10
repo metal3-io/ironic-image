@@ -41,6 +41,10 @@ isolinux_bin = /usr/share/syslinux/isolinux.bin
 # the ESP provided in [conductor]bootloader.
 grub_config_path = EFI/centos/grub.cfg
 
+# NOTE(hroyrh): updating the default temp directory to fix device cross links
+# errors when hard linking
+tempdir = /shared/tmp
+
 [agent]
 deploy_logs_collect = always
 deploy_logs_local_path = /shared/log/ironic/deploy
@@ -119,6 +123,7 @@ erase_devices_priority = 0
 http_root = /shared/html/
 http_url = {{ env.IRONIC_HTTP_URL }}
 fast_track = {{ env.IRONIC_FAST_TRACK }}
+iso_master_path = /shared/html/master_iso_images
 {% if env.IRONIC_BOOT_ISO_SOURCE %}
 ramdisk_image_download_source = {{ env.IRONIC_BOOT_ISO_SOURCE }}
 {% endif %}
