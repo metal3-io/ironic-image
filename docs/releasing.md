@@ -265,6 +265,11 @@ operator code as well. After that, an
 [IrSO release](https://github.com/metal3-io/ironic-standalone-operator/blob/main/docs/releasing.md)
 will be prepared.
 
+Finally, return to the release branch in this repository and update
+`IRONIC_CUSTOM_VERSION` in the IrSO workflow
+(`.github/workflows/irso-functional.yml`) to match the correct version (e.g.
+`32.0` on `release-32.0`).
+
 ## Additional actions outside this repository
 
 Further additional actions may be required in the Metal3 project after
