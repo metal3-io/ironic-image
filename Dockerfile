@@ -8,7 +8,11 @@ FROM $BASE_IMAGE AS ironic-builder
 
 ARG IPXE_COMMIT_HASH=e965f179e1654103eca33feed7a9cc4c51d91be6
 
-RUN dnf install -y gcc git make xz-devel
+RUN --mount=type=cache,target=/var/cache/dnf \
+    echo "install_weak_deps=False" >> /etc/dnf/dnf.conf && \
+    echo "tsflags=nodocs" >> /etc/dnf/dnf.conf && \
+    echo "keepcache=1" >> /etc/dnf/dnf.conf && \
+    dnf install -y gcc git make xz-devel
 
 WORKDIR /tmp
 
@@ -54,7 +58,9 @@ COPY ironic-config/inspector.ipxe.j2 ironic-config/httpd-ironic-api.conf.j2 \
 COPY prepare-image.sh patch-image.sh configure-nonroot.sh /bin/
 COPY scripts/ /bin/
 
-RUN prepare-image.sh && rm -f /bin/prepare-image.sh
+RUN --mount=type=cache,target=/var/cache/dnf \
+    prepare-image.sh && \
+     rm -f /bin/prepare-image.sh
 
 # IRONIC #
 COPY --from=ironic-builder /tmp/ipxe/src/bin/undionly.kpxe /tmp/ipxe/src/bin-x86_64-efi/snponly.efi /tftpboot/
@@ -71,7 +77,9 @@ COPY ironic-config/apache2-ipxe.conf.j2 /templates/httpd-ipxe.conf.j2
 # DATABASE
 RUN mkdir -p /var/lib/ironic && \
      sqlite3 /var/lib/ironic/ironic.sqlite "pragma journal_mode=wal" && \
-     dnf remove -y sqlite
+     dnf remove -y sqlite && \
+     dnf clean all && \
+     rm -rf /var/cache/{yum,dnf}/*
 
 # configure non-root user and set relevant permissions
 RUN configure-nonroot.sh && rm -f /bin/configure-nonroot.sh
