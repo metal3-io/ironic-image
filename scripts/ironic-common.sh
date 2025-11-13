@@ -114,10 +114,20 @@ parse_ip_address()
 # Wait for the interface or IP to be up, sets $IRONIC_IP
 wait_for_interface_or_ip()
 {
-    # If $PROVISIONING_IP is specified, then we wait for that to become
-    # available on an interface, otherwise we look at $PROVISIONING_INTERFACE
-    # for an IP
-    if [[ -n "${PROVISIONING_IP}" ]]; then
+    # IRONIC_IP already defined overrides everything else
+    if [[ -n "${IRONIC_IP}" ]]; then
+        local PARSED_IP
+        PARSED_IP="$(parse_ip_address "${IRONIC_IP}")"
+        if [[ -z "${PARSED_IP}" ]]; then
+            echo "ERROR: PROVISIONING_IP contains an invalid IP address, failed to start ironic"
+            exit 1
+        fi
+
+        export IRONIC_IP="${PARSED_IP}"
+    elif [[ -n "${PROVISIONING_IP}" ]]; then
+        # If $PROVISIONING_IP is specified, then we wait for that to become
+        # available on an interface, otherwise we look at $PROVISIONING_INTERFACE
+        # for an IP
         local PARSED_IP
         PARSED_IP="$(parse_ip_address "${PROVISIONING_IP}")"
         if [[ -z "${PARSED_IP}" ]]; then
@@ -135,15 +145,6 @@ wait_for_interface_or_ip()
         echo "Found ${PROVISIONING_IP} on interface \"${IFACE_OF_IP}\"!"
 
         export PROVISIONING_INTERFACE="${IFACE_OF_IP}"
-        export IRONIC_IP="${PARSED_IP}"
-    elif [[ -n "${IRONIC_IP}" ]]; then
-        local PARSED_IP
-        PARSED_IP="$(parse_ip_address "${IRONIC_IP}")"
-        if [[ -z "${PARSED_IP}" ]]; then
-            echo "ERROR: PROVISIONING_IP contains an invalid IP address, failed to start ironic"
-            exit 1
-        fi
-
         export IRONIC_IP="${PARSED_IP}"
     elif [[ -n "${PROVISIONING_INTERFACE}" ]]; then
         until [[ -n "$IRONIC_IP" ]]; do
