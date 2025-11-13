@@ -136,4 +136,11 @@ render_j2_config "/etc/ironic/ironic.conf.j2" \
 configure_json_rpc_auth
 
 # Make sure ironic traffic bypasses any proxies
-export NO_PROXY="${NO_PROXY:-},$IRONIC_IP"
+export NO_PROXY="${NO_PROXY:-}"
+
+if [[ -n "${IRONIC_IPV6}" ]]; then
+    export NO_PROXY="${NO_PROXY},${IRONIC_IPV6}"
+fi
+if [[ -n "${IRONIC_IP}" ]]; then
+    export NO_PROXY="${NO_PROXY},${IRONIC_IP}"
+fi
