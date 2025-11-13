@@ -69,6 +69,25 @@ export PROVISIONING_INTERFACE
 
 export LISTEN_ALL_INTERFACES="${LISTEN_ALL_INTERFACES:-true}"
 
+parse_ip_address()
+{
+    if [[ "$#" -ne 1 ]]; then
+        echo "${FUNCNAME[0]}: please provide a single IP address as input" >&2
+        return 1
+    fi
+
+    local IP_ADDR=$1
+
+    if ipcalc "${IP_ADDR}" | grep ^INVALID &>/dev/null; then
+        echo "${FUNCNAME[0]}: Failed to parse ${IP_ADDR}" >&2
+        return 2
+    fi
+
+    # Convert the address using ipcalc which strips out the subnet.
+    # For IPv6 addresses, this will give the short-form address
+    echo "$(ipcalc "${IP_ADDR}" | grep "^Address:" | awk '{print $2}')"
+}
+
 # Wait for the interface or IP to be up, sets $IRONIC_IP
 wait_for_interface_or_ip()
 {
@@ -76,9 +95,11 @@ wait_for_interface_or_ip()
     # available on an interface, otherwise we look at $PROVISIONING_INTERFACE
     # for an IP
     if [[ -n "${PROVISIONING_IP}" ]]; then
-        # Convert the address using ipcalc which strips out the subnet.
-        # For IPv6 addresses, this will give the short-form address
-        IRONIC_IP="$(ipcalc "${PROVISIONING_IP}" | grep "^Address:" | awk '{print $2}')"
+        IRONIC_IP="$(parse_ip_address "${PROVISIONING_IP}")"
+        if [[ -z "${IRONIC_IP}" ]]; then
+            return 1
+        fi
+
         export IRONIC_IP
         until grep -F " ${IRONIC_IP}/" <(ip -br addr show); do
             echo "Waiting for ${IRONIC_IP} to be configured on an interface"
