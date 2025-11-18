@@ -12,7 +12,7 @@ jobs:
       LOGDIR: /tmp/logs
       JUNIT_OUTPUT: /tmp/logs/report.xml
       IRONIC_CUSTOM_IMAGE: localhost/ironic:test
-      IRONIC_CUSTOM_VERSION: latest
+      IRONIC_CUSTOM_VERSION: "31.0"
     steps:
     - name: Update repositories
       run: sudo apt-get update
