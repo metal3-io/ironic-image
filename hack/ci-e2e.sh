@@ -29,6 +29,6 @@ rm -f "${IMAGE_ARCHIVE}"
 cd "${IRSO_PATH}/test"
 # shellcheck disable=SC1091
 . testing.env
-export IRONIC_CUSTOM_VERSION=latest
+export IRONIC_CUSTOM_VERSION="30.0"
 
 exec go test -timeout 90m
