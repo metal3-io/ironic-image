@@ -121,7 +121,7 @@ configure_restart_on_certificate_update()
     fi
 }
 
-if [ -d "${BMC_CACERTS_PATH}" ]; then
+if ls "${BMC_CACERTS_PATH}"/* > /dev/null 2>&1; then
     export BMC_TLS_ENABLED="true"
     cat "${BMC_CACERTS_PATH}"/* > "${BMC_CACERT_FILE}"
 else

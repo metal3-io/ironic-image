@@ -15,7 +15,7 @@ configure_restart_on_certificate_update "${IRONIC_TLS_SETUP}" ironic "${IRONIC_C
 
 configure_ironic_auth
 
-if [[ -d "${BMC_CACERTS_PATH}" ]]; then
+if [[ "${BMC_TLS_ENABLED}" == "true" ]]; then
     # shellcheck disable=SC2034
     watchmedo shell-command \
         --patterns="*" \
