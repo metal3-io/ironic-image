@@ -13,13 +13,19 @@
   "prHourlyLimit": 0,
   "prConcurrentLimit": 0,
   "automerge": false,
+  "labels": [
+    "ok-to-test"
+  ],
+  "commitMessagePrefix": ":seedling: ",
+  "semanticCommits": "disabled",
   "packageRules": [
     {
       "matchBaseBranches": [
         "main"
       ],
+      "description": "run before 6am on Mondays",
       "schedule": [
-        "before 3am on Monday"
+        "* 0-5 * * 1"
       ]
     },
     {
@@ -28,8 +34,9 @@
         "release-31.0",
         "release-32.0"
       ],
+      "description": "run before 6am every day",
       "schedule": [
-        "after 12am and before 2am"
+        "* 0-5 * * *"
       ]
     }
   ],
@@ -46,7 +53,8 @@
       "depNameTemplate": "openstack-ironic",
       "packageNameTemplate": "https://opendev.org/openstack/ironic.git",
       "versioningTemplate": "loose",
-      "autoReplaceStringTemplate": "ARG IRONIC_SOURCE={{#if newDigest}}{{{newDigest}}}{{else}}{{{newValue}}}{{/if}} # {{{currentValue}}}"
+      "autoReplaceStringTemplate": "ARG IRONIC_SOURCE={{#if newDigest}}{{{newDigest}}}{{else}}{{{newValue}}}{{/if}} # {{{currentValue}}}",
+      "changelogUrlTemplate": "https://github.com/openstack/ironic/compare/{{{currentDigest}}}...{{{newDigest}}}"
     }
   ]
 }
