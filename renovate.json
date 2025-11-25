@@ -38,6 +38,16 @@
       "schedule": [
         "* 0-5 * * *"
       ]
+    },
+    {
+      "description": "Ensure any digest-pinned, GitHub-sourced, dependencies creates a link to the diff between the two commits",
+      "matchSourceUrls": [
+        "https://github.com/**/*"
+      ],
+      "matchUpdateTypes": [
+        "digest"
+      ],
+      "changelogUrl": "{{sourceUrl}}/compare/{{currentDigest}}..{{newDigest}}"
     }
   ],
   "customManagers": [
@@ -51,10 +61,9 @@
       ],
       "datasourceTemplate": "git-refs",
       "depNameTemplate": "openstack-ironic",
-      "packageNameTemplate": "https://opendev.org/openstack/ironic.git",
+      "packageNameTemplate": "https://github.com/openstack/ironic.git",
       "versioningTemplate": "loose",
-      "autoReplaceStringTemplate": "ARG IRONIC_SOURCE={{#if newDigest}}{{{newDigest}}}{{else}}{{{newValue}}}{{/if}} # {{{currentValue}}}",
-      "changelogUrlTemplate": "https://github.com/openstack/ironic/compare/{{{currentDigest}}}...{{{newDigest}}}"
+      "autoReplaceStringTemplate": "ARG IRONIC_SOURCE={{#if newDigest}}{{{newDigest}}}{{else}}{{{newValue}}}{{/if}} # {{{currentValue}}}"
     }
   ]
 }
