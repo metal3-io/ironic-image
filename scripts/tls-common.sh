@@ -70,6 +70,8 @@ if [[ -f "$IRONIC_CERT_FILE" ]] || [[ -f "$IRONIC_CACERT_FILE" ]]; then
     export IRONIC_TLS_SETUP="true"
     export IRONIC_SCHEME="https"
     if [[ ! -f "$IRONIC_CACERT_FILE" ]]; then
+        # For missing cacert file, change the var to writable path
+        export IRONIC_CACERT_FILE=/conf/certs/ca/ironic/tls.crt
         mkdir -p "$(dirname "${IRONIC_CACERT_FILE}")"
         copy_atomic "$IRONIC_CERT_FILE" "$IRONIC_CACERT_FILE"
     fi
