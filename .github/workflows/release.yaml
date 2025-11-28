@@ -113,6 +113,7 @@ jobs:
   build_ironic_image:
     permissions:
       contents: read
+      id-token: write
     needs: push_release_tags
     name: Build Ironic-image container image
     if: github.repository == 'metal3-io/ironic-image'
@@ -121,6 +122,7 @@ jobs:
       image-name: 'ironic'
       pushImage: true
       ref: ${{ needs.push_release_tags.outputs.release_tag }}
+      generate-sbom: true
     secrets:
       QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
       QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
@@ -128,6 +130,7 @@ jobs:
   build_ironic_image_cs10:
     permissions:
       contents: read
+      id-token: write
     needs: push_release_tags
     name: Build Ironic-image container image
     if: github.repository == 'metal3-io/ironic-image'
@@ -137,6 +140,7 @@ jobs:
       pushImage: true
       image-build-args: 'BASE_IMAGE=quay.io/centos/centos:stream10'
       ref: ${{ needs.push_release_tags.outputs.release_tag }}
+      generate-sbom: true
     secrets:
       QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
       QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
