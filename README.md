@@ -171,7 +171,7 @@ available, it falls back to the default IPA images.
 The following environment variables control IPA kernel boot parameters (all
 have sensible defaults):
 
-- `IRONIC_IPA_INSECURE` - Allow insecure connections (default: `1`)
+- `IRONIC_IPA_INSECURE` - Allow insecure connections (default: `0`)
 - `IRONIC_IPA_DEBUG` - Enable debug mode (default: `1`)
 - `IRONIC_IPA_INSPECTION_DHCP_ALL_INTERFACES` - Request DHCP on all interfaces
   during inspection (default: `1`)
@@ -213,6 +213,10 @@ functionality:
 - `/certs/ca/bmc` - The storage path of BMC CA certificates. If the path exists
   and verify_ca field in driver_info is True or None, the certificates in this
   path will be used.
+- `/certs/ca/ipa` - The storage path of IPA CA certificates. If the path exists
+  and `IRONIC_IPA_INSECURE` variable is not set to `1`, the certificates in this
+  path will be used by the Ironic Python Agent. The Ironic CA bundle will be
+  added to the trusted CA automatically.
 
 MariaDB configuration:
 
