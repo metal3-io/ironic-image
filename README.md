@@ -189,7 +189,8 @@ have sensible defaults):
 - `IRONIC_JSON_RPC_PORT` - port used by the ironic json-rpc service (default to
   6189).
 - `WEBSERVER_CACERT_FILE` - Specifies the CA or CA bundle that will be used
-  by Ironic to verify disk and IPA images.
+  by Ironic to verify disk and IPA images. Will also be used by IPA to verify
+  disk images and connection to Ironic if `IRONIC_IPA_INSECURE` is set to `0`.
 
 The following mountpoints can be passed in to customize run-time
 functionality:
