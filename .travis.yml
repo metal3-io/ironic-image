@@ -3,12 +3,12 @@ language: go
 sudo: false
 
 services:
-  - docker
+- docker
 
 go:
-  - "1.11.5"
+- "1.11.5"
 
 env:
-  - TARGET=docker
+- TARGET=docker
 
 script: make $TARGET

@@ -2,7 +2,7 @@ name: Build Ironic Image on PRs
 
 on:
   pull_request:
-    types: [opened, edited, reopened, synchronize, ready_for_review]
+    types: [ opened, edited, reopened, synchronize, ready_for_review ]
 
 jobs:
   build:
@@ -13,7 +13,7 @@ jobs:
         centos_version:
         - stream9
         - stream10
-    
+
     steps:
     - name: Checkout repository
       uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4.3.0
