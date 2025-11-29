@@ -15,10 +15,14 @@ jobs:
   build_ironic:
     name: Build Ironic container image with default base image
     if: github.repository == 'metal3-io/ironic-image'
+    permissions:
+      contents: read
+      id-token: write
     uses: metal3-io/project-infra/.github/workflows/container-image-build.yml@main
     with:
       image-name: 'ironic'
       pushImage: true
+      generate-sbom: true
     secrets:
       QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
       QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
@@ -26,11 +30,15 @@ jobs:
   build_ironic_cs10:
     name: Build Ironic container image with CentOS Stream 10
     if: github.repository == 'metal3-io/ironic-image'
+    permissions:
+      contents: read
+      id-token: write
     uses: metal3-io/project-infra/.github/workflows/container-image-build.yml@main
     with:
       image-name: 'ironic_cs10'
       pushImage: true
       image-build-args: 'BASE_IMAGE=quay.io/centos/centos:stream10'
+      generate-sbom: true
     secrets:
       QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
       QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
@@ -38,11 +46,15 @@ jobs:
   build_sushy-tools:
     name: Build sushy-tools image
     if: github.repository == 'metal3-io/ironic-image'
+    permissions:
+      contents: read
+      id-token: write
     uses: metal3-io/project-infra/.github/workflows/container-image-build.yml@main
     with:
       image-name: 'sushy-tools'
       dockerfile-directory: resources/sushy-tools
       pushImage: true
+      generate-sbom: true
     secrets:
       QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
       QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
@@ -50,11 +62,15 @@ jobs:
   build_vbmc:
     name: build vbmc image
     if: github.repository == 'metal3-io/ironic-image'
+    permissions:
+      contents: read
+      id-token: write
     uses: metal3-io/project-infra/.github/workflows/container-image-build.yml@main
     with:
       image-name: 'vbmc'
       dockerfile-directory: resources/vbmc
       pushImage: true
+      generate-sbom: true
     secrets:
       QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
       QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
@@ -62,11 +78,15 @@ jobs:
   build_client:
     name: build ironic-client image
     if: github.repository == 'metal3-io/ironic-image'
+    permissions:
+      contents: read
+      id-token: write
     uses: metal3-io/project-infra/.github/workflows/container-image-build.yml@main
     with:
       image-name: 'ironic-client'
       dockerfile-directory: resources/ironic-client
       pushImage: true
+      generate-sbom: true
     secrets:
       QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
       QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
