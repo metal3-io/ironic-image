@@ -45,7 +45,7 @@ ARG PATCH_LIST
 
 # build arguments for source build customization
 ARG UPPER_CONSTRAINTS_FILE=upper-constraints.txt
-ARG IRONIC_SOURCE=fefbf9a32eb2ddd2c7fcb86f21e0fe1250df0dc5 # master
+ARG IRONIC_SOURCE=acb78ef5604e4cda243d3c4d52c6234864ac8c1a # master
 ARG SUSHY_SOURCE
 
 COPY sources /sources/
