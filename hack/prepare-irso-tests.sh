@@ -29,7 +29,7 @@ if [[ -n "${SUSHY_SOURCE:-}" ]]; then
     build_args+=(--build-arg SUSHY_SOURCE=sushy)
 fi
 
-"${CONTAINER_RUNTIME}" build -t "${IRONIC_CUSTOM_IMAGE}" "${build_args[@]}" .
+"${CONTAINER_RUNTIME}" build --format docker -t "${IRONIC_CUSTOM_IMAGE}" "${build_args[@]}" .
 
 IMAGE_ARCHIVE="$(mktemp --suffix=.tar)"
 "${CONTAINER_RUNTIME}" save "${IRONIC_CUSTOM_IMAGE}" > "${IMAGE_ARCHIVE}"
