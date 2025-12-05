@@ -4,7 +4,7 @@ gunicorn
     {% if path.isdir('/sources/' + env.IRONIC_SOURCE) %}
 git+file:///sources/{{ env.IRONIC_SOURCE }}
     {% else %}
-ironic @ git+https://opendev.org/openstack/ironic@{{ env.IRONIC_SOURCE }}
+ironic @ git+https://github.com/Nordix/ironic@{{ env.IRONIC_SOURCE }}
     {% endif %}
 {% else %}
 ironic @ git+https://opendev.org/openstack/ironic
