@@ -12,7 +12,10 @@ RUN --mount=type=cache,target=/var/cache/dnf \
     echo "install_weak_deps=False" >> /etc/dnf/dnf.conf && \
     echo "tsflags=nodocs" >> /etc/dnf/dnf.conf && \
     echo "keepcache=1" >> /etc/dnf/dnf.conf && \
-    dnf install -y gcc git make xz-devel
+    dnf install -y epel-release && \
+    dnf config-manager --set-disabled epel && \
+    dnf install -y gcc git make xz-devel && \
+    dnf install --enablerepo=epel -y gcc-aarch64-linux-gnu gcc-c++-aarch64-linux-gnu
 
 WORKDIR /tmp
 
@@ -20,9 +23,9 @@ RUN git clone https://github.com/ipxe/ipxe.git && \
      cd ipxe && \
      git reset --hard $IPXE_COMMIT_HASH && \
      cd src && \
-     ARCH=$(uname -m | sed 's/aarch/arm/') && \
      # NOTE(elfosardo): warning should not be treated as errors by default
-     NO_WERROR=1 make bin/undionly.kpxe "bin-$ARCH-efi/snponly.efi"
+     NO_WERROR=1 make bin/undionly.kpxe bin-x86_64-efi/snponly.efi && \
+     NO_WERROR=1 make CROSS=aarch64-linux-gnu- bin-arm64-efi/snponly.efi
 
 COPY prepare-efi.sh /bin/
 RUN prepare-efi.sh centos
@@ -64,6 +67,7 @@ RUN --mount=type=cache,target=/var/cache/dnf \
 
 # IRONIC #
 COPY --from=ironic-builder /tmp/ipxe/src/bin/undionly.kpxe /tmp/ipxe/src/bin-x86_64-efi/snponly.efi /tftpboot/
+COPY --from=ironic-builder /tmp/ipxe/src/bin-arm64-efi/snponly.efi /tftpboot/snponly-arm64.efi
 COPY --from=ironic-builder /tmp/uefi_esp*.img /templates/
 
 COPY ironic-config/ironic.conf.j2 /etc/ironic/
