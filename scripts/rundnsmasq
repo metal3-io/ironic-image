@@ -20,8 +20,6 @@ if [[ "${DNS_IP:-}" == "provisioning" ]]; then
 fi
 
 mkdir -p /shared/tftpboot
-mkdir -p /shared/html/images
-mkdir -p /shared/html/pxelinux.cfg
 
 # Copy files to shared mount
 if [[ -r "${IPXE_CUSTOM_FIRMWARE_DIR}" ]]; then
