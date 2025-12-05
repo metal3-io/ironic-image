@@ -4,7 +4,8 @@
     "main",
     "release-30.0",
     "release-31.0",
-    "release-32.0"
+    "release-32.0",
+    "release-33.0"
   ],
   "enabledManagers": [
     "custom.regex"
