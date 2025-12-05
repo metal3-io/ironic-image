@@ -3,8 +3,6 @@
 # Ramdisk logs path
 export LOG_DIR="/shared/log/ironic/deploy"
 
-mkdir -p "${LOG_DIR}"
-
 # Function to process log files
 process_log_file() {
     local FILEPATH="$1"
