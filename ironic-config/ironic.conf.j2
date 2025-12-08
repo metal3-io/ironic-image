@@ -6,7 +6,7 @@ default_inspect_interface = agent
 default_network_interface = noop
 enabled_bios_interfaces = no-bios,redfish,idrac-redfish,irmc
 enabled_boot_interfaces = ipxe,pxe,fake,redfish-virtual-media,idrac-redfish-virtual-media,redfish-https
-enabled_deploy_interfaces = direct,fake,ramdisk,custom-agent
+enabled_deploy_interfaces = direct,fake,ramdisk,custom-agent,bootc
 enabled_firmware_interfaces = no-firmware,fake,redfish
 # NOTE(dtantsur): when changing this, make sure to update the driver
 # dependencies in Dockerfile.
