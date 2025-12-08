@@ -24,13 +24,13 @@ updates:
   - "ok-to-test"
 ## main branch config ends here
 
-## release-30.0 branch config starts here
+## release-33.0 branch config starts here
 - package-ecosystem: "github-actions"
   directory: "/" # Location of package manifests
   schedule:
     interval: "monthly"
     day: "friday"
-  target-branch: release-30.0
+  target-branch: release-33.0
   ## group all action bumps into single PR
   groups:
     github-actions:
@@ -43,15 +43,15 @@ updates:
     prefix: ":seedling:"
   labels:
   - "ok-to-test"
-## release-30.0 branch config ends here
+## release-33.0 branch config ends here
 
-## release-29.0 branch config starts here
+## release-32.0 branch config starts here
 - package-ecosystem: "github-actions"
   directory: "/" # Location of package manifests
   schedule:
     interval: "monthly"
     day: "friday"
-  target-branch: release-29.0
+  target-branch: release-32.0
   ## group all action bumps into single PR
   groups:
     github-actions:
@@ -64,15 +64,15 @@ updates:
     prefix: ":seedling:"
   labels:
   - "ok-to-test"
-## release-29.0 branch config ends here
+## release-32.0 branch config ends here
 
-## release-28.0 branch config starts here
+## release-31.0 branch config starts here
 - package-ecosystem: "github-actions"
   directory: "/" # Location of package manifests
   schedule:
     interval: "monthly"
     day: "friday"
-  target-branch: release-28.0
+  target-branch: release-31.0
   ## group all action bumps into single PR
   groups:
     github-actions:
@@ -85,26 +85,5 @@ updates:
     prefix: ":seedling:"
   labels:
   - "ok-to-test"
-## release-28.0 branch config ends here
+## release-31.0 branch config ends here
 
-## release-27.0 branch config starts here
-- package-ecosystem: "github-actions"
-  directory: "/" # Location of package manifests
-  schedule:
-    interval: "monthly"
-    day: "friday"
-  target-branch: release-27.0
-  ## group all action bumps into single PR
-  groups:
-    github-actions:
-      patterns: [ "*" ]
-  ignore:
-  # Ignore major and minor bumps for release branch
-  - dependency-name: "*"
-    update-types: [ "version-update:semver-major", "version-update:semver-minor" ]
-  commit-message:
-    prefix: ":seedling:"
-  labels:
-  - "ok-to-test"
-
-## release-27.0 branch config ends here
