@@ -11,7 +11,7 @@ LABEL org.opencontainers.image.title="Metal3 Sushy Tools"
 LABEL org.opencontainers.image.url="https://github.com/metal3-io/ironic-image"
 LABEL org.opencontainers.image.vendor="Metal3-io"
 
-ARG SUSHY_TOOLS_VERSION="2.1.0"
+ARG SUSHY_TOOLS_VERSION="2.2.0"
 ARG DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update && \
