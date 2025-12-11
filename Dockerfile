@@ -8,7 +8,7 @@ FROM $BASE_IMAGE AS ironic-builder
 
 ARG IPXE_COMMIT_HASH=e965f179e1654103eca33feed7a9cc4c51d91be6
 
-RUN --mount=type=cache,target=/var/cache/dnf \
+RUN --mount=type=cache,target=/var/cache/dnf,sharing=locked \
     echo "install_weak_deps=False" >> /etc/dnf/dnf.conf && \
     echo "tsflags=nodocs" >> /etc/dnf/dnf.conf && \
     echo "keepcache=1" >> /etc/dnf/dnf.conf && \
@@ -61,7 +61,7 @@ COPY ironic-config/inspector.ipxe.j2 ironic-config/httpd-ironic-api.conf.j2 \
 COPY prepare-image.sh patch-image.sh configure-nonroot.sh /bin/
 COPY scripts/ /bin/
 
-RUN --mount=type=cache,target=/var/cache/dnf \
+RUN --mount=type=cache,target=/var/cache/dnf,sharing=locked \
     prepare-image.sh && \
      rm -f /bin/prepare-image.sh
 
