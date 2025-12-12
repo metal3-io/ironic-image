@@ -2,7 +2,6 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "baseBranchPatterns": [
     "main",
-    "release-30.0",
     "release-31.0",
     "release-32.0",
     "release-33.0"
@@ -31,9 +30,9 @@
     },
     {
       "matchBaseBranches": [
-        "release-30.0",
         "release-31.0",
-        "release-32.0"
+        "release-32.0",
+        "release-33.0"
       ],
       "description": "run before 6am every day",
       "schedule": [
