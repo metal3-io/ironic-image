@@ -16,10 +16,12 @@ jobs:
       # logic is used in IrSO, and also that the tests are skipped properly.
       IRONIC_CUSTOM_VERSION: latest
     steps:
-    - name: Update repositories
-      run: sudo apt-get update
-    - name: Install podman
-      run: sudo apt-get install -y podman
+    - name: Install Podman and Buildah
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y podman buildah
+        echo "Podman version: $(podman --version)"
+        echo "Buildah version: $(buildah --version)"
     - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
       with:
         path: ironic-image
