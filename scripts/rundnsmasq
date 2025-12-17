@@ -24,10 +24,11 @@ mkdir -p /shared/tftpboot
 # Copy files to shared mount
 if [[ -r "${IPXE_CUSTOM_FIRMWARE_DIR}" ]]; then
     cp "${IPXE_CUSTOM_FIRMWARE_DIR}/undionly.kpxe" \
-        "${IPXE_CUSTOM_FIRMWARE_DIR}/snponly.efi" \
+        "${IPXE_CUSTOM_FIRMWARE_DIR}/snponly-x86_64.efi" \
+        "${IPXE_CUSTOM_FIRMWARE_DIR}/snponly-arm64.efi" \
         "/shared/tftpboot"
 else
-    cp /tftpboot/undionly.kpxe /tftpboot/snponly.efi /shared/tftpboot
+    cp /tftpboot/undionly.kpxe /tftpboot/snponly-x86_64.efi /tftpboot/snponly-arm64.efi /shared/tftpboot
 fi
 
 # Template and write dnsmasq.conf

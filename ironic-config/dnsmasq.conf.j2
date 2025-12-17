@@ -37,11 +37,13 @@ dhcp-option=option:router,{{ env["GATEWAY_IP"] }}
 # Note: Need to test EFI booting
 dhcp-match=set:efi,option:client-arch,7
 dhcp-match=set:efi,option:client-arch,9
-dhcp-match=set:efi,option:client-arch,11
 # Client is (i)PXE booting on EFI machine
-dhcp-boot=tag:efi,/snponly.efi,{{ env.IRONIC_IP }}
+dhcp-boot=tag:efi,/snponly-x86_64.efi,{{ env.IRONIC_IP }}
+# Client is (i)PXE booting on arm64 EFI machine
+dhcp-match=set:efi-arm64,option:client-arch,11
+dhcp-boot=tag:efi-arm64,/snponly-arm64.efi,{{ env.IRONIC_IP }}
 # Client is running (i)PXE on BIOS machine
-dhcp-boot=tag:!efi,/undionly.kpxe,{{ env.IRONIC_IP }}
+dhcp-boot=tag:!efi,tag:!efi-arm64,/undionly.kpxe,{{ env.IRONIC_IP }}
 {%- if env.IPXE_TLS_SETUP != "true" %}
 dhcp-boot=tag:ipxe,http://{{ env.IRONIC_URL_HOST }}:{{ env.HTTP_PORT }}/boot.ipxe
 {% endif %}
@@ -55,7 +57,12 @@ ra-param={{ env.PROVISIONING_INTERFACE }},0,0
 dhcp-vendorclass=set:pxe6,enterprise:343,PXEClient
 dhcp-userclass=set:ipxe6,iPXE
 # Client is (i)PXE booting on EFI machine
-dhcp-option=tag:pxe6,option6:bootfile-url,tftp://{{ env.IRONIC_URL_HOST }}/snponly.efi
+dhcp-match=set:amd64,option:client-arch,7
+dhcp-match=set:amd64,option:client-arch,9
+dhcp-option=tag:pxe6,tag:amd64,option6:bootfile-url,tftp://{{ env.IRONIC_URL_HOST }}/snponly-x86_64.efi
+# Client is (i)PXE booting on arm64 EFI machine
+dhcp-match=set:arm64,option:client-arch,11
+dhcp-option=tag:pxe6,tag:arm64,option6:bootfile-url,tftp://{{ env.IRONIC_URL_HOST }}/snponly-arm64.efi
 # Client is running (i)PXE on BIOS machine
 dhcp-option=tag:!pxe6,option6:bootfile-url,tftp://{{ env.IRONIC_URL_HOST }}/undionly.kpxe
 {%- if env.IPXE_TLS_SETUP != "true" %}
