@@ -16,10 +16,31 @@ jobs:
       # logic is used in IrSO, and also that the tests are skipped properly.
       IRONIC_CUSTOM_VERSION: latest
     steps:
-    - name: Update repositories
-      run: sudo apt-get update
-    - name: Install podman
-      run: sudo apt-get install -y podman
+    - name: Install podman 5.x with machine support
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y qemu-utils qemu-system-x86 virtiofsd
+        # Ensure virtiofsd is in PATH (Ubuntu installs it in /usr/libexec)
+        if ! command -v virtiofsd &> /dev/null; then
+          VIRTIOFSD_PATH=$(find /usr -name virtiofsd -type f 2>/dev/null | head -1)
+          if [ -n "$VIRTIOFSD_PATH" ]; then
+            sudo ln -s "$VIRTIOFSD_PATH" /usr/local/bin/virtiofsd
+          fi
+        fi
+        PODMAN_VERSION="5.7.1"
+        GVPROXY_VERSION="0.8.1"
+        # Install gvproxy
+        curl -fsSL -o gvproxy "https://github.com/containers/gvisor-tap-vsock/releases/download/v${GVPROXY_VERSION}/gvproxy-linux-amd64"
+        sudo mkdir -p /usr/local/lib/podman
+        sudo install -m 0755 gvproxy /usr/local/lib/podman/gvproxy
+        # Install podman-remote
+        curl -fsSL -o podman.tar.gz "https://github.com/containers/podman/releases/download/v${PODMAN_VERSION}/podman-remote-static-linux_amd64.tar.gz"
+        tar xf podman.tar.gz
+        sudo install -m 0755 bin/podman-remote-static-linux_amd64 /usr/local/bin/podman
+        # Initialize and start machine
+        podman machine init
+        podman machine start
+        podman --version
     - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
       with:
         path: ironic-image
