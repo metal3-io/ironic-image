@@ -9,6 +9,7 @@ jobs:
     runs-on: oracle-vm-4cpu-16gb-x86-64
     env:
       CLUSTER_TYPE: minikube
+      CONTAINER_RUNTIME: docker
       LOGDIR: /tmp/logs
       JUNIT_OUTPUT: /tmp/logs/report.xml
       IRONIC_CUSTOM_IMAGE: localhost/ironic:test
@@ -16,10 +17,8 @@ jobs:
       # logic is used in IrSO, and also that the tests are skipped properly.
       IRONIC_CUSTOM_VERSION: latest
     steps:
-    - name: Update repositories
-      run: sudo apt-get update
-    - name: Install podman
-      run: sudo apt-get install -y podman
+    - name: Check docker version
+      run: docker --version
     - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
       with:
         path: ironic-image
