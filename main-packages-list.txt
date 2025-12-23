@@ -1,3 +1,4 @@
+cpio
 dnsmasq
 dosfstools
 httpd
