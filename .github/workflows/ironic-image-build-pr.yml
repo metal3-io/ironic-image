@@ -6,13 +6,16 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.platform == 'linux/amd64' && 'ubuntu-latest' || matrix.platform == 'linux/arm64' && 'ubuntu-24.04-arm'}}
     strategy:
       fail-fast: false
       matrix:
         centos_version:
         - stream9
         - stream10
+        platform:
+        - linux/amd64
+        - linux/arm64
 
     steps:
     - name: Checkout repository
@@ -34,6 +37,7 @@ jobs:
         file: ./Dockerfile
         push: false
         tags: ironic:${{ matrix.centos_version }}
+        platforms: ${{ matrix.platform }}
         build-args: |
           BASE_IMAGE=${{ steps.base-image.outputs.base_image }}
         cache-from: type=gha,scope=${{ matrix.centos_version }}

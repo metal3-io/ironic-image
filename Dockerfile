@@ -7,22 +7,16 @@ ARG BASE_IMAGE=quay.io/centos/centos:stream9
 FROM $BASE_IMAGE AS ironic-builder
 
 ARG IPXE_COMMIT_HASH=e965f179e1654103eca33feed7a9cc4c51d91be6
-
-RUN --mount=type=cache,target=/var/cache/dnf \
-    echo "install_weak_deps=False" >> /etc/dnf/dnf.conf && \
-    echo "tsflags=nodocs" >> /etc/dnf/dnf.conf && \
-    echo "keepcache=1" >> /etc/dnf/dnf.conf && \
-    dnf install -y gcc git make xz-devel
+ARG TARGETARCH
 
 WORKDIR /tmp
 
-RUN git clone https://github.com/ipxe/ipxe.git && \
-     cd ipxe && \
-     git reset --hard $IPXE_COMMIT_HASH && \
-     cd src && \
-     ARCH=$(uname -m | sed 's/aarch/arm/') && \
-     # NOTE(elfosardo): warning should not be treated as errors by default
-     NO_WERROR=1 make bin/undionly.kpxe "bin-$ARCH-efi/snponly.efi"
+COPY prepare-ipxe.sh /bin/
+RUN --mount=type=cache,target=/var/cache/dnf,sharing=locked \ 
+  prepare-ipxe.sh
+
+COPY build-ipxe.sh /bin/
+RUN build-ipxe.sh
 
 COPY prepare-efi.sh /bin/
 RUN prepare-efi.sh centos
@@ -39,7 +33,10 @@ LABEL org.opencontainers.image.title="Metal3 Ironic Container"
 LABEL org.opencontainers.image.url="https://github.com/metal3-io/ironic-image"
 LABEL org.opencontainers.image.vendor="Metal3-io"
 
+ARG TARGETARCH
+
 ARG PKGS_LIST=main-packages-list.txt
+ARG ARCH_PKGS_LIST=main-packages-list-${TARGETARCH}.txt
 ARG EXTRA_PKGS_LIST
 ARG PATCH_LIST
 
@@ -49,7 +46,7 @@ ARG IRONIC_SOURCE=6a18c386a6830fb6c3abffaa2cf5b577090ed15b # master
 ARG SUSHY_SOURCE
 
 COPY sources /sources/
-COPY ${UPPER_CONSTRAINTS_FILE} ironic-packages-list ${PKGS_LIST} \
+COPY ${UPPER_CONSTRAINTS_FILE} ironic-packages-list ${PKGS_LIST} ${ARCH_PKGS_LIST} \
      ${EXTRA_PKGS_LIST:-$PKGS_LIST} ${PATCH_LIST:-$PKGS_LIST} \
      /tmp/
 COPY ironic-config/inspector.ipxe.j2 ironic-config/httpd-ironic-api.conf.j2 \
@@ -58,12 +55,12 @@ COPY ironic-config/inspector.ipxe.j2 ironic-config/httpd-ironic-api.conf.j2 \
 COPY prepare-image.sh patch-image.sh configure-nonroot.sh /bin/
 COPY scripts/ /bin/
 
-RUN --mount=type=cache,target=/var/cache/dnf \
+RUN --mount=type=cache,target=/var/cache/dnf,sharing=locked \
     prepare-image.sh && \
      rm -f /bin/prepare-image.sh
 
 # IRONIC #
-COPY --from=ironic-builder /tmp/ipxe/src/bin/undionly.kpxe /tmp/ipxe/src/bin-x86_64-efi/snponly.efi /tftpboot/
+COPY --from=ironic-builder /tmp/ipxe/out/ /tftpboot/
 COPY --from=ironic-builder /tmp/uefi_esp*.img /templates/
 
 COPY ironic-config/ironic.conf.j2 /etc/ironic/

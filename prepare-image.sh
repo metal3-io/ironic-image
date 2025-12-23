@@ -62,6 +62,9 @@ getent passwd ironic > /dev/null || useradd -r -g ironic -u "${IRONIC_UID}" -s /
 dnf remove -y "${BUILD_DEPS[@]}"
 
 xargs -rtd'\n' dnf install -y < /tmp/"${PKGS_LIST}"
+if [[ -s "/tmp/${ARCH_PKGS_LIST}" ]]; then
+    xargs -rtd'\n' dnf install -y < /tmp/"${ARCH_PKGS_LIST}"
+fi
 
 if [[ -n "${EXTRA_PKGS_LIST:-}" ]]; then
     if [[ -s "/tmp/${EXTRA_PKGS_LIST}" ]]; then
