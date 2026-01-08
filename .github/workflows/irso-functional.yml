@@ -30,11 +30,11 @@ jobs:
       id: vars
       run: echo "go_version=$(make -sC ironic-standalone-operator go-version)" >> $GITHUB_OUTPUT
     - name: Set up Go
-      uses: actions/setup-go@d35c59abb061a4a6fb18e82ac0862c26744d6ab5 # v5.5.0
+      uses: actions/setup-go@40f1582b2485089dde7abd97c1529aa768e1baff # v5.6.0
       with:
         go-version: ${{ steps.vars.outputs.go_version }}
     - name: Setup a minikube cluster
-      uses: medyagh/setup-minikube@e3c7f79eb1e997eabccc536a6cf318a2b0fe19d9 # v0.0.20
+      uses: medyagh/setup-minikube@e9e035a86bbc3caea26a450bd4dbf9d0c453682e # v0.0.21
       with:
         start-args: "--ha"
     - name: Prepare tests
