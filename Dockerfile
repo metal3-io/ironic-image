@@ -72,11 +72,18 @@ COPY ironic-config/apache2-vmedia.conf.j2 /templates/httpd-vmedia.conf.j2
 COPY ironic-config/apache2-ipxe.conf.j2 /templates/httpd-ipxe.conf.j2
 
 # DATABASE
-RUN mkdir -p /var/lib/ironic && \
-     sqlite3 /var/lib/ironic/ironic.sqlite "pragma journal_mode=wal" && \
-     dnf remove -y sqlite && \
-     dnf clean all && \
-     rm -rf /var/cache/{yum,dnf}/*
+RUN <<EORUN
+set -euxo pipefail
+mkdir -p /var/lib/ironic
+sqlite3 /var/lib/ironic/ironic.sqlite "pragma journal_mode=wal"
+dnf remove -y sqlite
+dnf clean all
+rm -rf /var/cache/{yum,dnf}/*
+EORUN
 
 # configure non-root user and set relevant permissions
-RUN configure-nonroot.sh && rm -f /bin/configure-nonroot.sh
+RUN <<EORUN
+set -euxo pipefail
+configure-nonroot.sh
+rm -f /bin/configure-nonroot.sh
+EORUN
