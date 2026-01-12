@@ -1,5 +1,3 @@
-crudini
-gunicorn
 {% if env.IRONIC_SOURCE %}
     {% if path.isdir('/sources/' + env.IRONIC_SOURCE) %}
 git+file:///sources/{{ env.IRONIC_SOURCE }}
@@ -9,9 +7,6 @@ ironic @ git+https://opendev.org/openstack/ironic@{{ env.IRONIC_SOURCE }}
 {% else %}
 ironic @ git+https://opendev.org/openstack/ironic
 {% endif %}
-ironic-prometheus-exporter
-PyMySQL>=0.8.0
-python-scciclient
 {% if env.SUSHY_SOURCE %}
     {% if path.isdir('/sources/' + env.SUSHY_SOURCE) %}
 git+file:///sources/{{ env.SUSHY_SOURCE }}

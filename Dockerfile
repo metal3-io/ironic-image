@@ -1,5 +1,9 @@
 ARG BASE_IMAGE=quay.io/centos/centos:stream9
 
+# Python tooling versions - update these regularly
+ARG PIP_VERSION=24.1
+ARG SETUPTOOLS_VERSION=74.1.2
+
 ## Build iPXE w/ IPv6 Support
 ## Note: we are pinning to a specific commit for reproducible builds.
 ## Updated as needed.
@@ -21,8 +25,72 @@ RUN build-ipxe.sh
 COPY prepare-efi.sh /bin/
 RUN prepare-efi.sh centos
 
+## Build Python wheels for dependencies
+FROM $BASE_IMAGE AS deps-wheel-builder
+
+ARG UPPER_CONSTRAINTS_FILE=upper-constraints.txt
+ARG PIP_VERSION
+ARG SETUPTOOLS_VERSION
+
+ENV UPPER_CONSTRAINTS_FILE=${UPPER_CONSTRAINTS_FILE} \
+    PIP_VERSION=${PIP_VERSION} \
+    SETUPTOOLS_VERSION=${SETUPTOOLS_VERSION}
+
+RUN --mount=type=cache,sharing=locked,target=/var/cache/dnf \
+    echo "install_weak_deps=False" >> /etc/dnf/dnf.conf && \
+    echo "tsflags=nodocs" >> /etc/dnf/dnf.conf && \
+    echo "keepcache=1" >> /etc/dnf/dnf.conf && \
+    dnf install -y \
+        gcc \
+        python3.12-devel \
+        python3.12-pip \
+        python3.12-setuptools
+
+COPY ${UPPER_CONSTRAINTS_FILE} ironic-deps-list /tmp/
+COPY build-wheels.sh /bin/
+
+RUN IRONIC_PKG_LIST=/tmp/ironic-deps-list /bin/build-wheels.sh
+
+## Build Ironic and Sushy wheels
+FROM $BASE_IMAGE AS ironic-wheel-builder
+
+ARG UPPER_CONSTRAINTS_FILE=upper-constraints.txt
+ARG IRONIC_SOURCE=7fe20fe31f0e184c68b7029e04acdb5d286fc4b2 # master
+ARG SUSHY_SOURCE
+ARG PIP_VERSION
+ARG SETUPTOOLS_VERSION
+
+ENV IRONIC_SOURCE=${IRONIC_SOURCE} \
+    SUSHY_SOURCE=${SUSHY_SOURCE} \
+    UPPER_CONSTRAINTS_FILE=${UPPER_CONSTRAINTS_FILE} \
+    PIP_VERSION=${PIP_VERSION} \
+    SETUPTOOLS_VERSION=${SETUPTOOLS_VERSION}
+
+RUN --mount=type=cache,sharing=locked,target=/var/cache/dnf \
+    echo "install_weak_deps=False" >> /etc/dnf/dnf.conf && \
+    echo "tsflags=nodocs" >> /etc/dnf/dnf.conf && \
+    echo "keepcache=1" >> /etc/dnf/dnf.conf && \
+    dnf install -y \
+        gcc \
+        git-core \
+        python3.12-devel \
+        python3.12-pip \
+        python3.12-setuptools
+
+COPY sources /sources/
+COPY ${UPPER_CONSTRAINTS_FILE} ironic-packages-list /tmp/
+COPY build-wheels.sh /bin/
+
+RUN /bin/build-wheels.sh
+
 # build actual image
 FROM $BASE_IMAGE
+
+# Re-declare ARGs for this stage
+ARG PIP_VERSION
+ARG SETUPTOOLS_VERSION
+ENV PIP_VERSION=${PIP_VERSION} \
+    SETUPTOOLS_VERSION=${SETUPTOOLS_VERSION}
 
 # image.version will be set by automation during build
 LABEL org.opencontainers.image.authors="metal3-dev@googlegroups.com"
@@ -40,22 +108,17 @@ ARG ARCH_PKGS_LIST=main-packages-list-${TARGETARCH}.txt
 ARG EXTRA_PKGS_LIST
 ARG PATCH_LIST
 
-# build arguments for source build customization
-ARG UPPER_CONSTRAINTS_FILE=upper-constraints.txt
-ARG IRONIC_SOURCE=c2b5580b752bfa45cfa398c81fb1a305fe35464c # master
-ARG SUSHY_SOURCE
-
-COPY sources /sources/
-COPY ${UPPER_CONSTRAINTS_FILE} ironic-packages-list ${PKGS_LIST} ${ARCH_PKGS_LIST} \
-     ${EXTRA_PKGS_LIST:-$PKGS_LIST} ${PATCH_LIST:-$PKGS_LIST} \
-     /tmp/
+COPY ${PKGS_LIST} ${ARCH_PKGS_LIST} ${EXTRA_PKGS_LIST:-$PKGS_LIST} ${PATCH_LIST:-$PKGS_LIST} /tmp/
 COPY ironic-config/inspector.ipxe.j2 ironic-config/httpd-ironic-api.conf.j2 \
      ironic-config/ipxe_config.template ironic-config/dnsmasq.conf.j2 \
      /templates/
 COPY prepare-image.sh patch-image.sh configure-nonroot.sh /bin/
 COPY scripts/ /bin/
 
+# Install Python packages from pre-built wheels (mounted from both wheel-builder stages)
 RUN --mount=type=cache,target=/var/cache/dnf,sharing=locked \
+    --mount=from=deps-wheel-builder,source=/wheels,target=/deps-wheels \
+    --mount=from=ironic-wheel-builder,source=/wheels,target=/ironic-wheels \
     prepare-image.sh && \
      rm -f /bin/prepare-image.sh
 
