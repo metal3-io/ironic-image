@@ -12,10 +12,11 @@ EOF
 IRONIC_UID=997
 IRONIC_GID=994
 
-dnf upgrade -y
+microdnf upgrade -y
 
 # NOTE(dtantsur): pip is a requirement of python3 in CentOS
-dnf install -y python3.12-pip
+# shadow-utils provides groupadd/useradd/usermod (not in cs10-minimal)
+microdnf install -y python3.12-pip shadow-utils
 
 # NOTE(elfosardo): pinning pip and setuptools version to avoid
 # incompatibilities and errors during packages installation;
@@ -45,20 +46,20 @@ mkdir -p /var/log/ironic /var/lib/ironic
 getent group ironic > /dev/null || groupadd -r ironic -g "${IRONIC_GID}"
 getent passwd ironic > /dev/null || useradd -r -g ironic -u "${IRONIC_UID}" -s /sbin/nologin ironic -d /var/lib/ironic
 
-xargs -rtd'\n' dnf install -y < /tmp/"${PKGS_LIST}"
+xargs -rtd'\n' microdnf install -y < /tmp/"${PKGS_LIST}"
 if [[ -s "/tmp/${ARCH_PKGS_LIST}" ]]; then
-    xargs -rtd'\n' dnf install -y < /tmp/"${ARCH_PKGS_LIST}"
+    xargs -rtd'\n' microdnf install -y < /tmp/"${ARCH_PKGS_LIST}"
 fi
 
 if [[ -n "${EXTRA_PKGS_LIST:-}" ]]; then
     if [[ -s "/tmp/${EXTRA_PKGS_LIST}" ]]; then
-        xargs -rtd'\n' dnf install -y < /tmp/"${EXTRA_PKGS_LIST}"
+        xargs -rtd'\n' microdnf install -y < /tmp/"${EXTRA_PKGS_LIST}"
     fi
 fi
 
 # NOTE(elfosardo): we need to reinstall tzdata as the base CS9 container removes
 # its content, for more info see https://bugzilla.redhat.com/show_bug.cgi?id=2052861
-dnf reinstall -y tzdata
+microdnf reinstall -y tzdata
 
 chown ironic:ironic /var/log/ironic
 # This file is generated after installing mod_ssl and it affects our configuration
@@ -78,7 +79,7 @@ if [[ -n "${PATCH_LIST:-}" ]]; then
 fi
 rm -f /bin/patch-image.sh
 
-dnf clean all
+microdnf clean all
 rm -rf /var/cache/{yum,dnf}/*
 
 mv /bin/ironic-probe.sh /bin/ironic-readiness

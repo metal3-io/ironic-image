@@ -26,9 +26,9 @@ jobs:
       id: base-image
       run: |
         if [[ "${{ matrix.centos_version }}" == "stream9" ]]; then
-          echo "base_image=quay.io/centos/centos:stream9" >> "${GITHUB_OUTPUT}"
+          echo "base_image=quay.io/centos/centos:stream9-minimal" >> "${GITHUB_OUTPUT}"
         elif [[ "${{ matrix.centos_version }}" == "stream10" ]]; then
-          echo "base_image=quay.io/centos/centos:stream10" >> "${GITHUB_OUTPUT}"
+          echo "base_image=quay.io/centos/centos:stream10-minimal" >> "${GITHUB_OUTPUT}"
         fi
     - name: Build Docker image
       uses: docker/build-push-action@263435318d21b8e681c14492fe198d362a7d2c83 # v6.18.0

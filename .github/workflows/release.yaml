@@ -139,7 +139,7 @@ jobs:
     with:
       image-name: 'ironic_cs10'
       pushImage: true
-      image-build-args: 'BASE_IMAGE=quay.io/centos/centos:stream10'
+      image-build-args: 'BASE_IMAGE=quay.io/centos/centos:stream10-minimal'
       ref: ${{ needs.push_release_tags.outputs.release_tag }}
       generate-sbom: true
       sign-image: true
