@@ -11,3 +11,4 @@ qemu-img
 sqlite
 util-linux
 xorriso
+bind-utils
