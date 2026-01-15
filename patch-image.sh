@@ -9,7 +9,7 @@ declare -a REQS=(
     python3.12-pip
 )
 
-dnf install -y "${REQS[@]}"
+microdnf install -y "${REQS[@]}"
 
 while IFS= read -r line; do
     # shellcheck disable=SC2086,SC2229
@@ -27,6 +27,6 @@ while IFS= read -r line; do
     python3.12 -m pip install --prefix /usr dist/*.tar.gz
 done < "$PATCH_FILE"
 
-dnf remove -y "${REQS[@]}"
+microdnf remove -y "${REQS[@]}"
 
 cd /

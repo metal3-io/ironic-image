@@ -1,4 +1,4 @@
-ARG BASE_IMAGE=quay.io/centos/centos:stream9
+ARG BASE_IMAGE=quay.io/centos/centos:stream9-minimal
 
 # Python tooling versions - update these regularly
 ARG PIP_VERSION=24.1
@@ -40,7 +40,7 @@ RUN --mount=type=cache,sharing=locked,target=/var/cache/dnf \
     echo "install_weak_deps=False" >> /etc/dnf/dnf.conf && \
     echo "tsflags=nodocs" >> /etc/dnf/dnf.conf && \
     echo "keepcache=1" >> /etc/dnf/dnf.conf && \
-    dnf install -y \
+    microdnf install -y \
         gcc \
         python3.12-devel \
         python3.12-pip \
@@ -70,7 +70,7 @@ RUN --mount=type=cache,sharing=locked,target=/var/cache/dnf \
     echo "install_weak_deps=False" >> /etc/dnf/dnf.conf && \
     echo "tsflags=nodocs" >> /etc/dnf/dnf.conf && \
     echo "keepcache=1" >> /etc/dnf/dnf.conf && \
-    dnf install -y \
+    microdnf install -y \
         gcc \
         git-core \
         python3.12-devel \
@@ -139,8 +139,8 @@ RUN <<EORUN
 set -euxo pipefail
 mkdir -p /var/lib/ironic
 sqlite3 /var/lib/ironic/ironic.sqlite "pragma journal_mode=wal"
-dnf remove -y sqlite
-dnf clean all
+microdnf remove -y sqlite
+microdnf clean all
 rm -rf /var/cache/{yum,dnf}/*
 EORUN
 
