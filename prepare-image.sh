@@ -28,7 +28,7 @@ dnf install -y python3.12-pip "${BUILD_DEPS[@]}"
 # incompatibilities and errors during packages installation;
 # versions should be updated regularly, for example
 # after cutting a release branch.
-python3.12 -m pip install --no-cache-dir pip==24.1 setuptools==74.1.2
+python3.12 -m pip install --no-cache-dir pip==25.3 setuptools==78.1.1
 
 UPPER_CONSTRAINTS_PATH="/tmp/${UPPER_CONSTRAINTS_FILE:-}"
 
