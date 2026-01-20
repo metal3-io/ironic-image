@@ -76,6 +76,10 @@ api_workers = {{ env.NUMWORKERS }}
 automated_clean = {{ env.IRONIC_AUTOMATED_CLEAN }}
 # NOTE(dtantsur): keep aligned with [pxe]boot_retry_timeout below.
 deploy_callback_timeout = 4800
+{% if env.BOOTLOADER is defined %}
+# Fallback bootloader when cpu_arch is not set
+bootloader = {{ env.BOOTLOADER }}
+{% endif %}
 bootloader_by_arch = {{ env.BOOTLOADER_BY_ARCH }}
 verify_step_priority_override = management.clear_job_queue:90
 # We don't use this feature, and it creates an additional load on the database
@@ -83,12 +87,14 @@ node_history = False
 # Provide for a timeout longer than 60 seconds for certain vendor's hardware
 power_state_change_timeout = 120
 {% if env.DEPLOY_KERNEL_URL is defined %}
+# Fallback deploy_kernel when cpu_arch is not set
 deploy_kernel = {{ env.DEPLOY_KERNEL_URL }}
 {% endif %}
 {% if env.DEPLOY_KERNEL_BY_ARCH is defined %}
 deploy_kernel_by_arch = {{ env.DEPLOY_KERNEL_BY_ARCH }}
 {% endif %}
 {% if env.DEPLOY_RAMDISK_URL is defined %}
+# Fallback deploy_ramdisk when cpu_arch is not set
 deploy_ramdisk = {{ env.DEPLOY_RAMDISK_URL }}
 {% endif %}
 {% if env.DEPLOY_RAMDISK_BY_ARCH is defined %}
