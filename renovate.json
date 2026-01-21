@@ -64,7 +64,8 @@
       "depNameTemplate": "openstack-ironic",
       "packageNameTemplate": "https://github.com/openstack/ironic.git",
       "versioningTemplate": "loose",
-      "autoReplaceStringTemplate": "ARG IRONIC_SOURCE={{#if newDigest}}{{{newDigest}}}{{else}}{{{newValue}}}{{/if}} # {{{currentValue}}}"
+      "autoReplaceStringTemplate": "ARG IRONIC_SOURCE={{#if newDigest}}{{{newDigest}}}{{else}}{{{newValue}}}{{/if}} # {{{currentValue}}}",
+      "changelogUrl": "https://github.com/openstack/ironic/compare/{{currentDigest}}..{{newDigest}}"
     }
   ]
 }
