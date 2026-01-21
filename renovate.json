@@ -49,6 +49,13 @@
         "digest"
       ],
       "changelogUrl": "{{sourceUrl}}/compare/{{currentDigest}}..{{newDigest}}"
+    },
+    {
+      "matchDepNames": [
+        "pip",
+        "setuptools"
+      ],
+      "minimumReleaseAge": "3 days"
     }
   ],
   "customManagers": [
@@ -65,6 +72,28 @@
       "packageNameTemplate": "https://github.com/openstack/ironic.git",
       "versioningTemplate": "loose",
       "autoReplaceStringTemplate": "ARG IRONIC_SOURCE={{#if newDigest}}{{{newDigest}}}{{else}}{{{newValue}}}{{/if}} # {{{currentValue}}}"
+    },
+    {
+      "customType": "regex",
+      "managerFilePatterns": [
+        "/^Dockerfile$/"
+      ],
+      "matchStrings": [
+        "ARG PIP_VERSION=(?<currentValue>\\S+)"
+      ],
+      "datasourceTemplate": "pypi",
+      "depNameTemplate": "pip"
+    },
+    {
+      "customType": "regex",
+      "managerFilePatterns": [
+        "/^Dockerfile$/"
+      ],
+      "matchStrings": [
+        "ARG SETUPTOOLS_VERSION=(?<currentValue>\\S+)"
+      ],
+      "datasourceTemplate": "pypi",
+      "depNameTemplate": "setuptools"
     }
   ]
 }
