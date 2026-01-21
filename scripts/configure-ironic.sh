@@ -107,6 +107,9 @@ BOOTLOADER_BY_ARCH=""
 for bootloader in /templates/uefi_esp_*.img; do
     BOOTLOADER_ARCH="$(basename "${bootloader#/templates/uefi_esp_}" .img)"
     BOOTLOADER_BY_ARCH+="${BOOTLOADER_ARCH}:file://${bootloader},"
+    if [[ -z "${BOOTLOADER:-}" ]] && [[ "$(uname -m)" == "${BOOTLOADER_ARCH}" ]]; then
+        export BOOTLOADER="file://${bootloader}"
+    fi
 done
 export BOOTLOADER_BY_ARCH="${BOOTLOADER_BY_ARCH%?}"
 
