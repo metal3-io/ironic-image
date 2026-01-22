@@ -34,6 +34,9 @@ if [[ "$IRONIC_FAST_TRACK" == "true" ]]; then
 fi
 export INSPECTOR_EXTRA_ARGS
 
+# Detect IPA images by architecture for inspector.ipxe
+detect_ipa_by_arch
+
 # Copy files to shared mount
 render_j2_config /templates/inspector.ipxe.j2 /shared/html/inspector.ipxe
 # cp -r /etc/httpd/* "${HTTPD_DIR}"

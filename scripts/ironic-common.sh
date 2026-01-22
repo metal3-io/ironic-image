@@ -144,3 +144,57 @@ export IRONIC_ACCESS_PORT=${IRONIC_ACCESS_PORT:-6385}
 export IRONIC_LISTEN_PORT=${IRONIC_LISTEN_PORT:-$IRONIC_ACCESS_PORT}
 
 export IRONIC_ENABLE_DISCOVERY=${IRONIC_ENABLE_DISCOVERY:-${IRONIC_INSPECTOR_ENABLE_DISCOVERY:-false}}
+
+# Detect and export IPA images by architecture
+# Sets DEPLOY_KERNEL_BY_ARCH and DEPLOY_RAMDISK_BY_ARCH
+detect_ipa_by_arch()
+{
+    local IMAGE_CACHE_PREFIX=/shared/html/images/ironic-python-agent
+
+    # Single-arch fallback: use generic names if no arch-specific config
+    if [[ -z "${DEPLOY_KERNEL_URL:-}" ]] && [[ -z "${DEPLOY_RAMDISK_URL:-}" ]] && \
+           [[ -f "${IMAGE_CACHE_PREFIX}.kernel" ]] && [[ -f "${IMAGE_CACHE_PREFIX}.initramfs" ]]; then
+        export DEPLOY_KERNEL_URL="file://${IMAGE_CACHE_PREFIX}.kernel"
+        export DEPLOY_RAMDISK_URL="file://${IMAGE_CACHE_PREFIX}.initramfs"
+    fi
+
+    # If DEPLOY_KERNEL_BY_ARCH and DEPLOY_RAMDISK_BY_ARCH are already set, preserve them
+    if [[ -n "${DEPLOY_KERNEL_BY_ARCH:-}" ]] && [[ -n "${DEPLOY_RAMDISK_BY_ARCH:-}" ]]; then
+        export DEPLOY_KERNEL_BY_ARCH
+        export DEPLOY_RAMDISK_BY_ARCH
+        return
+    fi
+
+    # Detect architectures from env vars (DEPLOY_KERNEL_URL_<ARCH>) and files
+    declare -A detected_arch
+    for var_arch in "${!DEPLOY_KERNEL_URL_@}"; do
+        local IPA_ARCH="${var_arch#DEPLOY_KERNEL_URL}"
+        detected_arch["${IPA_ARCH,,}"]=1
+    done
+    for file_arch in "${IMAGE_CACHE_PREFIX}"_*.kernel; do
+        if [[ -f "${file_arch}" ]]; then
+            local IPA_ARCH
+            IPA_ARCH="$(basename "${file_arch#"${IMAGE_CACHE_PREFIX}"_}" .kernel)"
+            detected_arch["${IPA_ARCH}"]=1
+        fi
+    done
+
+    # Build DEPLOY_KERNEL_BY_ARCH and DEPLOY_RAMDISK_BY_ARCH from detected architectures
+    DEPLOY_KERNEL_BY_ARCH=""
+    DEPLOY_RAMDISK_BY_ARCH=""
+    for IPA_ARCH in "${!detected_arch[@]}"; do
+        local kernel_var="DEPLOY_KERNEL_URL_${IPA_ARCH^^}"
+        local ramdisk_var="DEPLOY_RAMDISK_URL_${IPA_ARCH^^}"
+        if [[ -z "${!kernel_var:-}" ]] && [[ -z "${!ramdisk_var:-}" ]] && \
+            [[ -f "${IMAGE_CACHE_PREFIX}_${IPA_ARCH}.kernel" ]] && [[ -f "${IMAGE_CACHE_PREFIX}_${IPA_ARCH}.initramfs" ]]; then
+          export "${kernel_var}"="file://${IMAGE_CACHE_PREFIX}_${IPA_ARCH}.kernel"
+          export "${ramdisk_var}"="file://${IMAGE_CACHE_PREFIX}_${IPA_ARCH}.initramfs"
+        fi
+        DEPLOY_KERNEL_BY_ARCH+="${!kernel_var:+${IPA_ARCH}:${!kernel_var},}"
+        DEPLOY_RAMDISK_BY_ARCH+="${!ramdisk_var:+${IPA_ARCH}:${!ramdisk_var},}"
+    done
+    if [[ -n "${DEPLOY_KERNEL_BY_ARCH}" ]] && [[ -n "${DEPLOY_RAMDISK_BY_ARCH}" ]]; then
+        export DEPLOY_KERNEL_BY_ARCH="${DEPLOY_KERNEL_BY_ARCH%?}"
+        export DEPLOY_RAMDISK_BY_ARCH="${DEPLOY_RAMDISK_BY_ARCH%?}"
+    fi
+}
