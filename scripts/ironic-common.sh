@@ -168,7 +168,7 @@ detect_ipa_by_arch()
     # Detect architectures from env vars (DEPLOY_KERNEL_URL_<ARCH>) and files
     declare -A detected_arch
     for var_arch in "${!DEPLOY_KERNEL_URL_@}"; do
-        local IPA_ARCH="${var_arch#DEPLOY_KERNEL_URL}"
+        local IPA_ARCH="${var_arch#DEPLOY_KERNEL_URL_}"
         detected_arch["${IPA_ARCH,,}"]=1
     done
     for file_arch in "${IMAGE_CACHE_PREFIX}"_*.kernel; do
