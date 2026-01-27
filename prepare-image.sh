@@ -2,11 +2,28 @@
 
 set -euxo pipefail
 
-cat >> /etc/dnf/dnf.conf<< EOF
-install_weak_deps=False
-tsflags=nodocs
-keepcache=1
-EOF
+# --- Universal CentOS 9/10 GPG Key Import ---
+echo "Configuring GPG keys for package verification..."
+
+# 1. Purge problematic keys
+rm -f /etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-SIG-Extras /etc/pki/rpm-gpg/RPM-GPG-KEY-centosofficial-PQC
+
+# 2. Collect and import official keys
+mapfile -t GPG_KEYS < <(find /etc/pki/rpm-gpg/ -name "RPM-GPG-KEY-cento*")
+
+if [ ${#GPG_KEYS[@]} -eq 0 ]; then
+    echo "ERROR: No CentOS GPG keys found to import. GPG verification will fail."
+    exit 1
+fi
+
+for KEY in "${GPG_KEYS[@]}"; do
+    echo "Importing key: $KEY"
+    rpm --import "$KEY"
+done
+
+# 3. Synchronize DNF configuration
+printf "[main]\ngpgcheck=1\ninstall_weak_deps=0\ntsflags=nodocs\nkeepcache=1\n" > /etc/dnf/dnf.conf
+# --------------------------------------------
 
 # emulate uid/gid configuration to match rpm install
 IRONIC_UID=997
