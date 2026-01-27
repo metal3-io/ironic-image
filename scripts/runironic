@@ -24,4 +24,14 @@ if [[ "${BMC_TLS_ENABLED}" == "true" ]]; then
         "${BMC_CACERTS_PATH}" &
 fi
 
+if ls "${IPA_CACERTS_PATH}"/* > /dev/null 2>&1; then
+    # Ignore error if IRONIC_CACERT_FILE doesn't exist as it will still work as intended
+    # shellcheck disable=SC2034
+    watchmedo shell-command \
+        --patterns="*" \
+        --ignore-directories \
+        --command='cat "${IPA_CACERTS_PATH}"/* "${IRONIC_CACERT_FILE}" 2>/dev/null > "${IPA_CACERT_FILE}"' \
+        "${IPA_CACERTS_PATH}" &
+fi
+
 exec /usr/bin/ironic --config-dir "${IRONIC_CONF_DIR}"
