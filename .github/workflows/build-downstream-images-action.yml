@@ -1,0 +1,90 @@
+name: build-downstream-images-action
+
+permissions:
+  contents: read
+
+on:
+  pull_request:
+    branches:
+    - 'k0rdent-*'
+  push:
+    branches:
+    - 'k0rdent-*'
+
+jobs:
+  build_ironic:
+    name: Build Ironic container image with default base image
+    runs-on: ubuntu-latest
+    env:
+      DEV_REGISTRY_ENDPOINT: registry.ci.mirantis.com
+      PROD_REGISTRY_ENDPOINT: registry.mirantis.com
+    steps:
+    - name: Checkout source code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Get version
+      id: version
+      run: |
+        git_tag=$(git describe --tags --abbrev=0)
+        git_commit_hash=$(git rev-parse --short HEAD)
+        git_version=$git_tag-$git_commit_hash
+        echo "VERSION=$git_version" >> "$GITHUB_OUTPUT"
+        echo "Using image version: $git_version"
+
+    - name: Set target registry
+      id: registry
+      run: |
+        if [ "${{ github.event_name }}" = "push" ]; then
+          echo "REGISTRY=${{ env.PROD_REGISTRY_ENDPOINT }}" >> "$GITHUB_OUTPUT"
+        else
+          echo "REGISTRY=${{ env.DEV_REGISTRY_ENDPOINT }}" >> "$GITHUB_OUTPUT"
+        fi
+
+    - name: Docker login to dev MSR
+      uses: docker/login-action@v3
+      with:
+        registry: ${{ env.DEV_REGISTRY_ENDPOINT }}
+        username: ${{ secrets.REGISTRY_CI_USERNAME }}
+        password: ${{ secrets.REGISTRY_CI_PASSWORD }}
+
+    - name: Docker login to prod MSR
+      if: github.event_name == 'push'
+      uses: docker/login-action@v3
+      with:
+        registry: ${{ env.PROD_REGISTRY_ENDPOINT }}
+        username: ${{ secrets.REGISTRY_PROD_USERNAME }}
+        password: ${{ secrets.REGISTRY_PROD_PASSWORD }}
+
+    - name: Build and push image
+      shell: bash
+      env:
+        IMG: ${{ steps.registry.outputs.registry }}/k0rdent-bm/images/metal3-io/ironic
+        TAG: ${{ steps.version.outputs.version }}
+      run: |
+        docker build -t ${{ env.IMG }}:${{ env.TAG }} -f Dockerfile .
+        docker push ${{ env.IMG }}:${{ env.TAG }}
+
+    - name: Push image to dev MSR
+      if: github.event_name == 'push'
+      shell: bash
+      env:
+        PROD_IMG: ${{ env.PROD_REGISTRY_ENDPOINT }}/k0rdent-bm/images/metal3-io/ironic
+        DEV_IMG: ${{ env.DEV_REGISTRY_ENDPOINT }}/k0rdent-bm/images/metal3-io/ironic
+        TAG: ${{ steps.version.outputs.version }}
+      run: |
+        docker tag ${{ env.PROD_IMG }}:${{ env.TAG }} ${{ env.DEV_IMG }}:${{ env.TAG }}
+        docker push ${{ env.DEV_IMG }}:${{ env.TAG }}
+
+    - name: Write build summary
+      shell: bash
+      run: |
+        echo "## Images Digest" >> $GITHUB_STEP_SUMMARY
+        echo "| Parameter | Value |" >> $GITHUB_STEP_SUMMARY
+        echo "| --- | --- |" >> $GITHUB_STEP_SUMMARY
+        echo "| Source Repository | ${{ github.repository }} |" >> $GITHUB_STEP_SUMMARY
+        echo "| Git Reference | ${{ github.ref }} |" >> $GITHUB_STEP_SUMMARY
+        echo "| Git Commit | ${{ github.sha }} |" >> $GITHUB_STEP_SUMMARY
+        echo "| Version | ${{ steps.version.outputs.version }} |" >> $GITHUB_STEP_SUMMARY
+        echo "| Path | ${{ steps.registry.outputs.registry }}/k0rdent-bm/images/metal3-io/ironic:${{ steps.version.outputs.version }} |" >> $GITHUB_STEP_SUMMARY

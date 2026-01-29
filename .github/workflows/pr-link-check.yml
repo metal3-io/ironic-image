@@ -9,6 +9,7 @@ permissions:
 
 jobs:
   check-pr-links:
+    if: github.repository == 'metal3-io/ironic-image'
     uses: metal3-io/project-infra/.github/workflows/pr-link-check.yml@main
     with:
       upstream: https://github.com/metal3-io/ironic-image.git
