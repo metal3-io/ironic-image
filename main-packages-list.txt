@@ -9,5 +9,6 @@ mod_ssl
 procps
 qemu-img
 sqlite
+tar
 util-linux
 xorriso
