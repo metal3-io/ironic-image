@@ -250,6 +250,9 @@ kernel_append_params = nofb nomodeset vga=normal ipa-insecure=1 {% if env.ENABLE
 {% if env.BMC_TLS_ENABLED == "true" %}
 # idrac uses the same options as the redfish driver
 verify_ca = {{ env.BMC_CACERT_FILE }}
+# Firmware Updates configs
+firmware_update_wait_unresponsive_bmc = 0
+firmware_update_resource_validation_timeout = 480
 {% endif %}
 
 [irmc]
