@@ -125,6 +125,9 @@ media HTTP server configuration:
 - `IRONIC_VMEDIA_TLS_ENFORCE_SERVER_CIPHER_ORDER` - Setting this variable to
   `true` will make the server enforce its cipher list ordering for TLS version
   up to 1.2, defaults to `false`
+- `IRONIC_INSECURE` - Setting this variable to `true` will add the `ipa-insecure=1`
+  flag to the kernel command line, disabling TLS certificate verification by the
+  IPA image.
 
 The following mountpoints can be passed in to customize run-time
 functionality:
@@ -132,6 +135,10 @@ functionality:
 - `/certs/ca/bmc` - The storage path of BMC CA certificates. If the path exists
   and verify_ca field in driver_info is True or None, the certificates in this
   path will be used.
+- `/certs/ca/ipa` - The storage path of IPA CA certificates. If the path exists
+  and `IRONIC_INSECURE` variable is not set to `true`, the certificates in this
+  path will be used by the Ironic Python Agent. The Ironic CA bundle will be
+  added to the trusted CA automatically.
 
 MariaDB configuration:
 
