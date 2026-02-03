@@ -15,15 +15,14 @@ ARG TARGETARCH
 
 WORKDIR /tmp
 
-COPY prepare-ipxe.sh /bin/
-RUN --mount=type=cache,target=/var/cache/dnf,sharing=locked \ 
-  prepare-ipxe.sh
+COPY prepare-ipxe.sh build-ipxe.sh prepare-efi.sh /bin/
 
-COPY build-ipxe.sh /bin/
-RUN build-ipxe.sh
-
-COPY prepare-efi.sh /bin/
-RUN prepare-efi.sh centos
+RUN --mount=type=cache,target=/var/cache/dnf,sharing=locked <<EORUN
+set -euxo pipefail
+prepare-ipxe.sh
+build-ipxe.sh
+prepare-efi.sh centos
+EORUN
 
 ## Build Python wheels for dependencies
 FROM $BASE_IMAGE AS deps-wheel-builder
@@ -36,15 +35,17 @@ ENV UPPER_CONSTRAINTS_FILE=${UPPER_CONSTRAINTS_FILE} \
     PIP_VERSION=${PIP_VERSION} \
     SETUPTOOLS_VERSION=${SETUPTOOLS_VERSION}
 
-RUN --mount=type=cache,sharing=locked,target=/var/cache/dnf \
-    echo "install_weak_deps=False" >> /etc/dnf/dnf.conf && \
-    echo "tsflags=nodocs" >> /etc/dnf/dnf.conf && \
-    echo "keepcache=1" >> /etc/dnf/dnf.conf && \
-    microdnf install -y \
-        gcc \
-        python3.12-devel \
-        python3.12-pip \
-        python3.12-setuptools
+RUN --mount=type=cache,sharing=locked,target=/var/cache/dnf <<EORUN
+set -euxo pipefail
+echo "install_weak_deps=False" >> /etc/dnf/dnf.conf
+echo "tsflags=nodocs" >> /etc/dnf/dnf.conf
+echo "keepcache=1" >> /etc/dnf/dnf.conf
+microdnf install -y \
+    gcc \
+    python3.12-devel \
+    python3.12-pip \
+    python3.12-setuptools
+EORUN
 
 COPY ${UPPER_CONSTRAINTS_FILE} ironic-deps-list /tmp/
 COPY build-wheels.sh /bin/
@@ -66,16 +67,18 @@ ENV IRONIC_SOURCE=${IRONIC_SOURCE} \
     PIP_VERSION=${PIP_VERSION} \
     SETUPTOOLS_VERSION=${SETUPTOOLS_VERSION}
 
-RUN --mount=type=cache,sharing=locked,target=/var/cache/dnf \
-    echo "install_weak_deps=False" >> /etc/dnf/dnf.conf && \
-    echo "tsflags=nodocs" >> /etc/dnf/dnf.conf && \
-    echo "keepcache=1" >> /etc/dnf/dnf.conf && \
-    microdnf install -y \
-        gcc \
-        git-core \
-        python3.12-devel \
-        python3.12-pip \
-        python3.12-setuptools
+RUN --mount=type=cache,sharing=locked,target=/var/cache/dnf <<EORUN
+set -euxo pipefail
+echo "install_weak_deps=False" >> /etc/dnf/dnf.conf
+echo "tsflags=nodocs" >> /etc/dnf/dnf.conf
+echo "keepcache=1" >> /etc/dnf/dnf.conf
+microdnf install -y \
+    gcc \
+    git-core \
+    python3.12-devel \
+    python3.12-pip \
+    python3.12-setuptools
+EORUN
 
 COPY sources /sources/
 COPY ${UPPER_CONSTRAINTS_FILE} ironic-packages-list /tmp/
