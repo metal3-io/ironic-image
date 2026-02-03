@@ -34,6 +34,14 @@ if [[ "$IRONIC_FAST_TRACK" == "true" ]]; then
 fi
 export INSPECTOR_EXTRA_ARGS
 
+# Add inspection parameters to IRONIC_KERNEL_PARAMS for UUID-specific PXE configs
+# This ensures UUID-specific configs have the same inspection parameters as inspector.ipxe
+IRONIC_KERNEL_PARAMS="${IRONIC_KERNEL_PARAMS:-} ipa-inspection-collectors=${IRONIC_IPA_COLLECTORS} ipa-inspection-dhcp-all-interfaces=1 ipa-collect-lldp=1 ipa-enable-vlan-interfaces=${IRONIC_ENABLE_VLAN_INTERFACES:-} ${INSPECTOR_EXTRA_ARGS}"
+export IRONIC_KERNEL_PARAMS
+
+# shellcheck disable=SC1091
+. /bin/coreos-ipa-common.sh
+
 # Copy files to shared mount
 render_j2_config /templates/inspector.ipxe.j2 /shared/html/inspector.ipxe
 # cp -r /etc/httpd/* "${HTTPD_DIR}"
