@@ -38,7 +38,7 @@ DocumentRoot "/shared/html"
 <Directory "/shared/html/images">
     Options Indexes FollowSymLinks
     AllowOverride None
-{%- if serve_img == "true" and image_tls != "true" %}
+{%- if serve_img == "true" %}
     Require all granted
 {%- else %}
     Require all denied
