@@ -19,10 +19,10 @@ jobs:
     steps:
     - name: Check docker version
       run: docker --version
-    - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+    - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       with:
         path: ironic-image
-    - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+    - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       with:
         repository: metal3-io/ironic-standalone-operator
         path: ironic-standalone-operator
@@ -30,7 +30,7 @@ jobs:
       id: vars
       run: echo "go_version=$(make -sC ironic-standalone-operator go-version)" >> $GITHUB_OUTPUT
     - name: Set up Go
-      uses: actions/setup-go@40f1582b2485089dde7abd97c1529aa768e1baff # v5.6.0
+      uses: actions/setup-go@7a3fe6cf4cb3a834922a1244abfce67bcef6a0c5 # v6.2.0
       with:
         go-version: ${{ steps.vars.outputs.go_version }}
     - name: Setup a minikube cluster
@@ -47,13 +47,13 @@ jobs:
       run: ironic-standalone-operator/test/collect-logs.sh
       if: always()
     - name: Upload logs artifacts
-      uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+      uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
       with:
         name: functional
         path: /tmp/logs/*
       if: always()
     - name: Annotate failures
-      uses: mikepenz/action-junit-report@3585e9575db828022551b4231f165eb59a0e74e3 # v5.6.2
+      uses: mikepenz/action-junit-report@74626db7353a25a20a72816467ebf035f674c5f8 # v6.2.0
       with:
         annotate_only: true
         report_paths: /tmp/logs/report.xml
