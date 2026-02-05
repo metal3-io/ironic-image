@@ -24,6 +24,27 @@ updates:
   - "ok-to-test"
 ## main branch config ends here
 
+## release-34.0 branch config starts here
+- package-ecosystem: "github-actions"
+  directory: "/" # Location of package manifests
+  schedule:
+    interval: "monthly"
+    day: "friday"
+  target-branch: release-34.0
+  ## group all action bumps into single PR
+  groups:
+    github-actions:
+      patterns: [ "*" ]
+  ignore:
+  # Ignore major and minor bumps for release branch
+  - dependency-name: "*"
+    update-types: [ "version-update:semver-major", "version-update:semver-minor" ]
+  commit-message:
+    prefix: ":seedling:"
+  labels:
+  - "ok-to-test"
+## release-34.0 branch config ends here
+
 ## release-33.0 branch config starts here
 - package-ecosystem: "github-actions"
   directory: "/" # Location of package manifests

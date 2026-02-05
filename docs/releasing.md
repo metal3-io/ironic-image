@@ -70,17 +70,17 @@ If (and only if) you're creating a release `vx.y.0` (i.e. a minor release):
   the actual remote name for the upstream source (not your private fork).
 
 - Setup the CI for the new branch in the prow configuration.
-  [Prior art](https://github.com/metal3-io/project-infra/pull/976)
+  [Prior art](https://github.com/metal3-io/project-infra/pull/1237)
 
 Create a development branch (e.g. `prepare-x.y`) from the newly created branch:
 
 - Pin the constraints.
-   [Prior art](https://github.com/metal3-io/ironic-image/pull/655).
+   [Prior art](https://github.com/metal3-io/ironic-image/pull/900)
 
 - Pin the `IRONIC_SOURCE` to specific SHA in the upstream release branch. It must
    be in format `ARG IRONIC_SOURCE=<sha> # <branch_name>` for Renovate bot to
    be able to update it automatically in the future.
-   [Prior art](https://github.com/metal3-io/ironic-image/pull/771)
+   [Prior art](https://github.com/metal3-io/ironic-image/pull/900)
 
 - Commit your changes, push the new branch and create a pull request:
    - The commit and PR title should be
@@ -199,7 +199,7 @@ updated in the `main` branch to include the new release branch.
 
 Update `renovate.json` in `main` branch:
 
-- Add the new release branch (e.g., `release-32.0`) to the `baseBranchPatterns`
+- Add the new release branch (e.g., `release-34.0`) to the `baseBranchPatterns`
    array
 - Add the new release branch to the `packageRules` section with the daily
    schedule configuration matching other release branches
@@ -231,12 +231,12 @@ Update the [user guide](https://github.com/metal3-io/metal3-docs/tree/main/docs/
   in older ironic-image branches.
 
 - Update `README.md` with release specific information, both on `main` and in the
-  new `release-X.Y` branch as necessary.
+  new `release-X.Y` branch as necessary (if applicable).
   [Prior art](https://github.com/metal3-io/ironic-image/pull/594)
 
 - In the `release-X.Y` branch, update the build badges in the `README.md` to point
   to correct Jenkins jobs, so the build statuses of the release branch are
-  visible.
+  visible (if applicable).
   [Prior art](https://github.com/metal3-io/ironic-image/pull/595)
 
 ### Update milestones
@@ -249,7 +249,7 @@ Update the [user guide](https://github.com/metal3-io/metal3-docs/tree/main/docs/
 
 Milestones must also be updated in the Prow configuration.
 
-[Prior art](https://github.com/metal3-io/project-infra/pull/976).
+[Prior art](https://github.com/metal3-io/project-infra/pull/1237)
 
 ## Ironic Standalone Operator updates
 
