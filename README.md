@@ -102,6 +102,87 @@ functionality:
 - `DEPLOY_KERNEL_URL` and `DEPLOY_RAMDISK_URL` provide the default IPA kernel
   and initramfs images. If they're not set, the images from IPA downloader are
   used (if present).
+
+### Multi-Architecture IPA Support
+
+The ironic-image container supports automatic detection and boot of
+architecture-specific IPA (Ironic Python Agent) images. This allows a single
+deployment to serve different CPU architectures (x86_64, aarch64) with
+appropriate kernel and ramdisk images.
+
+- `DEPLOY_KERNEL_BY_ARCH` - Comma-separated list of architecture-specific
+  kernel URLs in the format `arch:url[,arch:url...]`. Example:
+
+  ```bash
+  DEPLOY_KERNEL_BY_ARCH=x86_64:file:///shared/html/images/ipa_x86.kernel,aarch64:file:///shared/html/images/ipa_arm64.kernel
+  ```
+
+- `DEPLOY_RAMDISK_BY_ARCH` - Comma-separated list of architecture-specific
+  ramdisk URLs in the format `arch:url[,arch:url...]`. Example:
+
+  ```bash
+  DEPLOY_RAMDISK_BY_ARCH=x86_64:file:///shared/html/images/ipa_x86.initramfs,aarch64:file:///shared/html/images/ipa_arm64.initramfs
+  ```
+
+**Auto-detection:** If these variables are not explicitly set, the container
+will:
+
+1. Check for `DEPLOY_KERNEL_URL_<ARCH>` and `DEPLOY_RAMDISK_URL_<ARCH>`
+   environment variables (e.g., `DEPLOY_KERNEL_URL_X86_64`,
+   `DEPLOY_KERNEL_URL_AARCH64`)
+2. Look for architecture-specific files like `ironic-python-agent_aarch64.kernel`
+   in `/shared/html/images/`
+3. Fall back to generic `ironic-python-agent.kernel` and
+   `ironic-python-agent.initramfs`
+
+**Example configurations:**
+
+Single architecture (explicit):
+
+```bash
+DEPLOY_KERNEL_URL_X86_64=file:///shared/html/images/custom-ipa.kernel
+DEPLOY_RAMDISK_URL_X86_64=file:///shared/html/images/custom-ipa.initramfs
+```
+
+Multiple architectures (manual):
+
+```bash
+DEPLOY_KERNEL_BY_ARCH=x86_64:http://example.com/ipa-x86.kernel,aarch64:http://example.com/ipa-arm64.kernel
+DEPLOY_RAMDISK_BY_ARCH=x86_64:http://example.com/ipa-x86.initramfs,aarch64:http://example.com/ipa-arm64.initramfs
+```
+
+Multiple architectures (auto-detected from files):
+
+```bash
+# Place files in /shared/html/images/:
+# - ironic-python-agent_x86_64.kernel
+# - ironic-python-agent_x86_64.initramfs
+# - ironic-python-agent_aarch64.kernel
+# - ironic-python-agent_aarch64.initramfs
+# The container will auto-detect and configure them
+```
+
+**Note:** The iPXE boot script uses the machine's `${buildarch}` variable to
+select the appropriate architecture. If an architecture-specific image is not
+available, it falls back to the default IPA images.
+
+### IPA Boot Parameters
+
+The following environment variables control IPA kernel boot parameters (all
+have sensible defaults):
+
+- `IRONIC_IPA_INSECURE` - Allow insecure connections (default: `1`)
+- `IRONIC_IPA_DEBUG` - Enable debug mode (default: `1`)
+- `IRONIC_IPA_INSPECTION_DHCP_ALL_INTERFACES` - Request DHCP on all interfaces
+  during inspection (default: `1`)
+- `IRONIC_IPA_COLLECT_LLDP` - Collect LLDP information (default: `1`)
+- `IRONIC_IPA_COLLECTORS` - Inspection data collectors to enable
+- `IPA_FORWARD_CONSOLE` - Forward console logs (default: `yes`)
+- `IRONIC_ENABLE_VLAN_INTERFACES` - Enable VLAN interfaces (default: `all`)
+- `INSPECTOR_EXTRA_ARGS` - Additional kernel parameters for inspection
+- `IRONIC_KERNEL_PARAMS` - Additional kernel parameters
+- `IRONIC_RAMDISK_SSH_KEY` - SSH public key for IPA access
+
 - `IRONIC_JSON_RPC_PORT` - port used by the ironic json-rpc service (default to
   6189).
 - `WEBSERVER_CACERT_FILE` - Specifies the CA or CA bundle that will be used
