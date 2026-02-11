@@ -37,9 +37,12 @@ ENV UPPER_CONSTRAINTS_FILE=${UPPER_CONSTRAINTS_FILE} \
 
 RUN --mount=type=cache,sharing=locked,target=/var/cache/dnf <<EORUN
 set -euxo pipefail
-echo "install_weak_deps=False" >> /etc/dnf/dnf.conf
-echo "tsflags=nodocs" >> /etc/dnf/dnf.conf
-echo "keepcache=1" >> /etc/dnf/dnf.conf
+rm -f /etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-SIG-Extras /etc/pki/rpm-gpg/RPM-GPG-KEY-centosofficial-PQC
+# Find keys; if the list is empty, fail the build immediately
+KEYS=$(find /etc/pki/rpm-gpg/ -name "RPM-GPG-KEY-cento*")
+if [ -z "$KEYS" ]; then echo "ERROR: No CentOS GPG keys found in /etc/pki/rpm-gpg/"; exit 1; fi
+echo "$KEYS" | xargs rpm --import
+printf "[main]\ngpgcheck=1\ninstall_weak_deps=0\ntsflags=nodocs\nkeepcache=1\n" > /etc/dnf/dnf.conf
 microdnf install -y \
     gcc \
     python3.12-devel \
@@ -69,9 +72,12 @@ ENV IRONIC_SOURCE=${IRONIC_SOURCE} \
 
 RUN --mount=type=cache,sharing=locked,target=/var/cache/dnf <<EORUN
 set -euxo pipefail
-echo "install_weak_deps=False" >> /etc/dnf/dnf.conf
-echo "tsflags=nodocs" >> /etc/dnf/dnf.conf
-echo "keepcache=1" >> /etc/dnf/dnf.conf
+rm -f /etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-SIG-Extras /etc/pki/rpm-gpg/RPM-GPG-KEY-centosofficial-PQC
+# Find keys; if the list is empty, fail the build immediately
+KEYS=$(find /etc/pki/rpm-gpg/ -name "RPM-GPG-KEY-cento*")
+if [ -z "$KEYS" ]; then echo "ERROR: No CentOS GPG keys found in /etc/pki/rpm-gpg/"; exit 1; fi
+echo "$KEYS" | xargs rpm --import
+printf "[main]\ngpgcheck=1\ninstall_weak_deps=0\ntsflags=nodocs\nkeepcache=1\n" > /etc/dnf/dnf.conf
 microdnf install -y \
     gcc \
     git-core \
