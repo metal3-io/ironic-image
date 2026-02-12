@@ -233,7 +233,7 @@ images_path = /shared/html/tmp
 instance_master_path = /shared/html/master_images
 tftp_master_path = /shared/tftpboot/master_images
 tftp_root = /shared/tftpboot
-kernel_append_params = nofb nomodeset vga=normal ipa-insecure=1 {% if env.ENABLE_FIPS_IPA %}fips={{ env.ENABLE_FIPS_IPA|trim }}{% endif %} {% if env.IRONIC_RAMDISK_SSH_KEY %}sshkey="{{ env.IRONIC_RAMDISK_SSH_KEY|trim }}"{% endif %} {{ env.IRONIC_KERNEL_PARAMS|trim }} systemd.journald.forward_to_console=yes
+kernel_append_params = nofb nomodeset vga=normal ipa-insecure=1 {% if env.ENABLE_FIPS_IPA %}fips={{ env.ENABLE_FIPS_IPA|trim }}{% endif %} {% if env.IRONIC_RAMDISK_SSH_KEY %}sshkey="{{ env.IRONIC_RAMDISK_SSH_KEY|trim }}"{% endif %} {{ env.IRONIC_KERNEL_PARAMS|trim }} systemd.journald.forward_to_console={{ env.IPA_FORWARD_CONSOLE | default('yes') }}
 # This makes networking boot templates generated even for nodes using local
 # boot (the default), ensuring that they boot correctly even if they start
 # netbooting for some reason (e.g. with the noop management interface).
@@ -246,14 +246,14 @@ ipxe_config_template = /templates/ipxe_config.template
 
 [redfish]
 use_swift = false
-kernel_append_params = nofb nomodeset vga=normal ipa-insecure=1 {% if env.ENABLE_FIPS_IPA %}fips={{ env.ENABLE_FIPS_IPA|trim }}{% endif %} {% if env.IRONIC_RAMDISK_SSH_KEY %}sshkey="{{ env.IRONIC_RAMDISK_SSH_KEY|trim }}"{% endif %} {{ env.IRONIC_KERNEL_PARAMS|trim }} systemd.journald.forward_to_console=yes
+kernel_append_params = nofb nomodeset vga=normal ipa-insecure=1 {% if env.ENABLE_FIPS_IPA %}fips={{ env.ENABLE_FIPS_IPA|trim }}{% endif %} {% if env.IRONIC_RAMDISK_SSH_KEY %}sshkey="{{ env.IRONIC_RAMDISK_SSH_KEY|trim }}"{% endif %} {{ env.IRONIC_KERNEL_PARAMS|trim }} systemd.journald.forward_to_console={{ env.IPA_FORWARD_CONSOLE | default('yes') }}
 {% if env.BMC_TLS_ENABLED == "true" %}
 # idrac uses the same options as the redfish driver
 verify_ca = {{ env.BMC_CACERT_FILE }}
 {% endif %}
 
 [irmc]
-kernel_append_params = nofb nomodeset vga=normal ipa-insecure=1 {% if env.ENABLE_FIPS_IPA %}fips={{ env.ENABLE_FIPS_IPA|trim }}{% endif %} {% if env.IRONIC_RAMDISK_SSH_KEY %}sshkey="{{ env.IRONIC_RAMDISK_SSH_KEY|trim }}"{% endif %} {{ env.IRONIC_KERNEL_PARAMS|trim }} systemd.journald.forward_to_console=yes
+kernel_append_params = nofb nomodeset vga=normal ipa-insecure=1 {% if env.ENABLE_FIPS_IPA %}fips={{ env.ENABLE_FIPS_IPA|trim }}{% endif %} {% if env.IRONIC_RAMDISK_SSH_KEY %}sshkey="{{ env.IRONIC_RAMDISK_SSH_KEY|trim }}"{% endif %} {{ env.IRONIC_KERNEL_PARAMS|trim }} systemd.journald.forward_to_console={{ env.IPA_FORWARD_CONSOLE | default('yes') }}
 {% if env.BMC_TLS_ENABLED == "true" %}
 verify_ca = {{ env.BMC_CACERT_FILE }}
 {% endif %}

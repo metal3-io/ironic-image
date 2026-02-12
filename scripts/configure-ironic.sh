@@ -61,42 +61,8 @@ if [[ -n "$IRONIC_EXTERNAL_IP" ]]; then
     fi
 fi
 
-IMAGE_CACHE_PREFIX=/shared/html/images/ironic-python-agent
-if [[ -z "${DEPLOY_KERNEL_URL:-}" ]] && [[ -z "${DEPLOY_RAMDISK_URL:-}" ]] && \
-       [[ -f "${IMAGE_CACHE_PREFIX}.kernel" ]] && [[ -f "${IMAGE_CACHE_PREFIX}.initramfs" ]]; then
-    export DEPLOY_KERNEL_URL="file://${IMAGE_CACHE_PREFIX}.kernel"
-    export DEPLOY_RAMDISK_URL="file://${IMAGE_CACHE_PREFIX}.initramfs"
-fi
-
-declare -A detected_arch
-for var_arch in "${!DEPLOY_KERNEL_URL_@}"; do
-    IPA_ARCH="${var_arch#DEPLOY_KERNEL_URL}"
-    detected_arch["${IPA_ARCH,,}"]=1
-done
-for file_arch in "${IMAGE_CACHE_PREFIX}"_*.kernel; do
-    if [[ -f "${file_arch}" ]]; then
-        IPA_ARCH="$(basename "${file_arch#"${IMAGE_CACHE_PREFIX}"_}" .kernel)"
-        detected_arch["${IPA_ARCH}"]=1
-    fi
-done
-
-DEPLOY_KERNEL_BY_ARCH=""
-DEPLOY_RAMDISK_BY_ARCH=""
-for IPA_ARCH in "${!detected_arch[@]}"; do
-    kernel_var="DEPLOY_KERNEL_URL_${IPA_ARCH^^}"
-    ramdisk_var="DEPLOY_RAMDISK_URL_${IPA_ARCH^^}"
-    if [[ -z "${!kernel_var:-}" ]] && [[ -z "${!ramdisk_var:-}" ]] && \
-        [[ -f "${IMAGE_CACHE_PREFIX}_${IPA_ARCH}.kernel" ]] && [[ -f "${IMAGE_CACHE_PREFIX}_${IPA_ARCH}.initramfs" ]]; then
-      export "${kernel_var}"="file://${IMAGE_CACHE_PREFIX}_${IPA_ARCH}.kernel"
-      export "${ramdisk_var}"="file://${IMAGE_CACHE_PREFIX}_${IPA_ARCH}.initramfs"
-    fi
-    DEPLOY_KERNEL_BY_ARCH+="${!kernel_var:+${IPA_ARCH}:${!kernel_var},}"
-    DEPLOY_RAMDISK_BY_ARCH+="${!ramdisk_var:+${IPA_ARCH}:${!ramdisk_var},}"
-done
-if [[ -n "${DEPLOY_KERNEL_BY_ARCH}" ]] && [[ -n "${DEPLOY_RAMDISK_BY_ARCH}" ]]; then
-    export DEPLOY_KERNEL_BY_ARCH="${DEPLOY_KERNEL_BY_ARCH%?}"
-    export DEPLOY_RAMDISK_BY_ARCH="${DEPLOY_RAMDISK_BY_ARCH%?}"
-fi
+# Detect IPA images by architecture
+detect_ipa_by_arch
 
 if [[ -f "${IRONIC_CONF_DIR}/ironic.conf" ]]; then
     # Make a copy of the original supposed empty configuration file
