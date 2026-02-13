@@ -1,0 +1,64 @@
+name: BMO E2E Tests
+
+on:
+  pull_request:
+    types: [ opened, edited, reopened, synchronize, ready_for_review ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      CLUSTER_TYPE: kind
+      CONTAINER_RUNTIME: docker
+      LOGDIR: /tmp/logs
+      IRONIC_CUSTOM_IMAGE: localhost/ironic:bmo-e2e
+      # Use latest stable BMO release - update this when new releases are available
+      BMO_VERSION: v0.12.1
+    steps:
+    - name: Check docker version
+      run: docker --version
+
+    - name: Checkout ironic-image
+      uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+      with:
+        path: ironic-image
+
+    - name: Checkout BMO at release version
+      uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+      with:
+        repository: metal3-io/baremetal-operator
+        ref: ${{ env.BMO_VERSION }}
+        path: baremetal-operator
+
+    - name: Calculate go version
+      id: vars
+      run: echo "go_version=$(make -sC baremetal-operator go-version)" >> $GITHUB_OUTPUT
+
+    - name: Set up Go
+      uses: actions/setup-go@40f1582b2485089dde7abd97c1529aa768e1baff # v5.6.0
+      with:
+        go-version: ${{ steps.vars.outputs.go_version }}
+
+    - name: Setup a kind cluster
+      uses: helm/kind-action@8f24c00d92a28b52c2ac8fc5b0005f338f7dba68 # v1.11.0
+      with:
+        cluster_name: bmo-e2e
+
+    - name: Prepare and run BMO e2e tests
+      run: ironic-image/hack/prepare-bmo-tests.sh
+
+    - name: Collect logs
+      run: |
+        mkdir -p "${LOGDIR}"
+        kubectl get all -A > "${LOGDIR}/kubectl-get-all.txt" || true
+        kubectl describe all -A > "${LOGDIR}/kubectl-describe-all.txt" || true
+        kubectl logs -n baremetal-operator-system --all-containers --prefix deployment/baremetal-operator-controller-manager > "${LOGDIR}/bmo-controller.log" || true
+        kubectl logs -n baremetal-operator-system --all-containers --prefix deployment/ironic > "${LOGDIR}/ironic.log" || true
+      if: always()
+
+    - name: Upload logs artifacts
+      uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4231f165eb59a0 # v4.6.2
+      with:
+        name: bmo-e2e-logs
+        path: /tmp/logs/*
+      if: always()
