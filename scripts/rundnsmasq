@@ -20,6 +20,7 @@ if [[ "${DNS_IP:-}" == "provisioning" ]]; then
 fi
 
 mkdir -p /shared/tftpboot
+mkdir -p /shared/html
 
 # Copy files to shared mount
 if [[ -r "${IPXE_CUSTOM_FIRMWARE_DIR}" ]]; then
@@ -30,6 +31,12 @@ if [[ -r "${IPXE_CUSTOM_FIRMWARE_DIR}" ]]; then
 else
     cp /tftpboot/undionly.kpxe /tftpboot/snponly-x86_64.efi /tftpboot/snponly-arm64.efi /shared/tftpboot
 fi
+
+generate_cacert_bundle_initrd /shared/tftpboot/ipa-cacert-bundle
+generate_cacert_bundle_initrd /shared/html/ipa-cacert-bundle
+
+# this will get dnsmasq killed on certificate update triggering a pod restart
+configure_restart_on_certificate_update "true" dnsmasq "${IPA_CACERTS_PATH}/*"
 
 # Template and write dnsmasq.conf
 # we template via /tmp as sed otherwise creates temp files in /etc directory
