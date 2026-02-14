@@ -15,7 +15,7 @@ jobs:
       IRONIC_CUSTOM_IMAGE: localhost/ironic:test
       # NOTE(dtantsur): change this on stable branches to make sure the correct
       # logic is used in IrSO, and also that the tests are skipped properly.
-      IRONIC_CUSTOM_VERSION: latest
+      IRONIC_CUSTOM_VERSION: "34.0"
     steps:
     - name: Check docker version
       run: docker --version
