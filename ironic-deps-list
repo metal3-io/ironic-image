@@ -4,5 +4,6 @@ ironic-prometheus-exporter
 jinja2
 PyMySQL>=0.8.0
 python-scciclient
+tar
 watchdog
 
