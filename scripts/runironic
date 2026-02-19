@@ -11,6 +11,9 @@ if [[ "${IRONIC_SKIP_DBSYNC:-false}" != true ]]; then
     run_ironic_dbsync
 fi
 
+generate_cacert_bundle_initrd /shared/html/ipa-cacert-bundle
+
+configure_restart_on_certificate_update "$(test 0 -eq "${IRONIC_IPA_INSECURE:-0}" && echo "true" || echo "false")" ironic "${IPA_CACERTS_PATH}/*"
 configure_restart_on_certificate_update "${IRONIC_TLS_SETUP}" ironic "${IRONIC_CERT_FILE}"
 
 configure_ironic_auth
@@ -22,6 +25,16 @@ if [[ "${BMC_TLS_ENABLED}" == "true" ]]; then
         --ignore-directories \
         --command='cat "${BMC_CACERTS_PATH}"/* > "${BMC_CACERT_FILE}"' \
         "${BMC_CACERTS_PATH}" &
+fi
+
+if ls "${IPA_CACERTS_PATH}"/* > /dev/null 2>&1; then
+    # Ignore error if IRONIC_CACERT_FILE doesn't exist as it will still work as intended
+    # shellcheck disable=SC2034
+    watchmedo shell-command \
+        --patterns="*" \
+        --ignore-directories \
+        --command='cat "${IPA_CACERTS_PATH}"/* "${IRONIC_CACERT_FILE}" 2>/dev/null > "${IPA_CACERT_FILE}"' \
+        "${IPA_CACERTS_PATH}" &
 fi
 
 exec /usr/bin/ironic --config-dir "${IRONIC_CONF_DIR}"

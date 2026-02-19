@@ -3,7 +3,7 @@
 echo In inspector.ipxe
 
 {%- macro kernel_cmdline(kernel_path, ramdisk_name) -%}
-kernel --timeout 60000 {{ kernel_path }} ipa-insecure={{ env.IRONIC_IPA_INSECURE | default('1') }} ipa-inspection-collectors={{ env.IRONIC_IPA_COLLECTORS }} systemd.journald.forward_to_console={{ env.IPA_FORWARD_CONSOLE | default('yes') }} BOOTIF=${mac} ipa-debug={{ env.IRONIC_IPA_DEBUG | default('1') }} ipa-enable-vlan-interfaces={{ env.IRONIC_ENABLE_VLAN_INTERFACES }} ipa-inspection-dhcp-all-interfaces={{ env.IRONIC_IPA_INSPECTION_DHCP_ALL_INTERFACES | default('1') }} ipa-collect-lldp={{ env.IRONIC_IPA_COLLECT_LLDP | default('1') }} {{ env.INSPECTOR_EXTRA_ARGS }} initrd={{ ramdisk_name }} {% if env.IRONIC_RAMDISK_SSH_KEY %}sshkey="{{ env.IRONIC_RAMDISK_SSH_KEY|trim }}"{% endif %} {{ env.IRONIC_KERNEL_PARAMS|trim }} || goto retry_boot
+kernel --timeout 60000 {{ kernel_path }} ipa-insecure={{ env.IRONIC_IPA_INSECURE | default('0') }} ipa-inspection-collectors={{ env.IRONIC_IPA_COLLECTORS }} systemd.journald.forward_to_console={{ env.IPA_FORWARD_CONSOLE | default('yes') }} BOOTIF=${mac} ipa-debug={{ env.IRONIC_IPA_DEBUG | default('1') }} ipa-enable-vlan-interfaces={{ env.IRONIC_ENABLE_VLAN_INTERFACES }} ipa-inspection-dhcp-all-interfaces={{ env.IRONIC_IPA_INSPECTION_DHCP_ALL_INTERFACES | default('1') }} ipa-collect-lldp={{ env.IRONIC_IPA_COLLECT_LLDP | default('1') }} {{ env.INSPECTOR_EXTRA_ARGS }} initrd={{ ramdisk_name }} {% if env.IRONIC_RAMDISK_SSH_KEY %}sshkey="{{ env.IRONIC_RAMDISK_SSH_KEY|trim }}"{% endif %} {{ env.IRONIC_KERNEL_PARAMS|trim }} || goto retry_boot
 {%- endmacro -%}
 
 {% if env.DEPLOY_KERNEL_BY_ARCH is defined %}
@@ -55,6 +55,7 @@ imgfree
 # ironic-inspector-image and configuration in configure-ironic.sh
 {{ kernel_cmdline('${ipa_kernel}', '${ipa_ramdisk_name}') }}
 initrd --timeout 60000 ${ipa_ramdisk} || goto retry_boot
+initrd --timeout 60000 {{ env.IRONIC_HTTP_URL }}/ipa-cacert-bundle || goto retry_boot
 boot
 {% else %}
 :retry_boot
@@ -63,5 +64,6 @@ imgfree
 # ironic-inspector-image and configuration in configure-ironic.sh
 {{ kernel_cmdline(env.IRONIC_HTTP_URL + '/images/ironic-python-agent.kernel', 'ironic-python-agent.initramfs') }}
 initrd --timeout 60000 {{ env.IRONIC_HTTP_URL }}/images/ironic-python-agent.initramfs || goto retry_boot
+initrd --timeout 60000 {{ env.IRONIC_HTTP_URL }}/ipa-cacert-bundle || goto retry_boot
 boot
 {% endif %}
