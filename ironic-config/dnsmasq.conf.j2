@@ -56,15 +56,14 @@ ra-param={{ env.PROVISIONING_INTERFACE }},0,0
 
 dhcp-vendorclass=set:pxe6,enterprise:343,PXEClient
 dhcp-userclass=set:ipxe6,iPXE
-# Architecture detection via DHCPv6 option 61 (RFC 5970).
-# Note: option:client-arch is a DHCPv4-only alias (option 93) and silently
-# adds rules to the DHCPv4 match list; use option6:client-arch for DHCPv6.
-dhcp-match=set:amd64,option6:client-arch,7
-dhcp-match=set:amd64,option6:client-arch,9
+# option6:client-arch is not defined in dnsmasq upstream, resort to architecture
+# detection via DHCPv6 option 61 (RFC 5970)
 # Client is (i)PXE booting on EFI machine
+dhcp-match=set:amd64,option6:61,7
+dhcp-match=set:amd64,option6:61,9
 dhcp-option=tag:pxe6,tag:amd64,option6:bootfile-url,tftp://{{ env.IRONIC_URL_HOST }}/snponly-x86_64.efi
 # Client is (i)PXE booting on arm64 EFI machine
-dhcp-match=set:arm64,option6:client-arch,11
+dhcp-match=set:arm64,option6:61,11
 dhcp-option=tag:pxe6,tag:arm64,option6:bootfile-url,tftp://{{ env.IRONIC_URL_HOST }}/snponly-arm64.efi
 # Fallback: serve x86_64 when PXE client is detected but architecture
 # could not be determined. Legacy BIOS does not support IPv6 PXE.
