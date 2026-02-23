@@ -10,7 +10,9 @@ port={{ env.DNS_PORT }}
 
 {%- if env.DHCP_RANGE | length %}
 log-dhcp
-dhcp-range={{ env.DHCP_RANGE }}
+{%- for item in env.DHCP_RANGE.split(";") %}
+dhcp-range={{ item }}
+{%- endfor %}
 {% endif %}
 
 {%- if env["DNS_IP"] is undefined %}
