@@ -1,0 +1,60 @@
+name: BMO E2E Tests
+
+on:
+  pull_request:
+    types: [ opened, edited, reopened, synchronize, ready_for_review ]
+
+jobs:
+  test:
+    runs-on: oracle-vm-4cpu-16gb-x86-64
+    env:
+      CLUSTER_TYPE: kind
+      CONTAINER_RUNTIME: docker
+      IRONIC_CUSTOM_IMAGE: localhost/ironic:bmo-e2e
+      # Use latest stable BMO release - update this when new releases are available
+      BMO_VERSION: v0.12.1
+    steps:
+    - name: Check docker version
+      run: docker --version
+
+    - name: Checkout ironic-image
+      uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+      with:
+        path: ironic-image
+
+    - name: Checkout BMO at release version
+      uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+      with:
+        repository: metal3-io/baremetal-operator
+        ref: ${{ env.BMO_VERSION }}
+        path: baremetal-operator
+
+    - name: Calculate go version
+      id: vars
+      run: echo "go_version=$(make -sC baremetal-operator go-version)" >> $GITHUB_OUTPUT
+
+    - name: Set up Go
+      uses: actions/setup-go@40f1582b2485089dde7abd97c1529aa768e1baff # v5.6.0
+      with:
+        go-version: ${{ steps.vars.outputs.go_version }}
+
+    - name: Install system dependencies
+      run: sudo apt-get update && sudo apt-get install -y libvirt-clients libvirt-daemon-system xorriso
+
+    - name: Configure libvirt permissions
+      run: |
+        # Start libvirtd service
+        sudo systemctl start libvirtd
+        sudo systemctl enable libvirtd
+        # Add current user to libvirt group for socket access
+        sudo usermod -aG libvirt $USER
+
+    - name: Prepare and run BMO e2e tests
+      run: sg libvirt -c "ironic-image/hack/prepare-bmo-tests.sh"
+
+    - name: Upload test artifacts
+      uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+      with:
+        name: bmo-e2e-artifacts
+        path: baremetal-operator/test/e2e/_artifacts
+      if: always()
