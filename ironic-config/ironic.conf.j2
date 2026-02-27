@@ -4,18 +4,18 @@ debug = true
 default_deploy_interface = direct
 default_inspect_interface = agent
 default_network_interface = noop
-enabled_bios_interfaces = no-bios,redfish,idrac-redfish,irmc
+enabled_bios_interfaces = no-bios,redfish,idrac-redfish
 enabled_boot_interfaces = ipxe,pxe,fake,redfish-virtual-media,idrac-redfish-virtual-media,redfish-https
 enabled_deploy_interfaces = direct,fake,ramdisk,custom-agent,bootc
 enabled_firmware_interfaces = no-firmware,fake,redfish
 # NOTE(dtantsur): when changing this, make sure to update the driver
 # dependencies in Dockerfile.
-enabled_hardware_types = ipmi,idrac,irmc,fake-hardware,redfish,manual-management
-enabled_inspect_interfaces = agent,irmc,fake,redfish
-enabled_management_interfaces = ipmitool,irmc,fake,redfish,idrac-redfish,noop
+enabled_hardware_types = ipmi,idrac,fake-hardware,redfish,manual-management
+enabled_inspect_interfaces = agent,fake,redfish
+enabled_management_interfaces = ipmitool,fake,redfish,idrac-redfish,noop
 enabled_network_interfaces = noop
-enabled_power_interfaces = ipmitool,irmc,fake,redfish,idrac-redfish
-enabled_raid_interfaces = no-raid,irmc,agent,fake,redfish,idrac-redfish
+enabled_power_interfaces = ipmitool,fake,redfish,idrac-redfish
+enabled_raid_interfaces = no-raid,agent,fake,redfish,idrac-redfish
 enabled_vendor_interfaces = no-vendor,ipmitool,idrac-redfish,redfish,fake
 {% if env.IRONIC_EXPOSE_JSON_RPC | lower == "true" %}
 rpc_transport = json-rpc
@@ -249,12 +249,6 @@ use_swift = false
 kernel_append_params = nofb nomodeset vga=normal ipa-insecure=1 {% if env.ENABLE_FIPS_IPA %}fips={{ env.ENABLE_FIPS_IPA|trim }}{% endif %} {% if env.IRONIC_RAMDISK_SSH_KEY %}sshkey="{{ env.IRONIC_RAMDISK_SSH_KEY|trim }}"{% endif %} {{ env.IRONIC_KERNEL_PARAMS|trim }} systemd.journald.forward_to_console={{ env.IPA_FORWARD_CONSOLE | default('yes') }}
 {% if env.BMC_TLS_ENABLED == "true" %}
 # idrac uses the same options as the redfish driver
-verify_ca = {{ env.BMC_CACERT_FILE }}
-{% endif %}
-
-[irmc]
-kernel_append_params = nofb nomodeset vga=normal ipa-insecure=1 {% if env.ENABLE_FIPS_IPA %}fips={{ env.ENABLE_FIPS_IPA|trim }}{% endif %} {% if env.IRONIC_RAMDISK_SSH_KEY %}sshkey="{{ env.IRONIC_RAMDISK_SSH_KEY|trim }}"{% endif %} {{ env.IRONIC_KERNEL_PARAMS|trim }} systemd.journald.forward_to_console={{ env.IPA_FORWARD_CONSOLE | default('yes') }}
-{% if env.BMC_TLS_ENABLED == "true" %}
 verify_ca = {{ env.BMC_CACERT_FILE }}
 {% endif %}
 
