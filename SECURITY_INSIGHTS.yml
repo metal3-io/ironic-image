@@ -1,0 +1,90 @@
+header:
+  schema-version: 2.2.0
+  last-updated: '2026-02-24'
+  last-reviewed: '2026-02-24'
+  url: https://raw.githubusercontent.com/metal3-io/ironic-image/main/SECURITY_INSIGHTS.yml
+  project-si-source: https://raw.githubusercontent.com/metal3-io/community/main/SECURITY_INSIGHTS.yml
+repository:
+  url: https://github.com/metal3-io/ironic-image
+  status: active
+  accepts-change-request: true
+  accepts-automated-change-request: true
+  core-team:
+  - name: dtantsur
+    primary: false
+  - name: elfosardo
+    primary: true
+  - name: iurygregory
+    primary: false
+  - name: Rozzii
+    primary: false
+  documentation:
+    contributing-guide: https://github.com/metal3-io/ironic-image/blob/main/CONTRIBUTING.md
+    security-policy: https://github.com/metal3-io/.github/blob/main/SECURITY.md
+    governance: https://github.com/metal3-io/community/blob/main/GOVERNANCE.md
+  license:
+    url: https://github.com/metal3-io/ironic-image/blob/main/LICENSE
+    expression: Apache-2.0
+  release:
+    automated-pipeline: true
+    distribution-points:
+    - uri: https://quay.io/repository/metal3-io/ironic
+      comment: Container images with SBOM and cosign signatures.
+  security:
+    assessments:
+      self:
+        name: Metal3 Security Self-Assessment
+        date: '2024-11-19'
+        evidence: https://github.com/metal3-io/metal3-docs/blob/main/security/self-assessment.md
+        comment: Project-wide self-assessment covering all Metal3 components.
+    tools:
+    - name: Renovate
+      type: SCA
+      rulesets: [default]
+      comment: Automated dependency updates for Dockerfile build args and Python packages.
+      integration:
+        adhoc: false
+        ci: true
+        release: false
+      results: {}
+    - name: ShellCheck
+      type: SAST
+      rulesets: [default]
+      comment: Shell script linter. Runs in Prow presubmit.
+      integration:
+        adhoc: false
+        ci: true
+        release: false
+      results: {}
+    - name: cosign
+      type: other
+      rulesets: [default]
+      comment: |
+        Container images are signed with cosign via the reusable
+        container-image-build workflow in project-infra.
+      integration:
+        adhoc: false
+        ci: false
+        release: true
+      results:
+        release:
+          name: Container image cosign signature
+          location: https://quay.io/repository/metal3-io/ironic
+          predicate-uri: https://github.com/sigstore/cosign
+          comment: Signatures attached to container images in quay.io.
+    - name: kubernetes-sigs/bom
+      type: SCA
+      rulesets: [default]
+      comment: |
+        SBOM generation for container images via the reusable
+        container-image-build workflow in project-infra.
+      integration:
+        adhoc: false
+        ci: false
+        release: true
+      results:
+        release:
+          name: Container image SBOM
+          location: https://quay.io/repository/metal3-io/ironic
+          predicate-uri: https://spdx.dev/Document
+          comment: SPDX SBOMs attached to container images in quay.io.
