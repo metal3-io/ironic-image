@@ -11,6 +11,10 @@ if [[ "${IRONIC_SKIP_DBSYNC:-false}" != true ]]; then
     run_ironic_dbsync
 fi
 
+generate_cacert_bundle_initrd /shared/html/ipa-cacert-bundle
+
+ipa_cert_update_enabled="$(test 0 -eq "${IRONIC_IPA_INSECURE:-0}" && test -n "${WEBSERVER_CACERT_FILE:-}" && echo "true" || echo "false")"
+configure_restart_on_certificate_update "${ipa_cert_update_enabled}" ironic "${WEBSERVER_CACERT_FILE:-}"
 configure_restart_on_certificate_update "${IRONIC_TLS_SETUP}" ironic "${IRONIC_CERT_FILE}"
 
 configure_ironic_auth

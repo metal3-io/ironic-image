@@ -92,6 +92,10 @@ if [[ -f /proc/sys/crypto/fips_enabled ]]; then
     export ENABLE_FIPS_IPA
 fi
 
+if [[ "${IPXE_TLS_SETUP,,}" == "true" ]]; then
+    sed -i 's/set ipxe_tls_setup = false/set ipxe_tls_setup = true/' /templates/ipxe_config.template
+fi
+
 # The original ironic.conf is empty, and can be found in ironic.conf_orig
 render_j2_config "/etc/ironic/ironic.conf.j2" \
     "${IRONIC_CONF_DIR}/ironic.conf"

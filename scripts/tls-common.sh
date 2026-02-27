@@ -5,6 +5,8 @@ export IRONIC_SSL_PROTOCOL=${IRONIC_SSL_PROTOCOL:-"-ALL +TLSv1.2 +TLSv1.3"}
 export IPXE_SSL_PROTOCOL=${IPXE_SSL_PROTOCOL:-"-ALL +TLSv1.2 +TLSv1.3"}
 export IRONIC_VMEDIA_SSL_PROTOCOL=${IRONIC_VMEDIA_SSL_PROTOCOL:-"ALL"}
 
+export DEFAULT_CACERT_BUNDLE=${DEFAULT_CACERT_BUNDLE:-"/etc/ssl/cert.pem"}
+
 # Node image storage is using the same cert and port as the API
 export IRONIC_CERT_FILE=/certs/ironic/tls.crt
 export IRONIC_KEY_FILE=/certs/ironic/tls.key
@@ -22,7 +24,8 @@ export RESTART_CONTAINER_CERTIFICATE_UPDATED=${RESTART_CONTAINER_CERTIFICATE_UPD
 export MARIADB_CACERT_FILE=/certs/ca/mariadb/tls.crt
 export BMC_CACERTS_PATH=/certs/ca/bmc
 export BMC_CACERT_FILE=/conf/bmc-tls.pem
-export IRONIC_CACERT_FILE=/certs/ca/ironic/tls.crt
+export IRONIC_CACERT_FILE=${IRONIC_CACERT_FILE:-"/certs/ca/ironic/tls.crt"}
+export IPA_CACERT_FILE=/conf/ipa-tls.pem
 
 export IPXE_TLS_PORT="${IPXE_TLS_PORT:-8084}"
 
@@ -129,3 +132,42 @@ if ls "${BMC_CACERTS_PATH}"/* > /dev/null 2>&1; then
 else
     export BMC_TLS_ENABLED="false"
 fi
+
+if [ -f "${WEBSERVER_CACERT_FILE:-}" ]; then
+    copy_atomic "${WEBSERVER_CACERT_FILE}" "${IPA_CACERT_FILE}"
+elif [ -f "${DEFAULT_CACERT_BUNDLE}" ]; then
+    copy_atomic "${DEFAULT_CACERT_BUNDLE}" "${IPA_CACERT_FILE}"
+fi
+
+if [ -f "${IRONIC_CACERT_FILE}" ]; then
+    cat "${IRONIC_CACERT_FILE}" >> "${IPA_CACERT_FILE}"
+fi
+
+if ! openssl verify -CAfile "${IPA_CACERT_FILE}" "${IRONIC_CERT_FILE}" > /dev/null 2>&1; then
+    # if we are unable to verify the Ironic cert file set IPA_INSECURE to true
+    export IRONIC_IPA_INSECURE="1"
+fi
+
+generate_cacert_bundle_initrd()
+(
+    local output_path="$1"
+    local temp_dir
+
+    temp_dir="$(mktemp -d)"
+
+    chmod 0755 "${temp_dir}" || return
+
+    cd "${temp_dir}" || return
+
+    mkdir -p etc/ironic-python-agent.d etc/ironic-python-agent
+    cp "${IPA_CACERT_FILE}" etc/ironic-python-agent/ironic.crt
+    cat > etc/ironic-python-agent.d/ironic-tls.conf <<EOF
+[DEFAULT]
+cafile = /etc/ironic-python-agent/ironic.crt
+EOF
+
+    find . | cpio -o -H newc -R +0:+0 --reproducible >> "${output_path}"
+
+    # Remove temp directory
+    cd && rm -rf "${temp_dir}"
+)

@@ -7,21 +7,28 @@ goto deploy
 
 :deploy
 imgfree
+{%- set ipxe_tls_setup = false %}
+{%- if ipxe_tls_setup %}
 {%- if pxe_options.deployment_aki_path %}
 {%- set aki_path_https_elements = pxe_options.deployment_aki_path.split(':') %}
 {%- set aki_port_and_path = aki_path_https_elements[2].split('/') %}
 {%- set aki_afterport = aki_port_and_path[1:]|join('/') %}
-{%- set aki_path_https = ['https:', aki_path_https_elements[1], ':8084/', aki_afterport]|join %}
+{%- set aki_path = ['https:', aki_path_https_elements[1], ':8084/', aki_afterport]|join %}
 {%- endif %}
 {%- if pxe_options.deployment_ari_path %}
 {%- set ari_path_https_elements = pxe_options.deployment_ari_path.split(':') %}
 {%- set ari_port_and_path = ari_path_https_elements[2].split('/') %}
 {%- set ari_afterport = ari_port_and_path[1:]|join('/') %}
-{%- set ari_path_https = ['https:', ari_path_https_elements[1], ':8084/', ari_afterport]|join %}
+{%- set ari_path = ['https:', ari_path_https_elements[1], ':8084/', ari_afterport]|join %}
 {%- endif %}
-kernel {% if pxe_options.ipxe_timeout > 0 %}--timeout {{ pxe_options.ipxe_timeout }} {% endif %}{{ aki_path_https }} selinux=0 troubleshoot=0 text {{ pxe_options.pxe_append_params|default("", true) }} BOOTIF=${mac} initrd={{ pxe_options.initrd_filename|default("deploy_ramdisk", true) }} || goto retry
+{%- else %}
+{%- set ari_path = pxe_options.deployment_ari_path %}
+{%- set aki_path = pxe_options.deployment_aki_path %}
+{%- endif %}
+kernel {% if pxe_options.ipxe_timeout > 0 %}--timeout {{ pxe_options.ipxe_timeout }} {% endif %}{{ aki_path }} selinux=0 troubleshoot=0 text {{ pxe_options.pxe_append_params|default("", true) }} BOOTIF=${mac} initrd={{ pxe_options.initrd_filename|default("deploy_ramdisk", true) }} || goto retry
 
-initrd {% if pxe_options.ipxe_timeout > 0 %}--timeout {{ pxe_options.ipxe_timeout }} {% endif %}{{ ari_path_https }} || goto retry
+initrd {% if pxe_options.ipxe_timeout > 0 %}--timeout {{ pxe_options.ipxe_timeout }} {% endif %}{{ ari_path }} || goto retry
+initrd {% if pxe_options.ipxe_timeout > 0 %}--timeout {{ pxe_options.ipxe_timeout }} {% endif %} ../ipa-cacert-bundle || goto retry
 boot
 
 :retry
@@ -39,8 +46,9 @@ poweroff
 
 :boot_anaconda
 imgfree
-kernel {% if pxe_options.ipxe_timeout > 0 %}--timeout {{ pxe_options.ipxe_timeout }} {% endif %}{{ aki_path_https }} text {{ pxe_options.pxe_append_params|default("", true) }} inst.ks={{ pxe_options.ks_cfg_url }} {% if pxe_options.repo_url %}inst.repo={{ pxe_options.repo_url }}{% else %}inst.stage2={{ pxe_options.stage2_url }}{% endif %} initrd=ramdisk || goto boot_anaconda
-initrd {% if pxe_options.ipxe_timeout > 0 %}--timeout {{ pxe_options.ipxe_timeout }} {% endif %}{{ ari_path_https }} || goto boot_anaconda
+kernel {% if pxe_options.ipxe_timeout > 0 %}--timeout {{ pxe_options.ipxe_timeout }} {% endif %}{{ aki_path }} text {{ pxe_options.pxe_append_params|default("", true) }} inst.ks={{ pxe_options.ks_cfg_url }} {% if pxe_options.repo_url %}inst.repo={{ pxe_options.repo_url }}{% else %}inst.stage2={{ pxe_options.stage2_url }}{% endif %} initrd=ramdisk || goto boot_anaconda
+initrd {% if pxe_options.ipxe_timeout > 0 %}--timeout {{ pxe_options.ipxe_timeout }} {% endif %}{{ ari_path }} || goto boot_anaconda
+initrd {% if pxe_options.ipxe_timeout > 0 %}--timeout {{ pxe_options.ipxe_timeout }} {% endif %} ../ipa-cacert-bundle || goto boot_anaconda
 boot
 
 :boot_ramdisk
@@ -48,8 +56,9 @@ imgfree
 {%- if pxe_options.boot_iso_url %}
 sanboot {{ pxe_options.boot_iso_url }}
 {%- else %}
-kernel {% if pxe_options.ipxe_timeout > 0 %}--timeout {{ pxe_options.ipxe_timeout }} {% endif %}{{ aki_path_https }} root=/dev/ram0 text {{ pxe_options.pxe_append_params|default("", true) }} {{ pxe_options.ramdisk_opts|default('', true) }} initrd=ramdisk || goto boot_ramdisk
-initrd {% if pxe_options.ipxe_timeout > 0 %}--timeout {{ pxe_options.ipxe_timeout }} {% endif %}{{ ari_path_https }} || goto boot_ramdisk
+kernel {% if pxe_options.ipxe_timeout > 0 %}--timeout {{ pxe_options.ipxe_timeout }} {% endif %}{{ aki_path }} root=/dev/ram0 text {{ pxe_options.pxe_append_params|default("", true) }} {{ pxe_options.ramdisk_opts|default('', true) }} initrd=ramdisk || goto boot_ramdisk
+initrd {% if pxe_options.ipxe_timeout > 0 %}--timeout {{ pxe_options.ipxe_timeout }} {% endif %}{{ ari_path }} || goto boot_ramdisk
+initrd {% if pxe_options.ipxe_timeout > 0 %}--timeout {{ pxe_options.ipxe_timeout }} {% endif %} ../ipa-cacert-bundle || goto boot_ramdisk
 boot
 {%- endif %}
 

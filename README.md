@@ -130,9 +130,9 @@ will:
 1. Check for `DEPLOY_KERNEL_URL_<ARCH>` and `DEPLOY_RAMDISK_URL_<ARCH>`
    environment variables (e.g., `DEPLOY_KERNEL_URL_X86_64`,
    `DEPLOY_KERNEL_URL_AARCH64`)
-2. Look for architecture-specific files like `ironic-python-agent_aarch64.kernel`
+1. Look for architecture-specific files like `ironic-python-agent_aarch64.kernel`
    in `/shared/html/images/`
-3. Fall back to generic `ironic-python-agent.kernel` and
+1. Fall back to generic `ironic-python-agent.kernel` and
    `ironic-python-agent.initramfs`
 
 **Example configurations:**
@@ -171,7 +171,8 @@ available, it falls back to the default IPA images.
 The following environment variables control IPA kernel boot parameters (all
 have sensible defaults):
 
-- `IRONIC_IPA_INSECURE` - Allow insecure connections (default: `1`)
+- `IRONIC_IPA_INSECURE` - Allow insecure connections (default: `0` if Ironic
+  certificate can be verified locally, `1` otherwise)
 - `IRONIC_IPA_DEBUG` - Enable debug mode (default: `1`)
 - `IRONIC_IPA_INSPECTION_DHCP_ALL_INTERFACES` - Request DHCP on all interfaces
   during inspection (default: `1`)
@@ -186,7 +187,8 @@ have sensible defaults):
 - `IRONIC_JSON_RPC_PORT` - port used by the ironic json-rpc service (default to
   6189).
 - `WEBSERVER_CACERT_FILE` - Specifies the CA or CA bundle that will be used
-  by Ironic to verify disk and IPA images.
+  by Ironic to verify disk and IPA images. Will also be used by IPA to verify
+  disk images.
 
 The following environment variables can be passed to customize the virtual
 media HTTP server configuration:
