@@ -130,9 +130,9 @@ will:
 1. Check for `DEPLOY_KERNEL_URL_<ARCH>` and `DEPLOY_RAMDISK_URL_<ARCH>`
    environment variables (e.g., `DEPLOY_KERNEL_URL_X86_64`,
    `DEPLOY_KERNEL_URL_AARCH64`)
-2. Look for architecture-specific files like `ironic-python-agent_aarch64.kernel`
+1. Look for architecture-specific files like `ironic-python-agent_aarch64.kernel`
    in `/shared/html/images/`
-3. Fall back to generic `ironic-python-agent.kernel` and
+1. Fall back to generic `ironic-python-agent.kernel` and
    `ironic-python-agent.initramfs`
 
 **Example configurations:**
