@@ -4,9 +4,14 @@ on:
   pull_request:
     types: [ opened, edited, reopened, synchronize, ready_for_review ]
 
+permissions: {}
+
 jobs:
   test:
     runs-on: oracle-vm-4cpu-16gb-x86-64
+    permissions:
+      checks: write
+      contents: read
     env:
       CLUSTER_TYPE: minikube
       CONTAINER_RUNTIME: docker
@@ -22,10 +27,12 @@ jobs:
     - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       with:
         path: ironic-image
+        persist-credentials: false
     - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       with:
         repository: metal3-io/ironic-standalone-operator
         path: ironic-standalone-operator
+        persist-credentials: false
     - name: Calculate go version
       id: vars
       run: echo "go_version=$(make -sC ironic-standalone-operator go-version)" >> $GITHUB_OUTPUT
@@ -47,7 +54,7 @@ jobs:
       run: ironic-standalone-operator/test/collect-logs.sh
       if: always()
     - name: Upload logs artifacts
-      uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+      uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
       with:
         name: functional
         path: /tmp/logs/*

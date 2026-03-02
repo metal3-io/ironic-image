@@ -18,7 +18,7 @@ jobs:
     permissions:
       contents: read
       id-token: write
-    uses: metal3-io/project-infra/.github/workflows/container-image-build.yml@main
+    uses: metal3-io/project-infra/.github/workflows/container-image-build.yml@main # zizmor: ignore[unpinned-uses]
     with:
       image-name: 'ironic'
       pushImage: true
@@ -34,7 +34,7 @@ jobs:
     permissions:
       contents: read
       id-token: write
-    uses: metal3-io/project-infra/.github/workflows/container-image-build.yml@main
+    uses: metal3-io/project-infra/.github/workflows/container-image-build.yml@main # zizmor: ignore[unpinned-uses]
     with:
       image-name: 'ironic_cs10'
       pushImage: true
@@ -51,7 +51,7 @@ jobs:
     permissions:
       contents: read
       id-token: write
-    uses: metal3-io/project-infra/.github/workflows/container-image-build.yml@main
+    uses: metal3-io/project-infra/.github/workflows/container-image-build.yml@main # zizmor: ignore[unpinned-uses]
     with:
       image-name: 'sushy-tools'
       dockerfile-directory: resources/sushy-tools
@@ -68,7 +68,7 @@ jobs:
     permissions:
       contents: read
       id-token: write
-    uses: metal3-io/project-infra/.github/workflows/container-image-build.yml@main
+    uses: metal3-io/project-infra/.github/workflows/container-image-build.yml@main # zizmor: ignore[unpinned-uses]
     with:
       image-name: 'vbmc'
       dockerfile-directory: resources/vbmc
@@ -85,7 +85,7 @@ jobs:
     permissions:
       contents: read
       id-token: write
-    uses: metal3-io/project-infra/.github/workflows/container-image-build.yml@main
+    uses: metal3-io/project-infra/.github/workflows/container-image-build.yml@main # zizmor: ignore[unpinned-uses]
     with:
       image-name: 'ironic-client'
       dockerfile-directory: resources/ironic-client
