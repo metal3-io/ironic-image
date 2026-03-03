@@ -171,7 +171,7 @@ reno===4.1.0
 ncclient===0.6.19
 imagesize===1.4.1
 pydot===4.0.1
-urllib3===1.26.20
+urllib3===2.6.3
 graphviz===0.21
 PyKMIP===0.10.0
 python-observabilityclient===1.2.0
@@ -184,7 +184,7 @@ mock===5.2.0
 PyYAML===6.0.2
 beautifulsoup4===4.13.4
 ovs===3.5.1
-cryptography===43.0.3
+cryptography===44.0.1
 httpcore===1.0.9
 URLObject===3.0.0
 psycopg2-binary===2.9.10
@@ -231,7 +231,7 @@ XStatic-JQuery.quicksearch===2.0.3.2
 pyasn1_modules===0.4.1
 mpmath===1.3.0
 python-binary-memcached===0.31.4
-jaraco.context===6.0.1
+jaraco.context===6.1.0
 django-debreach===2.1.0
 sphinx-feature-classification===2.0.0
 XStatic-JQuery-Migrate===3.3.2.1
@@ -517,7 +517,7 @@ boto===2.49.0
 hyperlink===21.0.0
 mitba===1.1.1
 python-masakariclient===8.7.0
-Werkzeug===3.1.3
+Werkzeug===3.1.5
 APScheduler===3.11.0
 xmlschema===2.5.1
 python-troveclient===8.9.0
