@@ -18,6 +18,8 @@ updates:
   # Ignore major bumps in main, as it breaks the group bump process
   - dependency-name: "*"
     update-types: [ "version-update:semver-major" ]
+  cooldown:
+    default-days: 7
   commit-message:
     prefix: ":seedling:"
   labels:
@@ -39,6 +41,8 @@ updates:
   # Ignore major and minor bumps for release branch
   - dependency-name: "*"
     update-types: [ "version-update:semver-major", "version-update:semver-minor" ]
+  cooldown:
+    default-days: 7
   commit-message:
     prefix: ":seedling:"
   labels:
@@ -60,6 +64,8 @@ updates:
   # Ignore major and minor bumps for release branch
   - dependency-name: "*"
     update-types: [ "version-update:semver-major", "version-update:semver-minor" ]
+  cooldown:
+    default-days: 7
   commit-message:
     prefix: ":seedling:"
   labels:
@@ -81,6 +87,8 @@ updates:
   # Ignore major and minor bumps for release branch
   - dependency-name: "*"
     update-types: [ "version-update:semver-major", "version-update:semver-minor" ]
+  cooldown:
+    default-days: 7
   commit-message:
     prefix: ":seedling:"
   labels:
@@ -102,6 +110,8 @@ updates:
   # Ignore major and minor bumps for release branch
   - dependency-name: "*"
     update-types: [ "version-update:semver-major", "version-update:semver-minor" ]
+  cooldown:
+    default-days: 7
   commit-message:
     prefix: ":seedling:"
   labels:
