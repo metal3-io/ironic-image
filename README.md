@@ -27,6 +27,9 @@ The following entry points are provided:
    the provisioning of baremetal nodes.  Details on Ironic can be found at
    <https://docs.openstack.org/ironic/latest/>.  This is the default entry point
    used by the Dockerfile.
+- `runironic-networking` - Starts the ironic-networking service for standalone
+   network management of baremetal nodes. This service handles switch port
+   configuration for node provisioning, cleaning, and inspection operations.
 - `rundnsmasq` - Runs the dnmasq dhcp server to provide addresses and initiate
    PXE boot of baremetal nodes.  This includes a lightweight TFTP server.
    Details on dnsmasq can be found at
@@ -239,6 +242,37 @@ The following can serve as an example:
    callback from the ramdisk doing the cleaning
 - `OS_PXE__BOOT_RETRY_TIMEOUT=1200` - timeout (seconds) to enable boot retries.
 
+The ironic networking configuration can be overridden by various environment
+variables.  The following can serve as an example of those most common settings.
+
+- `IRONIC_NETWORKING_ENABLED` - Enable standalone networking service
+   (default `false`)
+- `IRONIC_NETWORKING_JSON_RPC_HOST` - JSON-RPC host for networking service
+   (default `localhost`)
+- `IRONIC_NETWORKING_JSON_RPC_PORT` - JSON-RPC port for networking service
+   (default `8090`)
+- `IRONIC_NETWORKING_ENABLED_SWITCH_DRIVERS` - Enabled switch drivers (default
+   `generic-switch`)
+- `IRONIC_NETWORKING_SWITCH_CONFIGS` - Path to switch configuration file.
+   Switch configurations and SSH keys should be stored in a Secret and mounted
+   to the Pod as a file and referenced by this variable.
+   (default `/etc/ironic/networking/switch-configs.conf`)
+- `IRONIC_NETWORKING_PROVISIONING_NETWORK` - Network details for the
+   provisioning network (e.g., mode=access/native_vlan=123)
+- `IRONIC_NETWORKING_INSPECTION_NETWORK` - Network details for the inspection
+   network (e.g., mode=access/native_vlan=123)
+- `IRONIC_NETWORKING_SERVICING_NETWORK` - Network details for the servicing
+   network (e.g., mode=access/native_vlan=123)
+- `IRONIC_NETWORKING_CLEANING_NETWORK` - Network details for the cleaning
+   network (e.g., mode=access/native_vlan=123)
+- `IRONIC_NETWORKING_RESCUING_NETWORK` - Network details for the rescuing
+   network (e.g., mode=access/native_vlan=123)
+- `IRONIC_NETWORKING_IDLE_NETWORK` - Network details for the idle
+   network (e.g., mode=access/native_vlan=123)
+
+**Note:**  The ironic-networking service requires the `networking-generic-switch`
+  package.
+
 ## Using a read-only root filesystem
 
 The ironic-image can operate with a read-only root filesystem. However,
@@ -254,8 +288,11 @@ share runtime data between Ironic and HTTPD.
 ## Custom source for ironic software
 
 When building the ironic image, it is also possible to specify a
-different source for ironic or the sushy library using the build
-arguments **IRONIC_SOURCE** and **SUSHY_SOURCE**.
+different source for ironic, the sushy library, or NGS using the build
+arguments **IRONIC_SOURCE**, **SUSHY_SOURCE**, and **NGS_SOURCE**.
+The **INSTALL_NGS** build argument (default `true`) controls whether the
+`networking-generic-switch` package is included in the image. Setting
+**NGS_SOURCE** implicitly enables installation regardless of **INSTALL_NGS**.
 The accepted formats are gerrit refs, like _refs/changes/89/860689/2_,
 commit hashes, like _a1fe6cb41e6f0a1ed0a43ba5e17745714f206f1f_,
 repo tags or branches, or a local directory that needs to be under the
