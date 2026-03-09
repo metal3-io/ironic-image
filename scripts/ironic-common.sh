@@ -41,21 +41,11 @@ export IRONIC_USE_MARIADB=${IRONIC_USE_MARIADB:-false}
 get_provisioning_interface()
 {
     if [[ -n "$PROVISIONING_INTERFACE" ]]; then
-        # don't override the PROVISIONING_INTERFACE if one is provided
         echo "$PROVISIONING_INTERFACE"
         return
     fi
 
-    local interface="provisioning"
-
-    for mac in ${PROVISIONING_MACS//,/ }; do
-        if ip -br link show up | grep -i "$mac" &>/dev/null; then
-            interface="$(ip -br link show up | grep -i "$mac" | cut -f 1 -d ' ' | cut -f 1 -d '@')"
-            break
-        fi
-    done
-
-    echo "$interface"
+    python3.12 /bin/detect_interface.py interface-of-mac "$PROVISIONING_MACS"
 }
 
 PROVISIONING_INTERFACE="$(get_provisioning_interface)"
@@ -65,19 +55,14 @@ export LISTEN_ALL_INTERFACES="${LISTEN_ALL_INTERFACES:-true}"
 
 get_interface_of_ip()
 {
-    local IP_VERS
-    local IP_ADDR
-
-    if [[ $# -gt 2 ]]; then
-        echo "ERROR: ${FUNCNAME[0]}: too many parameters" >&2
+    if [[ $# -lt 1 ]] || [[ $# -gt 2 ]]; then
+        echo "ERROR: ${FUNCNAME[0]}: usage: get_interface_of_ip IP_ADDR [4|6]" >&2
         exit 1
     fi
 
     if [[ $# -eq 2 ]]; then
         case "$2" in
-        4|6)
-            IP_VERS="-$2"
-            ;;
+        4|6) ;;
         *)
             echo "ERROR: ${FUNCNAME[0]}: the second parameter should be [4|6] (or missing for both)" >&2
             exit 1
@@ -85,11 +70,7 @@ get_interface_of_ip()
         esac
     fi
 
-    IP_ADDR="$1"
-
-    if ip "${IP_VERS[@]}" -br addr show | grep -F " ${IP_ADDR}/" &>/dev/null; then
-        ip "${IP_VERS[@]}" -br addr show | grep -F " ${IP_ADDR}/" | cut -f 1 -d ' ' | cut -f 1 -d '@'
-    fi
+    python3.12 /bin/detect_interface.py interface-of-ip "$@"
 }
 
 parse_ip_address()
