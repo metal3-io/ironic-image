@@ -188,25 +188,6 @@ have sensible defaults):
 - `WEBSERVER_CACERT_FILE` - Specifies the CA or CA bundle that will be used
   by Ironic to verify disk and IPA images.
 
-The following environment variables can be passed to customize the virtual
-media HTTP server configuration:
-
-- `IRONIC_VMEDIA_CURVES` - Setting this variable will set the allowed set of
-  groups allowed for TLS negotiation by order of preference, it needs to be set
-  in the openSSL format like e.g. `x448:x25519:secp256r1:secp384r1`. If let
-  unset it will use default from openSSL.
-- `IRONIC_VMEDIA_TLS_12_CIPHERS` - Setting this variable will set the allowed
-  cipher suites for TLS up to version 1.2 in order, it needs to be set in the
-  openSSL format e.g. `ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-ECDSA-CHACHA20-POLY1305`.
-  If let unset it will use default from openSSL.
-- `IRONIC_VMEDIA_TLS_13_CIPHERS` - Setting this variable will set the allowed
-  cipher suites for TLS up to version 1.3 in order, it needs to be set in the
-  openSSL format e.g. `TLS_CHACHA20_POLY1305_SHA256:TLS_AES_128_GCM_SHA256`. If
-  let unset it will use default from openSSL.
-- `IRONIC_VMEDIA_TLS_ENFORCE_SERVER_CIPHER_ORDER` - Setting this variable to
-  `true` will make the server enforce its cipher list ordering for TLS version
-  up to 1.2, defaults to `false`
-
 The following mountpoints can be passed in to customize run-time
 functionality:
 
@@ -238,6 +219,48 @@ The following can serve as an example:
 - `OS_CONDUCTOR__CLEAN_CALLBACK_TIMEOUT=1800` - timeout (seconds) to wait for a
    callback from the ramdisk doing the cleaning
 - `OS_PXE__BOOT_RETRY_TIMEOUT=1200` - timeout (seconds) to enable boot retries.
+
+## TLS configuration
+
+The following environment variables can be passed to customize the Ironic API
+TLS configuration:
+
+- `IRONIC_SSL_PROTOCOL` - Apache `SSLProtocol` directive for the Ironic API
+  and proxy vhosts (default `-ALL +TLSv1.2 +TLSv1.3`)
+- `IRONIC_TLS_12_CIPHERS` - Setting this variable will set the allowed cipher
+  suites for TLS up to version 1.2 in order, it needs to be set in the openSSL
+  format e.g. `ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-ECDSA-CHACHA20-POLY1305`. If
+  left unset it will use default from openSSL.
+- `IRONIC_TLS_13_CIPHERS` - Setting this variable will set the allowed cipher
+  suites for TLS version 1.3 in order, it needs to be set in the openSSL format
+  e.g. `TLS_CHACHA20_POLY1305_SHA256:TLS_AES_128_GCM_SHA256`. If let unset it will
+  use default from openSSL.
+- `IRONIC_TLS_CURVES` - Setting this variable will set the allowed set of groups
+  allowed for TLS negotiation by order of preference, it needs to be set in the
+  openSSL format like e.g. `x448:x25519:secp256r1:secp384r1`. If let unset it
+  will use default from openSSL.
+- `IRONIC_TLS_ENFORCE_SERVER_CIPHER_ORDER` - Setting this variable to
+  `true` will make the server enforce its cipher list ordering for TLS version
+  up to 1.2, defaults to `false`
+
+The following environment variables can be passed to customize the virtual
+media HTTP server configuration:
+
+- `IRONIC_VMEDIA_CURVES` - Setting this variable will set the allowed set of
+  groups allowed for TLS negotiation by order of preference, it needs to be set
+  in the openSSL format like e.g. `x448:x25519:secp256r1:secp384r1`. If let
+  unset it will use default from openSSL.
+- `IRONIC_VMEDIA_TLS_12_CIPHERS` - Setting this variable will set the allowed
+  cipher suites for TLS up to version 1.2 in order, it needs to be set in the
+  openSSL format e.g. `ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-ECDSA-CHACHA20-POLY1305`.
+  If let unset it will use default from openSSL.
+- `IRONIC_VMEDIA_TLS_13_CIPHERS` - Setting this variable will set the allowed
+  cipher suites for TLS up to version 1.3 in order, it needs to be set in the
+  openSSL format e.g. `TLS_CHACHA20_POLY1305_SHA256:TLS_AES_128_GCM_SHA256`. If
+  let unset it will use default from openSSL.
+- `IRONIC_VMEDIA_TLS_ENFORCE_SERVER_CIPHER_ORDER` - Setting this variable to
+  `true` will make the server enforce its cipher list ordering for TLS version
+  up to 1.2, defaults to `false`
 
 ## Using a read-only root filesystem
 
