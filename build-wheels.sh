@@ -29,6 +29,11 @@ if [[ -n ${SUSHY_SOURCE:-} ]]; then
     sed -i '/^sushy===/d' "${UPPER_CONSTRAINTS_PATH}"
 fi
 
+# Remove networking-generic-switch constraint if building from source
+if [[ -n ${NGS_SOURCE:-} ]]; then
+    sed -i '/^networking-generic-switch===/d' "${UPPER_CONSTRAINTS_PATH}"
+fi
+
 # Build wheels for all packages
 # Note: some packages may not produce wheels (pure Python), but pip wheel handles this
 python3.12 -m pip wheel \
