@@ -51,6 +51,18 @@ Listen {{ env.IRONIC_URL_HOST }}:{{ env.IRONIC_LISTEN_PORT }}
 {% if env.IRONIC_TLS_SETUP == "true" %}
     SSLEngine on
     SSLProtocol {{ env.IRONIC_SSL_PROTOCOL }}
+    {% if env.IRONIC_TLS_12_CIPHERS is defined and env.IRONIC_TLS_12_CIPHERS %}
+    SSLCipherSuite {{ env.IRONIC_TLS_12_CIPHERS }}
+    {% endif %}
+    {% if env.IRONIC_TLS_13_CIPHERS is defined and env.IRONIC_TLS_13_CIPHERS %}
+    SSLCipherSuite TLSv1.3 {{ env.IRONIC_TLS_13_CIPHERS }}
+    {% endif %}
+    {% if env.IRONIC_TLS_CURVES is defined and env.IRONIC_TLS_CURVES %}
+    SSLOpenSSLConfCmd Curves {{ env.IRONIC_TLS_CURVES }}
+    {% endif %}
+    {% if env.IRONIC_TLS_ENFORCE_SERVER_CIPHER_ORDER | lower == "true" %}
+    SSLHonorCipherOrder on
+    {% endif %}
     SSLCertificateFile {{ env.IRONIC_CERT_FILE }}
     SSLCertificateKeyFile {{ env.IRONIC_KEY_FILE }}
 {% endif %}
