@@ -154,8 +154,8 @@ power_off = {{ false if env.IRONIC_FAST_TRACK == "true" else true }}
 # NOTE(dtantsur): keep inspection arguments synchronized with inspector.ipxe
 # Also keep in mind that only parameters unique for inspection go here.
 # No need to duplicate pxe_append_params/kernel_append_params.
-extra_kernel_params = ipa-inspection-collectors={{ env.IRONIC_IPA_COLLECTORS }} ipa-enable-vlan-interfaces={{ env.IRONIC_ENABLE_VLAN_INTERFACES }} ipa-inspection-dhcp-all-interfaces=1 ipa-collect-lldp=1
-hooks = $default_hooks,parse-lldp
+extra_kernel_params = ipa-inspection-collectors={{ env.IRONIC_IPA_COLLECTORS }} ipa-enable-vlan-interfaces={{ env.IRONIC_ENABLE_VLAN_INTERFACES }} ipa-inspection-dhcp-all-interfaces=1 ipa-collect-lldp={{ env.IRONIC_IPA_COLLECT_LLDP | default('1') }}
+hooks = $default_hooks{% if env.IRONIC_IPA_COLLECT_LLDP | default('1') == '1' %},parse-lldp{% endif %}
 add_ports = all
 keep_ports = present
 
