@@ -121,8 +121,7 @@ COPY ${PKGS_LIST} ${ARCH_PKGS_LIST} ${EXTRA_PKGS_LIST:-$PKGS_LIST} ${PATCH_LIST:
 COPY ironic-config/inspector.ipxe.j2 ironic-config/httpd-ironic-api.conf.j2 \
      ironic-config/ipxe_config.template ironic-config/dnsmasq.conf.j2 \
      /templates/
-COPY prepare-image.sh patch-image.sh configure-nonroot.sh /bin/
-COPY scripts/ /bin/
+COPY prepare-image.sh patch-image.sh configure-nonroot.sh scripts/ /bin/
 
 # Install Python packages from pre-built wheels (mounted from both wheel-builder stages)
 RUN --mount=type=cache,target=/var/cache/dnf,sharing=locked \
@@ -143,7 +142,7 @@ COPY ironic-config/httpd-modules.conf /etc/httpd/conf.modules.d/
 COPY ironic-config/apache2-vmedia.conf.j2 /templates/httpd-vmedia.conf.j2
 COPY ironic-config/apache2-ipxe.conf.j2 /templates/httpd-ipxe.conf.j2
 
-# DATABASE
+# Database, and non-root user configuration
 RUN <<EORUN
 set -euxo pipefail
 mkdir -p /var/lib/ironic
@@ -151,11 +150,6 @@ sqlite3 /var/lib/ironic/ironic.sqlite "pragma journal_mode=wal"
 microdnf remove -y sqlite
 microdnf clean all
 rm -rf /var/cache/{yum,dnf}/*
-EORUN
-
-# configure non-root user and set relevant permissions
-RUN <<EORUN
-set -euxo pipefail
 configure-nonroot.sh
 rm -f /bin/configure-nonroot.sh
 EORUN
