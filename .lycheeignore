@@ -1,0 +1,2 @@
+# EOL releases cannot be compared and release notes cannot be fixed
+https://github.com/openstack/ironic/compare/.*
