@@ -118,9 +118,7 @@ ARG EXTRA_PKGS_LIST
 ARG PATCH_LIST
 
 COPY ${PKGS_LIST} ${ARCH_PKGS_LIST} ${EXTRA_PKGS_LIST:-$PKGS_LIST} ${PATCH_LIST:-$PKGS_LIST} /tmp/
-COPY ironic-config/inspector.ipxe.j2 ironic-config/httpd-ironic-api.conf.j2 \
-     ironic-config/ipxe_config.template ironic-config/dnsmasq.conf.j2 \
-     /templates/
+COPY ironic-config/ /tmp/ironic-config/
 COPY prepare-image.sh patch-image.sh configure-nonroot.sh scripts/ /bin/
 
 # Install Python packages from pre-built wheels (mounted from both wheel-builder stages)
@@ -134,17 +132,21 @@ RUN --mount=type=cache,target=/var/cache/dnf,sharing=locked \
 COPY --from=ironic-builder /tmp/ipxe/out/ /tftpboot/
 COPY --from=ironic-builder /tmp/uefi_esp*.img /templates/
 
-COPY ironic-config/ironic.conf.j2 /etc/ironic/
-
-# Custom httpd config, removes all but the bare minimum needed modules
-COPY ironic-config/httpd.conf.j2 /etc/httpd/conf/
-COPY ironic-config/httpd-modules.conf /etc/httpd/conf.modules.d/
-COPY ironic-config/apache2-vmedia.conf.j2 /templates/httpd-vmedia.conf.j2
-COPY ironic-config/apache2-ipxe.conf.j2 /templates/httpd-ipxe.conf.j2
-
-# Database, and non-root user configuration
+# Database, ironic-config distribution, and non-root user configuration
+# Config files are placed here (after prepare-image.sh) because it removes
+# /etc/httpd/conf.modules.d/*.conf during package setup.
 RUN <<EORUN
 set -euxo pipefail
+cp /tmp/ironic-config/inspector.ipxe.j2 /tmp/ironic-config/httpd-ironic-api.conf.j2 \
+   /tmp/ironic-config/ipxe_config.template /tmp/ironic-config/dnsmasq.conf.j2 \
+   /templates/
+mkdir -p /etc/ironic
+cp /tmp/ironic-config/ironic.conf.j2 /etc/ironic/
+cp /tmp/ironic-config/httpd.conf.j2 /etc/httpd/conf/
+cp /tmp/ironic-config/httpd-modules.conf /etc/httpd/conf.modules.d/
+cp /tmp/ironic-config/apache2-vmedia.conf.j2 /templates/httpd-vmedia.conf.j2
+cp /tmp/ironic-config/apache2-ipxe.conf.j2 /templates/httpd-ipxe.conf.j2
+rm -rf /tmp/ironic-config
 mkdir -p /var/lib/ironic
 sqlite3 /var/lib/ironic/ironic.sqlite "pragma journal_mode=wal"
 microdnf remove -y sqlite
