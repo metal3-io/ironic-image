@@ -46,17 +46,15 @@ fi
 
 configure_json_rpc_auth()
 {
-    if [[ "${IRONIC_EXPOSE_JSON_RPC}" != "true" ]]; then
-        return
-    fi
+    local GROUP=${1:-json_rpc}
 
     local auth_config_file="/auth/ironic-rpc/auth-config"
     local username_file="/auth/ironic-rpc/username"
     local password_file="/auth/ironic-rpc/password"
     if [[ -f "${username_file}" ]] && [[ -f "${password_file}" ]]; then
-        crudini --set "${IRONIC_CONFIG}" json_rpc username "$(<${username_file})"
+        crudini --set "${IRONIC_CONFIG}" "${GROUP}" username "$(<${username_file})"
         set +x
-        crudini --set "${IRONIC_CONFIG}" json_rpc password "$(<${password_file})"
+        crudini --set "${IRONIC_CONFIG}" "${GROUP}" password "$(<${password_file})"
         set -x
     elif [[ -f "${auth_config_file}" ]]; then
         echo "WARNING: using auth-config is deprecated, mount a secret directly"
