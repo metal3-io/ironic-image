@@ -31,7 +31,6 @@ Listen {{ env.IRONIC_URL_HOST }}:{{ env.IRONIC_LISTEN_PORT }}
 
     # Exclude /images from proxying
     ProxyPass        "/images" !
-    ProxyPassReverse "/images" !
 
     {% if env.IRONIC_PRIVATE_PORT == "unix" %}
     ProxyPass "/"  "unix:/shared/ironic.sock|http://127.0.0.1/"
