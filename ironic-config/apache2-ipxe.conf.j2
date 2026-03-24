@@ -18,6 +18,11 @@ Listen {{ env.IPXE_TLS_PORT }}
     <Directory ~ "/shared/html/(redfish|ilo|images)/">
         Require all denied
     </Directory>
+    <Directory "/shared/html/images">
+        <FilesMatch "^ironic-python-agent\.">
+            Require all granted
+        </FilesMatch>
+    </Directory>
 
     <Location ~ "^/.*">
         SSLRequireSSL

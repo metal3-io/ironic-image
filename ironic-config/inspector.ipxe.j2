@@ -12,13 +12,13 @@ kernel --timeout 60000 {{ kernel_path }} ipa-insecure={{ env.IRONIC_IPA_INSECURE
 {%- set kernel_by_arch = {} -%}
 {%- for item in env.DEPLOY_KERNEL_BY_ARCH.split(',') -%}
 {%- set arch = item.split(':')[0] -%}
-{%- set url = item.split(':', 1)[1] | replace(file_url_prefix, env.IRONIC_HTTP_URL + '/') -%}
+{%- set url = item.split(':', 1)[1] | replace(file_url_prefix, env.IRONIC_IPA_BASE_URL + '/') -%}
 {%- set _ = kernel_by_arch.update({arch: url}) -%}
 {%- endfor -%}
 {%- set ramdisk_by_arch = {} -%}
 {%- for item in env.DEPLOY_RAMDISK_BY_ARCH.split(',') -%}
 {%- set arch = item.split(':')[0] -%}
-{%- set url = item.split(':', 1)[1] | replace(file_url_prefix, env.IRONIC_HTTP_URL + '/') -%}
+{%- set url = item.split(':', 1)[1] | replace(file_url_prefix, env.IRONIC_IPA_BASE_URL + '/') -%}
 {%- set _ = ramdisk_by_arch.update({arch: url}) -%}
 {%- endfor -%}
 # Architecture-specific boot selection
@@ -43,8 +43,8 @@ goto boot
 
 :fallback
 echo Booting fallback IPA for ${buildarch}
-set ipa_kernel {{ env.IRONIC_HTTP_URL }}/images/ironic-python-agent.kernel
-set ipa_ramdisk {{ env.IRONIC_HTTP_URL }}/images/ironic-python-agent.initramfs
+set ipa_kernel {{ env.IRONIC_IPA_BASE_URL }}/images/ironic-python-agent.kernel
+set ipa_ramdisk {{ env.IRONIC_IPA_BASE_URL }}/images/ironic-python-agent.initramfs
 set ipa_ramdisk_name ironic-python-agent.initramfs
 goto boot
 
@@ -61,7 +61,7 @@ boot
 imgfree
 # NOTE(dtantsur): keep inspection kernel params in [mdns]params in
 # ironic-inspector-image and configuration in configure-ironic.sh
-{{ kernel_cmdline(env.IRONIC_HTTP_URL + '/images/ironic-python-agent.kernel', 'ironic-python-agent.initramfs') }}
-initrd --timeout 60000 {{ env.IRONIC_HTTP_URL }}/images/ironic-python-agent.initramfs || goto retry_boot
+{{ kernel_cmdline(env.IRONIC_IPA_BASE_URL + '/images/ironic-python-agent.kernel', 'ironic-python-agent.initramfs') }}
+initrd --timeout 60000 {{ env.IRONIC_IPA_BASE_URL }}/images/ironic-python-agent.initramfs || goto retry_boot
 boot
 {% endif %}
