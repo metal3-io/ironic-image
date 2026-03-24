@@ -144,6 +144,12 @@ wait_for_interface_or_ip()
     export IRONIC_HTTP_URL="${IRONIC_HTTP_URL:-http://${IRONIC_URL_HOST}:${HTTP_PORT}}"
     export IRONIC_TFTP_URL="${IRONIC_TFTP_URL:-tftp://${IRONIC_URL_HOST}}"
     export IRONIC_BASE_URL=${IRONIC_BASE_URL:-"${IRONIC_SCHEME}://${IRONIC_URL_HOST}:${IRONIC_ACCESS_PORT}"}
+
+    if [[ "${IPXE_TLS_SETUP:-false}" == "true" ]]; then
+        export IRONIC_IPA_BASE_URL="${IRONIC_IPA_BASE_URL:-${IPXE_SCHEME}://${IRONIC_URL_HOST}:${IPXE_TLS_PORT}}"
+    else
+        export IRONIC_IPA_BASE_URL="${IRONIC_IPA_BASE_URL:-${IRONIC_HTTP_URL}}"
+    fi
 }
 
 render_j2_config()
