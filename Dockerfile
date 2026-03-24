@@ -61,11 +61,15 @@ FROM $BASE_IMAGE AS ironic-wheel-builder
 ARG UPPER_CONSTRAINTS_FILE=upper-constraints.txt
 ARG IRONIC_SOURCE=f700d3da53fdecd703d1ea396b1f4bdd0b253679 # master
 ARG SUSHY_SOURCE
+ARG NGS_SOURCE=ff93acd5f07fc9b9524038adc1858b8a5ee8889c # 9.0.0
+ARG INSTALL_NGS=true
 ARG PIP_VERSION
 ARG SETUPTOOLS_VERSION
 
 ENV IRONIC_SOURCE=${IRONIC_SOURCE} \
     SUSHY_SOURCE=${SUSHY_SOURCE} \
+    NGS_SOURCE=${NGS_SOURCE} \
+    INSTALL_NGS=${INSTALL_NGS} \
     UPPER_CONSTRAINTS_FILE=${UPPER_CONSTRAINTS_FILE} \
     PIP_VERSION=${PIP_VERSION} \
     SETUPTOOLS_VERSION=${SETUPTOOLS_VERSION}
@@ -135,6 +139,7 @@ COPY --from=ironic-builder /tmp/ipxe/out/ /tftpboot/
 COPY --from=ironic-builder /tmp/uefi_esp*.img /templates/
 
 COPY ironic-config/ironic.conf.j2 /etc/ironic/
+COPY ironic-config/ironic-networking.conf.j2 /etc/ironic/
 
 # Custom httpd config, removes all but the bare minimum needed modules
 COPY ironic-config/httpd.conf.j2 /etc/httpd/conf/

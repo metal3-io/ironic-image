@@ -3,7 +3,11 @@ auth_strategy = noauth
 debug = true
 default_deploy_interface = direct
 default_inspect_interface = agent
+{%- if env.IRONIC_NETWORKING_ENABLED | lower == "true" %}
+default_network_interface = ironic-networking
+{% else %}
 default_network_interface = noop
+{% endif -%}
 enabled_bios_interfaces = no-bios,redfish,idrac-redfish
 enabled_boot_interfaces = ipxe,pxe,fake,redfish-virtual-media,idrac-redfish-virtual-media,redfish-https
 enabled_deploy_interfaces = direct,fake,ramdisk,custom-agent,bootc
@@ -13,7 +17,11 @@ enabled_firmware_interfaces = no-firmware,fake,redfish
 enabled_hardware_types = ipmi,idrac,fake-hardware,redfish,manual-management
 enabled_inspect_interfaces = agent,fake,redfish
 enabled_management_interfaces = ipmitool,fake,redfish,idrac-redfish,noop
+{%- if env.IRONIC_NETWORKING_ENABLED | lower == "true" %}
+enabled_network_interfaces = ironic-networking,noop
+{% else %}
 enabled_network_interfaces = noop
+{% endif -%}
 enabled_power_interfaces = ipmitool,fake,redfish,idrac-redfish
 enabled_raid_interfaces = no-raid,agent,fake,redfish,idrac-redfish
 enabled_vendor_interfaces = no-vendor,ipmitool,idrac-redfish,redfish,fake
@@ -155,9 +163,10 @@ power_off = {{ false if env.IRONIC_FAST_TRACK == "true" else true }}
 # Also keep in mind that only parameters unique for inspection go here.
 # No need to duplicate pxe_append_params/kernel_append_params.
 extra_kernel_params = ipa-inspection-collectors={{ env.IRONIC_IPA_COLLECTORS }} ipa-enable-vlan-interfaces={{ env.IRONIC_ENABLE_VLAN_INTERFACES }} ipa-inspection-dhcp-all-interfaces=1 ipa-collect-lldp={{ env.IRONIC_IPA_COLLECT_LLDP | default('1') }}
-hooks = $default_hooks{% if env.IRONIC_IPA_COLLECT_LLDP | default('1') == '1' %},parse-lldp{% endif %}
+hooks = $default_hooks{% if env.IRONIC_IPA_COLLECT_LLDP | default('1') == '1' %},parse-lldp{% if env.IRONIC_NETWORKING_ENABLED | lower == "true" %},local-link-connection{% endif %}{% endif %}
 add_ports = all
 keep_ports = present
+force_dhcp = {{ env.IRONIC_FORCE_DHCP }}
 
 [auto_discovery]
 enabled = {{ env.IRONIC_ENABLE_DISCOVERY }}
@@ -264,4 +273,40 @@ key_file = {{ env.IRONIC_KEY_FILE }}
 [oci]
 {% if env.IRONIC_OCI_AUTH_CONFIG is defined %}
 authentication_config = {{ env.IRONIC_OCI_AUTH_CONFIG }}
+{% endif %}
+
+{% if env.IRONIC_NETWORKING_ENABLED | lower == "true" %}
+[ironic_networking_json_rpc]
+auth_strategy = http_basic
+http_basic_auth_user_file = {{ env.IRONIC_RPC_HTPASSWD_FILE }}
+host_ip = {{ env.IRONIC_NETWORKING_JSON_RPC_HOST }}
+port = {{ env.IRONIC_NETWORKING_JSON_RPC_PORT }}
+{% if env.IRONIC_TLS_SETUP == "true" %}
+use_ssl = true
+cafile = {{ env.IRONIC_CACERT_FILE }}
+insecure = {{ env.IRONIC_INSECURE }}
+{% endif %}
+{% endif %}
+
+{% if env.IRONIC_NETWORKING_ENABLED | lower == "true" %}
+[ironic_networking]
+rpc_transport = json-rpc
+{%- if env.IRONIC_NETWORKING_IDLE_NETWORK is defined %}
+idle_network = {{ env.IRONIC_NETWORKING_IDLE_NETWORK }}
+{%- endif %}
+{%- if env.IRONIC_NETWORKING_PROVISIONING_NETWORK is defined %}
+provisioning_network = {{ env.IRONIC_NETWORKING_PROVISIONING_NETWORK }}
+{%- endif %}
+{%- if env.IRONIC_NETWORKING_INSPECTION_NETWORK is defined %}
+inspection_network = {{ env.IRONIC_NETWORKING_INSPECTION_NETWORK }}
+{%- endif %}
+{%- if env.IRONIC_NETWORKING_CLEANING_NETWORK is defined %}
+cleaning_network = {{ env.IRONIC_NETWORKING_CLEANING_NETWORK }}
+{%- endif %}
+{%- if env.IRONIC_NETWORKING_RESCUING_NETWORK is defined %}
+rescuing_network = {{ env.IRONIC_NETWORKING_RESCUING_NETWORK }}
+{%- endif %}
+{%- if env.IRONIC_NETWORKING_SERVICING_NETWORK is defined %}
+servicing_network = {{ env.IRONIC_NETWORKING_SERVICING_NETWORK }}
+{%- endif %}
 {% endif %}
