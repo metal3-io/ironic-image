@@ -25,7 +25,7 @@ DocumentRoot "/shared/html"
 {%- endif %}
 </Directory>
 
-<Directory ~ "/shared/html/(redfish|ilo)/">
+<Directory ~ "/shared/html/(redfish|ilo)/?">
 {%- if env.IRONIC_VMEDIA_TLS_SETUP | lower == "true" %}
     Require all denied
 {%- else %}
