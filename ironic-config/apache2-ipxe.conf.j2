@@ -15,7 +15,7 @@ Listen {{ env.IPXE_TLS_PORT }}
         Options Indexes FollowSymLinks
         Require all granted
     </Directory>
-    <Directory ~ "/shared/html/(redfish|ilo|images)/">
+    <Directory ~ "/shared/html/(redfish|ilo|images)/?">
         Require all denied
     </Directory>
 
