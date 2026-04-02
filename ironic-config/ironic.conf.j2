@@ -89,7 +89,8 @@ verify_step_priority_override = management.clear_job_queue:90
 # We don't use this feature, and it creates an additional load on the database
 node_history = False
 # Provide for a timeout longer than 60 seconds for certain vendor's hardware
-power_state_change_timeout = 120
+power_state_change_timeout = {{ env.IRONIC_POWER_STATE_CHANGE_TIMEOUT }}
+inspect_wait_timeout = {{ env.IRONIC_INSPECT_WAIT_TIMEOUT }}
 {% if env.DEPLOY_KERNEL_URL is defined %}
 # Fallback deploy_kernel when cpu_arch is not set
 deploy_kernel = {{ env.DEPLOY_KERNEL_URL }}
