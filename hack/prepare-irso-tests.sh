@@ -28,6 +28,14 @@ if [[ -n "${SUSHY_SOURCE:-}" ]]; then
     fi
     build_args+=(--build-arg SUSHY_SOURCE=sushy)
 fi
+if [[ -n "${NGS_SOURCE:-}" ]]; then
+    if [[ -d "${NGS_SOURCE}" ]]; then
+        cp -ra "${NGS_SOURCE}" sources/networking-generic-switch
+        rm -rf sources/networking-generic-switch/.tox
+        to_delete+=(sources/networking-generic-switch)
+    fi
+    build_args+=(--build-arg NGS_SOURCE=networking-generic-switch)
+fi
 
 "${CONTAINER_RUNTIME}" build -t "${IRONIC_CUSTOM_IMAGE}" "${build_args[@]}" .
 

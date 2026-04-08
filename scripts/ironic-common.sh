@@ -38,6 +38,9 @@ export LOCAL_DB_URI="sqlite:///${IRONIC_DB_DIR}/ironic.sqlite"
 
 export IRONIC_USE_MARIADB=${IRONIC_USE_MARIADB:-false}
 
+# Allow override in ironic-networking use cases
+export IRONIC_FORCE_DHCP=${IRONIC_FORCE_DHCP:-false}
+
 get_provisioning_interface()
 {
     if [[ -n "$PROVISIONING_INTERFACE" ]]; then

@@ -16,3 +16,14 @@ sushy @ git+https://opendev.org/openstack/sushy@{{ env.SUSHY_SOURCE }}
 {% else %}
 sushy
 {% endif %}
+{% if env.INSTALL_NGS | lower == "true" %}
+    {% if env.NGS_SOURCE %}
+        {% if path.isdir('/sources/' + env.NGS_SOURCE) %}
+git+file:///sources/{{ env.NGS_SOURCE }}
+        {% else %}
+networking-generic-switch @ git+https://opendev.org/openstack/networking-generic-switch@{{ env.NGS_SOURCE }}
+        {% endif %}
+    {% else %}
+networking-generic-switch
+    {% endif %}
+{% endif %}
