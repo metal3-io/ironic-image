@@ -36,10 +36,10 @@ mkdir -p "${IRONIC_CONF_DIR}" "${PROBE_CONF_DIR}" "${HTTPD_CONF_DIR}" \
 export HTPASSWD_FILE="${IRONIC_CONF_DIR}/htpasswd"
 export LOCAL_DB_URI="sqlite:///${IRONIC_DB_DIR}/ironic.sqlite"
 
-export IRONIC_USE_MARIADB=${IRONIC_USE_MARIADB:-false}
+export IRONIC_USE_MARIADB="${IRONIC_USE_MARIADB:-false}"
 
 # Allow override in ironic-networking use cases
-export IRONIC_FORCE_DHCP=${IRONIC_FORCE_DHCP:-false}
+export IRONIC_FORCE_DHCP="${IRONIC_FORCE_DHCP:-false}"
 
 get_provisioning_interface()
 {
