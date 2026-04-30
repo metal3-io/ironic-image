@@ -60,7 +60,7 @@ FROM $BASE_IMAGE AS ironic-wheel-builder
 
 ARG UPPER_CONSTRAINTS_FILE=upper-constraints.txt
 ARG IRONIC_SOURCE=c17d7f5709bb9b3e872ec7755c27c9d765a6a712 # master
-ARG SUSHY_SOURCE
+ARG SUSHY_SOURCE=a18eaf3aed8366027d3d2decfcdf6b2318c1c995 # temporary pin to HEAD of 2026.1 to pull an urgent fix
 ARG NGS_SOURCE=dbd090b22ee52175007c1b260a0b1189bfde9658 # master
 ARG INSTALL_NGS=true
 ARG PIP_VERSION
