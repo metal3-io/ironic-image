@@ -60,7 +60,7 @@ jobs:
         path: /tmp/logs/*
       if: always()
     - name: Annotate failures
-      uses: mikepenz/action-junit-report@5e05ac00ad0604dfb7e313ae412aa3284f4906d6 # v6.3.0
+      uses: mikepenz/action-junit-report@bccf2e31636835cf0874589931c4116687171386 # v6.4.0
       with:
         annotate_only: true
         report_paths: /tmp/logs/report.xml
