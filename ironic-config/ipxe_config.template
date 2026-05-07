@@ -1,4 +1,5 @@
 #!ipxe
+{# INJECT_VARIABLES #}
 
 set attempts:int32 10
 set i:int32 0
