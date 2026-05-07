@@ -10,9 +10,10 @@ CONTAINER_RUNTIME="${CONTAINER_RUNTIME:-docker}"
 IRONIC_CUSTOM_IMAGE="${IRONIC_CUSTOM_IMAGE:-localhost/ironic:bmo-e2e}"
 BMO_ROOT="${REPO_ROOT}/../baremetal-operator"
 
+. hack/image-common.sh
+
 # Build the ironic image
-echo "Building ironic image: ${IRONIC_CUSTOM_IMAGE}"
-"${CONTAINER_RUNTIME}" build -t "${IRONIC_CUSTOM_IMAGE}" .
+build_ironic_image
 
 # Create a custom kustomize overlay in BMO that uses our image.
 # This avoids duplicating BMO's entire e2e config - we only override the ironic image.
