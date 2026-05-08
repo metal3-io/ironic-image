@@ -96,8 +96,8 @@ fi
 
 # inject TLS and cacert bundle variables in ipxe_template
 sed "1 a\
-\{%- set ipxe_tls_setup = $IRONIC_TLS_SETUP -%}\\
-\{%- set inject_cacert_bundle = $IRONIC_INJECT_IPA -%}" /templates/ipxe_config.template > "${IRONIC_CONF_DIR}/ipxe_config.template"
+\{%- set ipxe_tls_setup = $IPXE_TLS_SETUP %}\\
+\{%- set inject_cacert_bundle = $IRONIC_INJECT_IPA %}" /templates/ipxe_config.template > "${IRONIC_CONF_DIR}/ipxe_config.template"
 
 # The original ironic.conf is empty, and can be found in ironic.conf.orig
 render_j2_config "/etc/ironic/ironic.conf.j2" \
