@@ -67,12 +67,23 @@ fi
 
 # Render httpd TLS configuration for /shared/html
 if [[ "$IPXE_TLS_SETUP" == "true" ]]; then
-    mkdir -p /shared/html/custom-ipxe
-    chmod 0777 /shared/html/custom-ipxe
+    HTTPS_IPXE_BOOT_DIR="/shared/html/custom-ipxe"
+    mkdir -p "${HTTPS_IPXE_BOOT_DIR}"
+    chmod 0777 "${HTTPS_IPXE_BOOT_DIR}"
     render_j2_config "/templates/httpd-ipxe.conf.j2" "${HTTPD_CONF_DIR_D}/ipxe.conf"
-    cp "${IPXE_CUSTOM_FIRMWARE_DIR}/undionly.kpxe" \
-       "${IPXE_CUSTOM_FIRMWARE_DIR}/snponly.efi" \
-       "/shared/html/custom-ipxe"
+    for fw_file in undionly.kpxe snponly-x86_64.efi snponly-arm64.efi; do
+        if [[ -f "${IPXE_CUSTOM_FIRMWARE_DIR}/${fw_file}" ]]; then
+            cp "${IPXE_CUSTOM_FIRMWARE_DIR}/${fw_file}" "${HTTPS_IPXE_BOOT_DIR}"
+        else
+            echo "INFO: ${IPXE_CUSTOM_FIRMWARE_DIR}/${fw_file} is unavailable, skipping."
+        fi
+    done
+
+    # Validate that at least one legacy bios and one efi iPXE binary was successfully copied
+    if ! ls "${HTTPS_IPXE_BOOT_DIR}/"*.{kpxe,efi} &>/dev/null; then
+        echo "ERROR: No iPXE firmware files found in ${HTTPS_IPXE_BOOT_DIR} after copying from ${IPXE_CUSTOM_FIRMWARE_DIR}!"
+        exit 1
+    fi
 fi
 
 # Set up inotify to kill the container (restart) whenever cert files for ironic api change
