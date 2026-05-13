@@ -36,6 +36,12 @@ dhcp-option=3
 dhcp-option=option:router,{{ env["GATEWAY_IP"] }}
 {% endif %}
 
+{%- if env.get("DHCP_OPTIONS", "") | length %}
+{%- for opt in env.DHCP_OPTIONS.split(";") %}
+dhcp-option={{ opt }}
+{%- endfor %}
+{% endif %}
+
 # Note: Need to test EFI booting
 dhcp-match=set:efi,option:client-arch,7
 dhcp-match=set:efi,option:client-arch,9
