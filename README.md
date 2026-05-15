@@ -70,6 +70,11 @@ functionality:
    addresses like `00:20:e0:3b:13:af;00:20:e0:3b:14:af` (empty by default). For
    more details on `dhcp-host` see
    [the man page](https://thekelleys.org.uk/dnsmasq/docs/dnsmasq-man.html).
+- `DHCP_OPTIONS` - a `;` separated list of additional `dhcp-option` directives
+   that allows passing specific network configuration parameters (like routers,
+   DNS servers, and NTP) to DHCP clients (empty by default). For more details
+   on `dhcp-option` see
+   [the man page](https://thekelleys.org.uk/dnsmasq/docs/dnsmasq-man.html).
 - `DHCP_IGNORE` - a set of tags on hosts that should be ignored and not allocate
    DHCP leases for, e.g. `tag:!known` to ignore any unknown hosts (empty by
    default)
