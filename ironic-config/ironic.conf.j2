@@ -9,12 +9,12 @@ default_network_interface = ironic-networking
 default_network_interface = noop
 {% endif -%}
 enabled_bios_interfaces = no-bios,redfish,idrac-redfish
-enabled_boot_interfaces = ipxe,pxe,fake,redfish-virtual-media,idrac-redfish-virtual-media,redfish-https
+enabled_boot_interfaces = {% if env.DISABLE_IPXE | lower != "true" %}ipxe,pxe,{% endif %}fake,redfish-virtual-media,idrac-redfish-virtual-media,redfish-https
 enabled_deploy_interfaces = direct,fake,ramdisk,custom-agent,bootc
 enabled_firmware_interfaces = no-firmware,fake,redfish
 # NOTE(dtantsur): when changing this, make sure to update the driver
 # dependencies in Dockerfile.
-enabled_hardware_types = ipmi,idrac,fake-hardware,redfish,manual-management
+enabled_hardware_types = {% if env.DISABLE_IPXE | lower != "true" %}ipmi,{% endif %}idrac,fake-hardware,redfish,manual-management
 enabled_inspect_interfaces = agent,fake,redfish
 enabled_management_interfaces = ipmitool,fake,redfish,idrac-redfish,noop
 {%- if env.IRONIC_NETWORKING_ENABLED | lower == "true" %}
@@ -160,7 +160,7 @@ dhcp_provider = none
 # NOTE(dtantsur): we properly configure the "unmanaged" inspection boot (i.e.
 # booting IPA through a separate inspector.ipxe rather than the driver's boot
 # interface), so managed boot is not required.
-require_managed_boot = False
+require_managed_boot = {{ env.DISABLE_IPXE }}
 power_off = {{ false if env.IRONIC_FAST_TRACK == "true" else true }}
 # NOTE(dtantsur): keep inspection arguments synchronized with inspector.ipxe
 # Also keep in mind that only parameters unique for inspection go here.

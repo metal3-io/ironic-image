@@ -10,6 +10,7 @@ ARG SETUPTOOLS_VERSION=82.0.1
 
 FROM $BASE_IMAGE AS ironic-builder
 
+ARG DISABLE_IPXE=false
 ARG IPXE_COMMIT_HASH=d0ea2b1bb8f78b219f74424d435b92ff8aa0ea8d
 ARG TARGETARCH
 
@@ -19,8 +20,12 @@ COPY prepare-ipxe.sh build-ipxe.sh prepare-efi.sh /bin/
 
 RUN --mount=type=cache,target=/var/cache/dnf,sharing=locked <<EORUN
 set -euxo pipefail
-prepare-ipxe.sh
-build-ipxe.sh
+if [[ "${DISABLE_IPXE,,}" != true ]]; then
+    prepare-ipxe.sh
+    build-ipxe.sh
+else
+    mkdir -p /tmp/ipxe/out
+fi
 prepare-efi.sh centos
 EORUN
 
@@ -120,6 +125,9 @@ ARG PKGS_LIST=main-packages-list.txt
 ARG ARCH_PKGS_LIST=main-packages-list-${TARGETARCH}.txt
 ARG EXTRA_PKGS_LIST
 ARG PATCH_LIST
+
+ARG DISABLE_IPXE=false
+ENV DISABLE_IPXE=${DISABLE_IPXE}
 
 COPY ${PKGS_LIST} ${ARCH_PKGS_LIST} ${EXTRA_PKGS_LIST:-$PKGS_LIST} ${PATCH_LIST:-$PKGS_LIST} /tmp/
 COPY ironic-config/ /tmp/ironic-config/

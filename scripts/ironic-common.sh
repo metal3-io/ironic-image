@@ -41,6 +41,8 @@ export IRONIC_USE_MARIADB="${IRONIC_USE_MARIADB:-false}"
 # Allow override in ironic-networking use cases
 export IRONIC_FORCE_DHCP="${IRONIC_FORCE_DHCP:-false}"
 
+export DISABLE_IPXE="${DISABLE_IPXE:-false}"
+
 get_provisioning_interface()
 {
     if [[ -n "$PROVISIONING_INTERFACE" ]]; then
