@@ -14,7 +14,7 @@ process_log_file() {
     echo "************ Contents of ${LOG_DIR}/${FILENAME} ramdisk log file bundle **************"
     tar -tzf "${FILEPATH}" | while read -r entry; do
         echo "${FILENAME}: **** Entry: ${entry} ****"
-        tar -xOzf "${FILEPATH}" "${entry}" | sed -e "s/^/${FILENAME}: /"
+        tar -xOzf "${FILEPATH}" -- "${entry}" | sed -e "s/^/${FILENAME}: /"
         echo
     done
     rm -f "${FILEPATH}"
