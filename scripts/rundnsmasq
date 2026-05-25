@@ -8,6 +8,7 @@ set -eux
 . /bin/tls-common.sh
 
 DNSMASQ_EXCEPT_INTERFACE=${DNSMASQ_EXCEPT_INTERFACE:-lo}
+TFTP_BOOT_DIR="/shared/tftpboot"
 export DNS_PORT=${DNS_PORT:-0}
 
 wait_for_interface_or_ip
@@ -19,17 +20,26 @@ if [[ "${DNS_IP:-}" == "provisioning" ]]; then
     fi
 fi
 
-mkdir -p /shared/tftpboot
+mkdir -p "${TFTP_BOOT_DIR}"
 mkdir -p /shared/html
 
 # Copy files to shared mount
 if [[ -r "${IPXE_CUSTOM_FIRMWARE_DIR}" ]]; then
-    cp "${IPXE_CUSTOM_FIRMWARE_DIR}/undionly.kpxe" \
-        "${IPXE_CUSTOM_FIRMWARE_DIR}/snponly-x86_64.efi" \
-        "${IPXE_CUSTOM_FIRMWARE_DIR}/snponly-arm64.efi" \
-        "/shared/tftpboot"
+    for fw_file in undionly.kpxe snponly-x86_64.efi snponly-arm64.efi; do
+        if [[ -f "${IPXE_CUSTOM_FIRMWARE_DIR}/${fw_file}" ]]; then
+            cp "${IPXE_CUSTOM_FIRMWARE_DIR}/${fw_file}" "${TFTP_BOOT_DIR}"
+        else
+            echo "INFO: ${IPXE_CUSTOM_FIRMWARE_DIR}/${fw_file} is unavailable, skipping."
+        fi
+    done
+
+    # Validate that at least one legacy bios and one efi iPXE binary was successfully copied
+    if ! ls "${TFTP_BOOT_DIR}/"*.{kpxe,efi} &>/dev/null; then
+        echo "ERROR: No iPXE firmware files found in ${TFTP_BOOT_DIR} after copying from ${IPXE_CUSTOM_FIRMWARE_DIR}!"
+        exit 1
+    fi
 else
-    cp /tftpboot/undionly.kpxe /tftpboot/snponly-x86_64.efi /tftpboot/snponly-arm64.efi /shared/tftpboot
+    cp /tftpboot/undionly.kpxe /tftpboot/snponly-x86_64.efi /tftpboot/snponly-arm64.efi "${TFTP_BOOT_DIR}"
 fi
 
 # Template and write dnsmasq.conf
