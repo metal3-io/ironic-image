@@ -1,28 +1,27 @@
 ARG BASE_IMAGE=quay.io/centos/centos:stream9-minimal
+ARG IPXE_BINARIES_IMAGE=quay.io/metal3-io/ipxe-binaries@sha256:155a410dbafc9537fe75c42f55c93843dfc6bba9e4f0676ac05f872f8a9e674d # iPXE commit d0ea2b1bb8f78b219f74424d435b92ff8aa0ea8d
 
 # Python tooling versions - update these regularly
 ARG PIP_VERSION=26.1.1
 ARG SETUPTOOLS_VERSION=82.0.1
 
-## Build iPXE w/ IPv6 Support
-## Note: we are pinning to a specific commit for reproducible builds.
-## Updated as needed.
-
 FROM $BASE_IMAGE AS ironic-builder
-
-ARG IPXE_COMMIT_HASH=d0ea2b1bb8f78b219f74424d435b92ff8aa0ea8d
-ARG TARGETARCH
 
 WORKDIR /tmp
 
-COPY prepare-ipxe.sh build-ipxe.sh prepare-efi.sh /bin/
+COPY prepare-efi.sh /bin/
 
 RUN --mount=type=cache,target=/var/cache/dnf,sharing=locked <<EORUN
 set -euxo pipefail
-prepare-ipxe.sh
-build-ipxe.sh
+
+# The minimal base image only has microdnf, install dnf first
+microdnf install -y dnf
+printf "[main]\ngpgcheck=1\ninstall_weak_deps=0\ntsflags=nodocs\nkeepcache=1\n" > /etc/dnf/dnf.conf
+
 prepare-efi.sh centos
 EORUN
+
+FROM $IPXE_BINARIES_IMAGE AS ipxe-binaries
 
 ## Build Python wheels for dependencies
 FROM $BASE_IMAGE AS deps-wheel-builder
@@ -133,7 +132,7 @@ RUN --mount=type=cache,target=/var/cache/dnf,sharing=locked \
      rm -f /bin/prepare-image.sh
 
 # IRONIC #
-COPY --from=ironic-builder /tmp/ipxe/out/ /tftpboot/
+COPY --from=ipxe-binaries /ipxe/undionly.kpxe /ipxe/snponly-x86_64.efi /ipxe/snponly-arm64.efi /tftpboot/
 COPY --from=ironic-builder /tmp/uefi_esp*.img /templates/
 
 # Database, ironic-config distribution, and non-root user configuration
