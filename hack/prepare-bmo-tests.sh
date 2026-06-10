@@ -8,6 +8,7 @@ cd "${REPO_ROOT}" || exit 1
 CLUSTER_TYPE="${CLUSTER_TYPE:-kind}"
 CONTAINER_RUNTIME="${CONTAINER_RUNTIME:-docker}"
 IRONIC_CUSTOM_IMAGE="${IRONIC_CUSTOM_IMAGE:-localhost/ironic:bmo-e2e}"
+IRONIC_CUSTOM_VERSION="${IRONIC_CUSTOM_VERSION:-latest}"
 BMO_ROOT="${REPO_ROOT}/../baremetal-operator"
 
 . hack/image-common.sh
@@ -35,6 +36,9 @@ patches:
     - op: replace
       path: /spec/images/ironic
       value: ${IRONIC_CUSTOM_IMAGE}
+    - op: replace
+      path: /spec/version
+      value: ${IRONIC_CUSTOM_VERSION}
 EOF
 
 # Patch BMO's e2e config to add our custom image and use our overlay.

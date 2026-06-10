@@ -266,9 +266,9 @@ operator code as well. After that, an
 will be prepared.
 
 Finally, return to the release branch in this repository and update
-`IRONIC_CUSTOM_VERSION` in the IrSO workflow
-(`.github/workflows/irso-functional.yml`) to match the correct version (e.g.
-`32.0` on `release-32.0`).
+`IRONIC_CUSTOM_VERSION` in the IrSO (`.github/workflows/irso-functional.yml`)
+and BMO (`.github/workflows/bmo-e2e.yml`) workflows to match the correct
+version (e.g. `35.0` on `release-35.0`).
 
 ## Additional actions outside this repository
 

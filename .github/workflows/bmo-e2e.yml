@@ -14,6 +14,9 @@ jobs:
       CLUSTER_TYPE: kind
       CONTAINER_RUNTIME: docker
       IRONIC_CUSTOM_IMAGE: localhost/ironic:bmo-e2e
+      # NOTE(dtantsur): change this on stable branches to make sure the correct
+      # logic is used in IrSO.
+      IRONIC_CUSTOM_VERSION: latest
       # Use latest stable BMO release - update this when new releases are available
       BMO_VERSION: v0.12.1
     steps:
