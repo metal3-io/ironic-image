@@ -19,7 +19,7 @@ updates:
   - dependency-name: "*"
     update-types: [ "version-update:semver-major" ]
   cooldown:
-    default-days: 7
+    default-days: 3
   commit-message:
     prefix: ":seedling:"
   labels:
@@ -42,7 +42,7 @@ updates:
   - dependency-name: "*"
     update-types: [ "version-update:semver-major", "version-update:semver-minor" ]
   cooldown:
-    default-days: 7
+    default-days: 3
   commit-message:
     prefix: ":seedling:"
   labels:
@@ -65,7 +65,7 @@ updates:
   - dependency-name: "*"
     update-types: [ "version-update:semver-major", "version-update:semver-minor" ]
   cooldown:
-    default-days: 7
+    default-days: 3
   commit-message:
     prefix: ":seedling:"
   labels:
@@ -88,7 +88,7 @@ updates:
   - dependency-name: "*"
     update-types: [ "version-update:semver-major", "version-update:semver-minor" ]
   cooldown:
-    default-days: 7
+    default-days: 3
   commit-message:
     prefix: ":seedling:"
   labels:
@@ -111,10 +111,9 @@ updates:
   - dependency-name: "*"
     update-types: [ "version-update:semver-major", "version-update:semver-minor" ]
   cooldown:
-    default-days: 7
+    default-days: 3
   commit-message:
     prefix: ":seedling:"
   labels:
   - "ok-to-test"
 ## release-31.0 branch config ends here
-
