@@ -12,13 +12,13 @@ imgfree
 {%- set aki_path_https_elements = pxe_options.deployment_aki_path.split(':') %}
 {%- set aki_port_and_path = aki_path_https_elements[2].split('/') %}
 {%- set aki_afterport = aki_port_and_path[1:]|join('/') %}
-{%- set aki_path = ['https:', aki_path_https_elements[1], ':8084/', aki_afterport]|join %}
+{%- set aki_path = ['https:', aki_path_https_elements[1], ':', ipxe_tls_port, '/', aki_afterport]|join %}
 {%- endif %}
 {%- if pxe_options.deployment_ari_path %}
 {%- set ari_path_https_elements = pxe_options.deployment_ari_path.split(':') %}
 {%- set ari_port_and_path = ari_path_https_elements[2].split('/') %}
 {%- set ari_afterport = ari_port_and_path[1:]|join('/') %}
-{%- set ari_path = ['https:', ari_path_https_elements[1], ':8084/', ari_afterport]|join %}
+{%- set ari_path = ['https:', ari_path_https_elements[1], ':', ipxe_tls_port, '/', ari_afterport]|join %}
 {%- endif %}
 {%- else %}
 {%- set ari_path = pxe_options.deployment_ari_path %}
