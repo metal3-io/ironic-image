@@ -27,10 +27,12 @@ if [[ "${IRONIC_USE_MARIADB}" == true ]]; then
     MARIADB_DATABASE=${MARIADB_DATABASE:-ironic}
     MARIADB_USER=${MARIADB_USER:-ironic}
     MARIADB_HOST=${MARIADB_HOST:-127.0.0.1}
+    set +x
     export MARIADB_CONNECTION="mysql+pymysql://${MARIADB_USER}:${MARIADB_PASSWORD}@${MARIADB_HOST}/${MARIADB_DATABASE}?charset=utf8"
     if [[ "$MARIADB_TLS_ENABLED" == "true" ]]; then
         export MARIADB_CONNECTION="${MARIADB_CONNECTION}&ssl=on&ssl_ca=${MARIADB_CACERT_FILE}"
     fi
+    set -x
 fi
 
 # zero makes it do cpu number detection on Ironic side
