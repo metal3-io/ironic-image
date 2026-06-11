@@ -1,4 +1,5 @@
 #!/usr/bin/bash
+set -euxo pipefail
 
 # Ramdisk logs path
 export LOG_DIR="/shared/log/ironic/deploy"
