@@ -6,7 +6,8 @@
     "release-31.0",
     "release-32.0",
     "release-33.0",
-    "release-34.0"
+    "release-34.0",
+    "release-35.0"
   ],
   "enabledManagers": [
     "custom.regex"
@@ -35,7 +36,8 @@
         "release-31.0",
         "release-32.0",
         "release-33.0",
-        "release-34.0"
+        "release-34.0",
+        "release-35.0"
       ],
       "description": "run before 6am every day",
       "schedule": [
