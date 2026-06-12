@@ -18,6 +18,9 @@ RUN apt-get update && \
     apt-get install -y genisoimage && \
     apt-get clean && \
     pip3 install --prefix /usr/local --no-cache-dir python-ironicclient && \
-    chmod +x /usr/bin/openstack
+    chmod +x /usr/bin/openstack && \
+    useradd -r -s /sbin/nologin ironic-client
+
+USER ironic-client
 
 ENTRYPOINT ["/usr/local/bin/baremetal"]
