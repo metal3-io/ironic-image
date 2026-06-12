@@ -252,6 +252,14 @@ TLS configuration:
   `true` will make the server enforce its cipher list ordering for TLS version
   up to 1.2, defaults to `false`
 
+The following environment variables can be passed to customize the Ironic
+Prometheus Exporter TLS configuration:
+
+- `IRONIC_PROMETHEUS_EXPORTER_CERT_FILE` - TLS certificate for the exporter
+  (default `/certs/ironic-prometheus-exporter/tls.crt`)
+- `IRONIC_PROMETHEUS_EXPORTER_KEY_FILE` - TLS private key for the exporter
+  (default `/certs/ironic-prometheus-exporter/tls.key`)
+
 The following environment variables can be passed to customize the virtual
 media HTTP server configuration:
 
