@@ -9,5 +9,6 @@ aliases:
   - tuminoid
 
   ironic-image-reviewers:
+  - kashifest
   - lentzi90
   - zaneb
