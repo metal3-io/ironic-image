@@ -271,6 +271,19 @@ media HTTP server configuration:
   `true` will make the server enforce its cipher list ordering for TLS version
   up to 1.2, defaults to `false`
 
+## Prometheus Exporter
+
+The `runironic-exporter` entry point runs the ironic-prometheus-exporter,
+which exposes Ironic sensor data as Prometheus metrics via an HTTP `/metrics`
+endpoint.
+
+- `IRONIC_EXPORTER_ENABLED` - Whether to run the Prometheus exporter (default
+  `false`). Must be set to `true` to run the exporter.
+- `FLASK_RUN_HOST` - IP address the metrics endpoint listens on (default
+  `0.0.0.0`, all interfaces). Can be set to a specific IP to limit exposure
+  to a particular network interface.
+- `FLASK_RUN_PORT` - Port the metrics endpoint listens on (default `9608`).
+
 ## Ironic Networking
 
 The ironic networking configuration can be overridden by various environment
