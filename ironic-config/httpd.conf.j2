@@ -8,7 +8,7 @@ Listen [::]:{{ env.HTTP_PORT }}
 {%- endif %}
 {% else %}
 {% if env.ENABLE_IPV4 %}
-Listen {{ env.IRONIC_IP }}:{{ env.HTTP_PORT }}
+Listen {{ env.IRONIC_IPV4 }}:{{ env.HTTP_PORT }}
 {% endif %}
 {% if env.ENABLE_IPV6 %}
 Listen [{{ env.IRONIC_IPV6 }}]:{{ env.HTTP_PORT }}

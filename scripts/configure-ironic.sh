@@ -59,7 +59,7 @@ if [[ "$(echo "${LISTEN_ALL_INTERFACES}" | tr '[:upper:]' '[:lower:]')" == "true
 elif [[ -n "${ENABLE_IPV6}" ]]; then
     export IRONIC_LISTEN_ADDRESS="${IRONIC_IPV6}"
 else
-    export IRONIC_LISTEN_ADDRESS="${IRONIC_IP}"
+    export IRONIC_LISTEN_ADDRESS="${IRONIC_IPV4}"
 fi
 
 # Hostname to use for the current conductor instance.
@@ -129,6 +129,6 @@ export NO_PROXY="${NO_PROXY:-}"
 if [[ -n "${IRONIC_IPV6}" ]]; then
     export NO_PROXY="${NO_PROXY},${IRONIC_IPV6}"
 fi
-if [[ -n "${IRONIC_IP}" ]]; then
-    export NO_PROXY="${NO_PROXY},${IRONIC_IP}"
+if [[ -n "${IRONIC_IPV4}" ]]; then
+    export NO_PROXY="${NO_PROXY},${IRONIC_IPV4}"
 fi

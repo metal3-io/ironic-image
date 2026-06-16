@@ -64,6 +64,16 @@ functionality:
   indefinitely, restoring the previous behaviour.
 - `IRONIC_IP_WAIT_INTERVAL` - polling interval in seconds while waiting for the
   provisioning IP or interface (default `1`)
+- `IRONIC_IP_FAMILIES` - IP families to use on the provisioning interface: `4`,
+  `6` or `4,6` (default, dual-stack). When both are enabled and found, the
+  services listen on both, dnsmasq serves both DHCPv4 and DHCPv6 and the URLs
+  handed out (e.g. `IRONIC_BASE_URL`, `IRONIC_HTTP_URL`) use IPv6. Set to `4` to
+  keep IPv4 only on an interface that also has a global IPv6 address. The
+  resolved addresses are available as `IRONIC_IPV4` and `IRONIC_IPV6`. A
+  `PROVISIONING_IP` of a disabled family is an error.
+- `IRONIC_IP_DUAL_STACK_WAIT` - when `PROVISIONING_INTERFACE` is used and both
+  families are enabled, time in seconds to keep waiting for the second family
+  once the first one is found (default `10`, `0` to not wait)
 - `DNSMASQ_EXCEPT_INTERFACE` - interfaces to exclude when providing DHCP address
   (default `lo`)
 - `HTTP_PORT` - port used by http server (default `80`)

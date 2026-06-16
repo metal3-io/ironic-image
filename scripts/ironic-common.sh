@@ -2,9 +2,12 @@
 
 set -euxo pipefail
 
-# Export IRONIC_IP to avoid needing to lean on IRONIC_URL_HOST for consumption in
+# IRONIC_IP is an optional user-provided override of the provisioning IP. It is
+# resolved by wait_for_interface_or_ip into IRONIC_IPV4 or IRONIC_IPV6, which are
+# exported to avoid needing to lean on IRONIC_URL_HOST for consumption in
 # e.g. dnsmasq configuration
 export IRONIC_IP="${IRONIC_IP:-}"
+export IRONIC_IPV4=""
 export IRONIC_IPV6=""
 PROVISIONING_INTERFACE="${PROVISIONING_INTERFACE:-}"
 PROVISIONING_IP="${PROVISIONING_IP:-}"
@@ -57,6 +60,11 @@ export IRONIC_FAST_TRACK="${IRONIC_FAST_TRACK:-true}"
 # to restore the legacy behaviour of waiting forever.
 export IRONIC_IP_WAIT_TIMEOUT="${IRONIC_IP_WAIT_TIMEOUT:-1200}"
 export IRONIC_IP_WAIT_INTERVAL="${IRONIC_IP_WAIT_INTERVAL:-1}"
+# IP families to use on the provisioning interface: "4", "6" or "4,6" (dual-stack)
+export IRONIC_IP_FAMILIES="${IRONIC_IP_FAMILIES:-4,6}"
+# Seconds to keep waiting for the remaining enabled IP families once the first
+# one is found on the provisioning interface, 0 to not wait at all
+export IRONIC_IP_DUAL_STACK_WAIT="${IRONIC_IP_DUAL_STACK_WAIT:-10}"
 export IRONIC_DBSYNC_TIMEOUT="${IRONIC_DBSYNC_TIMEOUT:-600}"
 export IRONIC_DBSYNC_INTERVAL="${IRONIC_DBSYNC_INTERVAL:-1}"
 
@@ -183,9 +191,43 @@ parse_ip_address()
     ipcalc "${IP_ADDR}" | grep "^Address:" | awk '{print $2}'
 }
 
-# Wait for the interface or IP to be up, sets $IRONIC_IP
+# Whether the given IP family (4 or 6) is enabled by $IRONIC_IP_FAMILIES
+is_ip_family_enabled()
+{
+    [[ ",${IRONIC_IP_FAMILIES// /}," == *",$1,"* ]]
+}
+
+# Store an IP address in IRONIC_IPV4 or IRONIC_IPV6 depending on its family,
+# failing if that family is disabled by $IRONIC_IP_FAMILIES
+set_ironic_ip()
+{
+    local parsed_ip="$1"
+    local source="$2"
+
+    if [[ "${parsed_ip}" =~ .*:.* ]]; then
+        if ! is_ip_family_enabled 6; then
+            echo "ERROR: ${source} is an IPv6 address but IRONIC_IP_FAMILIES=${IRONIC_IP_FAMILIES}, failed to start ironic"
+            exit 1
+        fi
+        export IRONIC_IPV6="${parsed_ip}"
+    else
+        if ! is_ip_family_enabled 4; then
+            echo "ERROR: ${source} is an IPv4 address but IRONIC_IP_FAMILIES=${IRONIC_IP_FAMILIES}, failed to start ironic"
+            exit 1
+        fi
+        export IRONIC_IPV4="${parsed_ip}"
+    fi
+}
+
+# Wait for the interface or IP to be up, sets $IRONIC_IPV4 and/or $IRONIC_IPV6
+# (according to $IRONIC_IP_FAMILIES) and the derived URLs
 wait_for_interface_or_ip()
 {
+    if [[ -n "${IRONIC_IP_FAMILIES//[,4 6]/}" ]] || ! { is_ip_family_enabled 4 || is_ip_family_enabled 6; }; then
+        echo "ERROR: IRONIC_IP_FAMILIES must be \"4\", \"6\" or \"4,6\", got \"${IRONIC_IP_FAMILIES}\""
+        exit 1
+    fi
+
     # IRONIC_IP already defined overrides everything else
     if [[ -n "${IRONIC_IP}" ]]; then
         local PARSED_IP
@@ -195,11 +237,7 @@ wait_for_interface_or_ip()
             exit 1
         fi
 
-        if [[ "${PARSED_IP}" =~ .*:.* ]]; then
-            export IRONIC_IPV6="${PARSED_IP}"
-        else
-            export IRONIC_IP="${PARSED_IP}"
-        fi
+        set_ironic_ip "${PARSED_IP}" "IRONIC_IP"
         unset IRONIC_IP
     elif [[ -n "${PROVISIONING_IP}" ]]; then
         # If $PROVISIONING_IP is specified, then we wait for that to become
@@ -225,28 +263,29 @@ wait_for_interface_or_ip()
         echo "Found ${PROVISIONING_IP} on interface \"${IFACE_OF_IP}\"!"
 
         export PROVISIONING_INTERFACE="${IFACE_OF_IP}"
-        if [[ "${PARSED_IP}" =~ .*:.* ]]; then
-            export IRONIC_IPV6="${PARSED_IP}"
-        else
-            export IRONIC_IP="${PARSED_IP}"
-        fi
+        set_ironic_ip "${PARSED_IP}" "PROVISIONING_IP"
     elif [[ -n "${PROVISIONING_INTERFACE}" ]]; then
         local deadline=$(( SECONDS + IRONIC_IP_WAIT_TIMEOUT ))
-        until [[ -n "${IRONIC_IPV6}" ]] || [[ -n "${IRONIC_IP}" ]]; do
+        until [[ -n "${IRONIC_IPV6}" ]] || [[ -n "${IRONIC_IPV4}" ]]; do
             fail_if_timed_out "${deadline}" "${IRONIC_IP_WAIT_TIMEOUT}" \
                 "waiting for ${PROVISIONING_INTERFACE} interface to be configured"
-            echo "Waiting for ${PROVISIONING_INTERFACE} interface to be configured"
-            IRONIC_IPV6="$(get_ip_of_interface "${PROVISIONING_INTERFACE}" 6)"
-            sleep "${IRONIC_IP_WAIT_INTERVAL}"
-            IRONIC_IP="$(get_ip_of_interface "${PROVISIONING_INTERFACE}" 4)"
-            sleep "${IRONIC_IP_WAIT_INTERVAL}"
             echo "Waiting for ${PROVISIONING_INTERFACE} interface to be configured..."
+            if is_ip_family_enabled 6; then
+                IRONIC_IPV6="$(get_ip_of_interface "${PROVISIONING_INTERFACE}" 6)"
+            fi
+            if is_ip_family_enabled 4; then
+                IRONIC_IPV4="$(get_ip_of_interface "${PROVISIONING_INTERFACE}" 4)"
+            fi
+            sleep "${IRONIC_IP_WAIT_INTERVAL}"
         done
 
-        # If only one address is found, wait a bit longer for the other in case of dual-stack
-        if [[ -z "${IRONIC_IPV6}" || -z "${IRONIC_IPV4}" ]]; then
-            echo "Found one IP address family, waiting up to 10 seconds for the other family..."
-            local grace_deadline=$(( SECONDS + 10 ))
+        # If only some of the enabled families are found, wait a bit longer for
+        # the others in case of dual-stack
+        if (( IRONIC_IP_DUAL_STACK_WAIT > 0 )) \
+                && is_ip_family_enabled 4 && is_ip_family_enabled 6 \
+                && [[ -z "${IRONIC_IPV6}" || -z "${IRONIC_IPV4}" ]]; then
+            echo "Found one IP address family, waiting up to ${IRONIC_IP_DUAL_STACK_WAIT} seconds for the other family..."
+            local grace_deadline=$(( SECONDS + IRONIC_IP_DUAL_STACK_WAIT ))
             while [[ $SECONDS -lt ${grace_deadline} ]]; do
                 if [[ -z "${IRONIC_IPV6}" ]]; then
                     IRONIC_IPV6="$(get_ip_of_interface "${PROVISIONING_INTERFACE}" 6)"
@@ -267,9 +306,9 @@ wait_for_interface_or_ip()
             echo "Found ${IRONIC_IPV6} on interface \"${PROVISIONING_INTERFACE}\"!"
             export IRONIC_IPV6
         fi
-        if [[ -n "${IRONIC_IP}" ]]; then
-            echo "Found ${IRONIC_IP} on interface \"${PROVISIONING_INTERFACE}\"!"
-            export IRONIC_IP
+        if [[ -n "${IRONIC_IPV4}" ]]; then
+            echo "Found ${IRONIC_IPV4} on interface \"${PROVISIONING_INTERFACE}\"!"
+            export IRONIC_IPV4
         fi
     else
         echo "ERROR: cannot determine an interface or an IP for binding and creating URLs"
@@ -278,9 +317,11 @@ wait_for_interface_or_ip()
 
     # Define the URLs based on what we have found,
     # prioritize IPv6 for IRONIC_URL_HOST
-    if [[ -n "${IRONIC_IP}" ]]; then
+    export ENABLE_IPV4=""
+    export ENABLE_IPV6=""
+    if [[ -n "${IRONIC_IPV4}" ]]; then
         export ENABLE_IPV4=yes
-        export IRONIC_URL_HOST="${IRONIC_IP}"
+        export IRONIC_URL_HOST="${IRONIC_IPV4}"
     fi
     if [[ -n "${IRONIC_IPV6}" ]]; then
         export ENABLE_IPV6=yes
@@ -288,8 +329,9 @@ wait_for_interface_or_ip()
     fi
 
     # Avoid having to construct full URL multiple times while allowing
-    # the override of IRONIC_HTTP_URL for environments in which IRONIC_IP
-    # is unreachable from hosts being provisioned.
+    # the override of IRONIC_HTTP_URL for environments in which the provisioning
+    # IP is unreachable from hosts being provisioned.
+    export IRONIC_HTTP_IPV4_URL="${IRONIC_HTTP_URL:-http://${IRONIC_IPV4}:${HTTP_PORT}}"
     export IRONIC_HTTP_URL="${IRONIC_HTTP_URL:-http://${IRONIC_URL_HOST}:${HTTP_PORT}}"
     export IRONIC_TFTP_URL="${IRONIC_TFTP_URL:-tftp://${IRONIC_URL_HOST}}"
     export IRONIC_BASE_URL=${IRONIC_BASE_URL:-"${IRONIC_SCHEME}://${IRONIC_URL_HOST}:${IRONIC_ACCESS_PORT}"}
