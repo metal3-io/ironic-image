@@ -126,7 +126,11 @@ configure_restart_on_certificate_update()
 
 if ls "${BMC_CACERTS_PATH}"/* > /dev/null 2>&1; then
     export BMC_TLS_ENABLED="true"
-    cat "${BMC_CACERTS_PATH}"/* > "${BMC_CACERT_FILE}"
+    BMC_CACERT_TMPFILE="$(mktemp --tmpdir="$(dirname "${BMC_CACERT_FILE}")")"
+    trap 'rm -f "${BMC_CACERT_TMPFILE}"' EXIT
+    cat "${BMC_CACERTS_PATH}"/* > "${BMC_CACERT_TMPFILE}" || { echo "ERROR: Failed to concatenate BMC certificates"; exit 1; }
+    chmod --reference="${BMC_CACERT_FILE}" "${BMC_CACERT_TMPFILE}" 2>/dev/null || { echo "WARNING: Could not preserve permissions"; }
+    mv "${BMC_CACERT_TMPFILE}" "${BMC_CACERT_FILE}" || { echo "ERROR: Failed to move certificate file"; exit 1; }
 else
     export BMC_TLS_ENABLED="false"
 fi
