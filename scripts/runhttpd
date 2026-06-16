@@ -25,7 +25,7 @@ export IRONIC_IPA_COLLECTORS=${IRONIC_IPA_COLLECTORS:-default,logs}
 wait_for_interface_or_ip
 
 mkdir -p /shared/html
-chmod 0777 /shared/html
+chmod 0755 /shared/html
 
 INSPECTOR_EXTRA_ARGS=" ipa-inspection-callback-url=${IRONIC_BASE_URL}/v1/continue_inspection"
 
@@ -69,7 +69,8 @@ fi
 if [[ "$IPXE_TLS_SETUP" == "true" ]]; then
     HTTPS_IPXE_BOOT_DIR="/shared/html/custom-ipxe"
     mkdir -p "${HTTPS_IPXE_BOOT_DIR}"
-    chmod 0777 "${HTTPS_IPXE_BOOT_DIR}"
+    chown ironic:ironic "${HTTPS_IPXE_BOOT_DIR}"
+    chmod 0755 "${HTTPS_IPXE_BOOT_DIR}"
     render_j2_config "/templates/httpd-ipxe.conf.j2" "${HTTPD_CONF_DIR_D}/ipxe.conf"
     for fw_file in undionly.kpxe snponly-x86_64.efi snponly-arm64.efi; do
         if [[ -f "${IPXE_CUSTOM_FIRMWARE_DIR}/${fw_file}" ]]; then
