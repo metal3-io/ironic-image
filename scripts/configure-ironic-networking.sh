@@ -35,8 +35,8 @@ export NO_PROXY="${NO_PROXY:-}"
 if [[ -n "${IRONIC_IPV6}" ]]; then
     export NO_PROXY="${NO_PROXY},${IRONIC_IPV6}"
 fi
-if [[ -n "${IRONIC_IP}" ]]; then
-    export NO_PROXY="${NO_PROXY},${IRONIC_IP}"
+if [[ -n "${IRONIC_IPV4}" ]]; then
+    export NO_PROXY="${NO_PROXY},${IRONIC_IPV4}"
 fi
 
 # Ensure driver config directory exists
