@@ -5,6 +5,7 @@ set -euxo pipefail
 # Export IRONIC_IP to avoid needing to lean on IRONIC_URL_HOST for consumption in
 # e.g. dnsmasq configuration
 export IRONIC_IP="${IRONIC_IP:-}"
+export IRONIC_IPV4=""
 export IRONIC_IPV6=""
 PROVISIONING_INTERFACE="${PROVISIONING_INTERFACE:-}"
 PROVISIONING_IP="${PROVISIONING_IP:-}"
@@ -141,7 +142,7 @@ wait_for_interface_or_ip()
             export IRONIC_IPV6="${PARSED_IP}"
             unset IRONIC_IP
         else
-            export IRONIC_IP="${PARSED_IP}"
+            export IRONIC_IPV4="${PARSED_IP}"
         fi
     elif [[ -n "${PROVISIONING_IP}" ]]; then
         # If $PROVISIONING_IP is specified, then we wait for that to become
@@ -167,16 +168,16 @@ wait_for_interface_or_ip()
         if [[ "${PARSED_IP}" =~ .*:.* ]]; then
             export IRONIC_IPV6="${PARSED_IP}"
         else
-            export IRONIC_IP="${PARSED_IP}"
+            export IRONIC_IPV4="${PARSED_IP}"
         fi
     elif [[ -n "${PROVISIONING_INTERFACE}" ]]; then
-        until [[ -n "${IRONIC_IPV6}" ]] || [[ -n "${IRONIC_IP}" ]]; do
+        until [[ -n "${IRONIC_IPV6}" ]] || [[ -n "${IRONIC_IPV4}" ]]; do
             echo "Waiting for ${PROVISIONING_INTERFACE} interface to be configured..."
 
             IRONIC_IPV6="$(get_ip_of_interface "${PROVISIONING_INTERFACE}" 6)"
             sleep 1
 
-            IRONIC_IP="$(get_ip_of_interface "${PROVISIONING_INTERFACE}" 4)"
+            IRONIC_IPV4="$(get_ip_of_interface "${PROVISIONING_INTERFACE}" 4)"
             sleep 1
         done
 
@@ -185,9 +186,9 @@ wait_for_interface_or_ip()
             echo "Found ${IRONIC_IPV6} on interface \"${PROVISIONING_INTERFACE}\"!"
             export IRONIC_IPV6
         fi
-        if [[ -n "${IRONIC_IP}" ]]; then
-            echo "Found ${IRONIC_IP} on interface \"${PROVISIONING_INTERFACE}\"!"
-            export IRONIC_IP
+        if [[ -n "${IRONIC_IPV4}" ]]; then
+            echo "Found ${IRONIC_IPV4} on interface \"${PROVISIONING_INTERFACE}\"!"
+            export IRONIC_IPV4
         fi
     else
         echo "ERROR: cannot determine an interface or an IP for binding and creating URLs"
@@ -196,9 +197,9 @@ wait_for_interface_or_ip()
 
     # Define the URLs based on the what we have found,
     # prioritize IPv6 for IRONIC_URL_HOST
-    if [[ -n "${IRONIC_IP}" ]]; then
+    if [[ -n "${IRONIC_IPV4}" ]]; then
         export ENABLE_IPV4=yes
-        export IRONIC_URL_HOST="${IRONIC_IP}"
+        export IRONIC_URL_HOST="${IRONIC_IPV4}"
     fi
     if [[ -n "${IRONIC_IPV6}" ]]; then
         export ENABLE_IPV6=yes

@@ -42,12 +42,12 @@ dhcp-option={{ opt }}
 dhcp-match=set:efi,option:client-arch,7
 dhcp-match=set:efi,option:client-arch,9
 # Client is (i)PXE booting on EFI machine
-dhcp-boot=tag:efi,/snponly-x86_64.efi,{{ env.IRONIC_IP }}
+dhcp-boot=tag:efi,/snponly-x86_64.efi,{{ env.IRONIC_IPV4 }}
 # Client is (i)PXE booting on arm64 EFI machine
 dhcp-match=set:efi-arm64,option:client-arch,11
-dhcp-boot=tag:efi-arm64,/snponly-arm64.efi,{{ env.IRONIC_IP }}
+dhcp-boot=tag:efi-arm64,/snponly-arm64.efi,{{ env.IRONIC_IPV4 }}
 # Client is running (i)PXE on BIOS machine
-dhcp-boot=tag:!efi,tag:!efi-arm64,/undionly.kpxe,{{ env.IRONIC_IP }}
+dhcp-boot=tag:!efi,tag:!efi-arm64,/undionly.kpxe,{{ env.IRONIC_IPV4 }}
 {%- if env.IPXE_TLS_SETUP != "true" %}
 dhcp-boot=tag:ipxe,http://{{ env.IRONIC_IPV4 }}:{{ env.HTTP_PORT }}/boot.ipxe
 {% endif %}
