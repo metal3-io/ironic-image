@@ -12,12 +12,25 @@ TFTP_BOOT_DIR="/shared/tftpboot"
 export DNS_PORT=${DNS_PORT:-0}
 
 wait_for_interface_or_ip
-if [[ "${DNS_IP:-}" == "provisioning" ]]; then
-    if [[ "${IPV}" == "4" ]]; then
-      export DNS_IP="${IRONIC_IP}"
+if [[ -n "${DNS_IP}" ]]; then
+  if [[ "${DNS_IP}" == "provisioning" ]]; then
+      if [[ -n "${ENABLE_IPV4}" ]]; then
+        export DNS_IPV4="${IRONIC_IP}"
+      fi
+      if [[ -n "${ENABLE_IPV6}" ]]; then
+        export DNS_IPV6="${IRONIC_IPV6}"
+      fi
+  else
+    #TODO(mchiappero): perform input validation with "parse_ip_address()" first
+    # IPv6 addresses are accepted both with and without brackets
+    DNS_ADDR="${DNS_IP#\[}"
+    DNS_ADDR="${DNS_ADDR%\]}"
+    if [[ "${DNS_ADDR}" =~ .*:.* ]]; then
+      export DNS_IPV6="${DNS_ADDR}"
     else
-      export DNS_IP="[${IRONIC_IP}]"
+      export DNS_IPV4="${DNS_ADDR}"
     fi
+  fi
 fi
 
 mkdir -p "${TFTP_BOOT_DIR}"

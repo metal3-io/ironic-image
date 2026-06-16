@@ -79,7 +79,8 @@ functionality:
 - `DHCP_OPTIONS` - a `;` separated list of additional `dhcp-option` directives
    that allows passing specific network configuration parameters (like routers,
    DNS servers, and NTP) to DHCP clients (empty by default). Only applies to
-   IPv4 provisioning (`IPV=4` or unset). For more details on `dhcp-option` see
+   IPv4 provisioning, if enabled (see `IRONIC_IP_FAMILIES`). For more details
+   on `dhcp-option` see
    [the man page](https://thekelleys.org.uk/dnsmasq/docs/dnsmasq-man.html).
 - `DHCP_IGNORE` - a set of tags on hosts that should be ignored and not allocate
    DHCP leases for, e.g. `tag:!known` to ignore any unknown hosts (empty by
@@ -93,7 +94,10 @@ functionality:
 - `IRONIC_HTTPD_LOGLEVEL` - This parameter can be used to change the LogLevel
    parameter of the api's httpd container (default `debug`)
 - `GATEWAY_IP` - gateway IP address to use for ironic dnsmasq(dhcpd)
-- `DNS_IP` - DNS IP address to use for ironic dnsmasq(dhcpd)
+- `DNS_IP` - DNS IP address to use for ironic dnsmasq(dhcpd), or
+   `provisioning` to use the provisioning IP(s). IPv6 addresses can be given
+   with or without brackets. The address is only handed out to clients of its
+   own IP family, the DNS option of the other family is disabled.
 - `IRONIC_IPA_COLLECTORS` - Use a custom set of collectors to be run on
    inspection. (default `default,logs,pci-devices`)
 - `HTTPD_ENABLE_SENDFILE` - Whether to activate the EnableSendfile apache
