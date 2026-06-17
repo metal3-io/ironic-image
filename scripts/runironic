@@ -14,17 +14,50 @@ fi
 if [[ "${IRONIC_INJECT_IPA}" == "true" ]]; then
     generate_cacert_bundle_initrd /shared/html/ipa-cacert-bundle
 fi
+
 configure_restart_on_certificate_update "${IRONIC_INJECT_IPA}" ironic "${WEBSERVER_CACERT_FILE:-}"
 configure_restart_on_certificate_update "${IRONIC_TLS_SETUP}" ironic "${IRONIC_CERT_FILE}"
 
 configure_ironic_auth
 
 if [[ "${BMC_TLS_ENABLED}" == "true" ]]; then
-    # shellcheck disable=SC2034
+    # Check if BMC_CACERTS_PATH is set
+    if [[ -z "${BMC_CACERTS_PATH}" ]]; then
+        echo "ERROR: BMC_CACERTS_PATH is not set" >&2
+        exit 1
+    fi
+    
+    # Check IF any shell injection attempts in BMC_CACERTS_PATH
+    if [[ "${BMC_CACERTS_PATH}" =~ [';|&$`!'] ]] || [[ "${BMC_CACERTS_PATH}" =~ \$\( ]]; then
+        echo "ERROR: BMC_CACERTS_PATH contains invalid characters (potential shell injection): ${BMC_CACERTS_PATH}" >&2
+        exit 1
+    fi
+    
+    # Check if BMC_CACERT_FILE is set
+    if [[ -z "${BMC_CACERT_FILE}" ]]; then
+        echo "ERROR: BMC_CACERT_FILE is not set" >&2
+        exit 1
+    fi
+    
+    # Check IF any hell injection attempts in BMC_CACERT_FILE
+    if [[ "${BMC_CACERT_FILE}" =~ [';|&$`!'] ]] || [[ "${BMC_CACERT_FILE}" =~ \$\( ]]; then
+        echo "ERROR: BMC_CACERT_FILE contains invalid characters (potential shell injection): ${BMC_CACERT_FILE}" >&2
+        exit 1
+    fi
+    
+    # Verify directory exists
+    if ! test -d "${BMC_CACERTS_PATH}"; then
+        echo "ERROR: BMC_CACERTS_PATH is not a valid directory: ${BMC_CACERTS_PATH}" >&2
+        exit 1
+    fi
+    
+    # shellcheck disable=SC2016
     watchmedo shell-command \
         --patterns="*" \
         --ignore-directories \
-        --command='cat "${BMC_CACERTS_PATH}"/* > "${BMC_CACERT_FILE}"' \
+        --command='tmp=$(mktemp --tmpdir="$(dirname "${BMC_CACERT_FILE}")") && \
+cat "${BMC_CACERTS_PATH}"/* > "${tmp}" && \
+copy_atomic "${tmp}" "${BMC_CACERT_FILE}"' \
         "${BMC_CACERTS_PATH}" &
 fi
 
