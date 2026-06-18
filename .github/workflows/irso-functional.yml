@@ -25,6 +25,7 @@ jobs:
     - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
       with:
         repository: metal3-io/ironic-standalone-operator
+        ref: release-0.9
         path: ironic-standalone-operator
     - name: Calculate go version
       id: vars
