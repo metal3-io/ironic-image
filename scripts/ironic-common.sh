@@ -109,7 +109,7 @@ get_ip_of_hostname()
 
     local HOSTNAME="$1"
 
-    echo "$(nslookup -type=${QUERY} "${HOSTNAME}" | tail -n2 | grep -w "Address:" | cut -d " " -f2)"
+    nslookup -type=${QUERY} "${HOSTNAME}" | tail -n2 | grep -w "Address:" | cut -d " " -f2
 }
 
 get_ip_of_interface()
@@ -249,12 +249,12 @@ wait_for_interface_or_ip()
         local IPV4_RECORD
 
         # we should get at least one IP address
-        IPV6_RECORD="$(get_ip_of_hostname ${IRONIC_URL_HOSTNAME} 6)"
-        IPV4_RECORD="$(get_ip_of_hostname ${IRONIC_URL_HOSTNAME} 4)"
+        IPV6_RECORD="$(get_ip_of_hostname "${IRONIC_URL_HOSTNAME}" 6)"
+        IPV4_RECORD="$(get_ip_of_hostname "${IRONIC_URL_HOSTNAME}" 4)"
 
         # We couldn't get any IP
         if [[ -z "${IPV4_RECORD}" ]] && [[ -z "${IPV6_RECORD}" ]]; then
-            echo "${FUNCNAME}: no valid IP found for hostname \"${IRONIC_URL_HOSTNAME}\""
+            echo "${FUNCNAME[0]}: no valid IP found for hostname \"${IRONIC_URL_HOSTNAME}\""
             return 1
         fi
 
@@ -264,11 +264,11 @@ wait_for_interface_or_ip()
 
             until [[ -n "${IPV6_IFACE}" ]] || [[ -n "${IPV4_IFACE}" ]]; do
                 echo "Waiting for ${IPV6_RECORD} to be configured on an interface..."
-                IPV6_IFACE="$(get_interface_of_ip ${IPV6_RECORD} 6)"
+                IPV6_IFACE="$(get_interface_of_ip "${IPV6_RECORD}" 6)"
                 sleep 1
 
                 echo "Waiting for ${IPV4_RECORD} to be configured on an interface..."
-                IPV4_IFACE="$(get_interface_of_ip ${IPV4_RECORD} 4)"
+                IPV4_IFACE="$(get_interface_of_ip "${IPV4_RECORD}" 4)"
                 sleep 1
             done
 
