@@ -53,7 +53,7 @@ dhcp-boot=tag:efi-arm64,/snponly-arm64.efi,{{ env.IRONIC_IP }}
 # Client is running (i)PXE on BIOS machine
 dhcp-boot=tag:!efi,tag:!efi-arm64,/undionly.kpxe,{{ env.IRONIC_IP }}
 {%- if env.IPXE_TLS_SETUP != "true" %}
-dhcp-boot=tag:ipxe,http://{{ env.IRONIC_URL_HOST }}:{{ env.HTTP_PORT }}/boot.ipxe
+dhcp-boot=tag:ipxe,{{ env.IRONIC_HTTP_URL }}/boot.ipxe
 {% endif %}
 {% endif %}
 
