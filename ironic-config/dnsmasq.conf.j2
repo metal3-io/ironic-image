@@ -69,13 +69,13 @@ dhcp-userclass=set:ipxe6,iPXE
 # Client is (i)PXE booting on EFI machine
 dhcp-match=set:amd64,option6:61,7
 dhcp-match=set:amd64,option6:61,9
-dhcp-option=tag:pxe6,tag:amd64,option6:bootfile-url,tftp://{{ env.IRONIC_URL_HOST }}/snponly-x86_64.efi
+dhcp-option=tag:pxe6,tag:amd64,option6:bootfile-url,{{ env.IRONIC_TFTP_URL }}/snponly-x86_64.efi
 # Client is (i)PXE booting on arm64 EFI machine
 dhcp-match=set:arm64,option6:61,11
-dhcp-option=tag:pxe6,tag:arm64,option6:bootfile-url,tftp://{{ env.IRONIC_URL_HOST }}/snponly-arm64.efi
+dhcp-option=tag:pxe6,tag:arm64,option6:bootfile-url,{{ env.IRONIC_TFTP_URL }}/snponly-arm64.efi
 # Fallback: serve x86_64 when PXE client is detected but architecture
 # could not be determined. Legacy BIOS does not support IPv6 PXE.
-dhcp-option=tag:pxe6,tag:!amd64,tag:!arm64,option6:bootfile-url,tftp://{{ env.IRONIC_URL_HOST }}/snponly-x86_64.efi
+dhcp-option=tag:pxe6,tag:!amd64,tag:!arm64,option6:bootfile-url,{{ env.IRONIC_TFTP_URL }}/snponly-x86_64.efi
 {%- if env.IPXE_TLS_SETUP != "true" %}
 dhcp-option=tag:ipxe6,option6:bootfile-url,{{ env.IRONIC_HTTP_URL }}/boot.ipxe
 {% endif %}
