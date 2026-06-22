@@ -194,6 +194,8 @@ command_retry_timeout = 60
 # List of possible cipher suites versions that can be
 # supported by the hardware in case the field `cipher_suite`
 # is not set for the node. (list value)
+# Last value in the list is the chosen as the default value
+# Ironic traverses the list last-to-first
 cipher_suite_versions = 3,17
 
 {% if env.IRONIC_EXPOSE_JSON_RPC | lower == "true" %}
