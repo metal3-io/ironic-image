@@ -119,6 +119,7 @@ ARG PKGS_LIST=main-packages-list.txt
 ARG ARCH_PKGS_LIST=main-packages-list-${TARGETARCH}.txt
 ARG EXTRA_PKGS_LIST
 ARG PATCH_LIST
+ARG DNSMASQ_DATA_DIR=/data/dnsmasq
 
 COPY ${PKGS_LIST} ${ARCH_PKGS_LIST} ${EXTRA_PKGS_LIST:-$PKGS_LIST} ${PATCH_LIST:-$PKGS_LIST} /tmp/
 COPY ironic-config/ /tmp/ironic-config/
