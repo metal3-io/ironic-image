@@ -39,9 +39,6 @@ fi
 export NUMWORKERS=${NUMWORKERS:-0}
 
 
-# Whether to enable fast_track provisioning or not
-export IRONIC_FAST_TRACK=${IRONIC_FAST_TRACK:-true}
-
 # Whether cleaning disks before and after deployment
 export IRONIC_AUTOMATED_CLEAN=${IRONIC_AUTOMATED_CLEAN:-true}
 

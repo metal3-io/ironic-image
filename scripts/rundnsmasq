@@ -43,9 +43,7 @@ else
 fi
 
 # Template and write dnsmasq.conf
-# we template via /tmp as sed otherwise creates temp files in /etc directory
-# where we can't write
-python3.12 -c 'import os; import sys; import jinja2; sys.stdout.write(jinja2.Template(sys.stdin.read()).render(env=os.environ))' <"/templates/dnsmasq.conf.j2" >"${DNSMASQ_TEMP_DIR}/dnsmasq_temp.conf"
+render_j2_config "/templates/dnsmasq.conf.j2" "${DNSMASQ_TEMP_DIR}/dnsmasq_temp.conf"
 
 for iface in $(echo "$DNSMASQ_EXCEPT_INTERFACE" | tr ',' ' '); do
     sed -i -e "/^interface=.*/ a\except-interface=${iface}" "${DNSMASQ_TEMP_DIR}/dnsmasq_temp.conf"
