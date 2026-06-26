@@ -10,7 +10,7 @@ set -eu -o pipefail
 PROBE_CURL_ARGS=
 if [[ "${IRONIC_REVERSE_PROXY_SETUP}" == "true" ]]; then
     if [[ "${IRONIC_PRIVATE_PORT}" == "unix" ]]; then
-        PROBE_URL="http://127.0.0.1:6385"
+        PROBE_URL="http://127.0.0.1:${IRONIC_ACCESS_PORT}"
         PROBE_CURL_ARGS="--unix-socket /shared/ironic.sock"
     else
         PROBE_URL="http://127.0.0.1:${IRONIC_PRIVATE_PORT}"
