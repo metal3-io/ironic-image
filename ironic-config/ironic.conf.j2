@@ -274,8 +274,14 @@ key_file = {{ env.IRONIC_KEY_FILE }}
 {% endif %}
 
 [oci]
+{% if env.IRONIC_OCI_SECURE_CDN_REGISTRIES is defined %}
+secure_cdn_registries = {{ env.IRONIC_OCI_SECURE_CDN_REGISTRIES }}
+{% endif %}
 {% if env.IRONIC_OCI_AUTH_CONFIG is defined %}
 authentication_config = {{ env.IRONIC_OCI_AUTH_CONFIG }}
+{% endif %}
+{% if env.IRONIC_OCI_HTTP_FALLBACK is defined %}
+permit_fallback_to_http_transport = {{ env.IRONIC_OCI_HTTP_FALLBACK }}
 {% endif %}
 
 {% if env.IRONIC_NETWORKING_ENABLED | lower == "true" %}
