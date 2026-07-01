@@ -65,7 +65,8 @@ var (
 		unknown,
 		superseded,
 	}
-	toTag = flag.String("releaseTag", "", "The tag or commit to end to.")
+	toTag   = flag.String("releaseTag", "", "The tag or commit to end to.")
+	fromTag = flag.String("previousReleaseTag", "", "The tag to start from. If not set, it is computed automatically.")
 )
 
 func main() {
@@ -86,11 +87,18 @@ func latestTag() (string, error) {
 }
 
 // lastTag returns the tag to start collecting commits from based on the latestTag.
+// If --previousReleaseTag is set, it is returned directly.
 // For pre-releases and minor releases, it returns the latest minor release tag
 // (e.g., for v1.9.0, v1.9.0-beta.0, or v1.9.0-rc.0, it returns v1.8.0).
 // For patch releases, it returns the latest patch release tag (e.g., for v1.9.1 it returns v1.9.0).
-// In this repo, it also needs to handle majors as most of the versions are major bumps
+// In this repo, it also needs to handle majors as most of the versions are major bumps.
+// If the computed tag does not exist in git, it walks backwards through
+// versions until an existing tag is found (handles skipped releases).
 func lastTag(latestTag string) (string, error) {
+	if fromTag != nil && *fromTag != "" {
+		return *fromTag, nil
+	}
+
 	if isBeta(latestTag) || isRC(latestTag) || isMinor(latestTag) {
 		if index := strings.LastIndex(latestTag, "-"); index != -1 {
 			latestTag = latestTag[:index]
@@ -101,13 +109,21 @@ func lastTag(latestTag string) (string, error) {
 		if err != nil {
 			return "", fmt.Errorf("parsing semver for %s: %w", latestTag, err)
 		}
-		if semVersion.Minor == 0 {
-			semVersion.Major--
-		} else {
-			semVersion.Minor--
+
+		for {
+			if semVersion.Minor == 0 {
+				if semVersion.Major == 0 {
+					return "", fmt.Errorf("no previous tag found for v%s", latestTag)
+				}
+				semVersion.Major--
+			} else {
+				semVersion.Minor--
+			}
+			candidate := fmt.Sprintf("v%s", semVersion.String())
+			if gitTagExists(candidate) {
+				return candidate, nil
+			}
 		}
-		lastReleaseTag := fmt.Sprintf("v%s", semVersion.String())
-		return lastReleaseTag, nil
 	}
 
 	latestTag = strings.TrimPrefix(latestTag, "v")
@@ -119,6 +135,16 @@ func lastTag(latestTag string) (string, error) {
 	semVersion.Patch--
 	lastReleaseTag := fmt.Sprintf("v%s", semVersion.String())
 	return lastReleaseTag, nil
+}
+
+// gitTagExists checks whether a given tag exists in the local git repository.
+func gitTagExists(tag string) bool {
+	cmd := exec.Command("git", "tag", "-l", tag) // #nosec G204:gosec
+	out, err := cmd.Output()
+	if err != nil {
+		return false
+	}
+	return strings.TrimSpace(string(out)) == tag
 }
 
 func isBeta(tag string) bool {
