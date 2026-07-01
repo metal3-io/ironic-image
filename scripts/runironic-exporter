@@ -16,5 +16,13 @@ FLASK_RUN_PORT=${FLASK_RUN_PORT:-9608}
 
 export IRONIC_CONFIG="${IRONIC_CONF_DIR}/ironic.conf"
 
-exec gunicorn -b "${FLASK_RUN_HOST}:${FLASK_RUN_PORT}" -w 4 \
-    ironic_prometheus_exporter.app.wsgi:application
+if [[ "${IRONIC_PROMETHEUS_EXPORTER_TLS_SETUP}" == "true" ]]; then
+    configure_restart_on_certificate_update "${IRONIC_PROMETHEUS_EXPORTER_TLS_SETUP}" gunicorn "${IRONIC_PROMETHEUS_EXPORTER_CERT_FILE}"
+    exec gunicorn -b "${FLASK_RUN_HOST}:${FLASK_RUN_PORT}" -w 4 \
+        --certfile "${IRONIC_PROMETHEUS_EXPORTER_CERT_FILE}" \
+        --keyfile "${IRONIC_PROMETHEUS_EXPORTER_KEY_FILE}" \
+        ironic_prometheus_exporter.app.wsgi:application
+else
+    exec gunicorn -b "${FLASK_RUN_HOST}:${FLASK_RUN_PORT}" -w 4 \
+        ironic_prometheus_exporter.app.wsgi:application
+fi
