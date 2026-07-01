@@ -1,7 +1,7 @@
 [DEFAULT]
 auth_strategy = noauth
 debug = true
-default_deploy_interface = direct
+default_deploy_interface = autodetect
 default_inspect_interface = agent
 {%- if env.IRONIC_NETWORKING_ENABLED | lower == "true" %}
 default_network_interface = ironic-networking
@@ -10,7 +10,8 @@ default_network_interface = noop
 {% endif -%}
 enabled_bios_interfaces = no-bios,redfish,idrac-redfish
 enabled_boot_interfaces = ipxe,pxe,fake,redfish-virtual-media,idrac-redfish-virtual-media,redfish-https
-enabled_deploy_interfaces = direct,fake,ramdisk,custom-agent,bootc
+enabled_deploy_interfaces = autodetect,direct,fake,ramdisk,custom-agent,bootc
+autodetect_deploy_interfaces = ramdisk,bootc,direct
 enabled_firmware_interfaces = no-firmware,fake,redfish
 # NOTE(dtantsur): when changing this, make sure to update the driver
 # dependencies in Dockerfile.
