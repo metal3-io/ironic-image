@@ -22,8 +22,15 @@ RUN apt-get update && \
     pip3 install --no-cache-dir \
         git+https://review.opendev.org/openstack/sushy-tools@${SUSHY_TOOLS_VERSION} \
         libvirt-python openstacksdk && \
-    apt-get --purge autoremove -y gcc git
+    apt-get --purge autoremove -y gcc git && \
+    useradd -r -U -s /usr/sbin/nologin -d /home/sushy-tools sushy-tools && \
+    mkdir -p /home/sushy-tools /conf/sushy && \
+    chown -R sushy-tools:sushy-tools /home/sushy-tools /conf/sushy
 
 COPY redfish-emulator.sh /usr/local/bin/
+
+ENV HOME=/home/sushy-tools
+WORKDIR /home/sushy-tools
+USER sushy-tools
 
 CMD /usr/local/bin/redfish-emulator.sh
