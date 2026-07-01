@@ -38,10 +38,11 @@ chmod 2775 /var/lib/ironic
 chmod 664 /var/lib/ironic/ironic.sqlite
 
 # dnsmasq, and the capabilities required to run it as non-root user
-chown -R root:"${IRONIC_GROUP}" /etc/dnsmasq.conf /var/lib/dnsmasq
-chmod 2775 /var/lib/dnsmasq
-touch /var/lib/dnsmasq/dnsmasq.leases
-chmod 664 /etc/dnsmasq.conf /var/lib/dnsmasq/dnsmasq.leases
+chown root:"${IRONIC_GROUP}" /etc/dnsmasq.conf
+chmod 664 /etc/dnsmasq.conf
+mkdir -p /data/dnsmasq
+chown -R root:"${IRONIC_GROUP}" /data/dnsmasq
+chmod 2775 /data/dnsmasq
 
 # probes that are created before start
 touch /bin/ironic-{readi,live}ness
