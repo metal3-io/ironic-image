@@ -13,9 +13,6 @@ export IRONIC_REVERSE_PROXY_SETUP=${IRONIC_REVERSE_PROXY_SETUP:-false}
 # called user images.
 export HTTPD_SERVE_NODE_IMAGES="${HTTPD_SERVE_NODE_IMAGES:-true}"
 
-# Whether to enable fast_track provisioning or not
-IRONIC_FAST_TRACK=${IRONIC_FAST_TRACK:-true}
-
 # Whether to activate the EnableSendfile apache directive for httpd
 HTTPD_ENABLE_SENDFILE="${HTTPD_ENABLE_SENDFILE:-false}"
 
