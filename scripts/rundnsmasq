@@ -23,23 +23,12 @@ fi
 mkdir -p "${TFTP_BOOT_DIR}"
 mkdir -p /shared/html
 
-# Copy files to shared mount
+# Copy files to shared mount. Prefer a user-provided custom firmware dir,
+# otherwise fall back to the image's built-in /tftpboot.
 if [[ -r "${IPXE_CUSTOM_FIRMWARE_DIR}" ]]; then
-    for fw_file in undionly.kpxe snponly-x86_64.efi snponly-arm64.efi; do
-        if [[ -f "${IPXE_CUSTOM_FIRMWARE_DIR}/${fw_file}" ]]; then
-            cp "${IPXE_CUSTOM_FIRMWARE_DIR}/${fw_file}" "${TFTP_BOOT_DIR}"
-        else
-            echo "INFO: ${IPXE_CUSTOM_FIRMWARE_DIR}/${fw_file} is unavailable, skipping."
-        fi
-    done
-
-    # Validate that at least one legacy bios and one efi iPXE binary was successfully copied
-    if ! ls "${TFTP_BOOT_DIR}/"*.{kpxe,efi} &>/dev/null; then
-        echo "ERROR: No iPXE firmware files found in ${TFTP_BOOT_DIR} after copying from ${IPXE_CUSTOM_FIRMWARE_DIR}!"
-        exit 1
-    fi
+    copy_ipxe_firmware "${IPXE_CUSTOM_FIRMWARE_DIR}" "${TFTP_BOOT_DIR}"
 else
-    cp /tftpboot/undionly.kpxe /tftpboot/snponly-x86_64.efi /tftpboot/snponly-arm64.efi "${TFTP_BOOT_DIR}"
+    copy_ipxe_firmware /tftpboot "${TFTP_BOOT_DIR}"
 fi
 
 # Template and write dnsmasq.conf
