@@ -110,6 +110,12 @@ functionality:
 - `DEPLOY_KERNEL_URL` and `DEPLOY_RAMDISK_URL` provide the default IPA kernel
   and initramfs images. If they're not set, the images from IPA downloader are
   used (if present).
+- `SNP_BASENAME` - basename of the iPXE EFI binaries served over TFTP
+  (`<basename>-x86_64.efi` / `<basename>-arm64.efi`). It controls both the
+  on-disk firmware name and the bootfile name advertised by dnsmasq, so the two
+  always agree. Defaults to `snponly` (the upstream-built name). Distros that
+  package iPXE under a different name (e.g. openSUSE/SLE ship `snp-<arch>.efi`)
+  can set `SNP_BASENAME=snp`.
 
 ### Multi-Architecture IPA Support
 

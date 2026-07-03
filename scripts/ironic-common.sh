@@ -9,6 +9,11 @@ PROVISIONING_INTERFACE="${PROVISIONING_INTERFACE:-}"
 PROVISIONING_IP="${PROVISIONING_IP:-}"
 PROVISIONING_MACS="${PROVISIONING_MACS:-}"
 IPXE_CUSTOM_FIRMWARE_DIR="${IPXE_CUSTOM_FIRMWARE_DIR:-/shared/custom_ipxe_firmware}"
+# Basename of the EFI iPXE binaries (<basename>-x86_64.efi / <basename>-arm64.efi).
+# Upstream builds them as "snponly"; distros packaging iPXE differently (e.g.
+# openSUSE/SLE ship "snp") can override this via env or a downstream patch. Used
+# both when copying the binaries and in dnsmasq.conf.j2 that advertises them.
+export SNP_BASENAME="${SNP_BASENAME:-snponly}"
 CUSTOM_CONFIG_DIR="${CUSTOM_CONFIG_DIR:-/conf}"
 CUSTOM_DATA_DIR="${CUSTOM_DATA_DIR:-/data}"
 export DNSMASQ_CONF_DIR="${CUSTOM_CONFIG_DIR}/dnsmasq"
@@ -42,6 +47,30 @@ export IRONIC_USE_MARIADB="${IRONIC_USE_MARIADB:-false}"
 export IRONIC_FORCE_DHCP="${IRONIC_FORCE_DHCP:-false}"
 
 export IRONIC_FAST_TRACK="${IRONIC_FAST_TRACK:-true}"
+
+# Copy iPXE firmware binaries from a source directory into a destination
+# directory. The EFI binary basename is taken from ${SNP_BASENAME} so the served
+# name (dnsmasq.conf.j2) and the on-disk name always agree; downstreams whose
+# distro 'ipxe' package names them differently (e.g. openSUSE/SLE ship
+# snp-<arch>.efi) just override SNP_BASENAME. Missing files are skipped; it is
+# fatal only if no usable iPXE binary was copied.
+copy_ipxe_firmware()
+{
+    local src_dir="$1" dst_dir="$2" fw_file
+    for fw_file in undionly.kpxe "${SNP_BASENAME}-x86_64.efi" "${SNP_BASENAME}-arm64.efi"; do
+        if [[ -f "${src_dir}/${fw_file}" ]]; then
+            cp "${src_dir}/${fw_file}" "${dst_dir}/${fw_file}"
+        else
+            echo "INFO: ${src_dir}/${fw_file} is unavailable, skipping."
+        fi
+    done
+
+    # Validate that at least one legacy bios and one efi iPXE binary was successfully copied
+    if ! ls "${dst_dir}/"*.{kpxe,efi} &>/dev/null; then
+        echo "ERROR: No iPXE firmware files found in ${dst_dir} after copying from ${src_dir}!"
+        exit 1
+    fi
+}
 
 get_provisioning_interface()
 {
