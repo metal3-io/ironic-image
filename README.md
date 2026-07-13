@@ -89,6 +89,8 @@ functionality:
    element to inject the key.
 - `IRONIC_KERNEL_PARAMS` - This parameter can be used to add additional kernel
    parameters to nodes running IPA
+- `IRONIC_HTTPD_LOGLEVEL` - This parameter can be used to change the LogLevel
+   parameter of the api's httpd container (default `debug`)
 - `GATEWAY_IP` - gateway IP address to use for ironic dnsmasq(dhcpd)
 - `DNS_IP` - DNS IP address to use for ironic dnsmasq(dhcpd)
 - `IRONIC_IPA_COLLECTORS` - Use a custom set of collectors to be run on
