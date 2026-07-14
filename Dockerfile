@@ -99,12 +99,14 @@ RUN /bin/build-wheels.sh
 FROM $BASE_IMAGE
 
 # Re-declare ARGs for this stage
+ARG IRONIC_VERSION_LABEL=unknown
+ARG NGS_VERSION_LABEL=unknown
 ARG PIP_VERSION
 ARG SETUPTOOLS_VERSION
 ENV PIP_VERSION=${PIP_VERSION} \
     SETUPTOOLS_VERSION=${SETUPTOOLS_VERSION}
 
-# image.version will be set by automation during build
+# image.version and image.revision will be set by automation during build
 LABEL org.opencontainers.image.authors="metal3-dev@googlegroups.com"
 LABEL org.opencontainers.image.description="Container image to run OpenStack Ironic as part of Metal³"
 LABEL org.opencontainers.image.documentation="https://book.metal3.io/ironic/introduction"
@@ -112,6 +114,9 @@ LABEL org.opencontainers.image.licenses="Apache License 2.0"
 LABEL org.opencontainers.image.title="Metal3 Ironic Container"
 LABEL org.opencontainers.image.url="https://github.com/metal3-io/ironic-image"
 LABEL org.opencontainers.image.vendor="Metal3-io"
+# Version of key components installed into the image
+LABEL io.metal3.ironic.version="${IRONIC_VERSION_LABEL}"
+LABEL io.metal3.networking-generic-switch.version="${NGS_VERSION_LABEL}"
 
 ARG TARGETARCH
 
