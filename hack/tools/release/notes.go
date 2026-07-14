@@ -325,13 +325,30 @@ func formatMerge(line, prNumber string) string {
 	return fmt.Sprintf("%s (%s)", line, prNumber)
 }
 
+// resolveGitHubToken returns the token to use for GitHub API access. It reads
+// the token from the RELEASE_NOTES_TOKEN environment variable, which is set
+// explicitly (e.g. via "RELEASE_NOTES_TOKEN=... make release-notes"). The token
+// is intentionally not accepted as a command-line flag so it is not exposed in
+// process arguments or CI logs. For backwards compatibility it falls back to
+// the GITHUB_TOKEN environment variable, which is deprecated.
+func resolveGitHubToken() (string, error) {
+	if token := os.Getenv("RELEASE_NOTES_TOKEN"); token != "" {
+		return token, nil
+	}
+	if token := os.Getenv("GITHUB_TOKEN"); token != "" {
+		log.Println("WARNING: reading the GitHub token from the GITHUB_TOKEN environment variable is deprecated; set RELEASE_NOTES_TOKEN instead")
+		return token, nil
+	}
+	return "", errors.New("a GitHub token is required: set RELEASE_NOTES_TOKEN")
+}
+
 // getCommitHashFromNewTag returns the latest commit hash for the specified tag.
 // For minor and pre releases, it returns the main branch's latest commit.
 // For patch releases, it returns the latest commit on the corresponding release branch.
 func getCommitHashFromNewTag(newTag string) (string, error) {
-	token := os.Getenv("GITHUB_TOKEN")
-	if token == "" {
-		return "", errors.New("GITHUB_TOKEN is required")
+	token, err := resolveGitHubToken()
+	if err != nil {
+		return "", err
 	}
 
 	ctx := context.Background()

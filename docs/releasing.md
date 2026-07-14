@@ -130,8 +130,17 @@ Finally, return to the release branch in this repository and update:
 - Create a new branch for the release notes**:
   `git checkout origin/main -b release-notes-x.y.z`
 
-- Generate the release notes: `RELEASE_TAG=vx.y.z make release-notes`
+- Generate the release notes. Prefix the command with `RELEASE_NOTES_TOKEN` so
+  the token is passed via the environment (use a fine-grained token with
+  read-only repository contents access):
+
+  ```sh
+  RELEASE_TAG=vx.y.z RELEASE_NOTES_TOKEN="$(gh auth token)" make release-notes
+  ```
+
    - Replace `vx.y.z` with the new release tag you're creating.
+   - If `RELEASE_NOTES_TOKEN` is omitted, the tool falls back to the
+    `GITHUB_TOKEN` environment variable, which is deprecated.
    - This command generates the release notes here
     `releasenotes/<RELEASE_TAG>.md` .
 
