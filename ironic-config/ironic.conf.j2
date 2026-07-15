@@ -259,6 +259,7 @@ ipxe_config_template = {{ env.IRONIC_CONF_DIR }}/ipxe_config.template
 [redfish]
 use_swift = false
 kernel_append_params = nofb nomodeset vga=normal ipa-insecure={{ env.IRONIC_IPA_INSECURE | default('1') }} {% if env.ENABLE_FIPS_IPA %}fips={{ env.ENABLE_FIPS_IPA|trim }}{% endif %} {% if env.IRONIC_RAMDISK_SSH_KEY %}sshkey="{{ env.IRONIC_RAMDISK_SSH_KEY|trim }}"{% endif %} {{ env.IRONIC_KERNEL_PARAMS|trim }} systemd.journald.forward_to_console={{ env.IPA_FORWARD_CONSOLE | default('yes') }}
+connect_timeout = {{ env.REDFISH_CONNECT_TIMEOUT | default('30') }}
 {% if env.BMC_TLS_ENABLED == "true" %}
 # idrac uses the same options as the redfish driver
 verify_ca = {{ env.BMC_CACERT_FILE }}

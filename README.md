@@ -224,6 +224,16 @@ MariaDB configuration:
    Deprecated. Instead, mount a secret with `password` (optionally with a
    `username`) under `/auth/mariadb` mount point.
 
+Redfish BMC connection configuration:
+
+- `REDFISH_CONNECT_TIMEOUT` - TCP connection timeout in seconds for Redfish BMC
+  connections (default `30`).
+  This controls how long Ironic waits for the initial TCP connection to a BMC
+  to be established.
+  A lower value allows faster failure when a BMC is unreachable, while the read
+  timeout (60s by default) is preserved for slow but responsive BMCs.
+  Can also be overridden at runtime via `OS_REDFISH__CONNECT_TIMEOUT`.
+
 The ironic configuration can be overridden by various environment variables.
 The following can serve as an example:
 
