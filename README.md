@@ -73,7 +73,7 @@ functionality:
 - `DHCP_OPTIONS` - a `;` separated list of additional `dhcp-option` directives
    that allows passing specific network configuration parameters (like routers,
    DNS servers, and NTP) to DHCP clients (empty by default). Only applies to
-   IPv4 provisioning (`IPV=4` or unset). For more details on `dhcp-option` see
+   IPv4 provisioning, if enabled . For more details on `dhcp-option` see
    [the man page](https://thekelleys.org.uk/dnsmasq/docs/dnsmasq-man.html).
 - `DHCP_IGNORE` - a set of tags on hosts that should be ignored and not allocate
    DHCP leases for, e.g. `tag:!known` to ignore any unknown hosts (empty by
