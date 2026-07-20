@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -euxo pipefail
+
 export IRONIC_INSECURE=${IRONIC_INSECURE:-false}
 export IRONIC_SSL_PROTOCOL=${IRONIC_SSL_PROTOCOL:-"-ALL +TLSv1.2 +TLSv1.3"}
 export IPXE_SSL_PROTOCOL=${IPXE_SSL_PROTOCOL:-"-ALL +TLSv1.2 +TLSv1.3"}

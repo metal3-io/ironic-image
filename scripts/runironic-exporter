@@ -1,5 +1,7 @@
 #!/usr/bin/bash
 
+set -euxo pipefail
+
 # Set dummy provisioning IP to avoid interface detection issues (not needed to run IPE to service `/metrics`)
 export PROVISIONING_IP="127.0.0.1"
 # Set to true since running this script implies sensor data metrics are needed
