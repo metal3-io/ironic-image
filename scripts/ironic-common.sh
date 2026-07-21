@@ -48,6 +48,32 @@ export IRONIC_FORCE_DHCP="${IRONIC_FORCE_DHCP:-false}"
 
 export IRONIC_FAST_TRACK="${IRONIC_FAST_TRACK:-true}"
 
+# Bounds for the loops that wait on an external condition (a provisioning
+# IP/interface to appear, or MariaDB to accept a dbsync). These used to loop
+# forever, which meant a misconfiguration or a permanently unavailable
+# dependency would hang the entrypoint silently and defeat "set -e". They now
+# give up after a timeout and exit non-zero. Set a timeout to 0 (or negative)
+# to restore the legacy behaviour of waiting forever.
+export IRONIC_IP_WAIT_TIMEOUT="${IRONIC_IP_WAIT_TIMEOUT:-1200}"
+export IRONIC_IP_WAIT_INTERVAL="${IRONIC_IP_WAIT_INTERVAL:-1}"
+export IRONIC_DBSYNC_TIMEOUT="${IRONIC_DBSYNC_TIMEOUT:-600}"
+export IRONIC_DBSYNC_INTERVAL="${IRONIC_DBSYNC_INTERVAL:-1}"
+
+# Exit non-zero once ${deadline} (a snapshot of the bash SECONDS counter taken
+# when the wait started) has been reached. This turns the unbounded
+# "wait for a condition" loops into bounded ones so that "set -e" can
+# act on them. A non-positive ${timeout} disables the check, preserving the
+# legacy behaviour of waiting forever.
+fail_if_timed_out()
+{
+    local deadline="$1" timeout="$2" message="$3"
+
+    if (( timeout > 0 )) && (( SECONDS >= deadline )); then
+        echo "ERROR: timed out after ${timeout}s ${message}" >&2
+        exit 1
+    fi
+}
+
 # Copy iPXE firmware binaries from a source directory into a destination
 # directory. The EFI binary basename is taken from ${SNP_BASENAME} so the served
 # name (dnsmasq.conf.j2) and the on-disk name always agree; downstreams whose
@@ -153,10 +179,13 @@ wait_for_interface_or_ip()
         fi
 
         local IFACE_OF_IP=""
+        local deadline=$(( SECONDS + IRONIC_IP_WAIT_TIMEOUT ))
         until [[ -n "${IFACE_OF_IP}" ]]; do
+            fail_if_timed_out "${deadline}" "${IRONIC_IP_WAIT_TIMEOUT}" \
+                "waiting for ${PROVISIONING_IP} to be configured on an interface"
             echo "Waiting for ${PROVISIONING_IP} to be configured on an interface..."
             IFACE_OF_IP="$(get_interface_of_ip "${PARSED_IP}")"
-            sleep 1
+            sleep "${IRONIC_IP_WAIT_INTERVAL}"
         done
 
         echo "Found ${PROVISIONING_IP} on interface \"${IFACE_OF_IP}\"!"
@@ -164,11 +193,14 @@ wait_for_interface_or_ip()
         export PROVISIONING_INTERFACE="${IFACE_OF_IP}"
         export IRONIC_IP="${PARSED_IP}"
     elif [[ -n "${PROVISIONING_INTERFACE}" ]]; then
+        local deadline=$(( SECONDS + IRONIC_IP_WAIT_TIMEOUT ))
         until [[ -n "$IRONIC_IP" ]]; do
+            fail_if_timed_out "${deadline}" "${IRONIC_IP_WAIT_TIMEOUT}" \
+                "waiting for ${PROVISIONING_INTERFACE} interface to be configured"
             echo "Waiting for ${PROVISIONING_INTERFACE} interface to be configured"
             IRONIC_IP="$(ip -br addr show scope global up dev "${PROVISIONING_INTERFACE}" | awk '{print $3}' | sed -e 's%/.*%%' | head -n 1)"
             export IRONIC_IP
-            sleep 1
+            sleep "${IRONIC_IP_WAIT_INTERVAL}"
         done
     else
         echo "ERROR: cannot determine an interface or an IP for binding and creating URLs"
@@ -209,9 +241,12 @@ run_ironic_dbsync()
     if [[ "${IRONIC_USE_MARIADB}" == "true" ]]; then
         # It's possible for the dbsync to fail if mariadb is not up yet, so
         # retry until success
+        local deadline=$(( SECONDS + IRONIC_DBSYNC_TIMEOUT ))
         until ironic-dbsync --config-file "${IRONIC_CONF_DIR}/ironic.conf" upgrade; do
+            fail_if_timed_out "${deadline}" "${IRONIC_DBSYNC_TIMEOUT}" \
+                "waiting for ironic-dbsync to succeed (is MariaDB reachable?)"
             echo "WARNING: ironic-dbsync failed, retrying"
-            sleep 1
+            sleep "${IRONIC_DBSYNC_INTERVAL}"
         done
     else
         # SQLite does not support some statements. Fortunately, we can just
