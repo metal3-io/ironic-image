@@ -23,16 +23,8 @@ EORUN
 
 FROM $IPXE_BINARIES_IMAGE AS ipxe-binaries
 
-## Build Python wheels for dependencies
-FROM $BASE_IMAGE AS deps-wheel-builder
-
-ARG UPPER_CONSTRAINTS_FILE=upper-constraints.txt
-ARG PIP_VERSION
-ARG SETUPTOOLS_VERSION
-
-ENV UPPER_CONSTRAINTS_FILE=${UPPER_CONSTRAINTS_FILE} \
-    PIP_VERSION=${PIP_VERSION} \
-    SETUPTOOLS_VERSION=${SETUPTOOLS_VERSION}
+## Shared Python build toolchain for wheel builders
+FROM $BASE_IMAGE AS python-build-base
 
 RUN --mount=type=cache,sharing=locked,target=/var/cache/dnf <<EORUN
 set -euxo pipefail
@@ -49,13 +41,24 @@ microdnf install -y \
     python3.12-setuptools
 EORUN
 
+## Build Python wheels for dependencies
+FROM python-build-base AS deps-wheel-builder
+
+ARG UPPER_CONSTRAINTS_FILE=upper-constraints.txt
+ARG PIP_VERSION
+ARG SETUPTOOLS_VERSION
+
+ENV UPPER_CONSTRAINTS_FILE=${UPPER_CONSTRAINTS_FILE} \
+    PIP_VERSION=${PIP_VERSION} \
+    SETUPTOOLS_VERSION=${SETUPTOOLS_VERSION}
+
 COPY ${UPPER_CONSTRAINTS_FILE} ironic-deps-list /tmp/
 COPY build-wheels.sh /bin/
 
 RUN IRONIC_PKG_LIST=/tmp/ironic-deps-list /bin/build-wheels.sh
 
 ## Build Ironic and Sushy wheels
-FROM $BASE_IMAGE AS ironic-wheel-builder
+FROM python-build-base AS ironic-wheel-builder
 
 ARG UPPER_CONSTRAINTS_FILE=upper-constraints.txt
 ARG IRONIC_SOURCE=e839c4318873a050564e3b239a3dd84881d10e5e # master
@@ -73,21 +76,8 @@ ENV IRONIC_SOURCE=${IRONIC_SOURCE} \
     PIP_VERSION=${PIP_VERSION} \
     SETUPTOOLS_VERSION=${SETUPTOOLS_VERSION}
 
-RUN --mount=type=cache,sharing=locked,target=/var/cache/dnf <<EORUN
-set -euxo pipefail
-rm -f /etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-SIG-Extras /etc/pki/rpm-gpg/RPM-GPG-KEY-centosofficial-PQC
-# Find keys; if the list is empty, fail the build immediately
-KEYS=$(find /etc/pki/rpm-gpg/ -name "RPM-GPG-KEY-cento*")
-if [ -z "$KEYS" ]; then echo "ERROR: No CentOS GPG keys found in /etc/pki/rpm-gpg/"; exit 1; fi
-echo "$KEYS" | xargs rpm --import
-printf "[main]\ngpgcheck=1\ninstall_weak_deps=0\ntsflags=nodocs\nkeepcache=1\n" > /etc/dnf/dnf.conf
-microdnf install -y \
-    gcc \
-    git-core \
-    python3.12-devel \
-    python3.12-pip \
-    python3.12-setuptools
-EORUN
+RUN --mount=type=cache,sharing=locked,target=/var/cache/dnf \
+    microdnf install -y git-core
 
 COPY sources /sources/
 COPY ${UPPER_CONSTRAINTS_FILE} ironic-packages-list /tmp/
