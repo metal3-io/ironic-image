@@ -78,11 +78,6 @@ functionality:
 - `DHCP_IGNORE` - a set of tags on hosts that should be ignored and not allocate
    DHCP leases for, e.g. `tag:!known` to ignore any unknown hosts (empty by
    default)
-- `OS_<section>_\_<name>=<value>` - This format can be used to set arbitary
-   Ironic config options. These OS\_ environment variables take precedence over
-   configuration rendered from templates. For example, if both `SEND_SENSOR_DATA=true`
-   and `OS_SENSOR_DATA__SEND_SENSOR_DATA=false` are set, the OS_ variable value
-   (`false`) will be used at runtime.
 - `IRONIC_RAMDISK_SSH_KEY` - A single public key to allow ssh access as root to
    nodes running IPA, takes the format "ssh-rsa AAAAB3.....". This relies on the
    [dynamic-login](https://opendev.org/openstack/diskimage-builder/src/branch/master/diskimage_builder/elements/dynamic-login)
@@ -226,16 +221,55 @@ MariaDB configuration:
    Deprecated. Instead, mount a secret with `password` (optionally with a
    `username`) under `/auth/mariadb` mount point.
 
-The ironic configuration can be overridden by various environment variables.
-The following can serve as an example:
+### Overriding Ironic configuration options
 
+Any Ironic configuration option can be overridden at runtime with an
+environment variable of the form `OS_<section>__<option>` (note the **two**
+underscores after the section name).
+These `OS_` variables take precedence over values rendered from templates.
+You do not need dedicated image environment variables for each option.
+
+Examples:
+
+- `OS_DEFAULT__DEBUG=true` - enable debug logging
+- `OS_OCI__PERMIT_FALLBACK_TO_HTTP_TRANSPORT=true` - allow falling back to HTTP
+  when talking to an OCI registry
+- `OS_SENSOR_DATA__SEND_SENSOR_DATA=false` - overrides `SEND_SENSOR_DATA` from
+  the template
+- `OS_SENSOR_DATA__INTERVAL=300` - sensor data collection interval (seconds)
 - `OS_CONDUCTOR__DEPLOY_CALLBACK_TIMEOUT=4800` - timeout (seconds) to wait for
-   a callback from a deploy ramdisk
+  a callback from a deploy ramdisk
 - `OS_CONDUCTOR__INSPECT_TIMEOUT=1800` - timeout (seconds) for waiting for node
-   inspection
+  inspection
 - `OS_CONDUCTOR__CLEAN_CALLBACK_TIMEOUT=1800` - timeout (seconds) to wait for a
-   callback from the ramdisk doing the cleaning
-- `OS_PXE__BOOT_RETRY_TIMEOUT=1200` - timeout (seconds) to enable boot retries.
+  callback from the ramdisk doing the cleaning
+- `OS_CONDUCTOR__HEARTBEAT_TIMEOUT=300` - maximum time (seconds) since the last
+  heartbeat before a node is considered offline
+- `OS_CONDUCTOR__NODE_LOCKED_RETRY_ATTEMPTS=5` - retries when a node is locked
+- `OS_DEPLOY__ERASE_DEVICES_PRIORITY=0` - disable full disk erase during cleaning
+- `OS_DEPLOY__ERASE_DEVICES_METADATA_PRIORITY=10` - enable metadata erase during
+  cleaning
+- `OS_PXE__BOOT_RETRY_TIMEOUT=1200` - timeout (seconds) to enable boot retries
+- `OS_PXE__IPXE_TIMEOUT=60` - iPXE script timeout (seconds)
+- `OS_AGENT__MAX_COMMAND_ATTEMPTS=30` - IPA command retry attempts
+- `OS_AGENT__MEMORY_BUSY_PERIOD=60` - seconds to wait when IPA reports busy
+- `OS_AGENT__DEPLOY_LOGS_COLLECT=always` - always collect IPA deploy logs
+- `OS_IPMI__COMMAND_RETRY_TIMEOUT=60` - IPMI command timeout (seconds)
+- `OS_IPMI__MIN_COMMAND_INTERVAL=5` - minimum interval between IPMI commands
+- `OS_IPMI__USE_IPMITOOL_RETRIES=true` - let ipmitool handle retries
+- `OS_REDFISH__USE_SWIFT=false` - store virtual media images locally
+- `OS_REDFISH__FIRMWARE_UPDATE_STATUS_INTERVAL=60` - poll interval (seconds)
+  for Redfish firmware updates
+- `OS_INSPECTOR__POWER_OFF=false` - leave the node powered on after inspection
+- `OS_INSPECTOR__REQUIRE_MANAGED_BOOT=true` - require managed boot for inspection
+- `OS_AUTO_DISCOVERY__ENABLED=true` - enable auto-discovery of unknown nodes
+- `OS_AUTO_DISCOVERY__DRIVER=ipmi` - default driver for auto-discovered nodes
+- `OS_JSON_RPC__PORT=8089` - JSON-RPC listen port
+- `OS_DATABASE__MYSQL_ENGINE=InnoDB` - MySQL storage engine for the database
+
+See the
+[Ironic configuration reference](https://docs.openstack.org/ironic/latest/configuration/config.html)
+for available options.
 
 ## TLS configuration
 

@@ -1,3 +1,8 @@
+# Any option in this file can be overridden at runtime with an environment
+# variable of the form OS_<section>__<option> (two underscores after the
+# section). See README.md "Overriding Ironic configuration options" for
+# examples; dedicated image env vars are not required for each option.
+
 [DEFAULT]
 auth_strategy = noauth
 debug = true
@@ -231,8 +236,6 @@ send_sensor_data = {{ env.SEND_SENSOR_DATA }}
 # Power state is checked every 60 seconds and BMC activity should
 # be avoided more often than once every sixty seconds.
 interval = 160
-# Additional sensor_data options can be configured via OS_ environment variables:
-# https://docs.openstack.org/ironic/latest/configuration/config.html#sensor-data
 
 [metrics]
 backend = collector
