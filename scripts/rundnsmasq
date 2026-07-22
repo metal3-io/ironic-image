@@ -22,6 +22,7 @@ fi
 
 mkdir -p "${TFTP_BOOT_DIR}"
 mkdir -p /shared/html
+touch "${DNSMASQ_DATA_DIR}/dnsmasq.leases"
 
 # Copy files to shared mount. Prefer a user-provided custom firmware dir,
 # otherwise fall back to the image's built-in /tftpboot.

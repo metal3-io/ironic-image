@@ -15,6 +15,9 @@ set -euxo pipefail
 IRONIC_USER="ironic"
 IRONIC_GROUP="ironic"
 
+# Default must match the runtime value in scripts/ironic-common.sh
+DNSMASQ_DATA_DIR="${DNSMASQ_DATA_DIR:-/data/dnsmasq}"
+
 # most containers mount /shared but dnsmasq can live without it
 mkdir -p /shared
 chown "${IRONIC_USER}":"${IRONIC_GROUP}" /shared
@@ -38,10 +41,11 @@ chmod 2775 /var/lib/ironic
 chmod 664 /var/lib/ironic/ironic.sqlite
 
 # dnsmasq, and the capabilities required to run it as non-root user
-chown -R root:"${IRONIC_GROUP}" /etc/dnsmasq.conf /var/lib/dnsmasq
-chmod 2775 /var/lib/dnsmasq
-touch /var/lib/dnsmasq/dnsmasq.leases
-chmod 664 /etc/dnsmasq.conf /var/lib/dnsmasq/dnsmasq.leases
+chown root:"${IRONIC_GROUP}" /etc/dnsmasq.conf
+chmod 664 /etc/dnsmasq.conf
+mkdir -p "${DNSMASQ_DATA_DIR}"
+chown -R root:"${IRONIC_GROUP}" "${DNSMASQ_DATA_DIR}"
+chmod 2775 "${DNSMASQ_DATA_DIR}"
 
 # probes that are created before start
 touch /bin/ironic-{readi,live}ness

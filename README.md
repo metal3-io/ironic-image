@@ -113,6 +113,9 @@ functionality:
   always agree. Defaults to `snponly` (the upstream-built name). Distros that
   package iPXE under a different name (e.g. openSUSE/SLE ship `snp-<arch>.efi`)
   can set `SNP_BASENAME=snp`.
+- `DNSMASQ_DATA_DIR` - directory for dnsmasq runtime data such as lease files
+  (default `/data/dnsmasq`).
+  Also available as a Dockerfile build argument.
 
 ### Multi-Architecture IPA Support
 
@@ -388,6 +391,11 @@ It is also possible to specify an upper-constraints file using the
 file found in the container context; the content of the file can be modified
 keeping the default name or it's possible to specify an entire different
 filename as far as it's in the container context.
+
+The dnsmasq data directory can be changed at build time using
+**DNSMASQ_DATA_DIR** (default `/data/dnsmasq`).
+This is useful for non-root setups with a read-write filesystem where the
+default path may not be a mounted volume.
 
 ## Apply project patches to the images during build
 
