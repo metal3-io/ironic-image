@@ -9,7 +9,7 @@
 # which we provide via "setcap", and "allowPrivilegeEscalation: true" in
 # manifest.
 
-set -eux
+set -euxo pipefail
 
 # user and group are from ironic rpms (uid 997, gid 994)
 IRONIC_USER="ironic"

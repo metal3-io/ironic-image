@@ -254,6 +254,7 @@ detect_ipa_by_arch()
     fi
 
     # Detect architectures from env vars (DEPLOY_KERNEL_URL_<ARCH>) and files
+    local var_arch file_arch
     declare -A detected_arch
     for var_arch in "${!DEPLOY_KERNEL_URL_@}"; do
         local IPA_ARCH="${var_arch#DEPLOY_KERNEL_URL_}"

@@ -1,6 +1,6 @@
 #!/usr/bin/bash
 
-set -eux
+set -euxo pipefail
 
 # shellcheck disable=SC1091
 . /bin/ironic-common.sh
