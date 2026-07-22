@@ -110,6 +110,17 @@
       "packageNameTemplate": "https://github.com/openstack/networking-generic-switch.git",
       "versioningTemplate": "loose",
       "autoReplaceStringTemplate": "ARG NGS_SOURCE={{#if newDigest}}{{{newDigest}}}{{else}}{{{newValue}}}{{/if}} # {{{currentValue}}}"
+    },
+    {
+      "customType": "regex",
+      "managerFilePatterns": [
+        "/^Dockerfile$/"
+      ],
+      "matchStrings": [
+        "ARG IPXE_BINARIES_IMAGE=(?<depName>[^@\\s]+)@(?<currentDigest>sha256:[a-f0-9]+)[^\\n]*"
+      ],
+      "currentValueTemplate": "latest",
+      "datasourceTemplate": "docker"
     }
   ]
 }
