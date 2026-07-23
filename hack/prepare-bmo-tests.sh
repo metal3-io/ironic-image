@@ -62,5 +62,4 @@ sed -i '/NAMESPACE_SCOPED:/a\
 # Run the BMO e2e tests
 cd "${BMO_ROOT}" || exit 1
 echo "Running BMO e2e tests with custom ironic image: ${IRONIC_CUSTOM_IMAGE}"
-export GINKGO_FOCUS=""
 ./hack/ci-e2e.sh
