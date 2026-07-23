@@ -16,9 +16,12 @@ jobs:
       IRONIC_CUSTOM_IMAGE: localhost/ironic:bmo-e2e
       # NOTE(dtantsur): change this on stable branches to make sure the correct
       # logic is used in IrSO.
-      IRONIC_CUSTOM_VERSION: latest
+      IRONIC_CUSTOM_VERSION: "37.0"
       # Use latest stable BMO release - update this when new releases are available
-      BMO_VERSION: v0.12.1
+      # Use BMO from the main branch to immediately benefit from new tests.
+      # Once branched, consider pinning to the next BMO version. Keep in mind
+      # that BMO pins IrSO, which must be compatible with IRONIC_CUSTOM_VERSION.
+      BMO_VERSION: main
     steps:
     - name: Check docker version
       run: docker --version
