@@ -3,7 +3,7 @@ ARG IPXE_BINARIES_IMAGE=quay.io/metal3-io/ipxe-binaries@sha256:155a410dbafc9537f
 
 # Python tooling versions - update these regularly
 ARG PIP_VERSION=26.1.2
-ARG SETUPTOOLS_VERSION=82.0.1
+ARG SETUPTOOLS_VERSION=83.0.0
 
 FROM $BASE_IMAGE AS ironic-builder
 
