@@ -58,6 +58,12 @@ functionality:
    `PROVISIONING_MACS` is provided)
 - `PROVISIONING_IP` - the specific IP to use (instead of calculating it based on
   the `PROVISIONING_INTERFACE`)
+- `IRONIC_IP_WAIT_TIMEOUT` - maximum time in seconds to wait for the
+  provisioning IP or interface to become available before failing the entry
+  point (default `1200`). Set to `0` (or a negative value) to wait
+  indefinitely, restoring the previous behaviour.
+- `IRONIC_IP_WAIT_INTERVAL` - polling interval in seconds while waiting for the
+  provisioning IP or interface (default `1`)
 - `DNSMASQ_EXCEPT_INTERFACE` - interfaces to exclude when providing DHCP address
   (default `lo`)
 - `HTTP_PORT` - port used by http server (default `80`)
@@ -223,6 +229,13 @@ MariaDB configuration:
 - `MARIADB_PASSWORD` - The database password.
    Deprecated. Instead, mount a secret with `password` (optionally with a
    `username`) under `/auth/mariadb` mount point.
+- `IRONIC_DBSYNC_TIMEOUT` - maximum time in seconds to wait for `ironic-dbsync`
+  to succeed (for example while MariaDB is starting up) before failing the
+  entry point (default `600`). Only applies when `IRONIC_USE_MARIADB` is
+  `true`. Set to `0` (or a negative value) to retry indefinitely, restoring the
+  previous behaviour.
+- `IRONIC_DBSYNC_INTERVAL` - interval in seconds between `ironic-dbsync`
+  retries (default `1`)
 
 ### Overriding Ironic configuration options
 
