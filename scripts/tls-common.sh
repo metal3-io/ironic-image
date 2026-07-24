@@ -15,6 +15,8 @@ export IRONIC_VMEDIA_KEY_FILE=/certs/vmedia/tls.key
 export IPXE_CERT_FILE=/certs/ipxe/tls.crt
 export IPXE_KEY_FILE=/certs/ipxe/tls.key
 
+export IRONIC_PROMETHEUS_EXPORTER_CERT_FILE=${IRONIC_PROMETHEUS_EXPORTER_CERT_FILE:-/certs/ironic-prometheus-exporter/tls.crt}
+export IRONIC_PROMETHEUS_EXPORTER_KEY_FILE=${IRONIC_PROMETHEUS_EXPORTER_KEY_FILE:-/certs/ironic-prometheus-exporter/tls.key}
 export RESTART_CONTAINER_CERTIFICATE_UPDATED=${RESTART_CONTAINER_CERTIFICATE_UPDATED:-"false"}
 
 # By default every cert has to be signed with Ironic's
@@ -51,6 +53,15 @@ if [[ -f "$IPXE_CERT_FILE" ]] && [[ ! -f "$IPXE_KEY_FILE" ]]; then
 fi
 if [[ ! -f "$IPXE_CERT_FILE" ]] && [[ -f "$IPXE_KEY_FILE" ]]; then
     echo "Missing TLS Certificate file $IPXE_CERT_FILE"
+    exit 1
+fi
+
+if [[ -f "$IRONIC_PROMETHEUS_EXPORTER_CERT_FILE" ]] && [[ ! -f "$IRONIC_PROMETHEUS_EXPORTER_KEY_FILE" ]]; then
+    echo "Missing TLS Certificate key file $IRONIC_PROMETHEUS_EXPORTER_KEY_FILE"
+    exit 1
+fi
+if [[ ! -f "$IRONIC_PROMETHEUS_EXPORTER_CERT_FILE" ]] && [[ -f "$IRONIC_PROMETHEUS_EXPORTER_KEY_FILE" ]]; then
+    echo "Missing TLS Certificate file $IRONIC_PROMETHEUS_EXPORTER_CERT_FILE"
     exit 1
 fi
 
@@ -93,6 +104,12 @@ if [[ -f "$IPXE_CERT_FILE" ]]; then
 else
     export IPXE_SCHEME="http"
     export IPXE_TLS_SETUP="false"
+fi
+
+if [[ -f "$IRONIC_PROMETHEUS_EXPORTER_CERT_FILE" ]]; then
+    export IRONIC_PROMETHEUS_EXPORTER_TLS_SETUP="true"
+else
+    export IRONIC_PROMETHEUS_EXPORTER_TLS_SETUP="false"
 fi
 
 if [[ -f "$MARIADB_CACERT_FILE" ]]; then
