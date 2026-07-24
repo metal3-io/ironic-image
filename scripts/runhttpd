@@ -68,7 +68,11 @@ if [[ "$IPXE_TLS_SETUP" == "true" ]]; then
     mkdir -p "${HTTPS_IPXE_BOOT_DIR}"
     chmod 2775 "${HTTPS_IPXE_BOOT_DIR}"
     render_j2_config "/templates/httpd-ipxe.conf.j2" "${HTTPD_CONF_DIR_D}/ipxe.conf"
-    copy_ipxe_firmware "${IPXE_CUSTOM_FIRMWARE_DIR}" "${HTTPS_IPXE_BOOT_DIR}"
+    if [[ -r "${IPXE_CUSTOM_FIRMWARE_DIR}" ]]; then
+        copy_ipxe_firmware "${IPXE_CUSTOM_FIRMWARE_DIR}" "${HTTPS_IPXE_BOOT_DIR}"
+    else
+        copy_ipxe_firmware /tftpboot "${HTTPS_IPXE_BOOT_DIR}"
+    fi
 fi
 
 # Set up inotify to kill the container (restart) whenever cert files for ironic api change
