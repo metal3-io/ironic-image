@@ -1,50 +1,21 @@
-name: Build Ironic Image on PRs
+name: build-images-action-pr
 
 on:
   pull_request:
-    types: [ opened, edited, reopened, synchronize, ready_for_review ]
+    types: [opened, edited, reopened, synchronize, ready_for_review]
 
-permissions: {}
+permissions:
+  contents: read
 
 jobs:
-  build:
-    runs-on: ${{ matrix.platform == 'linux/amd64' && 'ubuntu-latest' || matrix.platform == 'linux/arm64' && 'ubuntu-24.04-arm'}}
+  build_ironic:
+    name: Build ironic container image
+    if: github.repository == 'metal3-io/ironic-image'
     permissions:
       contents: read
-    strategy:
-      fail-fast: false
-      matrix:
-        centos_version:
-        - stream9
-        - stream10
-        platform:
-        - linux/amd64
-        - linux/arm64
-
-    steps:
-    - name: Checkout repository
-      uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-      with:
-        persist-credentials: false
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3.12.0
-    - name: Set base image
-      id: base-image
-      run: |
-        if [[ "${{ matrix.centos_version }}" == "stream9" ]]; then
-          echo "base_image=quay.io/centos/centos:stream9-minimal" >> "${GITHUB_OUTPUT}"
-        elif [[ "${{ matrix.centos_version }}" == "stream10" ]]; then
-          echo "base_image=quay.io/centos/centos:stream10-minimal" >> "${GITHUB_OUTPUT}"
-        fi
-    - name: Build Docker image
-      uses: docker/build-push-action@10e90e3645eae34f1e60eeb005ba3a3d33f178e8 # v6.19.2
-      with:
-        context: .
-        file: ./Dockerfile
-        push: false
-        tags: ironic:${{ matrix.centos_version }}
-        platforms: ${{ matrix.platform }}
-        build-args: |
-          BASE_IMAGE=${{ steps.base-image.outputs.base_image }}
-        cache-from: type=gha,scope=${{ matrix.centos_version }}
-        cache-to: type=gha,mode=max,scope=${{ matrix.centos_version }}
+    uses: metal3-io/project-infra/.github/workflows/container-image-build.yml@main # zizmor: ignore[unpinned-uses]
+    with:
+      image-name: 'ironic'
+      pushImage: false
+      generate-sbom: false
+      sign-image: false
