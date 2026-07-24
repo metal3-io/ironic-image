@@ -7,8 +7,14 @@ on:
 permissions: {}
 
 jobs:
+  generate-core-component-source-versions:
+    if: github.repository == 'metal3-io/ironic-image'
+    uses: ./.github/workflows/generate-core-component-source-versions.yml
+    permissions:
+      contents: read
   build:
     runs-on: ${{ matrix.platform == 'linux/amd64' && 'ubuntu-latest' || matrix.platform == 'linux/arm64' && 'ubuntu-24.04-arm'}}
+    needs: generate-core-component-source-versions
     permissions:
       contents: read
     strategy:
@@ -45,6 +51,8 @@ jobs:
         tags: ironic:${{ matrix.centos_version }}
         platforms: ${{ matrix.platform }}
         build-args: |
+          IRONIC_VERSION_LABEL=${{ needs.generate-core-component-source-versions.outputs.ironic-version }}
+          NGS_VERSION_LABEL=${{ needs.generate-core-component-source-versions.outputs.ngs-version }}
           BASE_IMAGE=${{ steps.base-image.outputs.base_image }}
         cache-from: type=gha,scope=${{ matrix.centos_version }}
         cache-to: type=gha,mode=max,scope=${{ matrix.centos_version }}
