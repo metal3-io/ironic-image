@@ -91,8 +91,9 @@ copy_ipxe_firmware()
         fi
     done
 
-    # Validate that at least one legacy bios and one efi iPXE binary was successfully copied
-    if ! ls "${dst_dir}/"*.{kpxe,efi} &>/dev/null; then
+    # Validate that at least one usable iPXE binary was successfully copied
+    if ! ls "${dst_dir}/"*.kpxe &>/dev/null && \
+       ! ls "${dst_dir}/"*.efi &>/dev/null; then
         echo "ERROR: No iPXE firmware files found in ${dst_dir} after copying from ${src_dir}!"
         exit 1
     fi
@@ -162,7 +163,7 @@ wait_for_interface_or_ip()
         local PARSED_IP
         PARSED_IP="$(parse_ip_address "${IRONIC_IP}")"
         if [[ -z "${PARSED_IP}" ]]; then
-            echo "ERROR: PROVISIONING_IP contains an invalid IP address, failed to start ironic"
+            echo "ERROR: IRONIC_IP contains an invalid IP address, failed to start ironic"
             exit 1
         fi
 

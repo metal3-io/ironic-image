@@ -44,8 +44,8 @@ Listen {{ env.IRONIC_URL_HOST }}:{{ env.IRONIC_LISTEN_PORT }}
     SetEnv APACHE_RUN_GROUP ironic
 
     ErrorLog /dev/stderr
-    {% if env.IRONIC_HTTPD_LOGLEVEL is defined %}
-    LogLevel {{ env.IRONIC_HTTPD_LOGLEVEL }}
+    {% if env.IRONIC_HTTPD_LOGLEVEL is defined and env.IRONIC_HTTPD_LOGLEVEL | trim %}
+    LogLevel {{ env.IRONIC_HTTPD_LOGLEVEL | trim }}
     {% else %}
     LogLevel debug
     {% endif %}
