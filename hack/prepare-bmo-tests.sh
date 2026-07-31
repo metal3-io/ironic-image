@@ -33,9 +33,10 @@ patches:
 - target:
     kind: Ironic
   patch: |-
-    - op: replace
-      path: /spec/images/ironic
-      value: '${IRONIC_CUSTOM_IMAGE}'
+    - op: add
+      path: /spec/images
+      value:
+        ironic: '${IRONIC_CUSTOM_IMAGE}'
     - op: replace
       path: /spec/version
       value: '${IRONIC_CUSTOM_VERSION}'
