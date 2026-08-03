@@ -1,0 +1,30 @@
+name: Generate ironic-image core component versions
+
+on:
+  workflow_call:
+    outputs:
+      ironic-version:
+        description: "Ironic source version from git describe"
+        value: ${{ jobs.generate-core-component-source-versions.outputs.ironic-version }}
+      ngs-version:
+        description: "Networking-generic-switch source version from git describe"
+        value: ${{ jobs.generate-core-component-source-versions.outputs.ngs-version }}
+
+jobs:
+  generate-core-component-source-versions:
+    name: Generate ironic-image core component versions based on git metadata
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      ironic-version: ${{ steps.compute.outputs.ironic-version }}
+      ngs-version: ${{ steps.compute.outputs.networking-generic-switch-version }}
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      with:
+        persist-credentials: false
+    - name: Generate ironic-image core component versions based on git metadata
+      id: compute
+      run: |
+        ./generate_core_component_source_versions.sh >> "${GITHUB_OUTPUT}"
