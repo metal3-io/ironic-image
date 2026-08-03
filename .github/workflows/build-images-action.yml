@@ -26,7 +26,7 @@ jobs:
     with:
       image-name: 'ironic'
       pushImage: true
-      image-build-args: |
+      image-build-args: >-
         IRONIC_VERSION_LABEL=${{ needs.generate-core-component-source-versions.outputs.ironic-version }}
         NGS_VERSION_LABEL=${{ needs.generate-core-component-source-versions.outputs.ngs-version }}
       generate-sbom: true
@@ -46,7 +46,7 @@ jobs:
     with:
       image-name: 'ironic_cs10'
       pushImage: true
-      image-build-args: |
+      image-build-args: >-
         IRONIC_VERSION_LABEL=${{ needs.generate-core-component-source-versions.outputs.ironic-version }}
         NGS_VERSION_LABEL=${{ needs.generate-core-component-source-versions.outputs.ngs-version }}
         BASE_IMAGE=quay.io/centos/centos:stream10-minimal
