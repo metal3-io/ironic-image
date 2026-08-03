@@ -28,7 +28,7 @@ jobs:
       pushImage: true
       image-build-args: >-
         IRONIC_VERSION_LABEL=${{ needs.generate-core-component-source-versions.outputs.ironic-version }}
-        NGS_VERSION_LABEL=${{ needs.generate-core-component-source-versions.outputs.ngs-version }}
+        --build-arg NGS_VERSION_LABEL=${{ needs.generate-core-component-source-versions.outputs.ngs-version }}
       generate-sbom: true
       sign-image: true
     secrets:
@@ -48,8 +48,8 @@ jobs:
       pushImage: true
       image-build-args: >-
         IRONIC_VERSION_LABEL=${{ needs.generate-core-component-source-versions.outputs.ironic-version }}
-        NGS_VERSION_LABEL=${{ needs.generate-core-component-source-versions.outputs.ngs-version }}
-        BASE_IMAGE=quay.io/centos/centos:stream10-minimal
+        --build-arg NGS_VERSION_LABEL=${{ needs.generate-core-component-source-versions.outputs.ngs-version }}
+        --build-arg BASE_IMAGE=quay.io/centos/centos:stream10-minimal
       generate-sbom: true
       sign-image: true
     secrets:
