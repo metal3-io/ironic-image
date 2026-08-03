@@ -26,13 +26,13 @@ jobs:
       run: docker --version
 
     - name: Checkout ironic-image
-      uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+      uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
       with:
         path: ironic-image
         persist-credentials: false
 
     - name: Checkout BMO at release version
-      uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+      uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
       with:
         repository: metal3-io/baremetal-operator
         ref: ${{ env.BMO_VERSION }}
