@@ -21,7 +21,7 @@ enabled_firmware_interfaces = no-firmware,fake,redfish
 # NOTE(dtantsur): when changing this, make sure to update the driver
 # dependencies in Dockerfile.
 enabled_hardware_types = ipmi,idrac,fake-hardware,redfish,manual-management
-enabled_inspect_interfaces = agent,fake,redfish
+enabled_inspect_interfaces = no-inspect,agent,fake,redfish
 enabled_management_interfaces = ipmitool,fake,redfish,idrac-redfish,noop
 {%- if env.IRONIC_NETWORKING_ENABLED | lower == "true" %}
 enabled_network_interfaces = ironic-networking,noop
