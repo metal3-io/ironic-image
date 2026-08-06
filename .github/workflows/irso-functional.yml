@@ -20,7 +20,7 @@ jobs:
       IRONIC_CUSTOM_IMAGE: localhost/ironic:test
       # NOTE(dtantsur): change this on stable branches to make sure the correct
       # logic is used in IrSO, and also that the tests are skipped properly.
-      IRONIC_CUSTOM_VERSION: latest
+      IRONIC_CUSTOM_VERSION: "38.0"
     steps:
     - name: Check docker version
       run: docker --version
@@ -31,6 +31,7 @@ jobs:
     - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       with:
         repository: metal3-io/ironic-standalone-operator
+        ref: release-0.11
         path: ironic-standalone-operator
         persist-credentials: false
     - name: Calculate go version
