@@ -11,6 +11,14 @@ WORKDIR="${WORKDIR:-/workdir}"
 if [ "${IS_CONTAINER}" != "false" ]; then
     npx --yes -p renovate renovate-config-validator
 else
+	# Check if workdir contains :, it would break the volume mount syntax.
+	case "${WORKDIR}" in
+		*:*)
+			echo "FAIL (renovate-validator.sh): WORKDIR variable cannot contain ':', aborting"
+			exit 1
+			;;
+	esac
+
     "${CONTAINER_RUNTIME}" run --rm \
         --env IS_CONTAINER=TRUE \
         --volume "${PWD}:${WORKDIR}:ro,z" \
