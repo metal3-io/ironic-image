@@ -23,10 +23,18 @@ process_log_file() {
 # Export the function so watchmedo can use it
 export -f process_log_file
 
-# Use watchmedo to monitor for file close events
+# Use watchmedo to monitor for file close events.
+# NOTE: watchmedo (Python) never installs its own SIGTERM handler.
+# Instead, keep this script (bash) as PID 1, run watchmedo as a child,
+# and explicitly forward SIGTERM/SIGINT to it so the container stops
+# promptly.
+trap 'kill -TERM "${child_pid}" 2>/dev/null' TERM INT
+
 # shellcheck disable=SC2016
 watchmedo shell-command \
     --patterns="*" \
     --ignore-directories \
     --command='if [[ "${watch_event_type}" == "closed" ]]; then process_log_file "${watch_src_path}"; fi' \
-    "${LOG_DIR}"
+    "${LOG_DIR}" &
+child_pid=$!
+wait "${child_pid}"
