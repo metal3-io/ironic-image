@@ -59,7 +59,7 @@ RUN IRONIC_PKG_LIST=/tmp/ironic-deps-list /bin/build-wheels.sh
 FROM $BASE_IMAGE AS ironic-wheel-builder
 
 ARG UPPER_CONSTRAINTS_FILE=upper-constraints.txt
-ARG IRONIC_SOURCE=0ca2b0f6580a4a6ef1ef0b5e7b81c316043402f5 # stable/2026.1
+ARG IRONIC_SOURCE=ba7d4be14b52fdeb8bbebb492fea72746402fd05 # stable/2026.1
 ARG SUSHY_SOURCE
 ARG NGS_SOURCE=42c59790d62a3ece7c9674a678a20e3ddf80b5b1 # master
 ARG INSTALL_NGS=true
