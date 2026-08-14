@@ -3,10 +3,10 @@
   "configMigration": true,
   "baseBranchPatterns": [
     "main",
-    "release-33.0",
     "release-34.0",
     "release-35.0",
-    "release-37.0"
+    "release-37.0",
+    "release-38.0"
   ],
   "enabledManagers": [
     "custom.regex"
@@ -32,10 +32,10 @@
     },
     {
       "matchBaseBranches": [
-        "release-33.0",
         "release-34.0",
         "release-35.0",
-        "release-37.0"
+        "release-37.0",
+        "release-38.0"
       ],
       "description": "run before 6am every day",
       "schedule": [
