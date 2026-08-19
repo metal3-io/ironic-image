@@ -43,14 +43,16 @@
       ]
     },
     {
-      "description": "Ensure any digest-pinned, GitHub-sourced, dependencies creates a link to the diff between the two commits",
-      "matchSourceUrls": [
-        "https://github.com/**/*"
-      ],
-      "matchUpdateTypes": [
-        "digest"
-      ],
-      "changelogUrl": "{{sourceUrl}}/compare/{{currentDigest}}..{{newDigest}}"
+      "description": "Add changelog compare link for openstack-ironic digest updates",
+      "matchDepNames": ["openstack-ironic"],
+      "matchUpdateTypes": ["digest"],
+      "changelogUrl": "https://github.com/openstack/ironic/compare/{{currentDigest}}..{{newDigest}}"
+    },
+    {
+      "description": "Add changelog compare link for networking-generic-switch digest updates",
+      "matchDepNames": ["networking-generic-switch"],
+      "matchUpdateTypes": ["digest"],
+      "changelogUrl": "https://github.com/openstack/networking-generic-switch/compare/{{currentDigest}}..{{newDigest}}"
     },
     {
       "matchDepNames": [
