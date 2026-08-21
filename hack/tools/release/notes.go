@@ -65,8 +65,9 @@ var (
 		unknown,
 		superseded,
 	}
-	toTag   = flag.String("releaseTag", "", "The tag or commit to end to.")
-	fromTag = flag.String("previousReleaseTag", "", "The tag to start from. If not set, it is computed automatically.")
+	toTag       = flag.String("releaseTag", "", "The tag or commit to end to.")
+	fromTag     = flag.String("previousReleaseTag", "", "The tag to start from. If not set, it is computed automatically.")
+	githubToken = flag.String("githubToken", "", "The GitHub token for API access. Should have minimal scopes (e.g., public_repo or contents:read).")
 )
 
 func main() {
@@ -329,9 +330,15 @@ func formatMerge(line, prNumber string) string {
 // For minor and pre releases, it returns the main branch's latest commit.
 // For patch releases, it returns the latest commit on the corresponding release branch.
 func getCommitHashFromNewTag(newTag string) (string, error) {
-	token := os.Getenv("GITHUB_TOKEN")
+	token := *githubToken
 	if token == "" {
-		return "", errors.New("GITHUB_TOKEN is required")
+		token = os.Getenv("GITHUB_TOKEN")
+		if token != "" {
+			log.Println("WARNING: Using GITHUB_TOKEN from environment variable. Please use the --github-token flag instead for better security.")
+		}
+	}
+	if token == "" {
+		return "", errors.New("GITHUB_TOKEN is required. Use --github-token or set GITHUB_TOKEN environment variable.")
 	}
 
 	ctx := context.Background()
