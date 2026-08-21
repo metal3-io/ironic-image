@@ -438,3 +438,44 @@ where:
   projects.
 - **git_host** (optional) is the git host from which the project will be cloned.
   If unset, `https://opendev.org` is used.
+
+## Building custom iPXE binaries (TLS and IPv6)
+
+By default the image uses prebuilt iPXE binaries from the pinned
+**IPXE_BINARIES_IMAGE**. To build iPXE from source at image build time, for
+example to enable HTTPS (TLS) downloads or IPv6, set `IPXE_SOURCE=source`
+along with the relevant build arguments:
+
+- **IPXE_SOURCE** - `prebuilt` (default) uses the pinned binaries image;
+  `source` builds iPXE in-image using `build-ipxe.sh`.
+- **IPXE_COMMIT_HASH** - iPXE commit to build when `IPXE_SOURCE=source`
+  (defaults to the same commit as the prebuilt image).
+- **IPXE_ENABLE_IPV6** - build the firmware with IPv6 support (default `false`).
+- **IPXE_ENABLE_TLS** - build the firmware with HTTPS download support
+  (default `false`). Requires a certificate (see below).
+
+When `IPXE_ENABLE_TLS=true`, the certificate and key are supplied as build
+secrets rather than build arguments, so the secret files themselves are not
+copied into the image as standalone layers. Note that iPXE embeds the trust
+anchor into the firmware binary, and if `ipxe_key` is provided for mutual TLS
+the private key is embedded into that binary too, and the built firmware ships
+in the final image. Only provide `ipxe_key` if distributing that key inside the
+image is acceptable.
+
+- `ipxe_cert` (required) - certificate embedded as the TLS trust anchor, so
+  iPXE can validate a server presenting a certificate signed by it.
+- `ipxe_key` (optional) - private key; when present, the certificate is also
+  embedded as a client certificate for mutual TLS.
+
+```bash
+podman build -t ironic-image -f Dockerfile \
+  --build-arg IPXE_SOURCE=source \
+  --build-arg IPXE_ENABLE_TLS=true \
+  --secret id=ipxe_cert,src=./tls.crt \
+  --secret id=ipxe_key,src=./tls.key
+```
+
+**NOTE**: TLS and IPv6 are enabled only for the EFI binaries
+(`snponly-x86_64.efi`, `snponly-arm64.efi`). The legacy BIOS binary
+(`undionly.kpxe`) remains HTTP/IPv4 only, as upstream iPXE disables
+these protocols on BIOS builds.

@@ -1,5 +1,15 @@
 ARG BASE_IMAGE=quay.io/centos/centos:stream9-minimal
-ARG IPXE_BINARIES_IMAGE=quay.io/metal3-io/ipxe-binaries@sha256:fec222a615ab03227a598ec9392c174af300762911896ecf1da9a5615f194032 # iPXE commit d0ea2b1bb8f78b219f74424d435b92ff8aa0ea8d
+ARG IPXE_BINARIES_IMAGE=quay.io/metal3-io/ipxe-binaries@sha256:155a410dbafc9537fe75c42f55c93843dfc6bba9e4f0676ac05f872f8a9e674d # iPXE commit d0ea2b1bb8f78b219f74424d435b92ff8aa0ea8d
+# iPXE binary source: "prebuilt" (default, uses the pinned IPXE_BINARIES_IMAGE)
+# or "source" (builds iPXE in-image using build-ipxe.sh with the options below).
+ARG IPXE_SOURCE=prebuilt
+# Only used when IPXE_SOURCE=source:
+ARG IPXE_COMMIT_HASH=d0ea2b1bb8f78b219f74424d435b92ff8aa0ea8d
+ARG IPXE_ENABLE_IPV6=false
+ARG IPXE_ENABLE_TLS=false
+ARG IPXE_CERT_FILE=/certs/ipxe/tls.crt
+ARG IPXE_KEY_FILE=/certs/ipxe/tls.key
+
 
 # Python tooling versions - update these regularly
 ARG PIP_VERSION=26.1.2
@@ -21,7 +31,28 @@ printf "[main]\ngpgcheck=1\ninstall_weak_deps=0\ntsflags=nodocs\nkeepcache=1\n" 
 prepare-efi.sh centos
 EORUN
 
-FROM $IPXE_BINARIES_IMAGE AS ipxe-binaries
+FROM $IPXE_BINARIES_IMAGE AS ipxe-prebuilt
+
+FROM $BASE_IMAGE AS ipxe-source
+WORKDIR /tmp
+ARG TARGETARCH
+ARG IPXE_COMMIT_HASH
+ARG IPXE_ENABLE_IPV6
+ARG IPXE_ENABLE_TLS
+ENV TARGETARCH=${TARGETARCH} \
+    IPXE_COMMIT_HASH=${IPXE_COMMIT_HASH} \
+    IPXE_ENABLE_IPV6=${IPXE_ENABLE_IPV6} \
+    IPXE_ENABLE_TLS=${IPXE_ENABLE_TLS}
+COPY prepare-ipxe.sh build-ipxe.sh /bin/
+RUN --mount=type=secret,id=ipxe_cert,target=/certs/ipxe/tls.crt \
+    --mount=type=secret,id=ipxe_key,target=/certs/ipxe/tls.key \
+    prepare-ipxe.sh && build-ipxe.sh && \
+    mkdir -p /ipxe && \
+    cp /tmp/ipxe/out/undionly.kpxe \
+        /tmp/ipxe/out/snponly-x86_64.efi \
+        /tmp/ipxe/out/snponly-arm64.efi /ipxe/
+
+FROM ipxe-${IPXE_SOURCE} AS ipxe-binaries
 
 ## Shared Python build toolchain for wheel builders
 FROM $BASE_IMAGE AS python-build-base
