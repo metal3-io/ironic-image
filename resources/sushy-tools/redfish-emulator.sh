@@ -2,8 +2,8 @@
 
 set -eux -o pipefail
 
-CONFIG="${SUSHY_TOOLS_CONFIG:-/root/sushy/conf.py}"
-ARGS=()
+CONFIG="${SUSHY_TOOLS_CONFIG:-/conf/sushy/conf.py}"
+ARGS=
 
 if [[ -f "${CONFIG}" ]]; then
     ARGS+=("--config" "${CONFIG}")
