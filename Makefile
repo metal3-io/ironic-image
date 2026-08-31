@@ -34,6 +34,15 @@ ifneq ($(PREVIOUS_RELEASE_TAG),)
 RELEASE_NOTES_ARGS += --previousReleaseTag=$(PREVIOUS_RELEASE_TAG)
 endif
 
+# Provide a GitHub token explicitly to generate release notes, e.g.:
+#   RELEASE_NOTES_TOKEN="$(gh auth token)" make release-notes
+# It is passed to the tool through a scoped environment variable (not a CLI
+# flag) so the secret is not exposed in process arguments or CI logs. This is
+# intentionally separate from the ambient GITHUB_TOKEN so that delegating a
+# credential to this tool is a deliberate choice. If unset, the tool falls back
+# to the GITHUB_TOKEN environment variable (deprecated).
+RELEASE_NOTES_TOKEN ?=
+
 .PHONY: release-notes
 release-notes: $(RELEASE_NOTES_DIR) $(RELEASE_NOTES)
-	cd hack/tools && $(GO) run release/notes.go $(RELEASE_NOTES_ARGS) > $(realpath $(RELEASE_NOTES_DIR))/$(RELEASE_TAG).md
+	@cd hack/tools && RELEASE_NOTES_TOKEN="$(RELEASE_NOTES_TOKEN)" $(GO) run release/notes.go $(RELEASE_NOTES_ARGS) > $(realpath $(RELEASE_NOTES_DIR))/$(RELEASE_TAG).md
