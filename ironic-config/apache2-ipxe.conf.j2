@@ -1,4 +1,5 @@
-Listen {{ env.IPXE_TLS_PORT }}
+Listen 0.0.0.0:{{ env.IPXE_TLS_PORT }}
+Listen [::]:{{ env.IPXE_TLS_PORT }}
 
 <VirtualHost *:{{ env.IPXE_TLS_PORT }}>
     ErrorLog /dev/stderr
