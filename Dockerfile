@@ -1,5 +1,5 @@
 ARG BASE_IMAGE=quay.io/centos/centos:stream9-minimal
-ARG IPXE_BINARIES_IMAGE=quay.io/metal3-io/ipxe-binaries@sha256:fec222a615ab03227a598ec9392c174af300762911896ecf1da9a5615f194032 # iPXE commit d0ea2b1bb8f78b219f74424d435b92ff8aa0ea8d
+ARG IPXE_BINARIES_IMAGE=quay.io/metal3-io/ipxe-binaries@sha256:702959a23760af403bb358d1b8b10dd2eff707a3fbc372a88231665a8f29dade # iPXE commit d0ea2b1bb8f78b219f74424d435b92ff8aa0ea8d
 
 # Python tooling versions - update these regularly
 ARG PIP_VERSION=26.2.1
