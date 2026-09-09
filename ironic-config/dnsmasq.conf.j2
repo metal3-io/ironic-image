@@ -15,17 +15,13 @@ dhcp-range={{ item }}
 {%- endfor %}
 {% endif %}
 
-{%- if env["DNS_IP"] is undefined %}
-# Disable DNS over provisioning network
-dhcp-option=6
-{% else %}
-dhcp-option=option{% if ":" in env["DNS_IP"] %}6{% endif %}:dns-server,{{ env["DNS_IP"] }}
-{% endif %}
-
 {# Network boot options for IPv4 and IPv6 #}
-{%- if env.IPV == "4" or env.IPV is undefined %}
+{%- if env.ENABLE_IPV4 %}
 # IPv4 Configuration:
 dhcp-match=ipxe,175
+
+# Either set the DNS option with DNS_IPV4 or disable the option
+dhcp-option=option:dns-server{% if env.DNS_IPV4 %},{{ env.DNS_IPV4 }}{% endif %}
 
 {# Set the router or disable it. Setting router is IPv4 specific, in v6 there #}
 {# are router advertisements that do the same thing. #}
@@ -46,21 +42,24 @@ dhcp-option={{ opt }}
 dhcp-match=set:efi,option:client-arch,7
 dhcp-match=set:efi,option:client-arch,9
 # Client is (i)PXE booting on EFI machine
-dhcp-boot=tag:efi,/{{ env.SNP_BASENAME }}-x86_64.efi,{{ env.IRONIC_IP }}
+dhcp-boot=tag:efi,/{{ env.SNP_BASENAME }}-x86_64.efi,{{ env.IRONIC_IPV4 }}
 # Client is (i)PXE booting on arm64 EFI machine
 dhcp-match=set:efi-arm64,option:client-arch,11
-dhcp-boot=tag:efi-arm64,/{{ env.SNP_BASENAME }}-arm64.efi,{{ env.IRONIC_IP }}
+dhcp-boot=tag:efi-arm64,/{{ env.SNP_BASENAME }}-arm64.efi,{{ env.IRONIC_IPV4 }}
 # Client is running (i)PXE on BIOS machine
-dhcp-boot=tag:!efi,tag:!efi-arm64,/undionly.kpxe,{{ env.IRONIC_IP }}
+dhcp-boot=tag:!efi,tag:!efi-arm64,/undionly.kpxe,{{ env.IRONIC_IPV4 }}
 {%- if env.IPXE_TLS_SETUP != "true" %}
-dhcp-boot=tag:ipxe,{{ env.IRONIC_HTTP_URL }}/boot.ipxe
+dhcp-boot=tag:ipxe,http://{{ env.IRONIC_IPV4 }}:{{ env.HTTP_PORT }}/boot.ipxe
 {% endif %}
 {% endif %}
 
-{% if env.IPV == "6" %}
+{%- if env.ENABLE_IPV6 %}
 # IPv6 Configuration:
 enable-ra
 ra-param={{ env.PROVISIONING_INTERFACE }},0,0
+
+# Either set the DNS option with DNS_IPV6 or disable the option
+dhcp-option=option6:dns-server{% if env.DNS_IPV6 %},[{{ env.DNS_IPV6 }}]{% endif %}
 
 dhcp-vendorclass=set:pxe6,enterprise:343,PXEClient
 dhcp-userclass=set:ipxe6,iPXE
