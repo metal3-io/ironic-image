@@ -95,7 +95,7 @@ functionality:
 - `GATEWAY_IP` - gateway IP address to use for ironic dnsmasq(dhcpd)
 - `DNS_IP` - DNS IP address to use for ironic dnsmasq(dhcpd)
 - `IRONIC_IPA_COLLECTORS` - Use a custom set of collectors to be run on
-   inspection. (default `default,logs`)
+   inspection. (default `default,logs,pci-devices`)
 - `HTTPD_ENABLE_SENDFILE` - Whether to activate the EnableSendfile apache
    directive for httpd `(default, false)`
 - `IRONIC_CONDUCTOR_HOST` - Host name of the current conductor (only makes

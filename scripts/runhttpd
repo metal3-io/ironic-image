@@ -19,7 +19,7 @@ export HTTPD_SERVE_NODE_IMAGES="${HTTPD_SERVE_NODE_IMAGES:-true}"
 HTTPD_ENABLE_SENDFILE="${HTTPD_ENABLE_SENDFILE:-false}"
 
 # Set of collectors that should be used with IPA inspection
-export IRONIC_IPA_COLLECTORS=${IRONIC_IPA_COLLECTORS:-default,logs}
+export IRONIC_IPA_COLLECTORS=${IRONIC_IPA_COLLECTORS:-default,logs,pci-devices}
 
 wait_for_interface_or_ip
 
