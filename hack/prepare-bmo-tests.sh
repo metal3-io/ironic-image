@@ -35,10 +35,10 @@ patches:
   patch: |-
     - op: replace
       path: /spec/images/ironic
-      value: ${IRONIC_CUSTOM_IMAGE}
+      value: '${IRONIC_CUSTOM_IMAGE}'
     - op: replace
       path: /spec/version
-      value: ${IRONIC_CUSTOM_VERSION}
+      value: '${IRONIC_CUSTOM_VERSION}'
 EOF
 
 # Patch BMO's e2e config to add our custom image and use our overlay.
