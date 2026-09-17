@@ -412,6 +412,9 @@ It is also possible to specify an upper-constraints file using the
 file found in the container context; the content of the file can be modified
 keeping the default name or it's possible to specify an entire different
 filename as far as it's in the container context.
+When the upper-constraints file in the container context is empty, the
+constraints are fetched from the openstack/requirements repository at the
+commit specified by the **OPENSTACK_REQUIREMENTS_SOURCE** build argument.
 
 The dnsmasq data directory can be changed at build time using
 **DNSMASQ_DATA_DIR** (default `/data/dnsmasq`).
