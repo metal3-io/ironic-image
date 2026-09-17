@@ -16,17 +16,18 @@ fi
 if [[ "${IRONIC_INJECT_IPA}" == "true" ]]; then
     generate_cacert_bundle_initrd /shared/html/ipa-cacert-bundle
 fi
+
 configure_restart_on_certificate_update "${IRONIC_INJECT_IPA}" ironic "${WEBSERVER_CACERT_FILE:-}"
 configure_restart_on_certificate_update "${IRONIC_TLS_SETUP}" ironic "${IRONIC_CERT_FILE}"
 
 configure_ironic_auth
 
 if [[ "${BMC_TLS_ENABLED}" == "true" ]]; then
-    # shellcheck disable=SC2034
+    # shellcheck disable=SC2016
     watchmedo shell-command \
         --patterns="*" \
         --ignore-directories \
-        --command='cat "${BMC_CACERTS_PATH}"/* > "${BMC_CACERT_FILE}"' \
+        --command='tmp=$(mktemp "${BMC_CACERT_FILE}.XXXXXX") && cat "${BMC_CACERTS_PATH}"/* > "${tmp}" && mv "${tmp}" "${BMC_CACERT_FILE}"' \
         "${BMC_CACERTS_PATH}" &
 fi
 

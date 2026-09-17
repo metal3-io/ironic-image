@@ -145,11 +145,12 @@ configure_restart_on_certificate_update()
 
 if ls "${BMC_CACERTS_PATH}"/* > /dev/null 2>&1; then
     export BMC_TLS_ENABLED="true"
-    BMC_CACERT_TMPFILE="$(mktemp --tmpdir="$(dirname "${BMC_CACERT_FILE}")")"
-    trap 'rm -f "${BMC_CACERT_TMPFILE}"' EXIT
-    cat "${BMC_CACERTS_PATH}"/* > "${BMC_CACERT_TMPFILE}" || { echo "ERROR: Failed to concatenate BMC certificates"; exit 1; }
-    chmod --reference="${BMC_CACERT_FILE}" "${BMC_CACERT_TMPFILE}" 2>/dev/null || { echo "WARNING: Could not preserve permissions"; }
-    mv "${BMC_CACERT_TMPFILE}" "${BMC_CACERT_FILE}" || { echo "ERROR: Failed to move certificate file"; exit 1; }
+    bmc_tmp=$(mktemp "${BMC_CACERT_FILE}.XXXXXX")
+    if ! { cat "${BMC_CACERTS_PATH}"/* > "${bmc_tmp}" && chmod 0644 "${bmc_tmp}" && mv "${bmc_tmp}" "${BMC_CACERT_FILE}"; }; then
+        rm -f "${bmc_tmp}"
+        echo "Failed to assemble BMC CA bundle from ${BMC_CACERTS_PATH}" >&2
+        exit 1
+    fi
 else
     export BMC_TLS_ENABLED="false"
 fi
@@ -157,7 +158,7 @@ fi
 if [[ -f "${WEBSERVER_CACERT_FILE:-}" ]]; then
     export IRONIC_INJECT_IPA="true"
     copy_atomic "${WEBSERVER_CACERT_FILE}" "${IPA_CACERT_FILE}"
-    
+
     if [[ -f "${IRONIC_CACERT_FILE}" ]]; then
         cat "${IRONIC_CACERT_FILE}" >> "${IPA_CACERT_FILE}"
     fi
