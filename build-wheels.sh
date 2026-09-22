@@ -11,7 +11,11 @@ UPPER_CONSTRAINTS_PATH="/tmp/${UPPER_CONSTRAINTS_FILE:-}"
 # we assume we're on the master branch
 if [[ ! -s "${UPPER_CONSTRAINTS_PATH}" ]]; then
     UPPER_CONSTRAINTS_PATH="/tmp/upper-constraints.txt"
-    curl -L https://releases.openstack.org/constraints/upper/master -o "${UPPER_CONSTRAINTS_PATH}"
+    if [[ -n "${OPENSTACK_REQUIREMENTS_SOURCE:-}" ]]; then
+        curl -fL "https://raw.githubusercontent.com/openstack/requirements/${OPENSTACK_REQUIREMENTS_SOURCE}/upper-constraints.txt" -o "${UPPER_CONSTRAINTS_PATH}"
+    else
+        curl -fL https://releases.openstack.org/constraints/upper/master -o "${UPPER_CONSTRAINTS_PATH}"
+    fi
 fi
 
 # Install build dependencies
