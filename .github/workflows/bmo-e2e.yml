@@ -18,7 +18,7 @@ jobs:
       # logic is used in IrSO.
       IRONIC_CUSTOM_VERSION: latest
       # Use latest stable BMO release - update this when new releases are available
-      BMO_VERSION: release-0.12
+      BMO_VERSION: release-0.13
     steps:
     - name: Check docker version
       run: docker --version
