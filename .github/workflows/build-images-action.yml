@@ -17,7 +17,7 @@ on:
 jobs:
   generate-core-component-source-versions:
     if: github.repository == 'metal3-io/ironic-image'
-    uses: ./.github/workflows/generate-core-component-source-versions.yml
+    uses: $/.github/workflows/generate-core-component-source-versions.yml
   build_ironic:
     name: Build Ironic container image with default base image
     needs: generate-core-component-source-versions

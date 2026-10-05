@@ -9,7 +9,7 @@ permissions: {}
 jobs:
   generate-core-component-source-versions:
     if: github.repository == 'metal3-io/ironic-image'
-    uses: ./.github/workflows/generate-core-component-source-versions.yml
+    uses: $/.github/workflows/generate-core-component-source-versions.yml
     permissions:
       contents: read
   build:
