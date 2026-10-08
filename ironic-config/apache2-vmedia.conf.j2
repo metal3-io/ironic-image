@@ -1,4 +1,5 @@
-Listen {{ env.VMEDIA_TLS_PORT }}
+Listen 0.0.0.0:{{ env.VMEDIA_TLS_PORT }}
+Listen [::]:{{ env.VMEDIA_TLS_PORT }}
 
 <VirtualHost *:{{ env.VMEDIA_TLS_PORT }}>
     ErrorLog /dev/stderr
