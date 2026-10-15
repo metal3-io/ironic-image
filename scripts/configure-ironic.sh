@@ -113,3 +113,20 @@ fi
 
 # Make sure ironic traffic bypasses any proxies
 export NO_PROXY="${NO_PROXY:-},$IRONIC_IP"
+
+# Ramdisk logs
+mkdir -p /shared/log/ironic/deploy
+
+# Allows skipping dbsync if it's done by an external job
+if [[ "${IRONIC_SKIP_DBSYNC:-false}" != true ]]; then
+    run_ironic_dbsync
+fi
+
+if [[ "${IRONIC_INJECT_IPA}" == "true" ]]; then
+    generate_cacert_bundle_initrd /shared/html/ipa-cacert-bundle
+fi
+
+configure_restart_on_certificate_update "${IRONIC_INJECT_IPA}" ironic "${WEBSERVER_CACERT_FILE:-}"
+configure_restart_on_certificate_update "${IRONIC_TLS_SETUP}" ironic "${IRONIC_CERT_FILE}"
+
+configure_ironic_auth

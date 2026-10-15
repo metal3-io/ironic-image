@@ -5,24 +5,16 @@ set -euxo pipefail
 # shellcheck disable=SC1091
 . /bin/configure-ironic.sh
 
-# Ramdisk logs
-mkdir -p /shared/log/ironic/deploy
+# NOTE(nuhakala): The variables are hardcoded here for the purpose of enabling
+# the configuration generation transfer into its own container. Once the
+# transfer is done, the ironic container will expect to find configuration in
+# the following paths.
+BMC_CACERTS_PATH="/certs/ca/bmc"
+IRONIC_CONF_DIR="/conf/ironic"
+BMC_CACERT_FILE="/conf/ironic/bmc-tls.pem"
 
-# Allows skipping dbsync if it's done by an external job
-if [[ "${IRONIC_SKIP_DBSYNC:-false}" != true ]]; then
-    run_ironic_dbsync
-fi
-
-if [[ "${IRONIC_INJECT_IPA}" == "true" ]]; then
-    generate_cacert_bundle_initrd /shared/html/ipa-cacert-bundle
-fi
-
-configure_restart_on_certificate_update "${IRONIC_INJECT_IPA}" ironic "${WEBSERVER_CACERT_FILE:-}"
-configure_restart_on_certificate_update "${IRONIC_TLS_SETUP}" ironic "${IRONIC_CERT_FILE}"
-
-configure_ironic_auth
-
-if [[ "${BMC_TLS_ENABLED}" == "true" ]]; then
+if ls "${BMC_CACERTS_PATH}"/* > /dev/null 2>&1; then
+	echo "BMC TLS enabled, watching ${BMC_CACERTS_PATH} for certificates"
     # shellcheck disable=SC2016
     watchmedo shell-command \
         --patterns="*" \
