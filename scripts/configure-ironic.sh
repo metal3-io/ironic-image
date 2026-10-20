@@ -54,11 +54,23 @@ wait_for_interface_or_ip
 export IRONIC_CONDUCTOR_HOST=${IRONIC_CONDUCTOR_HOST:-${IRONIC_URL_HOST}}
 
 if [[ -n "$IRONIC_EXTERNAL_IP" ]]; then
-    export IRONIC_EXTERNAL_CALLBACK_URL=${IRONIC_EXTERNAL_CALLBACK_URL:-"${IRONIC_SCHEME}://${IRONIC_EXTERNAL_IP}:${IRONIC_ACCESS_PORT}"}
-    if [[ "$IRONIC_VMEDIA_TLS_SETUP" == "true" ]]; then
-        export IRONIC_EXTERNAL_HTTP_URL=${IRONIC_EXTERNAL_HTTP_URL:-"https://${IRONIC_EXTERNAL_IP}:${VMEDIA_TLS_PORT}"}
+    # An IPv6 literal has to be bracketed before a port is appended, the same
+    # way IRONIC_URL_HOST is built in ironic-common.sh. Without it the URL is
+    # composed as http://2001:db8::139:6385, where host and port are
+    # ambiguous, and Ironic refuses to start while validating
+    # external_callback_url with "host was required but missing".
+    # An already bracketed value is left alone so it is not double wrapped.
+    if [[ "$IRONIC_EXTERNAL_IP" =~ .*:.* ]] && [[ "$IRONIC_EXTERNAL_IP" != \[*\] ]]; then
+        IRONIC_EXTERNAL_URL_HOST="[$IRONIC_EXTERNAL_IP]"
     else
-        export IRONIC_EXTERNAL_HTTP_URL=${IRONIC_EXTERNAL_HTTP_URL:-"http://${IRONIC_EXTERNAL_IP}:${HTTP_PORT}"}
+        IRONIC_EXTERNAL_URL_HOST="$IRONIC_EXTERNAL_IP"
+    fi
+
+    export IRONIC_EXTERNAL_CALLBACK_URL=${IRONIC_EXTERNAL_CALLBACK_URL:-"${IRONIC_SCHEME}://${IRONIC_EXTERNAL_URL_HOST}:${IRONIC_ACCESS_PORT}"}
+    if [[ "$IRONIC_VMEDIA_TLS_SETUP" == "true" ]]; then
+        export IRONIC_EXTERNAL_HTTP_URL=${IRONIC_EXTERNAL_HTTP_URL:-"https://${IRONIC_EXTERNAL_URL_HOST}:${VMEDIA_TLS_PORT}"}
+    else
+        export IRONIC_EXTERNAL_HTTP_URL=${IRONIC_EXTERNAL_HTTP_URL:-"http://${IRONIC_EXTERNAL_URL_HOST}:${HTTP_PORT}"}
     fi
 fi
 
