@@ -11,7 +11,7 @@ echo "tsflags=nodocs" >> /etc/dnf/dnf.conf && \
 echo "keepcache=1" >> /etc/dnf/dnf.conf && \
 dnf install -y epel-release && \
 dnf config-manager --set-disabled epel && \
-dnf install -y git-core make perl xz-devel
+dnf install -y git-core make perl xz-devel openssl
 
 # Install appropriate gcc binaries based on build architecture
 if [[ "$TARGETARCH" == "amd64" ]]; then
