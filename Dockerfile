@@ -3,7 +3,7 @@ ARG IPXE_BINARIES_IMAGE=quay.io/metal3-io/ipxe-binaries@sha256:2acd6eab04c4d7c13
 
 # Python tooling versions - update these regularly
 ARG PIP_VERSION=26.2.1
-ARG SETUPTOOLS_VERSION=84.0.0
+ARG SETUPTOOLS_VERSION=84.2.1
 
 ARG OPENSTACK_REQUIREMENTS_SOURCE=bcfa839c56bca4ba10da9671eb980ce7694fb907 # master
 
