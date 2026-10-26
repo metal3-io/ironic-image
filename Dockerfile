@@ -1,7 +1,7 @@
 ARG BASE_IMAGE=quay.io/centos/centos:stream9-minimal
 
 # Python tooling versions - update these regularly
-ARG PIP_VERSION=26.2.1
+ARG PIP_VERSION=26.2.2
 ARG SETUPTOOLS_VERSION=84.2.1
 
 ## Build iPXE w/ IPv6 Support
