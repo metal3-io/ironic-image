@@ -237,30 +237,6 @@ render_j2_config()
     python3.12 -c 'import os; import sys; import jinja2; sys.stdout.write(jinja2.Template(sys.stdin.read()).render(env=os.environ))' < "$1" > "$2"
 }
 
-run_ironic_dbsync()
-{
-    if [[ "${IRONIC_USE_MARIADB}" == "true" ]]; then
-        # It's possible for the dbsync to fail if mariadb is not up yet, so
-        # retry until success
-        local deadline=$(( SECONDS + IRONIC_DBSYNC_TIMEOUT ))
-        until ironic-dbsync --config-file "${IRONIC_CONF_DIR}/ironic.conf" upgrade; do
-            fail_if_timed_out "${deadline}" "${IRONIC_DBSYNC_TIMEOUT}" \
-                "waiting for ironic-dbsync to succeed (is MariaDB reachable?)"
-            echo "WARNING: ironic-dbsync failed, retrying"
-            sleep "${IRONIC_DBSYNC_INTERVAL}"
-        done
-    else
-        # SQLite does not support some statements. Fortunately, we can just
-        # create the schema in one go if not already created, instead of going
-        # through an upgrade
-        cp "/var/lib/ironic/ironic.sqlite" "${IRONIC_DB_DIR}/ironic.sqlite"
-        DB_VERSION="$(ironic-dbsync --config-file "${IRONIC_CONF_DIR}/ironic.conf" version)"
-        if [[ "${DB_VERSION}" == "None" ]]; then
-            ironic-dbsync --config-file "${IRONIC_CONF_DIR}/ironic.conf" create_schema
-        fi
-    fi
-}
-
 # Use the special value "unix" for unix sockets
 export IRONIC_PRIVATE_PORT=${IRONIC_PRIVATE_PORT:-unix}
 
