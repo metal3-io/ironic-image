@@ -11,7 +11,7 @@ LABEL org.opencontainers.image.title="Metal3 VMBC"
 LABEL org.opencontainers.image.url="https://github.com/metal3-io/ironic-image"
 LABEL org.opencontainers.image.vendor="Metal3-io"
 
-ARG VIRTUALBMC_VERSION="3.2.0"
+ARG VIRTUALBMC_VERSION="3.4.0"
 ARG DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update && \
