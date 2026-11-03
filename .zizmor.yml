@@ -1,0 +1,19 @@
+# zizmor configuration file
+# This file controls zizmor automation rules such as Dependabot throttling.
+# See zizmor documentation for more details:
+# https://docs.zizmor.sh/
+
+rules:
+  dependabot-cooldown:
+    config:
+      days: 3
+
+  # persist-credentials needed later in the workflow
+  artipacked:
+    ignore:
+    - release.yaml
+
+  # the release job uses an action to create the draft release
+  superfluous-actions:
+    ignore:
+    - release.yaml
