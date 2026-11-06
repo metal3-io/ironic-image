@@ -1,34 +1,156 @@
-#!/usr/bin/bash
+#!/usr/bin/env bash
+
+# ------------------------------------------------------------------------------
+# Ironic entrypoint script.
+#
+# Parses configuration from an environment file, synchronizes the database,
+# sets up TLS certificate watching, and starts the ironic service.
+#
+# Configuration variables can be provided through environment or through the
+# specific environment variable file. The file will take precedence by default.
+# The behavior can be configured with ERR_ON_CONFLICT so that if the file and
+# environment have conflicting values, warning will be printed and execution
+# stops.
+#
+# Locations for configuration:
+#
+#	SQLite DB dir           /data/db
+#	BMC CA certificate dir	/certs/ca/bmc
+#	Ironic TLS file         /certs/ironic/tls.crt
+#	Ironic conf dir	        /conf/ironic
+#	Ironic env file	        /conf/ironic/ironic.env
+#
+# Configuration variables (set via /conf/ironic.env):
+#
+#   ERR_ON_CONFLICT          If "true", abort when a variable from the env file
+#                            conflicts with one already set in the environment.
+#                            Default: true
+#   IRONIC_SKIP_DBSYNC       If "true", skip the database synchronization step.
+#                            Default: false
+#   IRONIC_USE_MARIADB       If "true", use MariaDB backend with retry logic.
+#                            If "false", use SQLite. Default: false
+#   IRONIC_DBSYNC_TIMEOUT    Timeout in seconds for MariaDB dbsync retries.
+#                            Default: 600
+#   IRONIC_DBSYNC_INTERVAL   Seconds between MariaDB dbsync retry attempts.
+#                            Default: 1
+#   WEBSERVER_CACERT_FILE    Location for webserver cacert file.
+#	                         Default: not defined
+#   RESTART_ON_CERT_UPDATE   Restart Ironic process if Ironic certificates are
+#                            updated (Ironic TLS file and webserver cacert).
+#                            Default: true
+#   IRONIC_DB_DIR            Directory where the Ironic database is located.
+#                            Default: /data/db
+#   IRONIC_CONF_DIR          Directory where the Ironic config is located.
+#                            Default: /conf/ironic
+#   RESTART_ON_CERT_UPDATE   Restart the container if certificate files are
+#	                         updated. Default: true
+# ------------------------------------------------------------------------------
 
 set -euxo pipefail
 
 # shellcheck disable=SC1091
-. /bin/configure-ironic.sh
+/bin/generate-ironic-conf.sh
 
-# Ramdisk logs
-mkdir -p /shared/log/ironic/deploy
-
-# Allows skipping dbsync if it's done by an external job
-if [[ "${IRONIC_SKIP_DBSYNC:-false}" != true ]]; then
-    run_ironic_dbsync
+# ***** Parse env file to configure this entrypoint *****
+ENV_FILE="/conf/ironic/ironic.env"
+CONFLICT_FOUND=false
+if [[ -f ${ENV_FILE} ]]; then
+	while IFS='=' read -r KEY VALUE || [[ -n "${KEY}" ]]; do
+		# Filter empty lines and comments
+		[[ -z "$KEY" || "$KEY" == \#* ]] && continue
+		# Last line without trailing newline and without = leaves VALUE unset,
+		# end the export below crashes with set -u. Guard against that.
+		VALUE="${VALUE:-}"
+		# Get the value of KEY stored in environment, the key can contain unbound
+		# variable, so disable that.
+		set +u; ENV_VALUE="${!KEY}"; set -u
+		if [[ -n "${ENV_VALUE}" ]] && [[ "${ENV_VALUE}" != "${VALUE}" ]]; then
+			echo "WARNING! Variable ${KEY} has conflicting values in file and env: ${VALUE} != ${ENV_VALUE}"
+			CONFLICT_FOUND=true
+		fi
+		export "${KEY}=${VALUE}"
+	done < "${ENV_FILE}"
+else
+	echo "No environment file provided, continuing with defaults."
+fi
+ERR_ON_CONFLICT="${ERR_ON_CONFLICT:-true}"
+if [[ ${ERR_ON_CONFLICT,,} == "true" ]] && [[ ${CONFLICT_FOUND} == "true" ]]; then
+	echo "Error on conflict configured and conflict found, aborting"
+	exit 1
+else
+	echo "No conflicts between ${ENV_FILE} and environment, using values from ${ENV_FILE}"
 fi
 
-if [[ "${IRONIC_INJECT_IPA}" == "true" ]]; then
-    generate_cacert_bundle_initrd /shared/html/ipa-cacert-bundle
+# ***** Synchronize DB *****
+IRONIC_SKIP_DBSYNC="${IRONIC_SKIP_DBSYNC:-false}"
+IRONIC_DBSYNC_TIMEOUT="${IRONIC_DBSYNC_TIMEOUT:-600}"
+IRONIC_DBSYNC_INTERVAL="${IRONIC_DBSYNC_INTERVAL:-1}"
+IRONIC_USE_MARIADB="${IRONIC_USE_MARIADB:-false}"
+IRONIC_DB_DIR="${IRONIC_DB_DIR:-/data/db}"
+IRONIC_CONF_DIR="${IRONIC_CONF_DIR:-/conf/ironic}"
+
+if [[ "${IRONIC_SKIP_DBSYNC,,}" != "true" ]]; then
+    if [[ "${IRONIC_USE_MARIADB,,}" == "true" ]]; then
+        # It's possible for the dbsync to fail if mariadb is not up yet, so
+        # retry until success
+        deadline=$(( SECONDS + IRONIC_DBSYNC_TIMEOUT ))
+        until ironic-dbsync --config-file "${IRONIC_CONF_DIR}/ironic.conf" upgrade; do
+			if (( IRONIC_DBSYNC_TIMEOUT > 0 )) && (( SECONDS >= deadline )); then
+				echo "ERROR: timed out after ${IRONIC_DBSYNC_TIMEOUT}s waiting for" \
+				     "ironic-dbsync to succeed (is MariaDB reachable?)" >&2
+				exit 1
+			fi
+            echo "WARNING: ironic-dbsync failed, retrying"
+            sleep "${IRONIC_DBSYNC_INTERVAL}"
+        done
+    else
+        # SQLite does not support some statements. Fortunately, we can just
+        # create the schema in one go if not already created, instead of going
+        # through an upgrade
+        cp "/var/lib/ironic/ironic.sqlite" "${IRONIC_DB_DIR}/ironic.sqlite"
+        DB_VERSION="$(ironic-dbsync --config-file "${IRONIC_CONF_DIR}/ironic.conf" version)"
+        if [[ "${DB_VERSION}" == "None" ]]; then
+            ironic-dbsync --config-file "${IRONIC_CONF_DIR}/ironic.conf" create_schema
+        fi
+    fi
 fi
 
-configure_restart_on_certificate_update "${IRONIC_INJECT_IPA}" ironic "${WEBSERVER_CACERT_FILE:-}"
-configure_restart_on_certificate_update "${IRONIC_TLS_SETUP}" ironic "${IRONIC_CERT_FILE}"
+# ***** TLS handling *****
+export BMC_CACERT_FILE="/conf/bmc-tls.pem"
+export BMC_CACERTS_PATH="/certs/ca/bmc"
+if ls "${BMC_CACERTS_PATH}"/* > /dev/null 2>&1; then
+	echo "BMC TLS enabled, watching ${BMC_CACERTS_PATH} for certificates"
 
-configure_ironic_auth
-
-if [[ "${BMC_TLS_ENABLED}" == "true" ]]; then
     # shellcheck disable=SC2016
     watchmedo shell-command \
         --patterns="*" \
         --ignore-directories \
         --command='tmp=$(mktemp "${BMC_CACERT_FILE}.XXXXXX") && cat "${BMC_CACERTS_PATH}"/* > "${tmp}" && mv "${tmp}" "${BMC_CACERT_FILE}"' \
         "${BMC_CACERTS_PATH}" &
+
 fi
 
+IRONIC_CERT_FILE="/certs/ironic/tls.crt"
+RESTART_ON_CERT_UPDATE=${RESTART_ON_CERT_UPDATE:-"true"}
+if [[ -f "${IRONIC_CERT_FILE}" ]] && [[ "${RESTART_ON_CERT_UPDATE,,}" == "true" ]]; then
+	# Use watchmedo to monitor certificate file deletion.
+	# shellcheck disable=SC2016
+	watchmedo shell-command \
+		--patterns="$(basename "${IRONIC_CERT_FILE}")" \
+		--ignore-directories \
+		--command='if [[ "${watch_event_type}" == "deleted" ]]; then pkill -TERM ironic; fi' \
+		"$(dirname "${IRONIC_CERT_FILE}")" &
+fi
+
+WEBSERVER_CACERT_FILE="${WEBSERVER_CACERT_FILE:-}"
+if [[ -f "${WEBSERVER_CACERT_FILE}" ]] && [[ ${RESTART_ON_CERT_UPDATE,,} == "true" ]]; then
+	# shellcheck disable=SC2016
+	watchmedo shell-command \
+		--patterns="$(basename "${WEBSERVER_CACERT_FILE}")" \
+		--ignore-directories \
+		--command='if [[ "${watch_event_type}" == "deleted" ]]; then pkill -TERM ironic; fi' \
+		"$(dirname "${WEBSERVER_CACERT_FILE}")" &
+fi
+
+# ***** Start ironic *****
 exec /usr/bin/ironic --config-dir "${IRONIC_CONF_DIR}"
