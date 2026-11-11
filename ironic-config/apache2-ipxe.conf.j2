@@ -1,6 +1,20 @@
-Listen {{ env.IPXE_TLS_PORT }}
-
+{%- if env.LISTEN_ALL_INTERFACES | lower == "true" %}
+{%- if env.ENABLE_IPV4 %}
+Listen 0.0.0.0:{{ env.IPXE_TLS_PORT }}
+{%- endif %}
+{%- if env.ENABLE_IPV6 %}
+Listen [::]:{{ env.IPXE_TLS_PORT }}
+{%- endif %}
 <VirtualHost *:{{ env.IPXE_TLS_PORT }}>
+{%- else %}
+{%- if env.ENABLE_IPV4 %}
+Listen {{ env.IRONIC_IPV4 }}:{{ env.IPXE_TLS_PORT }}
+{%- endif %}
+{%- if env.ENABLE_IPV6 %}
+Listen [{{ env.IRONIC_IPV6 }}]:{{ env.IPXE_TLS_PORT }}
+{%- endif %}
+<VirtualHost {% if env.ENABLE_IPV4 %}{{ env.IRONIC_IPV4 }}:{{ env.IPXE_TLS_PORT }}{% endif %} {% if env.ENABLE_IPV6 %}[{{ env.IRONIC_IPV6 }}]:{{ env.IPXE_TLS_PORT }}{% endif %}>
+{%- endif %}
     ErrorLog /dev/stderr
     LogLevel debug
     CustomLog /dev/stdout combined
