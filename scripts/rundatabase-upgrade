@@ -3,7 +3,7 @@
 set -euxo pipefail
 
 # shellcheck disable=SC1091
-. /bin/configure-ironic.sh
+. /bin/generate-ironic-conf.sh
 
 # NOTE(dtantsur): no retries here: this script is supposed to be run as a Job
 # that is retried on failure.

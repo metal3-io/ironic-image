@@ -99,17 +99,5 @@ sed "1 a\
 \{%- set inject_cacert_bundle = $IRONIC_INJECT_IPA %}\\
 \{%- set ipxe_tls_port = $IPXE_TLS_PORT %}" /templates/ipxe_config.template > "${IRONIC_CONF_DIR}/ipxe_config.template"
 
-# The original ironic.conf is empty, and can be found in ironic.conf.orig
-render_j2_config "/etc/ironic/ironic.conf.j2" \
-    "${IRONIC_CONF_DIR}/ironic.conf"
-
-if [[ "${IRONIC_EXPOSE_JSON_RPC}" == "true" ]]; then
-    configure_json_rpc_auth
-fi
-
-if [[ "${IRONIC_NETWORKING_ENABLED}" == "true" ]]; then
-    configure_json_rpc_auth "ironic_networking_json_rpc"
-fi
-
 # Make sure ironic traffic bypasses any proxies
 export NO_PROXY="${NO_PROXY:-},$IRONIC_IP"
