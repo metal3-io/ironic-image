@@ -61,7 +61,7 @@ RUN IRONIC_PKG_LIST=/tmp/ironic-deps-list /bin/build-wheels.sh
 FROM python-build-base AS ironic-wheel-builder
 
 ARG UPPER_CONSTRAINTS_FILE=upper-constraints.txt
-ARG IRONIC_SOURCE=95d82c95db7e6c0f9fa3d37385aea76f0442c5c4 # bugfix/38.0
+ARG IRONIC_SOURCE=fe0a92386e624edf502e83beb8831e99bcee4718 # bugfix/38.0
 ARG SUSHY_SOURCE
 ARG NGS_SOURCE=bc2f95777c6c1cc02202c9a1e0377cd6c3af3e95 # stable/2026.1
 ARG INSTALL_NGS=true
