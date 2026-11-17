@@ -15,6 +15,11 @@ export IRONIC_NETWORKING_ENABLED=true
 # shellcheck disable=SC1091
 . /bin/auth-common.sh
 
+# Only resolve the IPs (for NO_PROXY) if the container was told where to look
+if [[ -n "${IRONIC_IP}" || -n "${PROVISIONING_IP}" || -n "${PROVISIONING_INTERFACE}" ]]; then
+    wait_for_interface_or_ip
+fi
+
 # zero makes it do cpu number detection on Ironic side
 export NUMWORKERS=${NUMWORKERS:-0}
 
@@ -30,7 +35,14 @@ render_j2_config "/etc/ironic/ironic-networking.conf.j2" \
 configure_json_rpc_auth "ironic_networking_json_rpc"
 
 # Make sure ironic traffic bypasses any proxies
-export NO_PROXY="${NO_PROXY:-},${IRONIC_IP}"
+export NO_PROXY="${NO_PROXY:-}"
+
+if [[ -n "${IRONIC_IPV6}" ]]; then
+    export NO_PROXY="${NO_PROXY},${IRONIC_IPV6}"
+fi
+if [[ -n "${IRONIC_IPV4}" ]]; then
+    export NO_PROXY="${NO_PROXY},${IRONIC_IPV4}"
+fi
 
 # Ensure driver config directory exists
 mkdir -p "${IRONIC_NETWORKING_DRIVER_CONFIG_DIR}"

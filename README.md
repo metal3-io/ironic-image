@@ -64,6 +64,16 @@ functionality:
   indefinitely, restoring the previous behaviour.
 - `IRONIC_IP_WAIT_INTERVAL` - polling interval in seconds while waiting for the
   provisioning IP or interface (default `1`)
+- `IRONIC_IP_FAMILIES` - IP families to use on the provisioning interface: `4`,
+  `6` or `4,6` (default, dual-stack). When both are enabled and found, the
+  services listen on both, dnsmasq serves both DHCPv4 and DHCPv6 and the URLs
+  handed out (e.g. `IRONIC_BASE_URL`, `IRONIC_HTTP_URL`) use IPv6. Set to `4` to
+  keep IPv4 only on an interface that also has a global IPv6 address. The
+  resolved addresses are available as `IRONIC_IPV4` and `IRONIC_IPV6`. A
+  `PROVISIONING_IP` of a disabled family is an error.
+- `IRONIC_IP_DUAL_STACK_WAIT` - when `PROVISIONING_INTERFACE` is used and both
+  families are enabled, time in seconds to keep waiting for the second family
+  once the first one is found (default `10`, `0` to not wait)
 - `DNSMASQ_EXCEPT_INTERFACE` - interfaces to exclude when providing DHCP address
   (default `lo`)
 - `HTTP_PORT` - port used by http server (default `80`)
@@ -79,7 +89,8 @@ functionality:
 - `DHCP_OPTIONS` - a `;` separated list of additional `dhcp-option` directives
    that allows passing specific network configuration parameters (like routers,
    DNS servers, and NTP) to DHCP clients (empty by default). Only applies to
-   IPv4 provisioning (`IPV=4` or unset). For more details on `dhcp-option` see
+   IPv4 provisioning, if enabled (see `IRONIC_IP_FAMILIES`). For more details
+   on `dhcp-option` see
    [the man page](https://thekelleys.org.uk/dnsmasq/docs/dnsmasq-man.html).
 - `DHCP_IGNORE` - a set of tags on hosts that should be ignored and not allocate
    DHCP leases for, e.g. `tag:!known` to ignore any unknown hosts (empty by
@@ -93,7 +104,10 @@ functionality:
 - `IRONIC_HTTPD_LOGLEVEL` - This parameter can be used to change the LogLevel
    parameter of the api's httpd container (default `debug`)
 - `GATEWAY_IP` - gateway IP address to use for ironic dnsmasq(dhcpd)
-- `DNS_IP` - DNS IP address to use for ironic dnsmasq(dhcpd)
+- `DNS_IP` - DNS IP address to use for ironic dnsmasq(dhcpd), or
+   `provisioning` to use the provisioning IP(s). IPv6 addresses can be given
+   with or without brackets. The address is only handed out to clients of its
+   own IP family, the DNS option of the other family is disabled.
 - `IRONIC_IPA_COLLECTORS` - Use a custom set of collectors to be run on
    inspection. (default `default,logs,pci-devices`)
 - `HTTPD_ENABLE_SENDFILE` - Whether to activate the EnableSendfile apache

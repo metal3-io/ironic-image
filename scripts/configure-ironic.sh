@@ -50,6 +50,18 @@ export IRONIC_IPA_COLLECTORS=${IRONIC_IPA_COLLECTORS:-default,logs,pci-devices}
 
 wait_for_interface_or_ip
 
+if [[ "$(echo "${LISTEN_ALL_INTERFACES}" | tr '[:upper:]' '[:lower:]')" == "true" ]]; then
+    if [[ -n "${ENABLE_IPV6}" ]]; then
+        export IRONIC_LISTEN_ADDRESS="::"
+    else
+        export IRONIC_LISTEN_ADDRESS="0.0.0.0"
+    fi
+elif [[ -n "${ENABLE_IPV6}" ]]; then
+    export IRONIC_LISTEN_ADDRESS="${IRONIC_IPV6}"
+else
+    export IRONIC_LISTEN_ADDRESS="${IRONIC_IPV4}"
+fi
+
 # Hostname to use for the current conductor instance.
 export IRONIC_CONDUCTOR_HOST=${IRONIC_CONDUCTOR_HOST:-${IRONIC_URL_HOST}}
 
@@ -112,4 +124,11 @@ if [[ "${IRONIC_NETWORKING_ENABLED}" == "true" ]]; then
 fi
 
 # Make sure ironic traffic bypasses any proxies
-export NO_PROXY="${NO_PROXY:-},$IRONIC_IP"
+export NO_PROXY="${NO_PROXY:-}"
+
+if [[ -n "${IRONIC_IPV6}" ]]; then
+    export NO_PROXY="${NO_PROXY},${IRONIC_IPV6}"
+fi
+if [[ -n "${IRONIC_IPV4}" ]]; then
+    export NO_PROXY="${NO_PROXY},${IRONIC_IPV4}"
+fi
