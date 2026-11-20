@@ -20,8 +20,6 @@ fi
 configure_restart_on_certificate_update "${IRONIC_INJECT_IPA}" ironic "${WEBSERVER_CACERT_FILE:-}"
 configure_restart_on_certificate_update "${IRONIC_TLS_SETUP}" ironic "${IRONIC_CERT_FILE}"
 
-configure_ironic_auth
-
 if [[ "${BMC_TLS_ENABLED}" == "true" ]]; then
     # shellcheck disable=SC2016
     watchmedo shell-command \

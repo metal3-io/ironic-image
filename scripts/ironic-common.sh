@@ -38,7 +38,6 @@ mkdir -p "${IRONIC_CONF_DIR}" "${PROBE_CONF_DIR}" "${HTTPD_CONF_DIR}" \
     "${IRONIC_DB_DIR}" "${IRONIC_GEN_CERT_DIR}" "${DNSMASQ_DATA_DIR}" \
     "${IRONIC_TMP_DATA_DIR}"
 
-export HTPASSWD_FILE="${IRONIC_CONF_DIR}/htpasswd"
 export LOCAL_DB_URI="sqlite:///${IRONIC_DB_DIR}/ironic.sqlite"
 
 export IRONIC_USE_MARIADB="${IRONIC_USE_MARIADB:-false}"
