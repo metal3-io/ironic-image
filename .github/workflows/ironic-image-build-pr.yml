@@ -20,12 +20,15 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        centos_version:
-        - stream9
-        - stream10
-        platform:
-        - linux/amd64
-        - linux/arm64
+        include:
+        - centos_version: stream9
+          platform: linux/amd64
+        - centos_version: stream9
+          platform: linux/arm64
+        - centos_version: stream10
+          platform: linux/amd64
+        - centos_version: stream10
+          platform: linux/arm64
 
     steps:
     - name: Checkout repository

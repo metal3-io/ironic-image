@@ -2,7 +2,18 @@
 
 This repo contains the files needed to build the Ironic images used by Metal3.
 
-Supported base images are CentOS Stream 9 and CentOS Stream 10.
+Supported base images are CentOS Stream 9 and CentOS Stream 10. By default,
+Python 3.12 is selected for CentOS Stream 9 and Python 3.14 for CentOS Stream 10.
+`PYTHON_VERSION` can be passed as a build argument to override the detected
+version when needed:
+
+```bash
+podman build -t ironic-image:cs10 \
+  --build-arg BASE_IMAGE=quay.io/centos/centos:stream10-minimal .
+```
+
+For example, add `--build-arg PYTHON_VERSION=3.12` to override the Stream 10
+default for a compatibility test.
 
 ## Build Status
 

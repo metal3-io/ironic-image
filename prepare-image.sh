@@ -2,6 +2,9 @@
 
 set -euxo pipefail
 
+# shellcheck disable=SC1091
+. /bin/python-config.sh
+
 # --- Universal CentOS 9/10 GPG Key Import ---
 echo "Configuring GPG keys for package verification..."
 
@@ -33,13 +36,13 @@ microdnf upgrade -y
 
 # NOTE(dtantsur): pip is a requirement of python3 in CentOS
 # shadow-utils provides groupadd/useradd/usermod (not in cs10-minimal)
-microdnf install -y python3.12-pip shadow-utils
+microdnf install -y "${PYTHON_BIN}-pip" shadow-utils
 
 # NOTE(elfosardo): pinning pip and setuptools version to avoid
 # incompatibilities and errors during packages installation;
 # versions should be updated regularly, for example
 # after cutting a release branch.
-python3.12 -m pip install --no-cache-dir pip=="${PIP_VERSION}" setuptools=="${SETUPTOOLS_VERSION}"
+"${PYTHON_BIN}" -m pip install --no-cache-dir pip=="${PIP_VERSION}" setuptools=="${SETUPTOOLS_VERSION}"
 
 # Install from pre-built wheels (mounted from both wheel-builder stages)
 # No compilation needed here - wheels are already built
@@ -48,7 +51,7 @@ mkdir -p /tmp/all-wheels
 cp -n /deps-wheels/*.whl /tmp/all-wheels/ 2>/dev/null || true
 cp -n /ironic-wheels/*.whl /tmp/all-wheels/ 2>/dev/null || true
 
-python3.12 -m pip install \
+"${PYTHON_BIN}" -m pip install \
     --no-cache-dir \
     --no-index \
     --find-links=/tmp/all-wheels \
@@ -60,6 +63,8 @@ rm -rf /tmp/all-wheels
 
 # ironic system configuration
 mkdir -p /var/log/ironic /var/lib/ironic
+mkdir -p /etc/ironic
+printf '%s\n' "${PYTHON_VERSION}" > /etc/ironic/python-version
 getent group ironic > /dev/null || groupadd -r ironic -g "${IRONIC_GID}"
 getent passwd ironic > /dev/null || useradd -r -g ironic -u "${IRONIC_UID}" -s /sbin/nologin ironic -d /var/lib/ironic
 

@@ -1,4 +1,5 @@
 ARG BASE_IMAGE=quay.io/centos/centos:stream9-minimal
+ARG PYTHON_VERSION
 ARG IPXE_BINARIES_IMAGE=quay.io/metal3-io/ipxe-binaries@sha256:d3f7809ca409fadad2776424e0d8823023943b7465c5204b9e88496502003aaf # iPXE commit d0ea2b1bb8f78b219f74424d435b92ff8aa0ea8d
 
 # Python tooling versions - update these regularly
@@ -27,20 +28,28 @@ FROM $IPXE_BINARIES_IMAGE AS ipxe-binaries
 
 ## Shared Python build toolchain for wheel builders
 FROM $BASE_IMAGE AS python-build-base
+ARG PYTHON_VERSION
+COPY python-config.sh /bin/
 
 RUN --mount=type=cache,sharing=locked,target=/var/cache/dnf <<EORUN
 set -euxo pipefail
+. /bin/python-config.sh
 rm -f /etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-SIG-Extras /etc/pki/rpm-gpg/RPM-GPG-KEY-centosofficial-PQC
 # Find keys; if the list is empty, fail the build immediately
 KEYS=$(find /etc/pki/rpm-gpg/ -name "RPM-GPG-KEY-cento*")
 if [ -z "$KEYS" ]; then echo "ERROR: No CentOS GPG keys found in /etc/pki/rpm-gpg/"; exit 1; fi
 echo "$KEYS" | xargs rpm --import
 printf "[main]\ngpgcheck=1\ninstall_weak_deps=0\ntsflags=nodocs\nkeepcache=1\n" > /etc/dnf/dnf.conf
+if [[ "${PYTHON_VERSION}" == "3.14" ]]; then
+    # The Python 3.14 setuptools RPM is provided by CRB on CentOS Stream 10.
+    microdnf install -y dnf dnf-plugins-core
+    dnf config-manager --set-enabled crb
+fi
 microdnf install -y \
     gcc \
-    python3.12-devel \
-    python3.12-pip \
-    python3.12-setuptools
+    "python${PYTHON_VERSION}-devel" \
+    "python${PYTHON_VERSION}-pip" \
+    "python${PYTHON_VERSION}-setuptools"
 EORUN
 
 ## Build Python wheels for dependencies
@@ -97,6 +106,7 @@ FROM $BASE_IMAGE
 # Re-declare ARGs for this stage
 ARG IRONIC_VERSION_LABEL=unknown
 ARG NGS_VERSION_LABEL=unknown
+ARG PYTHON_VERSION
 ARG PIP_VERSION
 ARG SETUPTOOLS_VERSION
 ENV PIP_VERSION=${PIP_VERSION} \
@@ -124,7 +134,7 @@ ARG DNSMASQ_DATA_DIR=/data/dnsmasq
 
 COPY ${PKGS_LIST} ${ARCH_PKGS_LIST} ${EXTRA_PKGS_LIST:-$PKGS_LIST} ${PATCH_LIST:-$PKGS_LIST} /tmp/
 COPY ironic-config/ /tmp/ironic-config/
-COPY prepare-image.sh patch-image.sh configure-nonroot.sh scripts/ /bin/
+COPY python-config.sh prepare-image.sh patch-image.sh configure-nonroot.sh scripts/ /bin/
 
 # Install Python packages from pre-built wheels (mounted from both wheel-builder stages)
 RUN --mount=type=cache,target=/var/cache/dnf,sharing=locked \

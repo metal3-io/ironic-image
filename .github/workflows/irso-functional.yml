@@ -9,6 +9,16 @@ permissions: {}
 jobs:
   test:
     runs-on: oracle-vm-4cpu-16gb-x86-64
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+        - centos_version: stream9
+          base_image: quay.io/centos/centos:stream9-minimal
+          image: localhost/ironic:irso-stream9
+        - centos_version: stream10
+          base_image: quay.io/centos/centos:stream10-minimal
+          image: localhost/ironic:irso-stream10
     permissions:
       checks: write
       contents: read
@@ -17,7 +27,8 @@ jobs:
       CONTAINER_RUNTIME: docker
       LOGDIR: /tmp/logs
       JUNIT_OUTPUT: /tmp/logs/report.xml
-      IRONIC_CUSTOM_IMAGE: localhost/ironic:test
+      IRONIC_CUSTOM_IMAGE: ${{ matrix.image }}
+      IRONIC_BASE_IMAGE: ${{ matrix.base_image }}
       # NOTE(dtantsur): change this on stable branches to make sure the correct
       # logic is used in IrSO, and also that the tests are skipped properly.
       IRONIC_CUSTOM_VERSION: latest
@@ -56,7 +67,7 @@ jobs:
     - name: Upload logs artifacts
       uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
       with:
-        name: functional
+        name: functional-${{ matrix.centos_version }}
         path: /tmp/logs/*
       if: always()
     - name: Annotate failures
