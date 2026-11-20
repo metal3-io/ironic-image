@@ -7,6 +7,13 @@ build_ironic_image() {
     declare -a build_args
     declare -a to_delete
 
+    if [[ -n "${IRONIC_BASE_IMAGE:-}" ]]; then
+        build_args+=(--build-arg "BASE_IMAGE=${IRONIC_BASE_IMAGE}")
+    fi
+    if [[ -n "${PYTHON_VERSION:-}" ]]; then
+        build_args+=(--build-arg "PYTHON_VERSION=${PYTHON_VERSION}")
+    fi
+
     echo "Building ironic image: ${IRONIC_CUSTOM_IMAGE}"
 
     if [[ -n "${IRONIC_SOURCE:-}" ]]; then

@@ -2,6 +2,9 @@
 
 set -euxo pipefail
 
+# shellcheck disable=SC1091
+. /bin/python-config.sh
+
 # Export IRONIC_IP to avoid needing to lean on IRONIC_URL_HOST for consumption in
 # e.g. dnsmasq configuration
 export IRONIC_IP="${IRONIC_IP:-}"
@@ -106,7 +109,7 @@ get_provisioning_interface()
         return
     fi
 
-    python3.12 /bin/detect_interface.py interface-of-mac "$PROVISIONING_MACS"
+    "${PYTHON_BIN}" /bin/detect_interface.py interface-of-mac "$PROVISIONING_MACS"
 }
 
 PROVISIONING_INTERFACE="$(get_provisioning_interface)"
@@ -131,7 +134,7 @@ get_interface_of_ip()
         esac
     fi
 
-    python3.12 /bin/detect_interface.py interface-of-ip "$@"
+    "${PYTHON_BIN}" /bin/detect_interface.py interface-of-ip "$@"
 }
 
 parse_ip_address()
@@ -234,7 +237,7 @@ wait_for_interface_or_ip()
 
 render_j2_config()
 {
-    python3.12 -c 'import os; import sys; import jinja2; sys.stdout.write(jinja2.Template(sys.stdin.read()).render(env=os.environ))' < "$1" > "$2"
+    "${PYTHON_BIN}" -c 'import os; import sys; import jinja2; sys.stdout.write(jinja2.Template(sys.stdin.read()).render(env=os.environ))' < "$1" > "$2"
 }
 
 run_ironic_dbsync()
