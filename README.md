@@ -96,6 +96,11 @@ functionality:
 - `DNS_IP` - DNS IP address to use for ironic dnsmasq(dhcpd)
 - `IRONIC_IPA_COLLECTORS` - Use a custom set of collectors to be run on
    inspection. (default `default,logs,pci-devices`)
+- `IRONIC_CLEAN_STEP_PRIORITY_OVERRIDE` - a comma separated list of
+   `interface.step_name:priority` entries, each rendered as a
+   `[conductor]clean_step_priority_override` line, e.g.
+   `deploy.clean_uefi_nvram:95,deploy.erase_devices_metadata:0` (unset by
+   default)
 - `HTTPD_ENABLE_SENDFILE` - Whether to activate the EnableSendfile apache
    directive for httpd `(default, false)`
 - `IRONIC_CONDUCTOR_HOST` - Host name of the current conductor (only makes
@@ -244,6 +249,9 @@ environment variable of the form `OS_<section>__<option>` (note the **two**
 underscores after the section name).
 These `OS_` variables take precedence over values rendered from templates.
 You do not need dedicated image environment variables for each option.
+Options that take several values (`MultiOpt`) cannot be set this way: use the
+dedicated variable where one exists, such as
+`IRONIC_CLEAN_STEP_PRIORITY_OVERRIDE`.
 
 Examples:
 
