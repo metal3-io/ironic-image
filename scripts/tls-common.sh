@@ -133,10 +133,14 @@ configure_restart_on_certificate_update()
             signal="WINCH"
         fi
 
-        # Use watchmedo to monitor certificate file deletion
+        # Use watchmedo to monitor certificate file deletion. The watch is
+        # recursive: a Kubernetes Secret volume deletes the replaced file
+        # inside a timestamped subdirectory, never at the top level.
+        # Patterns match the full path, hence "**/".
         # shellcheck disable=SC2016
         watchmedo shell-command \
-            --patterns="$(basename "${cert_file}")" \
+            --patterns="**/$(basename "${cert_file}")" \
+            --recursive \
             --ignore-directories \
             --command='if [[ "${watch_event_type}" == "deleted" ]]; then pkill -'"${signal}"' '"${service}"'; fi' \
             "$(dirname "${cert_file}")" &

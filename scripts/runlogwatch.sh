@@ -33,7 +33,7 @@ trap 'kill -TERM "${child_pid}" 2>/dev/null' TERM INT
 
 # shellcheck disable=SC2016
 watchmedo shell-command \
-    --patterns="*" \
+    --patterns="**" \
     --ignore-directories \
     --command='if [[ "${watch_event_type}" == "closed" ]]; then process_log_file "${watch_src_path}"; fi' \
     "${LOG_DIR}" &
