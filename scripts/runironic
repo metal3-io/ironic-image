@@ -25,7 +25,7 @@ configure_ironic_auth
 if [[ "${BMC_TLS_ENABLED}" == "true" ]]; then
     # shellcheck disable=SC2016
     watchmedo shell-command \
-        --patterns="*" \
+        --patterns="**" \
         --ignore-directories \
         --command='tmp=$(mktemp "${BMC_CACERT_FILE}.XXXXXX") && cat "${BMC_CACERTS_PATH}"/* > "${tmp}" && mv "${tmp}" "${BMC_CACERT_FILE}"' \
         "${BMC_CACERTS_PATH}" &
