@@ -19,7 +19,7 @@ jobs:
       IRONIC_CUSTOM_VERSION: "37.0"
       # Use latest stable BMO release - update this when new releases are available
       # Keep in mind that BMO pins IrSO, which must be compatible with IRONIC_CUSTOM_VERSION.
-      BMO_VERSION: release-0.13
+      BMO_VERSION: release-0.14
     steps:
     - name: Check docker version
       run: docker --version
