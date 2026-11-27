@@ -23,8 +23,13 @@ kernel --timeout 60000 {{ kernel_path }} ipa-insecure={{ env.IRONIC_IPA_INSECURE
 {%- endfor -%}
 # Architecture-specific boot selection
 # NOTE: iPXE uses 'arm64' but env vars use 'aarch64'
+{#- Only jump to an architecture with both images, otherwise use the fallback #}
+{%- if 'aarch64' in kernel_by_arch and 'aarch64' in ramdisk_by_arch %}
 iseq ${buildarch} arm64 && goto arm64 ||
+{%- endif %}
+{%- if 'x86_64' in kernel_by_arch and 'x86_64' in ramdisk_by_arch %}
 iseq ${buildarch} x86_64 && goto x86_64 ||
+{%- endif %}
 goto fallback
 
 :arm64
