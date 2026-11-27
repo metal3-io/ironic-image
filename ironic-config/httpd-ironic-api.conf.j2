@@ -72,10 +72,10 @@ Listen {{ env.IRONIC_URL_HOST }}:{{ env.IRONIC_LISTEN_PORT }}
 
 
     <Location />
-         {% if "IRONIC_HTPASSWD" in env and env.IRONIC_HTPASSWD | length %}
+         {% if env.IRONIC_NOAUTH | default("false") != "true" %}
             AuthType Basic
             AuthName "Restricted area"
-            AuthUserFile {{ env.HTPASSWD_FILE }}
+            AuthUserFile {{ env.IRONIC_HTPASSWD_FILE }}
             Require valid-user
          {% endif %}
     </Location>

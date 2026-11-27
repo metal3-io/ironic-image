@@ -4,7 +4,13 @@
 # examples; dedicated image env vars are not required for each option.
 
 [DEFAULT]
+{% if env.IRONIC_REVERSE_PROXY_SETUP == "true" or env.IRONIC_NOAUTH | default("false") == "true" %}
+# NOTE(dtantsur): in a setup with a reverse proxy, authentication is handled by httpd
 auth_strategy = noauth
+{% else %}
+auth_strategy = http_basic
+http_basic_auth_user_file = {{ env.IRONIC_HTPASSWD_FILE }}
+{% endif %}
 debug = true
 default_deploy_interface = autodetect
 autodetect_deploy_interfaces = ramdisk,bootc,direct

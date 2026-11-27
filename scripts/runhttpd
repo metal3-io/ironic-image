@@ -36,6 +36,8 @@ export INSPECTOR_EXTRA_ARGS
 # Detect IPA images by architecture for inspector.ipxe
 detect_ipa_by_arch
 
+write_htpasswd_files
+
 # Copy files to shared mount
 render_j2_config /templates/inspector.ipxe.j2 /shared/html/inspector.ipxe
 # cp -r /etc/httpd/* "${HTTPD_DIR}"
@@ -55,8 +57,6 @@ if [[ "$IRONIC_TLS_SETUP" == "true" ]]; then
 else
     export IRONIC_REVERSE_PROXY_SETUP="false" # If TLS is not used, we have no reason to use the reverse proxy
 fi
-
-write_htpasswd_files
 
 # Render httpd TLS configuration for /shared/html/<redifsh;ilo>
 if [[ "$IRONIC_VMEDIA_TLS_SETUP" == "true" ]]; then

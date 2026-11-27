@@ -17,7 +17,7 @@ else
     export IRONIC_EXPOSE_JSON_RPC="${IRONIC_EXPOSE_JSON_RPC:-false}"
 fi
 
-IRONIC_HTPASSWD_FILE="${IRONIC_CONF_DIR}/htpasswd"
+export IRONIC_HTPASSWD_FILE="${IRONIC_CONF_DIR}/htpasswd"
 export IRONIC_RPC_HTPASSWD_FILE="${IRONIC_HTPASSWD_FILE}-rpc"
 if [[ -f "/auth/ironic/htpasswd" ]]; then
     IRONIC_HTPASSWD=$(</auth/ironic/htpasswd)
@@ -79,21 +79,27 @@ configure_json_rpc_auth()
     fi
 }
 
-configure_ironic_auth()
-{
-    # Configure HTTP basic auth for API server
-    if [[ -n "${IRONIC_HTPASSWD}" ]]; then
-        printf "%s\n" "${IRONIC_HTPASSWD}" > "${IRONIC_HTPASSWD_FILE}"
-        if [[ "${IRONIC_REVERSE_PROXY_SETUP}" == "false" ]]; then
-            crudini --set "${IRONIC_CONFIG}" DEFAULT auth_strategy http_basic
-            crudini --set "${IRONIC_CONFIG}" DEFAULT http_basic_auth_user_file "${IRONIC_HTPASSWD_FILE}"
-        fi
-    fi
-}
-
 write_htpasswd_files()
 {
-    if [[ -n "${IRONIC_HTPASSWD:-}" ]]; then
+    IRONIC_NOAUTH=false
+    if [[ -z "${IRONIC_HTPASSWD}" ]]; then
+        # Passing a full secret is slightly less secure but also more
+        # convenient for the caller and hides the implementation detail of
+        # using htpasswd format.
+        local username_file="/auth/ironic/username"
+        local password_file="/auth/ironic/password"
+        if [[ -f "${username_file}" ]] && [[ -f "${password_file}" ]]; then
+            htpasswd -c -i -B "${IRONIC_HTPASSWD_FILE}" "$(<${username_file})" <"${password_file}"
+        elif [[ ! -f "${username_file}" ]] && [[ ! -f "${password_file}" ]]; then
+            IRONIC_NOAUTH=true
+        else
+            echo "FATAL: partial configuration detected: only one of ${username_file} and ${password_file} is present"
+            exit 1
+        fi
+    else
+        set +x
         printf "%s\n" "${IRONIC_HTPASSWD}" > "${IRONIC_HTPASSWD_FILE}"
+        set -x
     fi
+    export IRONIC_NOAUTH
 }
