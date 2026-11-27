@@ -202,6 +202,12 @@ Container images built and tagged at Quay registry:
 - [ironic:vx.y.z](https://quay.io/repository/metal3-io/ironic?tab=tags)
 - [ironic_cs10:vx.y.z](https://quay.io/repository/metal3-io/ironic_cs10?tab=tags)
 
+Releases from `main` or from `release-34.0` and newer branches are
+multi-platform images for `linux/amd64` and `linux/arm64`. Both platforms
+should be listed for the release tag, for example with
+`docker buildx imagetools inspect quay.io/metal3-io/ironic:vx.y.z`.
+Releases from `release-33.0` or older branches are `linux/amd64` only.
+
 You can also check the draft release and its tags in the GitHub UI.
 
 ### Make the release

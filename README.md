@@ -16,6 +16,11 @@ Supported base images are CentOS Stream 9 and CentOS Stream 10.
 When updated, builds are automatically triggered on
 <https://quay.io/repository/metal3-io/ironic/>
 
+> [!NOTE]
+> Images are published for `linux/amd64` and `linux/arm64`. The `linux/arm64`
+> images are experimental: CI builds them, but does not run end-to-end tests
+> on them.
+
 This repo supports the creation of multiple containers needed when provisioning
 baremetal nodes with Ironic. Eventually there will be separate images for each
 container, but currently separate containers can share this same image with

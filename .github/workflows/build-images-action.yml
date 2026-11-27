@@ -28,6 +28,8 @@ jobs:
     uses: metal3-io/project-infra/.github/workflows/container-image-build.yml@main # zizmor: ignore[unpinned-uses]
     with:
       image-name: 'ironic'
+      multiPlatform: true
+      platform: 'linux/amd64,linux/arm64'
       pushImage: true
       image-build-args: >-
         IRONIC_VERSION_LABEL=${{ needs.generate-core-component-source-versions.outputs.ironic-version }}
@@ -48,6 +50,8 @@ jobs:
     uses: metal3-io/project-infra/.github/workflows/container-image-build.yml@main # zizmor: ignore[unpinned-uses]
     with:
       image-name: 'ironic_cs10'
+      multiPlatform: true
+      platform: 'linux/amd64,linux/arm64'
       pushImage: true
       image-build-args: >-
         IRONIC_VERSION_LABEL=${{ needs.generate-core-component-source-versions.outputs.ironic-version }}

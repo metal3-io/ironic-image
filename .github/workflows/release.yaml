@@ -17,6 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       release_tag: ${{ steps.release-version.outputs.release_version }}
+      multi_platform: ${{ steps.release-branch.outputs.multi_platform }}
     if: github.repository == 'metal3-io/ironic-image'
     steps:
     - name: Checkout code
@@ -48,6 +49,7 @@ jobs:
           fi
         done
     - name: Determine the release branch to use
+      id: release-branch
       run: |
         if [[ ${RELEASE_VERSION} =~ beta ]] || [[ ${RELEASE_VERSION} =~ alpha ]]; then
           export RELEASE_BRANCH=main
@@ -57,6 +59,16 @@ jobs:
           export RELEASE_BRANCH=release-$(echo ${RELEASE_VERSION} | sed -E 's/^v([0-9]+)\.([0-9]+)\..*$/\1.\2/')
           echo "RELEASE_BRANCH=${RELEASE_BRANCH}" >> ${GITHUB_ENV}
           echo "This is not a beta or alpha release, will use release branch ${RELEASE_BRANCH}"
+        fi
+        # Release branches older than release-34.0 cannot build linux/arm64
+        # images, so their release images are built for linux/amd64 only.
+        oldest_branch="$(printf '%s\n' release-34.0 "${RELEASE_BRANCH}" | sort -V | head -n 1)"
+        if [[ "${RELEASE_BRANCH}" == "main" ]] || [[ "${oldest_branch}" == "release-34.0" ]]; then
+          echo "multi_platform=true" >> "${GITHUB_OUTPUT}"
+          echo "Images will be built for linux/amd64 and linux/arm64"
+        else
+          echo "multi_platform=false" >> "${GITHUB_OUTPUT}"
+          echo "Images will be built for linux/amd64 only"
         fi
     - name: Create or checkout release branch
       run: |
@@ -133,6 +145,8 @@ jobs:
     uses: metal3-io/project-infra/.github/workflows/container-image-build.yml@main # zizmor: ignore[unpinned-uses]
     with:
       image-name: 'ironic'
+      multiPlatform: ${{ needs.push_release_tags.outputs.multi_platform == 'true' }}
+      platform: ${{ needs.push_release_tags.outputs.multi_platform == 'true' && 'linux/amd64,linux/arm64' || '' }}
       pushImage: true
       ref: ${{ needs.push_release_tags.outputs.release_tag }}
       generate-sbom: true
@@ -151,6 +165,8 @@ jobs:
     uses: metal3-io/project-infra/.github/workflows/container-image-build.yml@main # zizmor: ignore[unpinned-uses]
     with:
       image-name: 'ironic_cs10'
+      multiPlatform: ${{ needs.push_release_tags.outputs.multi_platform == 'true' }}
+      platform: ${{ needs.push_release_tags.outputs.multi_platform == 'true' && 'linux/amd64,linux/arm64' || '' }}
       pushImage: true
       image-build-args: 'BASE_IMAGE=quay.io/centos/centos:stream10-minimal'
       ref: ${{ needs.push_release_tags.outputs.release_tag }}
